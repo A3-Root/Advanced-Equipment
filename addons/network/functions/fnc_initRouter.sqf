@@ -19,7 +19,7 @@ private _childs =
 {
 	params ["_target", "_player", "_params"]; 
 
-	_routers = (nearestObjects [_target, [], 10]) select {!isNil{_x getVariable "AE3_network_children"} && _x != _target};
+	private _routers = (nearestObjects [_target, [], 10]) select {!isNil{_x getVariable "AE3_network_children"} && _x != _target};
 	private _actions = []; 
 	{ 
 		private _childStatement = 
@@ -91,8 +91,10 @@ if (!isDedicated && !_internal) then
 };
 
 
- if (isServer) then 
+ if (isServer) then
  {
+	 _entity setVariable ["AE3_cap_isRouter", true, true];
+
 	 _entity setVariable ["AE3_network_address", _address, true];
 
 	 _entity setVariable ["AE3_network_parent", _parent, true];

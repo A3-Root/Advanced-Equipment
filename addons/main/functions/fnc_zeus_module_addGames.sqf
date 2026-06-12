@@ -57,27 +57,11 @@ if (_event isEqualTo "onUnload") exitWith
     private _isSnakeCtrl = _display displayCtrl 1401;
     private _isSnake = cbChecked _isSnakeCtrl;
 
-    // Wait for filesystem to be ready before adding games
-    [_computer, _isSnake, _module] spawn {
-        params ["_computer", "_isSnake", "_module"];
+    // Server ensures the filesystem is initialized (on demand) and reports back via
+    // "ae3_main_zeusOpFeedback" - no client-side polling (fixes timeouts on dedicated)
+    ["ae3_main_zeusDeviceOp", [netId _computer, "addGames", [_isSnake], clientOwner]] call CBA_fnc_serverEvent;
 
-        // Wait for filesystem initialization (10 second timeout)
-        private _filesystemReady = [_computer, 10] call AE3_main_fnc_waitForFilesystem;
-
-        if (!_filesystemReady) exitWith {
-            [objNull, "Filesystem not ready. Please wait and try again."] call BIS_fnc_showCuratorFeedbackMessage;
-            deleteVehicle _module;
-        };
-
-        // Add games to computer
-        [_computer, _isSnake] remoteExecCall ["AE3_armaos_fnc_computer_addGames", 2];
-
-        private _message = format ["snake: %1 ", _isSnake];
-        [localize "STR_AE3_Main_Zeus_GamesAdded", _message, 5] call BIS_fnc_curatorHint;
-
-        // Delete module
-        deleteVehicle _module;
-    };
+    deleteVehicle _module;
 };
 
 /* ---------------------------------------- */

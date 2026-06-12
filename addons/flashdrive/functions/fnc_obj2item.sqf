@@ -41,7 +41,7 @@ if (_id == -1) then
 _item = _item + (str _id);
 
 /* Copy variables */
-_itemNamespace = createHashMap;
+private _itemNamespace = createHashMap;
 {
 	_itemNamespace set [_x, _object getVariable _x];
 } forEach allVariables _object;

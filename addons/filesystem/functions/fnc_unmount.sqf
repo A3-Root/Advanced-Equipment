@@ -29,7 +29,7 @@ private _moutingPoint = _dir select 2;
 if(!(_moutingPoint in (_current select 0))) throw (format [localize "STR_AE3_Filesystem_Exception_NotFound", _moutingPoint]);
 _current = _current select 0;
 
-[_current get _moutingPoint, _user, 2] call AE3_filesystem_fnc_hasPermission;
+[_current get _moutingPoint, _user, 1] call AE3_filesystem_fnc_hasPermission;
 
 private _old = _current get _moutingPoint;
 

@@ -609,6 +609,24 @@
             </Key>
         </Container>
         <Container name="Config">
+            <Key ID="STR_AE3_ArmaOS_CommandHelp_Grep_ignoreCase">
+                <Original>ignore case distinctions in the pattern</Original>
+                <English>ignore case distinctions in the pattern</English>
+                <French>ignorer la casse dans le motif</French>
+                <Italian>ignora maiuscole/minuscole nel pattern</Italian>
+                <Russian>ignore case distinctions in the pattern</Russian>
+                <German>Groß-/Kleinschreibung im Muster ignorieren</German>
+                <Chinesesimp>忽略模式中的大小写</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_ArmaOS_CommandHelp_Grep_invert">
+                <Original>select non-matching lines</Original>
+                <English>select non-matching lines</English>
+                <French>sélectionner les lignes non correspondantes</French>
+                <Italian>seleziona le righe non corrispondenti</Italian>
+                <Russian>select non-matching lines</Russian>
+                <German>nicht übereinstimmende Zeilen auswählen</German>
+                <Chinesesimp>选择不匹配的行</Chinesesimp>
+            </Key>
             <Key ID="STR_AE3_ArmaOS_Config_AddGamesDisplayName">
                 <Original>AE3 Add Games</Original>
                 <English>AE3 Add Games</English>
@@ -843,6 +861,24 @@
                 <German>Verwendung find: 'find [Name]' gibt die Ergebnisse nach stdout aus.</German>
                 <Chinesesimp>find说明: 'find [Name]' 将结果打印到标准输出流.</Chinesesimp>
             </Key>
+            <Key ID="STR_AE3_ArmaOS_Config_CommandGrepDescr">
+                <Original>Search file contents for lines matching a pattern.</Original>
+                <English>Search file contents for lines matching a pattern.</English>
+                <French>Recherche les lignes correspondant à un motif dans des fichiers.</French>
+                <Italian>Cerca nei file le righe che corrispondono a un pattern.</Italian>
+                <Russian>Search file contents for lines matching a pattern.</Russian>
+                <German>Durchsucht Dateiinhalte nach Zeilen, die einem Muster entsprechen.</German>
+                <Chinesesimp>在文件内容中搜索匹配模式的行.</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_ArmaOS_Config_CommandGrepMan">
+                <Original>Usage grep: 'grep -i -v PATTERN FILEPATH...' prints lines of the given files matching the regular expression PATTERN. -i ignores case, -v inverts the match.</Original>
+                <English>Usage grep: 'grep -i -v PATTERN FILEPATH...' prints lines of the given files matching the regular expression PATTERN. -i ignores case, -v inverts the match.</English>
+                <French>Utilisation grep: 'grep -i -v MOTIF FICHIER...' affiche les lignes correspondant à l'expression régulière MOTIF. -i ignore la casse, -v inverse la correspondance.</French>
+                <Italian>Utilizza grep: 'grep -i -v PATTERN FILE...' stampa le righe che corrispondono all'espressione regolare PATTERN. -i ignora maiuscole/minuscole, -v inverte la corrispondenza.</Italian>
+                <Russian>Usage grep: 'grep -i -v PATTERN FILEPATH...' prints lines of the given files matching the regular expression PATTERN. -i ignores case, -v inverts the match.</Russian>
+                <German>Verwendung grep: 'grep -i -v MUSTER DATEI...' gibt Zeilen aus, die dem regulären Ausdruck MUSTER entsprechen. -i ignoriert Groß-/Kleinschreibung, -v invertiert die Suche.</German>
+                <Chinesesimp>grep说明:'grep -i -v 模式 文件...'打印匹配正则表达式的行.-i忽略大小写,-v反向匹配.</Chinesesimp>
+            </Key>
             <Key ID="STR_AE3_ArmaOS_Config_CommandHelpDescr">
                 <Original>Prints all installed programs.</Original>
                 <English>Prints all installed programs.</English>
@@ -879,7 +915,7 @@
                 <German>Verwendung history: 'history' listet die letzten Befehle seit dem Start des Computers.</German>
                 <Chinesesimp>history说明:'history'列出自计算机启动以来的最后一个命令.</Chinesesimp>
             </Key>
-            <Key ID="STR_AE3_ArmaOS_Config_CommandIpconfigDescr">
+            <Key ID="STR_AE3_ArmaOS_Config_CommandIpDescr">
                 <Original>Returns the current ip configuration.</Original>
                 <English>Returns the current ip configuration.</English>
                 <French>Renvoie la configuration IP actuelle.</French>
@@ -888,14 +924,14 @@
                 <German>Liefert die aktuelle IP-Konfiguration zurück.</German>
                 <Chinesesimp>返回当前ip配置.</Chinesesimp>
             </Key>
-            <Key ID="STR_AE3_ArmaOS_Config_CommandIpconfigMan">
-                <Original>Usage ipconfig: 'ipconfig' returns the current ip configuration.</Original>
-                <English>Usage ipconfig: 'ipconfig' returns the current ip configuration.</English>
-                <French>Utilisation ipconfig: 'ipconfig' renvoie la configuration IP actuelle.</French>
-                <Italian>utilizza ipconfig: 'ipconfig' mostra l'attuale configurazione ip.</Italian>
-                <Russian>Использование ipconfig: 'ipconfig' выводит текущую кофигурацию IP</Russian>
-                <German>Verwendung ipconfig: 'ipconfig' liefert die aktuelle IP-Konfiguration zurück.</German>
-                <Chinesesimp>ipconfig说明:'ipconfig'返回当前ip配置.</Chinesesimp>
+            <Key ID="STR_AE3_ArmaOS_Config_CommandIpMan">
+                <Original>Usage ip: 'ip' or 'ifconfig' returns the current ip configuration, 'ip r' additionally shows the gateway.</Original>
+                <English>Usage ip: 'ip' or 'ifconfig' returns the current ip configuration, 'ip r' additionally shows the gateway.</English>
+                <French>Utilisation ip: 'ip' ou 'ifconfig' renvoie la configuration IP actuelle, 'ip r' affiche aussi la passerelle.</French>
+                <Italian>Utilizza ip: 'ip' o 'ifconfig' mostra l'attuale configurazione ip, 'ip r' mostra anche il gateway.</Italian>
+                <Russian>Usage ip: 'ip' or 'ifconfig' returns the current ip configuration, 'ip r' additionally shows the gateway.</Russian>
+                <German>Verwendung ip: 'ip' oder 'ifconfig' liefert die aktuelle IP-Konfiguration zurück, 'ip r' zeigt zusätzlich das Gateway.</German>
+                <Chinesesimp>ip说明:'ip'或'ifconfig'返回当前ip配置,'ip r'还会显示网关.</Chinesesimp>
             </Key>
             <Key ID="STR_AE3_ArmaOS_Config_CommandLsDescr">
                 <Original>Display the content of a directory.</Original>
@@ -987,6 +1023,24 @@
                 <German>Verwendung mount: 'mount [Name]' hängt den USB Stick in den gegebenen Port ein.</German>
                 <Chinesesimp>mount说明: 'mount [interface name]' 装载给定的接口.</Chinesesimp>
             </Key>
+            <Key ID="STR_AE3_ArmaOS_Config_CommandMsgDescr">
+                <Original>Send an instant message to another computer.</Original>
+                <English>Send an instant message to another computer.</English>
+                <French>Envoie un message instantané à un autre ordinateur.</French>
+                <Italian>Invia un messaggio istantaneo a un altro computer.</Italian>
+                <Russian>Send an instant message to another computer.</Russian>
+                <German>Sendet eine Sofortnachricht an einen anderen Computer.</German>
+                <Chinesesimp>向另一台计算机发送即时消息.</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_ArmaOS_Config_CommandMsgMan">
+                <Original>Usage msg: 'msg TARGET-IP MESSAGE...' sends a message over the network. Received messages are stored in /var/mail/inbox (read with cat).</Original>
+                <English>Usage msg: 'msg TARGET-IP MESSAGE...' sends a message over the network. Received messages are stored in /var/mail/inbox (read with cat).</English>
+                <French>Utilisation msg: 'msg IP-CIBLE MESSAGE...' envoie un message via le réseau. Les messages reçus sont stockés dans /var/mail/inbox.</French>
+                <Italian>Utilizza msg: 'msg IP-DESTINAZIONE MESSAGGIO...' invia un messaggio via rete. I messaggi ricevuti sono in /var/mail/inbox.</Italian>
+                <Russian>Usage msg: 'msg TARGET-IP MESSAGE...' sends a message over the network. Received messages are stored in /var/mail/inbox.</Russian>
+                <German>Verwendung msg: 'msg ZIEL-IP NACHRICHT...' sendet eine Nachricht über das Netzwerk. Empfangene Nachrichten stehen in /var/mail/inbox.</German>
+                <Chinesesimp>msg说明:'msg 目标IP 消息...'通过网络发送消息.收到的消息存储在/var/mail/inbox中.</Chinesesimp>
+            </Key>
             <Key ID="STR_AE3_ArmaOS_Config_CommandMvDescr">
                 <Original>Moves a file or folder.</Original>
                 <English>Moves a file or folder.</English>
@@ -1077,6 +1131,24 @@
                 <German>Retro Spiel Snake - benutze die Option --big für eine doppelte Blockgröße</German>
                 <Chinesesimp>贪吃蛇 - 使用参数 --big 使区块大小翻倍</Chinesesimp>
             </Key>
+            <Key ID="STR_AE3_ArmaOS_Config_CommandSshDescr">
+                <Original>Open a remote shell session on another computer.</Original>
+                <English>Open a remote shell session on another computer.</English>
+                <French>Ouvre une session shell distante sur un autre ordinateur.</French>
+                <Italian>Apre una sessione shell remota su un altro computer.</Italian>
+                <Russian>Open a remote shell session on another computer.</Russian>
+                <German>Öffnet eine entfernte Shell-Sitzung auf einem anderen Computer.</German>
+                <Chinesesimp>在另一台计算机上打开远程shell会话.</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_ArmaOS_Config_CommandSshMan">
+                <Original>Usage ssh: 'ssh USER@IP PASSWORD' connects to the remote computer. Entered commands run on the remote machine; 'exit' ends the session. Interactive programs are blocked.</Original>
+                <English>Usage ssh: 'ssh USER@IP PASSWORD' connects to the remote computer. Entered commands run on the remote machine; 'exit' ends the session. Interactive programs are blocked.</English>
+                <French>Utilisation ssh: 'ssh UTILISATEUR@IP MOTDEPASSE' se connecte à l'ordinateur distant. Les commandes s'exécutent sur la machine distante ; 'exit' termine la session.</French>
+                <Italian>Utilizza ssh: 'ssh UTENTE@IP PASSWORD' si connette al computer remoto. I comandi vengono eseguiti sulla macchina remota; 'exit' termina la sessione.</Italian>
+                <Russian>Usage ssh: 'ssh USER@IP PASSWORD' connects to the remote computer. Entered commands run on the remote machine; 'exit' ends the session.</Russian>
+                <German>Verwendung ssh: 'ssh BENUTZER@IP PASSWORT' verbindet mit dem entfernten Computer. Befehle laufen auf der entfernten Maschine; 'exit' beendet die Sitzung.</German>
+                <Chinesesimp>ssh说明:'ssh 用户@IP 密码'连接到远程计算机.输入的命令在远程计算机上运行;'exit'结束会话.</Chinesesimp>
+            </Key>
             <Key ID="STR_AE3_ArmaOS_Config_CommandStandbyDescr">
                 <Original>Puts the computer in standby mode.</Original>
                 <English>Puts the computer in standby mode.</English>
@@ -1094,6 +1166,24 @@
                 <Russian>Использование standby: 'standby' переводит компьютер в режим ожидания</Russian>
                 <German>Verwendung standby: 'standby' aktiviert den Ruhezustand des Computers.</German>
                 <Chinesesimp>standby说明:'standby'切换至待机模式.</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_ArmaOS_Config_CommandSudoDescr">
+                <Original>Execute a command as root.</Original>
+                <English>Execute a command as root.</English>
+                <French>Exécute une commande en tant que root.</French>
+                <Italian>Esegue un comando come root.</Italian>
+                <Russian>Execute a command as root.</Russian>
+                <German>Führt einen Befehl als root aus.</German>
+                <Chinesesimp>以root身份执行命令.</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_ArmaOS_Config_CommandSudoMan">
+                <Original>Usage sudo: 'sudo COMMAND ARGS...' executes the command as root. The current user must be listed in /etc/sudoers.</Original>
+                <English>Usage sudo: 'sudo COMMAND ARGS...' executes the command as root. The current user must be listed in /etc/sudoers.</English>
+                <French>Utilisation sudo: 'sudo COMMANDE ARGS...' exécute la commande en tant que root. L'utilisateur doit figurer dans /etc/sudoers.</French>
+                <Italian>Utilizza sudo: 'sudo COMANDO ARG...' esegue il comando come root. L'utente deve essere elencato in /etc/sudoers.</Italian>
+                <Russian>Usage sudo: 'sudo COMMAND ARGS...' executes the command as root. The current user must be listed in /etc/sudoers.</Russian>
+                <German>Verwendung sudo: 'sudo BEFEHL ARGS...' führt den Befehl als root aus. Der Benutzer muss in /etc/sudoers stehen.</German>
+                <Chinesesimp>sudo说明:'sudo 命令 参数...'以root身份执行命令.当前用户必须在/etc/sudoers中.</Chinesesimp>
             </Key>
             <Key ID="STR_AE3_ArmaOS_Config_CommandTouchDescr">
                 <Original>Creates an empty file.</Original>
@@ -1257,6 +1347,159 @@
                 <German>Name eines authorisierten Benutzers, zum Beispiel 'admin', 'guest' oder 'stavros'</German>
                 <Chinesesimp>授权用户的名称,例如'admin','guest'或'stavros'.</Chinesesimp>
             </Key>
+            <Key ID="STR_AE3_ArmaOS_Msg_Sent">
+                <Original>Message sent to %1</Original>
+                <English>Message sent to %1</English>
+                <French>Message envoyé à %1</French>
+                <Italian>Messaggio inviato a %1</Italian>
+                <Russian>Message sent to %1</Russian>
+                <German>Nachricht gesendet an %1</German>
+                <Chinesesimp>消息已发送至%1</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_ArmaOS_Result_Gateway">
+                <Original>Default Gateway: %1</Original>
+                <English>Default Gateway: %1</English>
+                <French>Passerelle par défaut : %1</French>
+                <Italian>Gateway predefinito: %1</Italian>
+                <Russian>Default Gateway: %1</Russian>
+                <German>Standardgateway: %1</German>
+                <Chinesesimp>默认网关: %1</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_ArmaOS_Result_NoGateway">
+                <Original>No gateway configured</Original>
+                <English>No gateway configured</English>
+                <French>Aucune passerelle configurée</French>
+                <Italian>Nessun gateway configurato</Italian>
+                <Russian>No gateway configured</Russian>
+                <German>Kein Gateway konfiguriert</German>
+                <Chinesesimp>未配置网关</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_ArmaOS_Ssh_AlreadyConnected">
+                <Original>ssh: a session is already active - end it with 'exit' first</Original>
+                <English>ssh: a session is already active - end it with 'exit' first</English>
+                <French>ssh : une session est déjà active - terminez-la d'abord avec 'exit'</French>
+                <Italian>ssh: una sessione è già attiva - terminala prima con 'exit'</Italian>
+                <Russian>ssh: a session is already active - end it with 'exit' first</Russian>
+                <German>ssh: Es ist bereits eine Sitzung aktiv - zuerst mit 'exit' beenden</German>
+                <Chinesesimp>ssh: 会话已激活 - 请先使用'exit'结束</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_ArmaOS_Ssh_AuthFailed">
+                <Original>ssh: authentication failed for %1@%2</Original>
+                <English>ssh: authentication failed for %1@%2</English>
+                <French>ssh : échec de l'authentification pour %1@%2</French>
+                <Italian>ssh: autenticazione fallita per %1@%2</Italian>
+                <Russian>ssh: authentication failed for %1@%2</Russian>
+                <German>ssh: Authentifizierung fehlgeschlagen für %1@%2</German>
+                <Chinesesimp>ssh: %1@%2认证失败</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_ArmaOS_Ssh_CommandBlocked">
+                <Original>%1: cannot be run over ssh (interactive program)</Original>
+                <English>%1: cannot be run over ssh (interactive program)</English>
+                <French>%1 : ne peut pas être exécuté via ssh (programme interactif)</French>
+                <Italian>%1: non può essere eseguito via ssh (programma interattivo)</Italian>
+                <Russian>%1: cannot be run over ssh (interactive program)</Russian>
+                <German>%1: kann nicht über ssh ausgeführt werden (interaktives Programm)</German>
+                <Chinesesimp>%1: 无法通过ssh运行(交互式程序)</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_ArmaOS_Ssh_Connected">
+                <Original>Connected as %1@%2 - end the session with 'exit'</Original>
+                <English>Connected as %1@%2 - end the session with 'exit'</English>
+                <French>Connecté en tant que %1@%2 - terminez la session avec 'exit'</French>
+                <Italian>Connesso come %1@%2 - termina la sessione con 'exit'</Italian>
+                <Russian>Connected as %1@%2 - end the session with 'exit'</Russian>
+                <German>Verbunden als %1@%2 - Sitzung mit 'exit' beenden</German>
+                <Chinesesimp>已连接为%1@%2 - 使用'exit'结束会话</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_ArmaOS_Ssh_ConnectionClosed">
+                <Original>Connection closed.</Original>
+                <English>Connection closed.</English>
+                <French>Connexion fermée.</French>
+                <Italian>Connessione chiusa.</Italian>
+                <Russian>Connection closed.</Russian>
+                <German>Verbindung geschlossen.</German>
+                <Chinesesimp>连接已关闭.</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_ArmaOS_Ssh_ConnectionRefused">
+                <Original>ssh: connect to host %1: Connection refused</Original>
+                <English>ssh: connect to host %1: Connection refused</English>
+                <French>ssh : connexion à l'hôte %1 : connexion refusée</French>
+                <Italian>ssh: connessione a %1: connessione rifiutata</Italian>
+                <Russian>ssh: connect to host %1: Connection refused</Russian>
+                <German>ssh: Verbindung zu Host %1: Verbindung abgelehnt</German>
+                <Chinesesimp>ssh: 连接主机%1: 连接被拒绝</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_ArmaOS_Ssh_InvalidAddress">
+                <Original>Invalid address: %1</Original>
+                <English>Invalid address: %1</English>
+                <French>Adresse invalide : %1</French>
+                <Italian>Indirizzo non valido: %1</Italian>
+                <Russian>Invalid address: %1</Russian>
+                <German>Ungültige Adresse: %1</German>
+                <Chinesesimp>无效地址: %1</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_ArmaOS_Ssh_NoRoute">
+                <Original>ssh: connect to host %1: No route to host</Original>
+                <English>ssh: connect to host %1: No route to host</English>
+                <French>ssh : connexion à l'hôte %1 : aucune route vers l'hôte</French>
+                <Italian>ssh: connessione a %1: nessuna rotta verso l'host</Italian>
+                <Russian>ssh: connect to host %1: No route to host</Russian>
+                <German>ssh: Verbindung zu Host %1: Keine Route zum Host</German>
+                <Chinesesimp>ssh: 连接主机%1: 无法路由到主机</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_ArmaOS_Ssh_TargetBusy">
+                <Original>ssh: host %1 is busy (terminal in use)</Original>
+                <English>ssh: host %1 is busy (terminal in use)</English>
+                <French>ssh : l'hôte %1 est occupé (terminal utilisé)</French>
+                <Italian>ssh: l'host %1 è occupato (terminale in uso)</Italian>
+                <Russian>ssh: host %1 is busy (terminal in use)</Russian>
+                <German>ssh: Host %1 ist belegt (Terminal in Benutzung)</German>
+                <Chinesesimp>ssh: 主机%1忙碌(终端使用中)</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_ArmaOS_Ssh_Usage">
+                <Original>usage: ssh USER@IP PASSWORD</Original>
+                <English>usage: ssh USER@IP PASSWORD</English>
+                <French>utilisation : ssh UTILISATEUR@IP MOTDEPASSE</French>
+                <Italian>utilizzo: ssh UTENTE@IP PASSWORD</Italian>
+                <Russian>usage: ssh USER@IP PASSWORD</Russian>
+                <German>Verwendung: ssh BENUTZER@IP PASSWORT</German>
+                <Chinesesimp>用法: ssh 用户@IP 密码</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_ArmaOS_Sudo_NotInSudoers">
+                <Original>%1 is not in the sudoers file. This incident will be reported.</Original>
+                <English>%1 is not in the sudoers file. This incident will be reported.</English>
+                <French>%1 n'est pas dans le fichier sudoers. Cet incident sera signalé.</French>
+                <Italian>%1 non è nel file sudoers. L'incidente verrà segnalato.</Italian>
+                <Russian>%1 is not in the sudoers file. This incident will be reported.</Russian>
+                <German>%1 ist nicht in der sudoers-Datei. Dieser Vorfall wird gemeldet.</German>
+                <Chinesesimp>%1不在sudoers文件中.此事件将被报告.</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_ArmaOS_Sudo_Usage">
+                <Original>usage: sudo COMMAND ARGS...</Original>
+                <English>usage: sudo COMMAND ARGS...</English>
+                <French>utilisation : sudo COMMANDE ARGS...</French>
+                <Italian>utilizzo: sudo COMANDO ARG...</Italian>
+                <Russian>usage: sudo COMMAND ARGS...</Russian>
+                <German>Verwendung: sudo BEFEHL ARGS...</German>
+                <Chinesesimp>用法: sudo 命令 参数...</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_ArmaOS_Transfer_Done">
+                <Original>Transfer complete</Original>
+                <English>Transfer complete</English>
+                <French>Transfert terminé</French>
+                <Italian>Trasferimento completato</Italian>
+                <Russian>Transfer complete</Russian>
+                <German>Übertragung abgeschlossen</German>
+                <Chinesesimp>传输完成</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_ArmaOS_Transfer_Started">
+                <Original>Transferring %1 KB at %2 KB/s ...</Original>
+                <English>Transferring %1 KB at %2 KB/s ...</English>
+                <French>Transfert de %1 Ko à %2 Ko/s ...</French>
+                <Italian>Trasferimento di %1 KB a %2 KB/s ...</Italian>
+                <Russian>Transferring %1 KB at %2 KB/s ...</Russian>
+                <German>Übertrage %1 KB mit %2 KB/s ...</German>
+                <Chinesesimp>正在以%2 KB/s传输%1 KB ...</Chinesesimp>
+            </Key>
         </Container>
         <Container name="Crack">
             <Key ID="STR_AE3_ArmaOS_Crack_ErrorModeExample">
@@ -1323,40 +1566,40 @@
                 <Chinesesimp>使用各种密码分析方法在不知道密钥的情况下解密加密文本.</Chinesesimp>
             </Key>
             <Key ID="STR_AE3_ArmaOS_Crack_HelpExample1">
-                <Original>  crack -m=bruteforce -a=caesar encrypted.txt</Original>
-                <English>  crack -m=bruteforce -a=caesar encrypted.txt</English>
-                <French>  crack -m=bruteforce -a=caesar encrypted.txt</French>
-                <Italian>  crack -m=bruteforce -a=caesar encrypted.txt</Italian>
-                <Russian>  crack -m=bruteforce -a=caesar encrypted.txt</Russian>
-                <German>  crack -m=bruteforce -a=caesar encrypted.txt</German>
-                <Chinesesimp>  crack -m=bruteforce -a=caesar encrypted.txt</Chinesesimp>
+                <Original>crack -m=bruteforce -a=caesar encrypted.txt</Original>
+                <English>crack -m=bruteforce -a=caesar encrypted.txt</English>
+                <French>crack -m=bruteforce -a=caesar encrypted.txt</French>
+                <Italian>crack -m=bruteforce -a=caesar encrypted.txt</Italian>
+                <Russian>crack -m=bruteforce -a=caesar encrypted.txt</Russian>
+                <German>crack -m=bruteforce -a=caesar encrypted.txt</German>
+                <Chinesesimp>crack -m=bruteforce -a=caesar encrypted.txt</Chinesesimp>
             </Key>
             <Key ID="STR_AE3_ArmaOS_Crack_HelpExample2">
-                <Original>  crack -m=statistics -a=caesar "KHOOR ZRUOG"</Original>
-                <English>  crack -m=statistics -a=caesar "KHOOR ZRUOG"</English>
-                <French>  crack -m=statistics -a=caesar "KHOOR ZRUOG"</French>
-                <Italian>  crack -m=statistics -a=caesar "KHOOR ZRUOG"</Italian>
-                <Russian>  crack -m=statistics -a=caesar "KHOOR ZRUOG"</Russian>
-                <German>  crack -m=statistics -a=caesar "KHOOR ZRUOG"</German>
-                <Chinesesimp>  crack -m=statistics -a=caesar "KHOOR ZRUOG"</Chinesesimp>
+                <Original>crack -m=statistics -a=caesar "KHOOR ZRUOG"</Original>
+                <English>crack -m=statistics -a=caesar "KHOOR ZRUOG"</English>
+                <French>crack -m=statistics -a=caesar "KHOOR ZRUOG"</French>
+                <Italian>crack -m=statistics -a=caesar "KHOOR ZRUOG"</Italian>
+                <Russian>crack -m=statistics -a=caesar "KHOOR ZRUOG"</Russian>
+                <German>crack -m=statistics -a=caesar "KHOOR ZRUOG"</German>
+                <Chinesesimp>crack -m=statistics -a=caesar "KHOOR ZRUOG"</Chinesesimp>
             </Key>
             <Key ID="STR_AE3_ArmaOS_Crack_HelpExample3">
-                <Original>  crack -m=key -a=columnar encrypted.txt</Original>
-                <English>  crack -m=key -a=columnar encrypted.txt</English>
-                <French>  crack -m=key -a=columnar encrypted.txt</French>
-                <Italian>  crack -m=key -a=columnar encrypted.txt</Italian>
-                <Russian>  crack -m=key -a=columnar encrypted.txt</Russian>
-                <German>  crack -m=key -a=columnar encrypted.txt</German>
-                <Chinesesimp>  crack -m=key -a=columnar encrypted.txt</Chinesesimp>
+                <Original>crack -m=key -a=columnar encrypted.txt</Original>
+                <English>crack -m=key -a=columnar encrypted.txt</English>
+                <French>crack -m=key -a=columnar encrypted.txt</French>
+                <Italian>crack -m=key -a=columnar encrypted.txt</Italian>
+                <Russian>crack -m=key -a=columnar encrypted.txt</Russian>
+                <German>crack -m=key -a=columnar encrypted.txt</German>
+                <Chinesesimp>crack -m=key -a=columnar encrypted.txt</Chinesesimp>
             </Key>
             <Key ID="STR_AE3_ArmaOS_Crack_HelpExample4">
-                <Original>  crack -m=bruteforce -a=columnar -o=results.txt /tmp/secret.txt</Original>
-                <English>  crack -m=bruteforce -a=columnar -o=results.txt /tmp/secret.txt</English>
-                <French>  crack -m=bruteforce -a=columnar -o=results.txt /tmp/secret.txt</French>
-                <Italian>  crack -m=bruteforce -a=columnar -o=results.txt /tmp/secret.txt</Italian>
-                <Russian>  crack -m=bruteforce -a=columnar -o=results.txt /tmp/secret.txt</Russian>
-                <German>  crack -m=bruteforce -a=columnar -o=results.txt /tmp/secret.txt</German>
-                <Chinesesimp>  crack -m=bruteforce -a=columnar -o=results.txt /tmp/secret.txt</Chinesesimp>
+                <Original>crack -m=bruteforce -a=columnar -o=results.txt /tmp/secret.txt</Original>
+                <English>crack -m=bruteforce -a=columnar -o=results.txt /tmp/secret.txt</English>
+                <French>crack -m=bruteforce -a=columnar -o=results.txt /tmp/secret.txt</French>
+                <Italian>crack -m=bruteforce -a=columnar -o=results.txt /tmp/secret.txt</Italian>
+                <Russian>crack -m=bruteforce -a=columnar -o=results.txt /tmp/secret.txt</Russian>
+                <German>crack -m=bruteforce -a=columnar -o=results.txt /tmp/secret.txt</German>
+                <Chinesesimp>crack -m=bruteforce -a=columnar -o=results.txt /tmp/secret.txt</Chinesesimp>
             </Key>
             <Key ID="STR_AE3_ArmaOS_Crack_HelpExamples">
                 <Original>Examples:</Original>
@@ -1586,40 +1829,40 @@
                 <Chinesesimp>使用指定的算法和密钥加密或解密文本.</Chinesesimp>
             </Key>
             <Key ID="STR_AE3_ArmaOS_Crypto_HelpExample1">
-                <Original>  crypto -m=encrypt -k=3 -a=caesar "HELLO WORLD"</Original>
-                <English>  crypto -m=encrypt -k=3 -a=caesar "HELLO WORLD"</English>
-                <French>  crypto -m=encrypt -k=3 -a=caesar "HELLO WORLD"</French>
-                <Italian>  crypto -m=encrypt -k=3 -a=caesar "HELLO WORLD"</Italian>
-                <Russian>  crypto -m=encrypt -k=3 -a=caesar "HELLO WORLD"</Russian>
-                <German>  crypto -m=encrypt -k=3 -a=caesar "HELLO WORLD"</German>
-                <Chinesesimp>  crypto -m=encrypt -k=3 -a=caesar "HELLO WORLD"</Chinesesimp>
+                <Original>crypto -m=encrypt -k=3 -a=caesar "HELLO WORLD"</Original>
+                <English>crypto -m=encrypt -k=3 -a=caesar "HELLO WORLD"</English>
+                <French>crypto -m=encrypt -k=3 -a=caesar "HELLO WORLD"</French>
+                <Italian>crypto -m=encrypt -k=3 -a=caesar "HELLO WORLD"</Italian>
+                <Russian>crypto -m=encrypt -k=3 -a=caesar "HELLO WORLD"</Russian>
+                <German>crypto -m=encrypt -k=3 -a=caesar "HELLO WORLD"</German>
+                <Chinesesimp>crypto -m=encrypt -k=3 -a=caesar "HELLO WORLD"</Chinesesimp>
             </Key>
             <Key ID="STR_AE3_ArmaOS_Crypto_HelpExample2">
-                <Original>  crypto -m=decrypt -k=3 -a=caesar secret.txt</Original>
-                <English>  crypto -m=decrypt -k=3 -a=caesar secret.txt</English>
-                <French>  crypto -m=decrypt -k=3 -a=caesar secret.txt</French>
-                <Italian>  crypto -m=decrypt -k=3 -a=caesar secret.txt</Italian>
-                <Russian>  crypto -m=decrypt -k=3 -a=caesar secret.txt</Russian>
-                <German>  crypto -m=decrypt -k=3 -a=caesar secret.txt</German>
-                <Chinesesimp>  crypto -m=decrypt -k=3 -a=caesar secret.txt</Chinesesimp>
+                <Original>crypto -m=decrypt -k=3 -a=caesar secret.txt</Original>
+                <English>crypto -m=decrypt -k=3 -a=caesar secret.txt</English>
+                <French>crypto -m=decrypt -k=3 -a=caesar secret.txt</French>
+                <Italian>crypto -m=decrypt -k=3 -a=caesar secret.txt</Italian>
+                <Russian>crypto -m=decrypt -k=3 -a=caesar secret.txt</Russian>
+                <German>crypto -m=decrypt -k=3 -a=caesar secret.txt</German>
+                <Chinesesimp>crypto -m=decrypt -k=3 -a=caesar secret.txt</Chinesesimp>
             </Key>
             <Key ID="STR_AE3_ArmaOS_Crypto_HelpExample3">
-                <Original>  crypto -m=encrypt -k=PASSWORD -a=columnar -o=encrypted.txt message.txt</Original>
-                <English>  crypto -m=encrypt -k=PASSWORD -a=columnar -o=encrypted.txt message.txt</English>
-                <French>  crypto -m=encrypt -k=PASSWORD -a=columnar -o=encrypted.txt message.txt</French>
-                <Italian>  crypto -m=encrypt -k=PASSWORD -a=columnar -o=encrypted.txt message.txt</Italian>
-                <Russian>  crypto -m=encrypt -k=PASSWORD -a=columnar -o=encrypted.txt message.txt</Russian>
-                <German>  crypto -m=encrypt -k=PASSWORD -a=columnar -o=encrypted.txt message.txt</German>
-                <Chinesesimp>  crypto -m=encrypt -k=PASSWORD -a=columnar -o=encrypted.txt message.txt</Chinesesimp>
+                <Original>crypto -m=encrypt -k=PASSWORD -a=columnar -o=encrypted.txt message.txt</Original>
+                <English>crypto -m=encrypt -k=PASSWORD -a=columnar -o=encrypted.txt message.txt</English>
+                <French>crypto -m=encrypt -k=PASSWORD -a=columnar -o=encrypted.txt message.txt</French>
+                <Italian>crypto -m=encrypt -k=PASSWORD -a=columnar -o=encrypted.txt message.txt</Italian>
+                <Russian>crypto -m=encrypt -k=PASSWORD -a=columnar -o=encrypted.txt message.txt</Russian>
+                <German>crypto -m=encrypt -k=PASSWORD -a=columnar -o=encrypted.txt message.txt</German>
+                <Chinesesimp>crypto -m=encrypt -k=PASSWORD -a=columnar -o=encrypted.txt message.txt</Chinesesimp>
             </Key>
             <Key ID="STR_AE3_ArmaOS_Crypto_HelpExample4">
-                <Original>  crypto -m=decrypt -k=PASSWORD -a=columnar /tmp/encrypted.txt</Original>
-                <English>  crypto -m=decrypt -k=PASSWORD -a=columnar /tmp/encrypted.txt</English>
-                <French>  crypto -m=decrypt -k=PASSWORD -a=columnar /tmp/encrypted.txt</French>
-                <Italian>  crypto -m=decrypt -k=PASSWORD -a=columnar /tmp/encrypted.txt</Italian>
-                <Russian>  crypto -m=decrypt -k=PASSWORD -a=columnar /tmp/encrypted.txt</Russian>
-                <German>  crypto -m=decrypt -k=PASSWORD -a=columnar /tmp/encrypted.txt</German>
-                <Chinesesimp>  crypto -m=decrypt -k=PASSWORD -a=columnar /tmp/encrypted.txt</Chinesesimp>
+                <Original>crypto -m=decrypt -k=PASSWORD -a=columnar /tmp/encrypted.txt</Original>
+                <English>crypto -m=decrypt -k=PASSWORD -a=columnar /tmp/encrypted.txt</English>
+                <French>crypto -m=decrypt -k=PASSWORD -a=columnar /tmp/encrypted.txt</French>
+                <Italian>crypto -m=decrypt -k=PASSWORD -a=columnar /tmp/encrypted.txt</Italian>
+                <Russian>crypto -m=decrypt -k=PASSWORD -a=columnar /tmp/encrypted.txt</Russian>
+                <German>crypto -m=decrypt -k=PASSWORD -a=columnar /tmp/encrypted.txt</German>
+                <Chinesesimp>crypto -m=decrypt -k=PASSWORD -a=columnar /tmp/encrypted.txt</Chinesesimp>
             </Key>
             <Key ID="STR_AE3_ArmaOS_Crypto_HelpExamples">
                 <Original>Examples:</Original>

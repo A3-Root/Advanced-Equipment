@@ -30,18 +30,23 @@ if (_mouseOverType != "OBJECT") exitWith
     ["ERROR", objNull];
 };
 
-// check if filesystem exists, which means that _mouseOverUnit is a computer
-// ??? Is this also true for a USB Stick?
-// TODO: Add a simple identifier to distinguish between device classes
 private _computer = _mouseOverUnit;
 
-// get filesystem var from server
-[_computer, "AE3_filesystem"] call AE3_main_fnc_getRemoteVar;
-
-private _filesystem = _computer getVariable ["AE3_filesystem", []];
-if (_filesystem isEqualTo []) exitWith
+// An AE3 device is identified by its AE3_Device config - no server round trip needed.
+// This also catches the common mistake of placing the vanilla laptop prop instead of
+// the AE3 variant (e.g. Land_Laptop_03_black_F vs Land_Laptop_03_black_F_AE3).
+if (!isClass (configOf _computer >> "AE3_Device")) exitWith
 {
-    [objNull, localize "STR_AE3_Main_Zeus_NoComputer"] call BIS_fnc_showCuratorFeedbackMessage;
+    private _message = if ((typeOf _computer) find "Laptop" >= 0) then
+    {
+        localize "STR_AE3_Main_Zeus_NotAe3Device"
+    }
+    else
+    {
+        localize "STR_AE3_Main_Zeus_NoComputer"
+    };
+
+    [objNull, _message] call BIS_fnc_showCuratorFeedbackMessage;
 
     ["ERROR", objNull];
 };

@@ -17,7 +17,7 @@
 
 params ["_generator"];
 
-_genHandle = _generator getVariable 'AE3_power_generatorHandle';
+private _genHandle = _generator getVariable 'AE3_power_generatorHandle';
 [_genHandle] call CBA_fnc_removePerFrameHandler;
 
 _generator setVariable ["AE3_power_generatorHandle", nil];

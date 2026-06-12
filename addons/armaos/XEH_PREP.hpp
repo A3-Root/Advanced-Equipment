@@ -5,6 +5,11 @@ PREP(module_addGames);
 
 /* Shell Functions */
 PREP(shell_process);
+PREP(shell_tokenize);
+PREP(shell_simulateTransfer);
+PREP(shell_sshEnd);
+PREP(shell_isSshCompatible);
+PREP(shell_playErrorSound);
 PREP(shell_findLoginUser);
 PREP(shell_validatePassword);
 PREP(shell_getHomeDir);
@@ -53,6 +58,7 @@ PREP(computer_getLocality);
 
 /* Device Initialization */
 PREP(device_initComplete);
+PREP(device_ensureInit);
 
 /* OS Link Functions */
 PREP(link_add);
@@ -61,14 +67,13 @@ PREP(link_init);
 /* OS Internal Functions */
 PREP(os_cat);
 PREP(os_cd);
-PREP(os_chat);
 PREP(os_clear);
 PREP(os_date);
 PREP(os_echo);
 PREP(os_exit);
 PREP(os_help);
 PREP(os_history);
-PREP(os_ipconfig);
+PREP(os_ip);
 PREP(os_ls);
 PREP(os_man);
 PREP(os_mkdir);
@@ -87,6 +92,10 @@ PREP(os_mount);
 PREP(os_unmount);
 PREP(os_chown);
 PREP(os_lsusb);
+PREP(os_grep);
+PREP(os_ssh);
+PREP(os_msg);
+PREP(os_sudo);
 
 /* Encryption Functions */
 PREP(encryption_caesar);
@@ -97,6 +106,9 @@ PREP(encryption_crypto);
 /* Terminal Functions */
 PREP(terminal_init);
 PREP(terminal_addEventHandler);
+PREP(terminal_onKeyDown);
+PREP(terminal_onMouseZChanged);
+PREP(terminal_onUnload);
 
 PREP(terminal_addCharToInput);
 PREP(terminal_removeCharFromInput);

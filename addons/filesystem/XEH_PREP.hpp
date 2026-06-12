@@ -14,6 +14,8 @@ PREP(getParentDir);
 PREP(lsdir);
 PREP(createDir);
 PREP(createFile);
+PREP(ensureDir);
+PREP(ensureFile);
 PREP(writeToFile);
 PREP(getFile);
 PREP(mvObj);

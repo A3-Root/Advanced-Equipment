@@ -33,7 +33,7 @@ if(!(_filename in _currentContent)) throw (format [localize "STR_AE3_Filesystem_
 private _fileObject = _currentContent get _filename;
 
 // write permission needed to write to file; write = 2
-[_fileObject, _user, 2] call AE3_filesystem_fnc_hasPermission;
+[_fileObject, _user, 1] call AE3_filesystem_fnc_hasPermission;
 
 if (_appendMode) then
 {

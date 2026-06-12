@@ -4,6 +4,7 @@
 /* Init */
 PREP(initNetworkDevice);
 PREP(initRouter);
+PREP(router_onTurnOff);
 
 /* Backend */
 PREP(connect_router2router);

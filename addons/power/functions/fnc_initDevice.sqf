@@ -28,8 +28,8 @@ params ["_entity", ["_name", "Device"], ["_powerState", 0], ["_initFnc", {}], ["
 private _turnOnWrapper = {
 	params['_target', ['_args', []]];
 
-	_turnOnFnc =  _target getVariable "AE3_power_fnc_turnOn";
-	_result = [_target] + _args call _turnOnFnc;
+	private _turnOnFnc =  _target getVariable "AE3_power_fnc_turnOn";
+	private _result = [_target] + _args call _turnOnFnc;
 	if(isNil '_result') then {_result = false};
 
 	if(_result) then
@@ -42,8 +42,8 @@ private _turnOnWrapper = {
 private _turnOffWrapper = {
 	params['_target', ['_args', []]];
 
-	_turnOffFnc =  _target getVariable "AE3_power_fnc_turnOff";
-	_result = [_target] + _args call _turnOffFnc;
+	private _turnOffFnc =  _target getVariable "AE3_power_fnc_turnOff";
+	private _result = [_target] + _args call _turnOffFnc;
 	if(isNil '_result') then {_result = false};
 
 	if(_result) then
@@ -56,8 +56,8 @@ private _turnOffWrapper = {
 private _standbyWrapper = {
 	params['_target', ['_args', []]];
 
-	_standbyFnc =  _target getVariable "AE3_power_fnc_standby";
-	_result = [_target] + _args call _standbyFnc;
+	private _standbyFnc =  _target getVariable "AE3_power_fnc_standby";
+	private _result = [_target] + _args call _standbyFnc;
 	if(isNil '_result') then {_result = false};
 
 	if(_result) then
@@ -95,7 +95,19 @@ if(!isDedicated) then
 		diag_log format ["[AE3 DEBUG] [%1] ACE actions on device BEFORE initDevice: %2", time, _actionsBeforeCount];
 	};
 
-	if (!_powerActionsAdded) then {
+	if (_powerActionsAdded) then {
+		if (AE3_DebugMode) then {
+			diag_log format ["[AE3 DEBUG] [%1] Power actions already added for %2, skipping", time, _entity];
+
+			// DEBUG: Count actions even when skipping to detect duplicates
+			private _actionsCount = 0;
+			private _existingActions = _entity getVariable ["ace_interact_menu_Act_SelfActions", []];
+			if (_existingActions isEqualType []) then {
+				_actionsCount = count _existingActions;
+			};
+			diag_log format ["[AE3 DEBUG] [%1] Current ACE actions on device: %2", time, _actionsCount];
+		};
+	} else {
 		// Mark that we're adding the power actions IMMEDIATELY to prevent race conditions
 		// (local only - ACE actions are per-client)
 		if (AE3_DebugMode) then {
@@ -141,7 +153,7 @@ if(!isDedicated) then
 		if (!((_turnOnFnc isEqualTo {}) || (_turnOffFnc isEqualTo {}))) then
 		{
 
-			_turnOn = ["AE3_TurnOnAction", localize "STR_AE3_Power_Interaction_TurnOn", "",
+			private _turnOn = ["AE3_TurnOnAction", localize "STR_AE3_Power_Interaction_TurnOn", "",
 						{
 							params ['_target', '_player', '_params'];
 							_target setVariable ['AE3_power_mutex', true, true];
@@ -161,7 +173,7 @@ if(!isDedicated) then
 							},
 						{}] call ace_interact_menu_fnc_createAction;
 
-			_turnOff = ["AE3_TurnOffAction", localize "STR_AE3_Power_Interaction_TurnOff", "",
+			private _turnOff = ["AE3_TurnOffAction", localize "STR_AE3_Power_Interaction_TurnOff", "",
 							{
 								params ['_target', '_player', '_params'];
 
@@ -181,7 +193,7 @@ if(!isDedicated) then
 			// Standby action
 			if((_standbyFnc isNotEqualTo {})) then
 			{
-				_standby = ["AE3_StandbyAction", localize "STR_AE3_Power_Interaction_Standby", "",
+				private _standby = ["AE3_StandbyAction", localize "STR_AE3_Power_Interaction_Standby", "",
 							{
 								params ['_target', '_player', '_params'];
 
@@ -208,18 +220,6 @@ if(!isDedicated) then
 				_actionsAfterCount = count _existingActionsAfter;
 			};
 			diag_log format ["[AE3 DEBUG] [%1] ACE actions on device AFTER adding power actions: %2 (added %3 actions)", time, _actionsAfterCount, _actionsAfterCount - _actionsBeforeCount];
-		};
-	} else {
-		if (AE3_DebugMode) then {
-			diag_log format ["[AE3 DEBUG] [%1] Power actions already added for %2, skipping", time, _entity];
-
-			// DEBUG: Count actions even when skipping to detect duplicates
-			private _actionsCount = 0;
-			private _existingActions = _entity getVariable ["ace_interact_menu_Act_SelfActions", []];
-			if (_existingActions isEqualType []) then {
-				_actionsCount = count _existingActions;
-			};
-			diag_log format ["[AE3 DEBUG] [%1] Current ACE actions on device: %2", time, _actionsCount];
 		};
 	};
 };

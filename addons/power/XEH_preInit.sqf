@@ -49,3 +49,9 @@
 /* ================================================================================ */
 
 ["All", "InitPost", {_this call AE3_power_fnc_compileDevice}] call CBA_fnc_addClassEventHandler;
+
+// Crash requests from clients are routed to the server (see fnc_crashDevice)
+if (isServer) then
+{
+	["ae3_power_crashDevice", { _this call AE3_power_fnc_crashDevice }] call CBA_fnc_addEventHandler;
+};

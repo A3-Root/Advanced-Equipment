@@ -46,6 +46,12 @@ private _result = [];
 
 try
 {
+	// Simulate the transfer based on file size and medium (USB if either path is under /mnt)
+	private _content = [_pointer, _filesystem, _oldPath, _username, 0] call AE3_filesystem_fnc_getFile;
+	private _bytes = if (_content isEqualType "") then { count _content } else { count (str _content) };
+	private _medium = ["local", "usb"] select (((_oldPath find "/mnt") == 0) || ((_newPath find "/mnt") == 0));
+	[_computer, _bytes, _medium] call AE3_armaos_fnc_shell_simulateTransfer;
+
 	[_pointer, _filesystem, _oldPath, _newPath, _username, true] call AE3_filesystem_fnc_mvObj;
 	// Respect filesystem sync mode CBA setting
 	private _syncMode = missionNamespace getVariable ["AE3_Filesystem_SyncMode", 0];

@@ -18,12 +18,12 @@ if (!alive _entity || _entity getVariable "AE3_power_powerState" == 0) exitWith 
 if (isNull _parent) then
 {
 
-	_counter = _entity getVariable "AE3_network_addressCounter";
+	private _counter = _entity getVariable "AE3_network_addressCounter";
 	_counter = _counter + 1;
 	_entity setVariable ["AE3_network_addressCounter", _counter, true];
 
-	_address = _entity getVariable "AE3_network_address";
-	_return = [0, 0, 0, 0];
+	private _address = _entity getVariable "AE3_network_address";
+	private _return = [0, 0, 0, 0];
 
 	_return set [0, _address select 0];
 	_return set [1, _address select 1];

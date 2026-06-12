@@ -97,7 +97,6 @@ else
         };
         if (_settingsAce3 get "ae3_cargo_canLoad") then
         {
-            private _canLoad = true;
             private _cargoSize = _settingsAce3 get "ae3_cargo_size";
 
             // The following  line is a bug fix that is nesessary until the correspondig ACE3 issue is fixed, see here:

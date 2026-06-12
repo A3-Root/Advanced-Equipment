@@ -31,14 +31,14 @@ if (_activated) then
 	private _owner = _module getVariable ["AE3_Module_AddDir_Owner", ""];
 	private _permissions = [
 		[
-			_module getVariable "AE3_Module_AddDir_OwnerExecute",
 			_module getVariable "AE3_Module_AddDir_OwnerRead",
-			_module getVariable "AE3_Module_AddDir_OwnerWrite"
+			_module getVariable "AE3_Module_AddDir_OwnerWrite",
+			_module getVariable "AE3_Module_AddDir_OwnerExecute"
 		],
 		[
-			_module getVariable "AE3_Module_AddDir_EveryoneExecute",
 			_module getVariable "AE3_Module_AddDir_EveryoneRead",
-			_module getVariable "AE3_Module_AddDir_EveryoneWrite"
+			_module getVariable "AE3_Module_AddDir_EveryoneWrite",
+			_module getVariable "AE3_Module_AddDir_EveryoneExecute"
 		]
 	];
 

@@ -64,7 +64,11 @@ if(!isNull _animations) then
 			};
 
 			private _animationModifiedShift = (_animationPoint >> "AE3_Animation_Modified_Shift");
-			if (!isNull _animationModifiedShift) then
+			if (isNull _animationModifiedShift) then
+			{
+				_animationModifiedShift = [];
+			}
+			else
 			{
 				private	_description = getText (_animationModifiedShift >> "description");
 				private	_animation = getText (_animationModifiedShift >> "animation");
@@ -73,14 +77,14 @@ if(!isNull _animations) then
 				private	_scrollMultiplier = getNumber (_animationModifiedShift >> "scrollMultiplier");
 
 				_animationModifiedShift = [_description, _animation, _minValue, _maxValue, _scrollMultiplier];
-			}
-			else
-			{
-				_animationModifiedShift = [];
 			};
 
 			private _animationModifiedCtrl = (_animationPoint >> "AE3_Animation_Modified_Ctrl");
-			if (!isNull _animationModifiedCtrl) then
+			if (isNull _animationModifiedCtrl) then
+			{
+				_animationModifiedCtrl = [];
+			}
+			else
 			{
 				private	_description = getText (_animationModifiedCtrl >> "description");
 				private	_animation = getText (_animationModifiedCtrl >> "animation");
@@ -89,14 +93,14 @@ if(!isNull _animations) then
 				private	_scrollMultiplier = getNumber (_animationModifiedCtrl >> "scrollMultiplier");
 
 				_animationModifiedCtrl = [_description, _animation, _minValue, _maxValue, _scrollMultiplier];
-			}
-			else
-			{
-				_animationModifiedCtrl = [];
 			};
 
 			private _animationModifiedAlt = (_animationPoint >> "AE3_Animation_Modified_Alt");
-			if (!isNull _animationModifiedAlt) then
+			if (isNull _animationModifiedAlt) then
+			{
+				_animationModifiedAlt = [];
+			}
+			else
 			{
 				private	_description = getText (_animationModifiedAlt >> "description");
 				private	_animation = getText (_animationModifiedAlt >> "animation");
@@ -105,10 +109,6 @@ if(!isNull _animations) then
 				private	_scrollMultiplier = getNumber (_animationModifiedAlt >> "scrollMultiplier");
 
 				_animationModifiedAlt = [_description, _animation, _minValue, _maxValue, _scrollMultiplier];
-			}
-			else
-			{
-				_animationModifiedAlt = [];
 			};
 
 			_animationPoints pushBack [_animationPointDescription, _animationPointSelection, _animationMain, _animationModifiedShift, _animationModifiedCtrl, _animationModifiedAlt];

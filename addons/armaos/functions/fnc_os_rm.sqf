@@ -40,8 +40,6 @@ private _terminal = _computer getVariable "AE3_terminal";
 private _username = _terminal get "AE3_terminalLoginUser";
 
 private _obj = _ae3OptsThings select 0;
-private _result = [];
-_result = [_obj];
 
 try
 {

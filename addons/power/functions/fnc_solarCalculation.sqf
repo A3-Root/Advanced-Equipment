@@ -24,7 +24,7 @@ private _normalList = [_solar] call (_solar getVariable "AE3_power_orientationFn
 private _mult = 0;
 
 {
-	_buffer = _x vectorCos _solVec;
+	private _buffer = _x vectorCos _solVec;
 	if (_buffer > 0) then 
 	{
 		_mult = _mult + _buffer;

@@ -25,9 +25,6 @@ private _terminalCursorPosition = _terminal get "AE3_terminalCursorPosition";
 private _lastBufferLineIndex = (count _terminalBuffer) - 1;
 private _lastBufferLine = _terminalBuffer # (_lastBufferLineIndex);
 
-private _terminalMaxRows = 25;
-private _terminalMaxColumns = 50;
-
 if ((count _lastBufferLine) > (count _terminalPrompt)) then
 {
 	_terminalCursorPosition = _terminalCursorPosition - 1;

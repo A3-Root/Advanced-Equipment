@@ -20,9 +20,9 @@ params ["_dialog"];
 
 /* ================================================================================ */
 
-private _result = _dialog displayAddEventHandler
+_dialog displayAddEventHandler
 [
-	"KeyDown", 
+	"KeyDown",
 	{
 		params ["_dialog", "_key", "_shift", "_ctrl", "_alt"];
 

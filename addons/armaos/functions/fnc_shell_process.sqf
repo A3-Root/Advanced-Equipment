@@ -18,30 +18,56 @@
 params ["_computer", ["_commandString", ""]];
 
 private _terminal = _computer getVariable "AE3_terminal";
-private _commandElements = _commandString splitString " ";
+// Quote-aware tokenizer: paths/arguments may contain spaces when quoted
+private _commandElements = [_commandString] call AE3_armaos_fnc_shell_tokenize;
 
 if (_commandElements isNotEqualTo []) then
 {
 	private _command = _commandElements select 0;
 	private _options = _commandElements select [1, (count _commandElements) - 1];
 
-	if(_command isNotEqualTo "") then 
+	if(_command isNotEqualTo "") then
 	{
-		_availableCommands = _computer getVariable ['AE3_Links', createHashMap];
-		_pointer = _computer getVariable ["AE3_filepointer", []];
-		if(_command in _availableCommands) then
-		{
-			_command = (_availableCommands get _command) select 0;
-			_pointer = [];
-		};
+		// SSH session: commands are executed against the remote computer
+		private _sshTarget = _terminal getOrDefault ["AE3_sshTarget", objNull];
+		private _sshActive = !isNull _sshTarget;
+		private _execComputer = [_computer, _sshTarget] select _sshActive;
+		private _rawCommand = _command;
 
 		[_computer, _commandString] call AE3_armaos_fnc_terminal_addToHistory;
 		_terminal set ["AE3_terminalCommandHistoryIndex", -1];
 
-		[_computer, ""] call AE3_armaos_fnc_terminal_setInputMode;
-		[_computer, _command, _options] call AE3_armaos_fnc_shell_executeFile;
+		// 'exit' ends the SSH session instead of logging out
+		if (_sshActive && {_rawCommand isEqualTo "exit"}) exitWith
+		{
+			[_computer, ""] call AE3_armaos_fnc_terminal_setInputMode;
+			[_computer] call AE3_armaos_fnc_shell_sshEnd;
+		};
 
-		if (_command == "shutdown") exitWith {};
+		// Interactive/graphical commands are blocked over SSH (sshCompatible = 0)
+		if (_sshActive && {!([_rawCommand] call AE3_armaos_fnc_shell_isSshCompatible)}) exitWith
+		{
+			[_computer, format [localize "STR_AE3_ArmaOS_Ssh_CommandBlocked", _rawCommand]] call AE3_armaos_fnc_shell_stdout;
+			[_computer] call AE3_armaos_fnc_shell_playErrorSound;
+		};
+
+		private _availableCommands = _execComputer getVariable ['AE3_Links', createHashMap];
+		if(_command in _availableCommands) then
+		{
+			_command = (_availableCommands get _command) select 0;
+		};
+
+		[_computer, ""] call AE3_armaos_fnc_terminal_setInputMode;
+		[_execComputer, _command, _options] call AE3_armaos_fnc_shell_executeFile;
+
+		if (_rawCommand isEqualTo "shutdown") exitWith
+		{
+			// remote shutdown over ssh drops the session; local shutdown ends the terminal
+			if (_sshActive) then { [_computer] call AE3_armaos_fnc_shell_sshEnd; };
+		};
+
+		// Blank line between command output and the next prompt (visual separation)
+		[_computer, [[""]]] call AE3_armaos_fnc_terminal_addLines;
 	};
 };
 
@@ -49,10 +75,22 @@ _terminal set ["AE3_terminalScrollPosition", 0];
 
 private _terminalApplication = _terminal get "AE3_terminalApplication";
 
-if (_terminalApplication != "LOGIN") then 
+if (_terminalApplication != "LOGIN") then
 {
 	[_computer, "SHELL"] call AE3_armaos_fnc_terminal_setInputMode;
-	[_computer] call AE3_armaos_fnc_terminal_updatePromptPointer;
+
+	private _sshTarget = _terminal getOrDefault ["AE3_sshTarget", objNull];
+	if (isNull _sshTarget) then
+	{
+		[_computer] call AE3_armaos_fnc_terminal_updatePromptPointer;
+	}
+	else
+	{
+		// Build the prompt from the remote computer and mirror it into the local terminal
+		[_sshTarget] call AE3_armaos_fnc_terminal_updatePromptPointer;
+		private _targetTerminal = _sshTarget getVariable ["AE3_terminal", createHashMap];
+		_terminal set ["AE3_terminalPrompt", _targetTerminal getOrDefault ["AE3_terminalPrompt", "ssh>"]];
+	};
 };
 
 [_computer] call AE3_armaos_fnc_terminal_setPrompt;

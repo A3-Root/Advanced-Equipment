@@ -23,8 +23,8 @@ private _turnOnWrapper = {
 
 	if([_target, _target getVariable 'AE3_power_powerConsumption'] call AE3_power_fnc_updateSelfPower) exitWith {};
 
-	_turnOnFnc =  _target getVariable "AE3_power_fnc_turnOn";
-	_result = [_target] + _args call _turnOnFnc;
+	private _turnOnFnc =  _target getVariable "AE3_power_fnc_turnOn";
+	private _result = [_target] + _args call _turnOnFnc;
 
 	if(_result) then
 	{
@@ -40,8 +40,8 @@ private _turnOnWrapper = {
 private _turnOffWrapper = {
 	params['_target', ['_args', []]];
 
-	_turnOffFnc =  _target getVariable "AE3_power_fnc_turnOff";
-	_result = [_target] + _args call _turnOffFnc;
+	private _turnOffFnc =  _target getVariable "AE3_power_fnc_turnOff";
+	private _result = [_target] + _args call _turnOffFnc;
 
 
 	if(_result) then
@@ -58,8 +58,8 @@ private _standbyWrapper = {
 
 	if([_target, _target getVariable 'AE3_power_standbyConsumption'] call AE3_power_fnc_updateSelfPower) exitWith {};
 
-	_standbyFnc =  _target getVariable "AE3_power_fnc_standby";
-	_result = [_target] + _args call _standbyFnc;
+	private _standbyFnc =  _target getVariable "AE3_power_fnc_standby";
+	private _result = [_target] + _args call _standbyFnc;
 
 	if(_result) then
 	{

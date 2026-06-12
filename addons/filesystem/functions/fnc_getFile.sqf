@@ -7,14 +7,14 @@
  * 1: _filesystem <ARRAY> - Filesystem object
  * 2: _target <STRING> - Path to file
  * 3: _user <STRING> - User accessing the file
- * 4: _permission <NUMBER> - Permission to check (0: Execute, 1: Read, 2: Write)
+ * 4: _permission <NUMBER> - Permission to check (0: Read, 1: Write, 2: Execute)
  *
  * Return Value:
  * File content (can be string, code, or any stored type) <ANY>
  *
  * Example:
- * [[], _filesystem, "/tmp/data.txt", "root", 1] call AE3_filesystem_fnc_getFile;
- * [_pointer, _filesystem, "../script.sqf", "user", 0] call AE3_filesystem_fnc_getFile;
+ * [[], _filesystem, "/tmp/data.txt", "root", 0] call AE3_filesystem_fnc_getFile;
+ * [_pointer, _filesystem, "../script.sqf", "user", 2] call AE3_filesystem_fnc_getFile;
  *
  * Public: Yes
  */

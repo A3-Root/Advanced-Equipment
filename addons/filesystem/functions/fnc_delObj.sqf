@@ -28,6 +28,6 @@ _current = _current select 0;
 
 if(!(_obj in _current)) throw (format [localize "STR_AE3_Filesystem_Exception_NotFound", _obj]);
 
-[_current get _obj, _user, 2] call AE3_filesystem_fnc_hasPermission;
+[_current get _obj, _user, 1] call AE3_filesystem_fnc_hasPermission;
 
 _current deleteAt _obj;

@@ -133,7 +133,7 @@
                 <English>yaw lamp 1</English>
                 <French>Tourner lampe 1</French>
                 <Italian>Ruota lampada 1</Italian>
-                <Russian> Повернуть лампу 1</Russian>
+                <Russian>Повернуть лампу 1</Russian>
                 <German>Lampe 1 gieren</German>
                 <Chinesesimp>偏转灯1</Chinesesimp>
             </Key>
@@ -192,6 +192,15 @@
                 <Russian>Открыть</Russian>
                 <German>Öffnen</German>
                 <Chinesesimp>打开</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Interaction_SwitchInterface">
+                <Original>Switch Interface (CLI/GUI)</Original>
+                <English>Switch Interface (CLI/GUI)</English>
+                <French>Changer d'interface (CLI/GUI)</French>
+                <Italian>Cambia interfaccia (CLI/GUI)</Italian>
+                <Russian>Switch Interface (CLI/GUI)</Russian>
+                <German>Oberfläche wechseln (CLI/GUI)</German>
+                <Chinesesimp>切换界面(CLI/GUI)</Chinesesimp>
             </Key>
         </Container>
     </Package>

@@ -29,7 +29,7 @@ params [
 	["_description", ""],
 	["_manual", ""],
 	["_owner", "root"],
-	["_permissions", [[true, true, false], [true, false, false]]]
+	["_permissions", [[true, false, true], [false, false, true]]]
 ];
 
 // Validate parameters

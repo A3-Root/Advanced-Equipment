@@ -709,6 +709,15 @@
                 <German>Dateisystem-Browser</German>
                 <Chinesesimp>文件系统浏览器</Chinesesimp>
             </Key>
+            <Key ID="STR_AE3_Main_Zeus_FilesystemNotReady">
+                <Original>Filesystem not ready. Please wait and try again.</Original>
+                <English>Filesystem not ready. Please wait and try again.</English>
+                <French>Système de fichiers pas prêt. Veuillez patienter et réessayer.</French>
+                <Italian>Filesystem non pronto. Attendi e riprova.</Italian>
+                <Russian>Filesystem not ready. Please wait and try again.</Russian>
+                <German>Dateisystem nicht bereit. Bitte warten und erneut versuchen.</German>
+                <Chinesesimp>文件系统未就绪。请稍候再试。</Chinesesimp>
+            </Key>
             <Key ID="STR_AE3_Main_Zeus_FolderCreated">
                 <Original>Folder '%1' created successfully.</Original>
                 <English>Folder '%1' created successfully.</English>
@@ -1042,6 +1051,15 @@
                 <German>Kein Element ausgewählt.</German>
                 <Chinesesimp>未选择项目.</Chinesesimp>
             </Key>
+            <Key ID="STR_AE3_Main_Zeus_NotAe3Device">
+                <Original>This is a vanilla laptop without ArmaOS - place the AE3 variant instead</Original>
+                <English>This is a vanilla laptop without ArmaOS - place the AE3 variant instead</English>
+                <French>Ceci est un ordinateur portable vanilla sans ArmaOS - placez la variante AE3</French>
+                <Italian>Questo è un laptop vanilla senza ArmaOS - posiziona la variante AE3</Italian>
+                <Russian>This is a vanilla laptop without ArmaOS - place the AE3 variant instead</Russian>
+                <German>Dies ist ein Vanilla-Laptop ohne ArmaOS - bitte die AE3-Variante platzieren</German>
+                <Chinesesimp>这是没有ArmaOS的原版笔记本电脑 - 请放置AE3版本</Chinesesimp>
+            </Key>
             <Key ID="STR_AE3_Main_Zeus_ObjectClosed">
                 <Original>Object closed.</Original>
                 <English>Object closed.</English>
@@ -1157,7 +1175,7 @@
                 <Italian>'Percorso' mancante</Italian>
                 <Russian>'Path' missing</Russian>
                 <German>'Pfad' fehlt</German>
-                <Chinesesimp>缺少 'Path' </Chinesesimp>
+                <Chinesesimp>缺少 'Path'</Chinesesimp>
             </Key>
             <Key ID="STR_AE3_Main_Zeus_Permissions">
                 <Original>Permissions</Original>
@@ -1292,7 +1310,7 @@
                 <Italian>'A' mancante</Italian>
                 <Russian>'To' missing</Russian>
                 <German>'Nach' fehlt</German>
-                <Chinesesimp>缺少 'To' </Chinesesimp>
+                <Chinesesimp>缺少 'To'</Chinesesimp>
             </Key>
             <Key ID="STR_AE3_Main_Zeus_ToProvider">
                 <Original>To (Provider)</Original>
@@ -1373,7 +1391,7 @@
                 <Italian>'Username' mancante</Italian>
                 <Russian>'Username' missing</Russian>
                 <German>'Benutzname' fehlt</German>
-                <Chinesesimp>缺少 'Username' </Chinesesimp>
+                <Chinesesimp>缺少 'Username'</Chinesesimp>
             </Key>
         </Container>
     </Package>

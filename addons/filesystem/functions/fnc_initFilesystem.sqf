@@ -1,3 +1,4 @@
+#include "..\script_component.hpp"
 /*
  * Author: Root, y0014984, Wasserstoff
  * Description: Initializes the filesystem on a device and loads filesystem objects from config. Creates root filesystem structure and processes config entries to add files and directories. Must run on server.
@@ -20,7 +21,7 @@ params["_entity", "_config"];
 
 if(!isServer) exitWith {};
 
-private _filesystem = [createHashMapFromArray [], 'root', [[true, true, true], [true, true, false]]];
+private _filesystem = [createHashMapFromArray [], 'root', [[true, true, true], [true, false, true]]];
 
 /* ================================================================================ */
 
@@ -62,7 +63,7 @@ if (!isNil "_config") then
 				private _normalizedException = _exception regexReplace ["'(.+)'", "'%1'"];
 				if (_normalizedException isEqualTo (localize "STR_AE3_Filesystem_Exception_AlreadyExists")) then
 				{
-					diag_log format ["AE3 exception: %1", _exception];
+					INFO_1("Filesystem object already exists, skipping: %1",_exception);
 				}
 				else
 				{
@@ -89,7 +90,7 @@ if (!isNil "_config") then
 				private _normalizedException = _exception regexReplace ["'(.+)'", "'%1'"];
 				if (_normalizedException isEqualTo (localize "STR_AE3_Filesystem_Exception_AlreadyExists")) then
 				{
-					diag_log format ["AE3 exception: %1", _exception];
+					INFO_1("Filesystem object already exists, skipping: %1",_exception);
 				}
 				else
 				{

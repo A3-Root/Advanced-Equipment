@@ -21,7 +21,6 @@
 
 private _terminal = _computer getVariable "AE3_terminal";
 
-private _terminalBuffer = _terminal get "AE3_terminalBuffer";
 private _terminalBufferVisible = _terminal get "AE3_terminalBufferVisible";
 private _size = _terminal get "AE3_terminalSize";
 

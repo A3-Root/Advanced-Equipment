@@ -26,10 +26,10 @@ if (!(isNull _powerProvider)) then
     _connectedDevices = _connectedDevices - [_powerConsumer];
     _powerProvider setVariable ["AE3_power_connectedDevices", _connectedDevices, true];
 
-	if (count _connectedDevices == 0) then
+	if (_connectedDevices isEqualTo []) then
 	{
         // if power provider has internal power parent, change interaction for that parent instead
-        _tmpPowerProvider = _powerProvider;
+        private _tmpPowerProvider = _powerProvider;
         private _powerParent = _tmpPowerProvider getVariable ["AE3_power_parent", objNull];
         if (!(isNull _powerParent)) then { _tmpPowerProvider = _powerParent; };
             

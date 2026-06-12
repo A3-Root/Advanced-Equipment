@@ -61,7 +61,19 @@ if(!isDedicated) then
         diag_log format ["[AE3 DEBUG] [%1] ACE actions on laptop BEFORE initLaptop processing: %2", time, _actionsBeforeCount];
     };
 
-    if (!_laptopActionsAdded) then {
+    if (_laptopActionsAdded) then {
+        if (AE3_DebugMode) then {
+            diag_log format ["[AE3 DEBUG] [%1] Laptop actions already added for %2, skipping", time, _laptop];
+
+            // DEBUG: Count actions even when skipping to detect duplicates
+            private _actionsCount = 0;
+            private _existingActions = _laptop getVariable ["ace_interact_menu_Act_SelfActions", []];
+            if (_existingActions isEqualType []) then {
+                _actionsCount = count _existingActions;
+            };
+            diag_log format ["[AE3 DEBUG] [%1] Current ACE actions on laptop: %2", time, _actionsCount];
+        };
+    } else {
         // Mark that we're adding the actions IMMEDIATELY to prevent race conditions
         if (AE3_DebugMode) then {
             diag_log format ["[AE3 DEBUG] [%1] initLaptop: SETTING laptopActionsAdded flag to TRUE for %2", time, _laptop];
@@ -91,7 +103,19 @@ if(!isDedicated) then
                 params ["_target", "_player", "_params"];
 
                 _target setVariable ["AE3_computer_mutex", _player, true];
-                _handle = [_target] spawn AE3_armaos_fnc_terminal_init;
+
+                // Per-laptop interface mode: classic CLI terminal or the GUI desktop
+                private _mode = _target getVariable ["AE3_interfaceMode", missionNamespace getVariable ["AE3_Desktop_DefaultMode", "cli"]];
+                private _desktopFnc = missionNamespace getVariable ["AE3_desktop_fnc_desktop_open", {}];
+
+                if ((_mode isEqualTo "gui") && {_desktopFnc isNotEqualTo {}}) then
+                {
+                    [_target] spawn _desktopFnc;
+                }
+                else
+                {
+                    [_target] spawn AE3_armaos_fnc_terminal_init;
+                };
             },
             {
                 // condition
@@ -134,6 +158,29 @@ if(!isDedicated) then
             }
         ] call ace_interact_menu_fnc_createAction;
         [_laptop, 0, _parentPath, _pickupAction] call ace_interact_menu_fnc_addActionToObject;
+
+        // Switch between CLI terminal and GUI desktop (only when the desktop addon is loaded)
+        private _switchAction =
+        [
+            "AE3_SwitchInterfaceAction",
+            localize "STR_AE3_Interaction_SwitchInterface",
+            "",
+            {
+                params ["_target", "_player", "_params"];
+
+                private _mode = _target getVariable ["AE3_interfaceMode", missionNamespace getVariable ["AE3_Desktop_DefaultMode", "cli"]];
+                private _newMode = ["gui", "cli"] select (_mode isEqualTo "gui");
+                [_target, _newMode] call (missionNamespace getVariable ["AE3_desktop_fnc_setInterfaceMode", {}]);
+            },
+            {
+                // condition - desktop addon loaded, laptop alive and not in use
+                params ["_target", "_player", "_params"];
+                !isNil "AE3_desktop_fnc_setInterfaceMode" &&
+                {alive _target} &&
+                {isNull (_target getVariable ["AE3_computer_mutex", objNull])}
+            }
+        ] call ace_interact_menu_fnc_createAction;
+        [_laptop, 0, _parentPath, _switchAction] call ace_interact_menu_fnc_addActionToObject;
         if (AE3_DebugMode) then {
             diag_log format ["[AE3 DEBUG] [%1] Added Pickup action for %2", time, _laptop];
 
@@ -144,18 +191,6 @@ if(!isDedicated) then
                 _actionsAfterCount = count _existingActionsAfter;
             };
             diag_log format ["[AE3 DEBUG] [%1] ACE actions on laptop AFTER adding laptop actions: %2 (added %3 actions)", time, _actionsAfterCount, _actionsAfterCount - _actionsBeforeCount];
-        };
-    } else {
-        if (AE3_DebugMode) then {
-            diag_log format ["[AE3 DEBUG] [%1] Laptop actions already added for %2, skipping", time, _laptop];
-
-            // DEBUG: Count actions even when skipping to detect duplicates
-            private _actionsCount = 0;
-            private _existingActions = _laptop getVariable ["ace_interact_menu_Act_SelfActions", []];
-            if (_existingActions isEqualType []) then {
-                _actionsCount = count _existingActions;
-            };
-            diag_log format ["[AE3 DEBUG] [%1] Current ACE actions on laptop: %2", time, _actionsCount];
         };
     };
 };

@@ -59,27 +59,11 @@ if (_event isEqualTo "onUnload") exitWith
     private _isCrypto = cbChecked _isCryptoCtrl;
     private _isCrack = cbChecked _isCrackCtrl;
 
-    // Wait for filesystem to be ready before adding security commands
-    [_computer, _isCrypto, _isCrack, _module] spawn {
-        params ["_computer", "_isCrypto", "_isCrack", "_module"];
+    // Server ensures the filesystem is initialized (on demand) and reports back via
+    // "ae3_main_zeusOpFeedback" - no client-side polling (fixes timeouts on dedicated)
+    ["ae3_main_zeusDeviceOp", [netId _computer, "addSecurityCommands", [_isCrypto, _isCrack], clientOwner]] call CBA_fnc_serverEvent;
 
-        // Wait for filesystem initialization (10 second timeout)
-        private _filesystemReady = [_computer, 10] call AE3_main_fnc_waitForFilesystem;
-
-        if (!_filesystemReady) exitWith {
-            [objNull, "Filesystem not ready. Please wait and try again."] call BIS_fnc_showCuratorFeedbackMessage;
-            deleteVehicle _module;
-        };
-
-        // Add security commands to computer
-        [_computer, _isCrypto, _isCrack] remoteExecCall ["AE3_armaos_fnc_computer_addSecurityCommands", 2];
-
-        private _message = format ["crypto: %1 crack: %2", _isCrypto, _isCrack];
-        [localize "STR_AE3_Main_Zeus_SecurityCommandsAdded", _message, 5] call BIS_fnc_curatorHint;
-
-        // Delete module
-        deleteVehicle _module;
-    };
+    deleteVehicle _module;
 };
 
 /* ---------------------------------------- */

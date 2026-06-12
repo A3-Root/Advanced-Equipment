@@ -77,7 +77,7 @@ if (_event isEqualTo "onUnload") exitWith
     private _everyoneRead = cbChecked _everyoneReadCtrl;
     private _everyoneWrite = cbChecked _everyoneWriteCtrl;
     private _everyoneExecute = cbChecked _everyoneExecuteCtrl;
-    private _permissions = [[_ownerExecute, _ownerRead, _ownerWrite], [_everyoneExecute, _everyoneRead, _everyoneWrite]];
+    private _permissions = [[_ownerRead, _ownerWrite, _ownerExecute], [_everyoneRead, _everyoneWrite, _everyoneExecute]];
     private _enableEncryption = cbChecked _enableEncryptionCtrl;
     private _encryptionAlgorithm = lbCurSel _encryptionAlgorithmCtrl; // 0 = Caesar; 1 = Columnar
     private _encryptionKey = ctrlText _encryptionKeyCtrl;
@@ -95,27 +95,11 @@ if (_event isEqualTo "onUnload") exitWith
     if((_path find " ") != -1) exitWith { [objNull, localize "STR_AE3_Main_Zeus_PathContainsSpaces"] call BIS_fnc_showCuratorFeedbackMessage; };
     if((_owner find " ") != -1) exitWith { [objNull, localize "STR_AE3_Main_Zeus_OwnerContainsSpaces"] call BIS_fnc_showCuratorFeedbackMessage; };
 
-    // Wait for filesystem to be ready before adding file
-    [_computer, _path, _content, _isCode, _owner, _permissions, _enableEncryption, _encryptionAlgorithm, _encryptionKey, _module] spawn {
-        params ["_computer", "_path", "_content", "_isCode", "_owner", "_permissions", "_enableEncryption", "_encryptionAlgorithm", "_encryptionKey", "_module"];
+    // Server ensures the filesystem is initialized (on demand) and reports back via
+    // "ae3_main_zeusOpFeedback" - no client-side polling (fixes timeouts on dedicated)
+    ["ae3_main_zeusDeviceOp", [netId _computer, "addFile", [_path, _content, _isCode, _owner, _permissions, _enableEncryption, _encryptionAlgorithm, _encryptionKey], clientOwner]] call CBA_fnc_serverEvent;
 
-        // Wait for filesystem initialization (10 second timeout)
-        private _filesystemReady = [_computer, 10] call AE3_main_fnc_waitForFilesystem;
-
-        if (!_filesystemReady) exitWith {
-            [objNull, "Filesystem not ready. Please wait and try again."] call BIS_fnc_showCuratorFeedbackMessage;
-            deleteVehicle _module;
-        };
-
-        // Add file to computer
-        [_computer, _path, _content, _isCode, _owner, _permissions, _enableEncryption, _encryptionAlgorithm, _encryptionKey] remoteExecCall ["AE3_filesystem_fnc_device_addFile", 2];
-
-        private _message = format ["%1: %2", localize "STR_AE3_Main_Zeus_Path", _path];
-        [localize "STR_AE3_Main_Zeus_FileAdded", _message, 5] call BIS_fnc_curatorHint;
-
-        // Delete module
-        deleteVehicle _module;
-    };
+    deleteVehicle _module;
 };
 
 /* ---------------------------------------- */

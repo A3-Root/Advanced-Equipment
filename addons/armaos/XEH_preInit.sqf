@@ -3,6 +3,109 @@
 
 /* ================================================================================ */
 
+// Server-side: keep /sys/battery/capacity file content in sync with the actual battery level
+if (isServer) then
+{
+	["ae3_armaos_updateBatterySysFile", {
+		params ["_computerNetId", "_percent"];
+
+		private _computer = objectFromNetId _computerNetId;
+		if (isNull _computer) exitWith {};
+
+		private _filesystem = _computer getVariable ["AE3_filesystem", []];
+		if (_filesystem isEqualTo []) exitWith {};
+
+		try
+		{
+			[[], _filesystem, "/sys/battery/capacity", "root", format ["%1", round _percent], false] call AE3_filesystem_fnc_writeToFile;
+			_computer setVariable ["AE3_filesystem", _filesystem];
+		}
+		catch
+		{
+			INFO_1("Could not update /sys/battery/capacity: %1",_exception);
+		};
+	}] call CBA_fnc_addEventHandler;
+};
+
+// Client-side: force-close an open terminal dialog (e.g. when the computer crashes)
+if (hasInterface) then
+{
+	["ae3_armaos_forceCloseTerminal", {
+		params ["_computer"];
+
+		private _display = findDisplay 15984;
+		if (isNull _display) exitWith {};
+
+		if ((_display getVariable ["AE3_computer", objNull]) isEqualTo _computer) then
+		{
+			_display closeDisplay 2;
+		};
+	}] call CBA_fnc_addEventHandler;
+};
+
+/* ================================================================================ */
+
+[
+	"AE3_AllowRootLogin",
+	"CHECKBOX",
+	["Allow direct root login", "Allow logging in directly as root at the terminal. When disabled (default), use a regular user plus the sudo command (users listed in /etc/sudoers)."],
+	"STR_AE3_ArmaOS_CbaSettings_ArmaOSCategoryName",
+	false,
+	1, // global
+	{ params ["_value"]; },
+	false
+] call CBA_fnc_addSetting;
+
+/* ================================================================================ */
+
+[
+	"AE3_EnableErrorSound",
+	"CHECKBOX",
+	["Error sound", "Play a short error sound at the computer when a command fails (wrong usage, command not found, permission denied)."],
+	"STR_AE3_ArmaOS_CbaSettings_ArmaOSCategoryName",
+	true,
+	1, // global
+	{ params ["_value"]; },
+	false
+] call CBA_fnc_addSetting;
+
+/* ================================================================================ */
+
+[
+	"AE3_TransferSpeedLocal",
+	"SLIDER",
+	["Transfer speed: local (KB/s)", "Simulated file transfer speed for local copies. 0 disables transfer simulation."],
+	"STR_AE3_ArmaOS_CbaSettings_ArmaOSCategoryName",
+	[0, 102400, 20480, 0],
+	1,
+	{ params ["_value"]; },
+	false
+] call CBA_fnc_addSetting;
+
+[
+	"AE3_TransferSpeedUsb",
+	"SLIDER",
+	["Transfer speed: USB (KB/s)", "Simulated file transfer speed for copies from/to USB flash drives. 0 disables transfer simulation."],
+	"STR_AE3_ArmaOS_CbaSettings_ArmaOSCategoryName",
+	[0, 102400, 2048, 0],
+	1,
+	{ params ["_value"]; },
+	false
+] call CBA_fnc_addSetting;
+
+[
+	"AE3_TransferSpeedNetwork",
+	"SLIDER",
+	["Transfer speed: network (KB/s)", "Simulated file transfer speed for network transfers (ssh, downloads). 0 disables transfer simulation."],
+	"STR_AE3_ArmaOS_CbaSettings_ArmaOSCategoryName",
+	[0, 102400, 512, 0],
+	1,
+	{ params ["_value"]; },
+	false
+] call CBA_fnc_addSetting;
+
+/* ================================================================================ */
+
 [
 	"AE3_KeyboardLayout",
 	"LIST",
@@ -179,9 +282,9 @@
 [
 	"AE3_UiKeystrokeSyncInterval",
 	"SLIDER",
-	["UI-on-Texture Keystroke Sync Interval", "Minimum interval (in seconds) between keystroke synchronization to nearby players. 0 = Real-time per-keystroke sync (highest responsiveness, high network usage). 0.1-0.3 = Debounced sync (balanced). Recommended: 0.1 seconds."],
+	["UI-on-Texture Keystroke Sync Interval", "Minimum interval (in seconds) between keystroke synchronization to nearby players. 0 = Real-time per-keystroke sync (highest responsiveness, high network usage). 0.1-0.5 = Debounced sync (balanced). Recommended: 0.3 seconds."],
 	"STR_AE3_ArmaOS_CbaSettings_ArmaOSCategoryName",
-	[0, 1.0, 0.1, 2], // min, max, default, decimal places
+	[0, 1.0, 0.3, 2], // min, max, default, decimal places
     1, // "_isGlobal" flag. '1' = all clients share the same setting, '2' = setting can't be overwritten (optional, default: 0)
     {
         params ["_value"];
@@ -413,14 +516,13 @@ if (!isDedicated) then {
 								[_player, _params] spawn {
 									params ["_player", "_params"];
 									private _itemToDeploy = _params select 0;
-									private _laptopName = _params select 1;
 
 									// Check deployment type setting: 0 = Stable, 1 = Experimental
 									private _deploymentType = missionNamespace getVariable ["AE3_DeploymentType", 0];
 
 									if (_deploymentType == 0) then {
 										// Stable mode - use stable deployment
-										private _success = [_player, _itemToDeploy] call AE3_armaos_fnc_laptop_deploy_stable;
+										[_player, _itemToDeploy] call AE3_armaos_fnc_laptop_deploy_stable;
 									} else {
 										// Experimental mode - use experimental deployment
 										// Calculate deployment position
@@ -429,7 +531,7 @@ if (!isDedicated) then {
 										_deployPos set [2, _terrainHeight];
 
 										// Deploy the selected laptop
-										private _laptop = [_player, _itemToDeploy, _deployPos] call AE3_armaos_fnc_laptop_item2obj;
+										[_player, _itemToDeploy, _deployPos] call AE3_armaos_fnc_laptop_item2obj;
 
 										// Laptop deployed successfully (no hint needed)
 									};

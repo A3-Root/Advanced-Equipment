@@ -1,3 +1,4 @@
+#include "..\script_component.hpp"
 /*
  * Author: Root, y0014984
  * Description: Adds a file to a device's filesystem (laptop or flash drive). Supports code compilation and encryption. Must run on server. Logs error if file already exists, throws exception for other errors.
@@ -8,7 +9,7 @@
  * 2: _content <STRING> - File content (plain text or code string)
  * 3: _isCode <BOOL> - If true, content will be compiled as code
  * 4: _owner <STRING> - Owner of the file
- * 5: _permissions <ARRAY> - Permissions [[owner x,r,w],[everyone x,r,w]]
+ * 5: _permissions <ARRAY> - Permissions [[owner r,w,x],[everyone r,w,x]]
  * 6: _isEncrypted <BOOL> (Optional, default: false) - If true, content will be encrypted
  * 7: _encryptionAlgorithm <STRING> (Optional) - Encryption algorithm ("caesar" or "columnar")
  * 8: _encryptionKey <STRING> (Optional) - Encryption key
@@ -30,24 +31,30 @@ if (!isServer) exitWith {};
 
 // Validate computer object
 if (isNull _computer) exitWith {
-	diag_log format ["AE3 ERROR: fnc_device_addFile called with null computer object. Path: %1", _path];
-	["AE3 ERROR: Cannot add file to null computer object. Path: %1", _path] call BIS_fnc_error;
+	ERROR_1("device_addFile called with null computer object. Path: %1",_path);
 };
 
 private _filesystem = _computer getVariable ["AE3_filesystem", nil];
 
 // Validate filesystem exists
 if (isNil "_filesystem") exitWith {
-	diag_log format ["AE3 ERROR: Computer %1 has no filesystem initialized. Cannot add file: %2", _computer, _path];
-	["AE3 ERROR: Computer has no filesystem. Please wait for initialization to complete and try again."] call BIS_fnc_error;
+	ERROR_2("Computer %1 has no filesystem initialized. Cannot add file: %2",_computer,_path);
 };
 
 if(_isCode) then
 {
 	_content = compile _content;
+
+	// Code files (executables) must never be encrypted - encryption would destroy the compiled
+	// CODE value and make the command unexecutable. Silently override and log.
+	if (_isEncrypted) then
+	{
+		WARNING_1("Encryption requested for code file %1 - ignored (code files cannot be encrypted)",_path);
+		_isEncrypted = false;
+	};
 };
 
-if (_isEncrypted) then 
+if (_isEncrypted) then
 {
 	private _mode = "encrypt";
 
@@ -115,12 +122,11 @@ catch
     private _normalizedException = _exception regexReplace ["'(.+)'", "'%1'"];
     if (_normalizedException isEqualTo (localize "STR_AE3_Filesystem_Exception_AlreadyExists")) then
     {
-        diag_log format ["AE3: File already exists: %1", _exception];
-		["AE3: File already exists: %1", _exception] call BIS_fnc_error;
+        INFO_1("File already exists, skipping: %1",_exception);
     }
     else
     {
-        diag_log format ["AE3 ERROR: Failed to create file %1: %2", _path, _exception];
+        ERROR_2("Failed to create file %1: %2",_path,_exception);
         throw _exception;
     };
 };

@@ -68,27 +68,11 @@ if (_event isEqualTo "onUnload") exitWith
     // check for not allowed spaces in username
     if((_username find " ") != -1) exitWith { [objNull, localize "STR_AE3_Main_Zeus_UsernameContainsSpaces"] call BIS_fnc_showCuratorFeedbackMessage; };
 
-    // Wait for filesystem to be ready before adding user
-    [_computer, _username, _password, _module] spawn {
-        params ["_computer", "_username", "_password", "_module"];
+    // Server ensures the filesystem is initialized (on demand) and reports back via
+    // "ae3_main_zeusOpFeedback" - no client-side polling (fixes timeouts on dedicated)
+    ["ae3_main_zeusDeviceOp", [netId _computer, "addUser", [_username, _password], clientOwner]] call CBA_fnc_serverEvent;
 
-        // Wait for filesystem initialization (10 second timeout)
-        private _filesystemReady = [_computer, 10] call AE3_main_fnc_waitForFilesystem;
-
-        if (!_filesystemReady) exitWith {
-            [objNull, "Filesystem not ready. Please wait and try again."] call BIS_fnc_showCuratorFeedbackMessage;
-            deleteVehicle _module;
-        };
-
-        // Add user to computer
-        [_computer, _username, _password] remoteExecCall ["AE3_armaos_fnc_computer_addUser", 2];
-
-        private _message = format ["'%1': %2 '%3': %4", localize "STR_AE3_Main_Zeus_Username", _username, localize "STR_AE3_Main_Zeus_Password", _password];
-        [localize "STR_AE3_Main_Zeus_UserAdded", _message, 5] call BIS_fnc_curatorHint;
-
-        // Delete module
-        deleteVehicle _module;
-    };
+    deleteVehicle _module;
 };
 
 /* ---------------------------------------- */

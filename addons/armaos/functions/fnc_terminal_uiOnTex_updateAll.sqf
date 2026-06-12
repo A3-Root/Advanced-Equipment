@@ -31,6 +31,9 @@
  */
 
 
+// HC and dedicated server must never create or update displays
+if (!hasInterface) exitWith {};
+
 params [
 	"_computer",
 	"_rawBuffer",
@@ -54,24 +57,46 @@ params [
 private _uiOnTexActive = _computer getVariable ["AE3_UiOnTexActive", false]; // local variable on computer object is sufficient
 
 if (!_uiOnTexActive) then {
-	_computer setVariable ["AE3_UiOnTexActive", true]; // Set immediately to prevent race condition
-	[_computer] spawn AE3_armaos_fnc_terminal_uiOnTex_init;
+	[_computer] call AE3_armaos_fnc_terminal_uiOnTex_init;
 };
 
 private _displayName = _computer getVariable ["AE3_UiOnTexDisplayName", "AE3_UiOnTexture"];
 
-// Wait for display with timeout to prevent deadlock (e.g., when Arsenal opens during init)
-private _timeoutStart = time;
-private _maxWaitTime = 5; // 5 seconds timeout
-waitUntil {
-	sleep 0.01;
-	!isNull findDisplay _displayName || (time - _timeoutStart) > _maxWaitTime
-};
-
 private _uiOnTextureDisplay = findDisplay _displayName;
 
-// If display not found after timeout, exit gracefully
-if (isNull _uiOnTextureDisplay) exitWith {};
+if (isNull _uiOnTextureDisplay) exitWith {
+	// The render-target display only exists once the engine has actually drawn the texture.
+	// Stash the payload and apply it as soon as the display appears - previously the payload
+	// was silently dropped here, leaving viewers with a blank console on dedicated/HC setups
+	// (battery and keyboard layout recovered via their own periodic updates, the text did not).
+	_computer setVariable ["AE3_UiOnTexPendingPayload", _this];
+
+	if (_computer getVariable ["AE3_UiOnTexWaiting", false]) exitWith {};
+	_computer setVariable ["AE3_UiOnTexWaiting", true];
+
+	[
+		{
+			params ["", "_displayName"];
+			!isNull findDisplay _displayName
+		},
+		{
+			params ["_computer", ""];
+			_computer setVariable ["AE3_UiOnTexWaiting", false];
+			private _pending = _computer getVariable ["AE3_UiOnTexPendingPayload", []];
+			_computer setVariable ["AE3_UiOnTexPendingPayload", nil];
+			if (_pending isNotEqualTo []) then {
+				_pending call AE3_armaos_fnc_terminal_uiOnTex_updateAll;
+			};
+		},
+		[_computer, _displayName],
+		10,
+		{
+			params ["_computer", ""];
+			_computer setVariable ["AE3_UiOnTexWaiting", false];
+			_computer setVariable ["AE3_UiOnTexPendingPayload", nil];
+		}
+	] call CBA_fnc_waitUntilAndExecute;
+};
 
 /* ---------------------------------------- */
 
@@ -175,7 +200,6 @@ if (_hasRecentInputState) then {
 
 	private _stateInput = _inputState getOrDefault ["input", ""];
 	private _statePrompt = _inputState getOrDefault ["prompt", ""];
-	private _stateCursor = _inputState getOrDefault ["cursorPosition", 0];
 
 	// Render the current input line with live prompt
 	private _inputLine = [_computer, [_statePrompt, _stateInput], _size, _terminalMaxColumns] call AE3_armaos_fnc_terminal_renderLine;

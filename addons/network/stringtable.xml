@@ -22,6 +22,15 @@
                 <German>IP-Adresse</German>
                 <Chinesesimp>IP地址</Chinesesimp>
             </Key>
+            <Key ID="STR_AE3_Network_Msg_Received">
+                <Original>New message from %1 - read with: cat /var/mail/inbox</Original>
+                <English>New message from %1 - read with: cat /var/mail/inbox</English>
+                <French>Nouveau message de %1 - lire avec : cat /var/mail/inbox</French>
+                <Italian>Nuovo messaggio da %1 - leggi con: cat /var/mail/inbox</Italian>
+                <Russian>New message from %1 - read with: cat /var/mail/inbox</Russian>
+                <German>Neue Nachricht von %1 - lesen mit: cat /var/mail/inbox</German>
+                <Chinesesimp>来自%1的新消息 - 使用cat /var/mail/inbox阅读</Chinesesimp>
+            </Key>
         </Container>
         <Container name="Interaction">
             <Key ID="STR_AE3_Network_Interaction_ConnectToRouter">

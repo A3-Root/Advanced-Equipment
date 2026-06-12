@@ -58,6 +58,9 @@ private _buffer = text "";
 private _color = "";
 private _counter = 0;
 private _c = 0;
+
+// Unicode-safe: line wrapping slices strings by character, not byte (buffer may contain unicode)
+forceUnicode 1;
 {
 	_color = "";
 
@@ -100,5 +103,7 @@ private _c = 0;
 		_croppedOutputLines pushBack _buffer;
 	};
 }forEach _line;
+
+forceUnicode -1;
 
 _croppedOutputLines;

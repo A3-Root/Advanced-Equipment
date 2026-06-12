@@ -37,7 +37,7 @@ private _parent = [
 	"root"
 ] call AE3_filesystem_fnc_getParentDir;
 
-private _parent = (_parent select 1) select 0;
+_parent = (_parent select 1) select 0;
 
 if (!(_interface in _parent)) exitWith {};
 

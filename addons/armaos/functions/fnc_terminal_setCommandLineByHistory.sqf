@@ -27,7 +27,6 @@ private _terminalBuffer = _terminal get "AE3_terminalBuffer";
 private _terminalPrompt = _terminal get "AE3_terminalPrompt";
 
 private _lastBufferLineIndex = (count _terminalBuffer) - 1;
-private _lastBufferLine = "";
 
 private _terminalCommandHistory = _terminal get "AE3_terminalCommandHistory";
 _terminalCommandHistory = _terminalCommandHistory get _username;
@@ -73,11 +72,11 @@ else
 {
     _terminal set ["AE3_terminalInputBuffer", ["", ""]];
 };
-_lastBufferLine = [_terminalPrompt];
+private _lastBufferLine = [_terminalPrompt];
 
 _terminalBuffer set [_lastBufferLineIndex, _lastBufferLine];
 
-_terminalCursorPosition = (count _lastBufferLine);
+private _terminalCursorPosition = (count _lastBufferLine);
 
 _terminal set ["AE3_terminalBuffer", _terminalBuffer];
 _terminal set ["AE3_terminalCursorPosition", _terminalCursorPosition];

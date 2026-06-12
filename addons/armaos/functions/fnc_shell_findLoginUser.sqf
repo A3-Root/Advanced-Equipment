@@ -31,7 +31,10 @@ if (AE3_DebugMode) then
 	if (((count _debugUsername) > 0) && !(_username in _users)) then { _username = _debugUsername; };
 };
 
-if ((_username in _users) || AE3_DebugMode) then
+// Direct root login is disabled unless explicitly allowed (use sudo instead)
+private _rootBlocked = (_username isEqualTo "root") && {!(missionNamespace getVariable ["AE3_AllowRootLogin", false])};
+
+if (((_username in _users) || AE3_DebugMode) && {!_rootBlocked}) then
 {
 	_terminal set ["AE3_terminalLoginUser", _username];
 	_terminal set ["AE3_terminalApplication", "PASSWORD"];
@@ -39,7 +42,7 @@ if ((_username in _users) || AE3_DebugMode) then
 }
 else 
 {
-	if (_username isEqualTo "root") then
+	if (_rootBlocked || {_username isEqualTo "root"}) then
 	{
 		_logMessage = localize "STR_AE3_ArmaOS_Exception_RootLoginDisabled";
 		[_computer, "System", _logMessage, "/var/log/auth.log"] call AE3_armaos_fnc_shell_writeToLogfile;

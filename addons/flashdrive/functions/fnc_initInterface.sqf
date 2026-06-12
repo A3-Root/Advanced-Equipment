@@ -122,3 +122,8 @@ if (isServer) then
 };
 
 _device setVariable ["AE3_USB_Interfaces", _config];
+
+if (isServer) then
+{
+	_device setVariable ["AE3_cap_hasUsb", true, true];
+};

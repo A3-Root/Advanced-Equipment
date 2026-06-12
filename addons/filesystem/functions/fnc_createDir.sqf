@@ -8,7 +8,7 @@
  * 2: _target <STRING> - Path to new directory
  * 3: _user <STRING> - User creating the directory
  * 4: _owner <STRING> (Optional, default: _user) - Owner of the new directory
- * 5: _permissions <ARRAY> (Optional, default: [[true,true,true],[false,false,false]]) - Permissions [[owner x,r,w],[everyone x,r,w]]
+ * 5: _permissions <ARRAY> (Optional, default: [[true,true,true],[false,false,false]]) - Permissions [[owner r,w,x],[everyone r,w,x]]
  *
  * Return Value:
  * None
@@ -37,7 +37,7 @@ private _dir = [_pntr, _filesystem, _target, _user, true, _owner, _parentDirPerm
 private _current = _dir select 1;
 private _new = _dir select 2;
 
-[_current, _user, 2] call AE3_filesystem_fnc_hasPermission;
+[_current, _user, 1] call AE3_filesystem_fnc_hasPermission;
 _current = _current select 0;
 
 if(_new in _current) then

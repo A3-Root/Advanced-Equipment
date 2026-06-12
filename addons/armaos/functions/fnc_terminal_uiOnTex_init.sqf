@@ -16,6 +16,9 @@
 
 params ["_computer"];
 
+// HC and dedicated server must never create displays
+if (!hasInterface) exitWith {};
+
 // Prevent multiple simultaneous initializations of the same laptop
 private _isInitializing = _computer getVariable ["AE3_UiOnTexInitializing", false];
 if (_isInitializing) exitWith {};

@@ -56,8 +56,8 @@ params ["_ae3Objects"];
 
 	private _objId = _forEachIndex;
 
-	_display = findDisplay 46;
-	_control = _display ctrlCreate ["RscStructuredText", 17654 + _objId];
+	private _display = findDisplay 46;
+	private _control = _display ctrlCreate ["RscStructuredText", 17654 + _objId];
 
 	_control ctrlSetBackgroundColor [0.835, 0.345, 0.345, 0.5];
 	_control ctrlSetTextColor [1, 1, 1, 1];
@@ -118,7 +118,7 @@ params ["_ae3Objects"];
 				_powerOutput = [_powerOutput, 1, 1, true] call CBA_fnc_formatNumber; // 1,234.5 and 123.4
 				_debugText pushBack format [localize "STR_AE3_Main_DebugMode_PowerOutput", _powerOutput];
 
-				_connectedDevices = _obj getVariable ["AE3_power_connectedDevices", []];
+				private _connectedDevices = _obj getVariable ["AE3_power_connectedDevices", []];
 				_debugText pushBack format [localize "STR_AE3_Main_DebugMode_ConnectedPowerDevices", count _connectedDevices];
 			};
 

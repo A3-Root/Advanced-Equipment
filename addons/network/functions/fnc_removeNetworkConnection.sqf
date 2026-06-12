@@ -31,7 +31,7 @@ if (!(isNull _networkProvider)) then
     };
 
     // set network provider to "network disconnected" if it has no connected children and no connected parent-parent
-    if (count _connectedDevices == 0) then
+    if (_connectedDevices isEqualTo []) then
     {
         private __networkProviderParent = _networkProvider getVariable ["AE3_network_parent", objNull];
         if (isNull __networkProviderParent) then

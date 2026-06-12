@@ -93,46 +93,53 @@ if('solar' in _config) then
 
 if ("internal" in _config) then
 {
-	[_entity, _config] spawn
+	private _initInternal =
 	{
 		params ['_entity', '_config'];
 
 		private _internalConfig = _config get "internal";
 		private _internal = _entity getVariable 'AE3_power_internal';
 
-		/* Init internal namespace serverside to prevent race conditions */
-		if(isServer) then
-		{
-			_internal = true call CBA_fnc_createNamespace;
-
-			// "AE3_power_hasInternal" is my only indicator to check, if a device (with or without internal) is completely initialized
-			_entity setVariable ['AE3_power_hasInternal', true, true];
-			_entity setVariable ['AE3_power_internal', _internal, true];
-			_internal setVariable ['AE3_power_parent', _entity, true];
-		}else
-		{
-			waitUntil {!isNil {_entity getVariable 'AE3_power_internal';}};
-			_internal = _entity getVariable 'AE3_power_internal';
-		};
-
 		[_internal] + (_internalConfig get 'device') call AE3_power_fnc_initDevice;
 
-		if('powerInterface' in _internalConfig) then 
+		if('powerInterface' in _internalConfig) then
 		{
 			[_internal] + (_internalConfig get 'powerInterface') call AE3_power_fnc_initPowerInterface;
 		};
 
-		if('battery' in _internalConfig) then 
+		if('battery' in _internalConfig) then
 		{
 			[_internal] + (_internalConfig get 'battery') call AE3_power_fnc_initBattery;
 		};
 
-		if('generator' in _internalConfig) then 
+		if('generator' in _internalConfig) then
 		{
 			[_internal] + (_internalConfig get 'generator') call AE3_power_fnc_initGenerator;
 		};
 
 		if (isServer) then { _entity setVariable ["AE3_power_initDone", true, true]; };
+	};
+
+	/* Init internal namespace serverside to prevent race conditions */
+	if(isServer) then
+	{
+		private _internal = true call CBA_fnc_createNamespace;
+
+		// "AE3_power_hasInternal" is my only indicator to check, if a device (with or without internal) is completely initialized
+		_entity setVariable ['AE3_power_hasInternal', true, true];
+		_entity setVariable ['AE3_power_internal', _internal, true];
+		_internal setVariable ['AE3_power_parent', _entity, true];
+
+		[_entity, _config] call _initInternal;
+	}
+	else
+	{
+		// Clients wait (non-blocking) until the server-created internal namespace arrives
+		[
+			{ params ['_entity']; !isNil {_entity getVariable 'AE3_power_internal'} },
+			_initInternal,
+			[_entity, _config]
+		] call CBA_fnc_waitUntilAndExecute;
 	};
 }
 else

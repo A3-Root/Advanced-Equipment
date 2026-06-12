@@ -33,14 +33,14 @@ if (_activated) then
 	private _owner = _module getVariable ["AE3_Module_AddFile_Owner", ""];
 	private _permissions = [
 		[
-			_module getVariable "AE3_Module_AddFile_OwnerExecute",
 			_module getVariable "AE3_Module_AddFile_OwnerRead",
-			_module getVariable "AE3_Module_AddFile_OwnerWrite"
+			_module getVariable "AE3_Module_AddFile_OwnerWrite",
+			_module getVariable "AE3_Module_AddFile_OwnerExecute"
 		],
 		[
-			_module getVariable "AE3_Module_AddFile_EveryoneExecute",
 			_module getVariable "AE3_Module_AddFile_EveryoneRead",
-			_module getVariable "AE3_Module_AddFile_EveryoneWrite"
+			_module getVariable "AE3_Module_AddFile_EveryoneWrite",
+			_module getVariable "AE3_Module_AddFile_EveryoneExecute"
 		]
 	];
 	private _isEncrypted = _module getVariable "AE3_Module_AddFile_IsEncrypted";

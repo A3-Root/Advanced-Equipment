@@ -53,7 +53,7 @@ if (hasInterface) then
     }
     else
     {
-        _debugModeLoopHandle = localNamespace getVariable "AE3_DebugModeLoopHandle";
+        private _debugModeLoopHandle = localNamespace getVariable "AE3_DebugModeLoopHandle";
         [_debugModeLoopHandle] call CBA_fnc_removePerFrameHandler;
 
         if ((time >= 5)) then { systemChat localize "STR_AE3_Main_DebugMode_disabled"; };

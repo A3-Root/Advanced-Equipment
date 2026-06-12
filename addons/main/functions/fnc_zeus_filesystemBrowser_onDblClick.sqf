@@ -73,13 +73,13 @@ else
 	private _ownerPerms = _filePerms select 0;
 	private _everyonePerms = _filePerms select 1;
 
-	(_display displayCtrl 1310) cbSetChecked (_ownerPerms select 1); // Owner Read
-	(_display displayCtrl 1311) cbSetChecked (_ownerPerms select 2); // Owner Write
-	(_display displayCtrl 1312) cbSetChecked (_ownerPerms select 0); // Owner Execute
+	(_display displayCtrl 1310) cbSetChecked (_ownerPerms select 0); // Owner Read
+	(_display displayCtrl 1311) cbSetChecked (_ownerPerms select 1); // Owner Write
+	(_display displayCtrl 1312) cbSetChecked (_ownerPerms select 2); // Owner Execute
 
-	(_display displayCtrl 1313) cbSetChecked (_everyonePerms select 1); // Everyone Read
-	(_display displayCtrl 1314) cbSetChecked (_everyonePerms select 2); // Everyone Write
-	(_display displayCtrl 1315) cbSetChecked (_everyonePerms select 0); // Everyone Execute
+	(_display displayCtrl 1313) cbSetChecked (_everyonePerms select 0); // Everyone Read
+	(_display displayCtrl 1314) cbSetChecked (_everyonePerms select 1); // Everyone Write
+	(_display displayCtrl 1315) cbSetChecked (_everyonePerms select 2); // Everyone Execute
 
 	// Store current file for saving
 	_display setVariable ["AE3_currentFile", _itemName];

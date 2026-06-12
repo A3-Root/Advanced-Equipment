@@ -5,14 +5,14 @@
  * Arguments:
  * 0: _fileObject <ARRAY> - Filesystem object [content, owner, permissions]
  * 1: _user <STRING> - User to check permissions for
- * 2: _permission <NUMBER> - Permission to check (0: Execute, 1: Read, 2: Write)
+ * 2: _permission <NUMBER> - Permission to check (0: Read, 1: Write, 2: Execute)
  *
  * Return Value:
  * None (throws exception if permission denied)
  *
  * Example:
- * [_fileObj, "root", 1] call AE3_filesystem_fnc_hasPermission;
- * [_dirObj, "user", 2] call AE3_filesystem_fnc_hasPermission;
+ * [_fileObj, "root", 0] call AE3_filesystem_fnc_hasPermission;
+ * [_dirObj, "user", 1] call AE3_filesystem_fnc_hasPermission;
  *
  * Public: Yes
  */

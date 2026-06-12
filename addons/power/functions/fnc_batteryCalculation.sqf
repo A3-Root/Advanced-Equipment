@@ -16,7 +16,6 @@
 
 params ["_battery"];
 
-private _class = typeOf _battery;
 private _batteryCapacity = _battery getVariable 'AE3_power_batteryCapacity';
 private _recharging = _battery getVariable 'AE3_power_recharging';
 private _parent = _battery getVariable 'AE3_power_parent';

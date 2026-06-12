@@ -66,11 +66,11 @@ if (!isNull _mutex) then {
 
 if (AE3_DebugMode) then {
 	private _syncData = _target getVariable ["AE3_terminal_sync", nil];
-	if (!isNil "_syncData") then {
+	if (isNil "_syncData") then {
+		diag_log format ["[AE3 DEBUG] [%1] laptop_pickup: No terminal sync data found (terminal may never have been used)", time];
+	} else {
 		private _bufferSize = count (_syncData select 0);
 		diag_log format ["[AE3 DEBUG] [%1] laptop_pickup: Terminal sync data found - buffer has %2 lines", time, _bufferSize];
-	} else {
-		diag_log format ["[AE3 DEBUG] [%1] laptop_pickup: No terminal sync data found (terminal may never have been used)", time];
 	};
 };
 

@@ -37,13 +37,23 @@ if(!isServer) then
 };
 private _fdFilesystem = _flashdrive getVariable "AE3_filesystem";
 
+// Lazy init: arsenal-obtained or freshly spawned drives have no filesystem yet - create an
+// empty one on first mount (server holds the authoritative copy)
+if (isNil "_fdFilesystem") then
+{
+	_fdFilesystem = [createHashMap, 'root', [[true, true, true], [true, true, true]]];
+	_flashdrive setVariable ["AE3_filesystem", _fdFilesystem, 2];
+};
+
+// Idempotent: mount point may already exist after a re-mount or JIP re-init (fixes
+// "'USB1' already exists!" unhandled exception on dedicated servers)
 [
 	[],
 	_filesystem,
 	format ["/mnt/%1", _interface],
 	"root",
 	_username
-] call AE3_filesystem_fnc_createDir;
+] call AE3_filesystem_fnc_ensureDir;
 
 [
 	[],

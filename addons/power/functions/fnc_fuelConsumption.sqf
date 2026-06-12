@@ -16,8 +16,6 @@
 
 params ["_generator"];
 
-private _class = typeOf _generator;
-
 private _fuelConsumption = _generator getVariable 'AE3_power_fuelConsumption';
 private _fuelCapacity = _generator getVariable 'AE3_power_fuelCapacity';
 

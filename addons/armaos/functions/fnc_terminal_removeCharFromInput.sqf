@@ -20,7 +20,10 @@ private _terminal = _computer getVariable "AE3_terminal";
 
 private _terminalPasswordBuffer = _terminal get "AE3_terminalInputBuffer";
 
+// Unicode-safe: count/select must operate on characters, not bytes (user input may contain unicode)
+forceUnicode 1;
 _terminalPasswordBuffer set [0, (_terminalPasswordBuffer select 0) select [0, (count (_terminalPasswordBuffer select 0)) - 1]];
+forceUnicode -1;
 
 _terminal set ["AE3_terminalInputBuffer", _terminalPasswordBuffer];
 

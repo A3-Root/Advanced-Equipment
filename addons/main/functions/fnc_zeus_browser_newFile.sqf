@@ -61,8 +61,8 @@ if (_mode isEqualTo "onUnload") exitWith
 	private _everyoneExecute = cbChecked (_display displayCtrl 1307);
 
 	private _permissions = [
-		[_ownerExecute, _ownerRead, _ownerWrite],
-		[_everyoneExecute, _everyoneRead, _everyoneWrite]
+		[_ownerRead, _ownerWrite, _ownerExecute],
+		[_everyoneRead, _everyoneWrite, _everyoneExecute]
 	];
 
 	// Process content if it's code

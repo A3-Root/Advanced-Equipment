@@ -38,7 +38,6 @@ private _updateInterval = missionNamespace getVariable ["AE3_Power_UpdateInterva
 
 private _handle = [
 	{
-		private _handle = _this select 1;
 		(_this select 0) params ['_generator', '_generatorFnc', '_generatorTurnoff'];
 
 		([_generator] call _generatorFnc) params['_powerState', '_newPower'];

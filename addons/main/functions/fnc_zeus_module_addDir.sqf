@@ -70,7 +70,7 @@ if (_event isEqualTo "onUnload") exitWith
     private _everyoneRead = cbChecked _everyoneReadCtrl;
     private _everyoneWrite = cbChecked _everyoneWriteCtrl;
     private _everyoneExecute = cbChecked _everyoneExecuteCtrl;
-    private _permissions = [[_ownerExecute, _ownerRead, _ownerWrite], [_everyoneExecute, _everyoneRead, _everyoneWrite]];
+    private _permissions = [[_ownerRead, _ownerWrite, _ownerExecute], [_everyoneRead, _everyoneWrite, _everyoneExecute]];
 
     // check for empty but mandatory input fields
     // module is still there an could be opened and filled in with valid input
@@ -82,27 +82,11 @@ if (_event isEqualTo "onUnload") exitWith
     if((_path find " ") != -1) exitWith { [objNull, localize "STR_AE3_Main_Zeus_PathContainsSpaces"] call BIS_fnc_showCuratorFeedbackMessage; };
     if((_owner find " ") != -1) exitWith { [objNull, localize "STR_AE3_Main_Zeus_OwnerContainsSpaces"] call BIS_fnc_showCuratorFeedbackMessage; };
 
-    // Wait for filesystem to be ready before adding directory
-    [_computer, _path, _owner, _permissions, _module] spawn {
-        params ["_computer", "_path", "_owner", "_permissions", "_module"];
+    // Server ensures the filesystem is initialized (on demand) and reports back via
+    // "ae3_main_zeusOpFeedback" - no client-side polling (fixes timeouts on dedicated)
+    ["ae3_main_zeusDeviceOp", [netId _computer, "addDir", [_path, _owner, _permissions], clientOwner]] call CBA_fnc_serverEvent;
 
-        // Wait for filesystem initialization (10 second timeout)
-        private _filesystemReady = [_computer, 10] call AE3_main_fnc_waitForFilesystem;
-
-        if (!_filesystemReady) exitWith {
-            [objNull, "Filesystem not ready. Please wait and try again."] call BIS_fnc_showCuratorFeedbackMessage;
-            deleteVehicle _module;
-        };
-
-        // Add directory to computer
-        [_computer, _path, _owner, _permissions] remoteExecCall ["AE3_filesystem_fnc_device_addDir", 2];
-
-        private _message = format ["%1: %2", localize "STR_AE3_Main_Zeus_Path", _path];
-        [localize "STR_AE3_Main_Zeus_DirectoryAdded", _message, 5] call BIS_fnc_curatorHint;
-
-        // Delete module
-        deleteVehicle _module;
-    };
+    deleteVehicle _module;
 };
 
 /* ---------------------------------------- */

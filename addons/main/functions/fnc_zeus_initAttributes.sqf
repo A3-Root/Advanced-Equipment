@@ -29,8 +29,6 @@ if (isNull _entity) exitWith {};
 {
     params ["_display", "_entity"];
 
-    private _counter = 0;
-
     /* ======================================== */
 
     private _headlineCtrl = _display displayCtrl 1000;
@@ -72,7 +70,6 @@ if (isNull _entity) exitWith {};
             _status pushBack (format [localize "STR_AE3_Power_Interaction_PowerStateHint", _powerState]);
 
             // Power Output
-            private _powerOutput = [_entity] call AE3_power_fnc_getPowerOutput;
             private _powerCap = _entity getVariable ['AE3_power_powerCapacity', 0];
             private _prefix = "k"; // kWatts
             _powerCap = _powerCap * 3600;
@@ -85,7 +82,7 @@ if (isNull _entity) exitWith {};
 
             // Power Required
             private _powerReq = _entity getVariable ["AE3_power_powerReq", 0];
-            private _prefix = "k"; // kWatts
+            _prefix = "k"; // kWatts
             _powerReq = _powerReq * 3600;
             if (_powerReq < 1.0) then
             {
@@ -98,6 +95,39 @@ if (isNull _entity) exitWith {};
             private _ip = _entity getVariable ["AE3_network_address", []];
             private _ipString = [_ip] call AE3_network_fnc_ip2str;
             _status pushBack (format ["%1: %2", localize "STR_AE3_Network_General_IpAddress", _ipString]);
+
+            // Connections overview (power + network, incoming and outgoing)
+            _status pushBack "------------";
+
+            private _powerProvider = _entity getVariable ["AE3_power_powerCableDevice", objNull];
+            if (!isNull _powerProvider) then
+            {
+                _status pushBack (format ["Power source: %1", [_powerProvider, true] call ace_cargo_fnc_getNameItem]);
+            };
+
+            private _connectedPowerDevices = _entity getVariable ["AE3_power_connectedDevices", []];
+            if (_connectedPowerDevices isNotEqualTo []) then
+            {
+                _status pushBack (format ["Powered devices: %1", count _connectedPowerDevices]);
+                {
+                    _status pushBack (format ["  - %1", [_x, true] call ace_cargo_fnc_getNameItem]);
+                } forEach _connectedPowerDevices;
+            };
+
+            private _networkParent = _entity getVariable ["AE3_network_parent", objNull];
+            if (!isNull _networkParent) then
+            {
+                _status pushBack (format ["Network gateway: %1 (%2)", [_networkParent, true] call ace_cargo_fnc_getNameItem, [_networkParent getVariable ["AE3_network_address", [127,0,0,1]]] call AE3_network_fnc_ip2str]);
+            };
+
+            private _networkChildren = _entity getVariable ["AE3_network_children", []];
+            if (_networkChildren isNotEqualTo []) then
+            {
+                _status pushBack (format ["Network clients: %1", count _networkChildren]);
+                {
+                    _status pushBack (format ["  - %1 (%2)", [_x, true] call ace_cargo_fnc_getNameItem, [_x getVariable ["AE3_network_address", [127,0,0,1]]] call AE3_network_fnc_ip2str]);
+                } forEach _networkChildren;
+            };
 
             private _statusString = _status joinString endl;
             _statusCtrl ctrlSetText _statusString;

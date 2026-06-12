@@ -3,7 +3,9 @@
  * Description: Initializes a new terminal session for a computer, setting up all terminal variables and state.
  *
  * Arguments:
- * 0: _computer <OBJECT> - TODO: Add description
+ * 0: _computer <OBJECT> - The computer object
+ * 1: _consoleDialog <DISPLAY> (Optional, default: displayNull) - Host display; when not given,
+ *    the classic terminal dialog is created/used (idd 15984)
  *
  * Return Value:
  * None
@@ -16,15 +18,18 @@
 
 #include "\a3\ui_f\hpp\definedikcodes.inc"
 
-params ["_computer"];
+params ["_computer", ["_consoleDialog", displayNull]];
 
-if (!dialog) then
+if (isNull _consoleDialog) then
 {
-	private _ok = createDialog "AE3_ArmaOS_Main_Dialog";
-	if (!_ok) then {hint localize "STR_AE3_ArmaOS_Exception_DialogFailed"};
-};
+	if (!dialog) then
+	{
+		private _ok = createDialog "AE3_ArmaOS_Main_Dialog";
+		if (!_ok) then {hint localize "STR_AE3_ArmaOS_Exception_DialogFailed"};
+	};
 
-private _consoleDialog = findDisplay 15984;
+	_consoleDialog = findDisplay 15984;
+};
 private _consoleOutput = _consoleDialog displayCtrl 1100;
 private _languageButton = _consoleDialog displayCtrl 1310;
 private _designButton = _consoleDialog displayCtrl 1320;
@@ -90,8 +95,6 @@ if (!isNil "_terminalSyncData") then {
 };
 
 _terminal set ["AE3_terminalOutput", _consoleOutput];
-
-private _localGameLanguage = language;
 
 /* ---------------------------------------- */
 
@@ -180,7 +183,7 @@ _consoleDialog setVariable ["AE3_handleUpdateUiOnTexture", _handleUpdateUiOnText
 
 [_consoleDialog, _consoleOutput, _languageButton, _designButton] call AE3_armaos_fnc_terminal_addEventHandler;
 
-_terminalBuffer = _terminal get "AE3_terminalBuffer";
+private _terminalBuffer = _terminal get "AE3_terminalBuffer";
 if (_terminalBuffer isEqualTo []) then
 {
 	[_computer] call AE3_armaos_fnc_terminal_addHeader;

@@ -67,7 +67,7 @@ _keys sort true;
 		// File - check if executable
 		private _permissions = _obj select 2;
 		private _ownerPerms = _permissions select 0;
-		private _isExecutable = _ownerPerms select 0;
+		private _isExecutable = _ownerPerms select 2;
 
 		if (_isExecutable) then
 		{

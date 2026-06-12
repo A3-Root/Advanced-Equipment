@@ -20,7 +20,6 @@ params ["_display"];
 private _entity = missionNamespace getVariable ["AE3_zeus_filesystemBrowser_entity", objNull];
 if (isNull _entity) exitWith { closeDialog 0; };
 
-private _filesystem = _entity getVariable ["AE3_filesystem", createHashMap];
 private _pointer = [];
 
 // Store state in display

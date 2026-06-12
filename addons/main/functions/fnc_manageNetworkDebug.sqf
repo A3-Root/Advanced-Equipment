@@ -34,7 +34,7 @@ if (_enabled) then {
 			if !(_fnName isEqualType "") exitWith {true};
 			if (_fnName find "AE3_" != 0) exitWith {true};
 
-			private _sender = if (!isNil "remoteExecutedOwner") then { remoteExecutedOwner } else { -1 };
+			private _sender = if (isNil "remoteExecutedOwner") then { -1 } else { remoteExecutedOwner };
 			diag_log format ["[AE3][NET][recv] fn=%1 target=%2 jip=%3 sender=%4 args=%5", _fnName, _target, _isJip, _sender, _args];
 
 			// Always allow execution

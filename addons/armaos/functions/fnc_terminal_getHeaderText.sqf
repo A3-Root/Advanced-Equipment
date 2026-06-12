@@ -15,7 +15,7 @@
  */
 
 // Build header array using CBA settings
-_result = [
+private _result = [
 	AE3_TerminalBiosVersion,
 	AE3_TerminalCopyright,
 	AE3_TerminalBootMessage,

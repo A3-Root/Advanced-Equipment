@@ -1,3 +1,4 @@
+#include "..\script_component.hpp"
 /*
  * Author: Root, y0014984
  * Description: Adds a user account to a given computer by providing username and password. Creates a user directory at /home/<username>. Must be executed on the server.
@@ -54,7 +55,7 @@ if (_username isNotEqualTo "root") then
         else
         {
             // Some other error occurred - log it but don't fail the entire function
-            diag_log format ["AE3 WARNING: Failed to create user directory for '%1': %2", _username, _exception];
+            WARNING_2("Failed to create user directory for '%1': %2",_username,_exception);
             ["AE3 WARNING: Failed to create user directory for '%1': %2", _username, _exception] call BIS_fnc_error;
         };
     };

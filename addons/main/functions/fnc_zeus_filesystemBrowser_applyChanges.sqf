@@ -52,8 +52,8 @@ try
 	private _everyoneExecute = cbChecked (_display displayCtrl 1315);
 
 	private _newPermissions = [
-		[_ownerExecute, _ownerRead, _ownerWrite],
-		[_everyoneExecute, _everyoneRead, _everyoneWrite]
+		[_ownerRead, _ownerWrite, _ownerExecute],
+		[_everyoneRead, _everyoneWrite, _everyoneExecute]
 	];
 
 	// Update the item

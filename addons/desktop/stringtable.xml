@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project name="AE3">
+    <Package name="Desktop">
+        <Container name="Apps">
+            <Key ID="STR_AE3_Desktop_App_Files">
+                <Original>Files</Original>
+                <English>Files</English>
+                <French>Fichiers</French>
+                <Italian>File</Italian>
+                <Russian>Files</Russian>
+                <German>Dateien</German>
+                <Chinesesimp>文件</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_App_Settings">
+                <Original>Settings</Original>
+                <English>Settings</English>
+                <French>Paramètres</French>
+                <Italian>Impostazioni</Italian>
+                <Russian>Settings</Russian>
+                <German>Einstellungen</German>
+                <Chinesesimp>设置</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_App_Terminal">
+                <Original>Terminal</Original>
+                <English>Terminal</English>
+                <French>Terminal</French>
+                <Italian>Terminale</Italian>
+                <Russian>Terminal</Russian>
+                <German>Terminal</German>
+                <Chinesesimp>终端</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Files_Disabled">
+                <Original>File browsing is disabled on this server</Original>
+                <English>File browsing is disabled on this server</English>
+                <French>La navigation de fichiers est désactivée sur ce serveur</French>
+                <Italian>La navigazione dei file è disabilitata su questo server</Italian>
+                <Russian>File browsing is disabled on this server</Russian>
+                <German>Dateibrowser ist auf diesem Server deaktiviert</German>
+                <Chinesesimp>此服务器禁用了文件浏览</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Files_Executable">
+                <Original>This is an executable - run it from the Terminal app</Original>
+                <English>This is an executable - run it from the Terminal app</English>
+                <French>Ceci est un exécutable - lancez-le depuis l'application Terminal</French>
+                <Italian>Questo è un eseguibile - eseguilo dall'app Terminale</Italian>
+                <Russian>This is an executable - run it from the Terminal app</Russian>
+                <German>Dies ist eine ausführbare Datei - im Terminal ausführen</German>
+                <Chinesesimp>这是可执行文件 - 请在终端应用中运行</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Media_Playing">
+                <Original>Playing audio ...</Original>
+                <English>Playing audio ...</English>
+                <French>Lecture audio ...</French>
+                <Italian>Riproduzione audio ...</Italian>
+                <Russian>Playing audio ...</Russian>
+                <German>Audio wird abgespielt ...</German>
+                <Chinesesimp>正在播放音频 ...</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Media_Unknown">
+                <Original>Unknown media type: %1</Original>
+                <English>Unknown media type: %1</English>
+                <French>Type de média inconnu : %1</French>
+                <Italian>Tipo di media sconosciuto: %1</Italian>
+                <Russian>Unknown media type: %1</Russian>
+                <German>Unbekannter Medientyp: %1</German>
+                <Chinesesimp>未知媒体类型: %1</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Settings_SwitchCli">
+                <Original>Switch to CLI terminal (next use)</Original>
+                <English>Switch to CLI terminal (next use)</English>
+                <French>Passer au terminal CLI (prochaine utilisation)</French>
+                <Italian>Passa al terminale CLI (prossimo utilizzo)</Italian>
+                <Russian>Switch to CLI terminal (next use)</Russian>
+                <German>Zum CLI-Terminal wechseln (nächste Benutzung)</German>
+                <Chinesesimp>切换到CLI终端(下次使用)</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Settings_Theme">
+                <Original>Theme (double-click to apply)</Original>
+                <English>Theme (double-click to apply)</English>
+                <French>Thème (double-cliquez pour appliquer)</French>
+                <Italian>Tema (doppio clic per applicare)</Italian>
+                <Russian>Theme (double-click to apply)</Russian>
+                <German>Thema (Doppelklick zum Anwenden)</German>
+                <Chinesesimp>主题(双击应用)</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Theme_Dark">
+                <Original>Dark</Original>
+                <English>Dark</English>
+                <French>Sombre</French>
+                <Italian>Scuro</Italian>
+                <Russian>Dark</Russian>
+                <German>Dunkel</German>
+                <Chinesesimp>深色</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Theme_Light">
+                <Original>Light</Original>
+                <English>Light</English>
+                <French>Clair</French>
+                <Italian>Chiaro</Italian>
+                <Russian>Light</Russian>
+                <German>Hell</German>
+                <Chinesesimp>浅色</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Theme_Olive">
+                <Original>Olive</Original>
+                <English>Olive</English>
+                <French>Olive</French>
+                <Italian>Oliva</Italian>
+                <Russian>Olive</Russian>
+                <German>Oliv</German>
+                <Chinesesimp>橄榄色</Chinesesimp>
+            </Key>
+        </Container>
+    </Package>
+</Project>

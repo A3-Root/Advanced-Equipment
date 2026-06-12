@@ -23,7 +23,6 @@ private _username = _terminal get "AE3_terminalLoginUser";
 
 private _users = _computer getVariable "AE3_Userlist";
 
-private _result = [];
 private _logMessage = "";
 
 private _userPasswordMatch = false;
@@ -68,7 +67,7 @@ else
 	_terminal set ["AE3_terminalPrompt", "LOGIN>"];
 };
 
-_result = ["   " + _logMessage];
+private _result = ["   " + _logMessage];
 
 [_computer, _result] call AE3_armaos_fnc_terminal_addLines;
 [_computer] call AE3_armaos_fnc_terminal_setPrompt;

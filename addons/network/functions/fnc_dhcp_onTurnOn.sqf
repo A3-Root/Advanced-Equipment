@@ -14,7 +14,7 @@ private _parent = _entity getVariable ["AE3_network_parent", objNull];
 
 if (!isNull _parent) then
 {
-	_ip = [_parent] call AE3_network_fnc_dhcp_get;
+	private _ip = [_parent] call AE3_network_fnc_dhcp_get;
 	_entity setVariable ["AE3_network_address", _ip, true];
 };
 
@@ -27,9 +27,5 @@ if (!isNil {_entity getVariable "AE3_network_children"}) then
 
 	 TODO: Improve
 	*/
-	[_entity] spawn
-	{
-		sleep 1;
-		_this call AE3_network_fnc_dhcp_refresh;
-	};
+	[{ _this call AE3_network_fnc_dhcp_refresh; }, [_entity], 1] call CBA_fnc_waitAndExecute;
 };

@@ -16,6 +16,14 @@
  */
 params['_computer', '_input'];
 
+// Optional output redirect (e.g. SSH sessions route remote command output into the local
+// terminal). Additive and backward compatible: unset means normal local output.
+private _redirect = _computer getVariable ["AE3_stdoutRedirect", objNull];
+if (!isNull _redirect) then
+{
+	_computer = _redirect;
+};
+
 if (!(_input isEqualType [])) then
 {
 	_input = [_input];

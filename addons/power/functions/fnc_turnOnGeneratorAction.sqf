@@ -72,7 +72,7 @@ else
 				terminate _startSoundHandle;
 
 				// stop sound will be played
-				private _stopSoundHandle = [_entity] spawn AE3_power_fnc_playGeneratorStopSound;
+				[_entity] spawn AE3_power_fnc_playGeneratorStopSound;
 			},
 			(localize "STR_AE3_Power_Interaction_TurnOn" + "...")
 		] call ace_common_fnc_progressBar;

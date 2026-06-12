@@ -1,0 +1,85 @@
+#include "script_component.hpp"
+#include "XEH_PREP.hpp"
+
+/* ================================================================================ */
+/* CBA settings */
+
+[
+	"AE3_Desktop_DefaultMode",
+	"LIST",
+	["Default laptop interface", "Interface used by laptops that have no explicit per-laptop setting. CLI = classic terminal, GUI = desktop."],
+	"AE3 Desktop",
+	[
+		["cli", "gui"],
+		[["CLI", "CLI"], ["GUI", "GUI"]],
+		0
+	],
+	1,
+	{ params ["_value"]; },
+	false
+] call CBA_fnc_addSetting;
+
+[
+	"AE3_Desktop_EnableDragDrop",
+	"CHECKBOX",
+	["Window dragging", "Allow moving desktop windows by dragging their titlebar."],
+	"AE3 Desktop",
+	true,
+	1,
+	{ params ["_value"]; },
+	false
+] call CBA_fnc_addSetting;
+
+[
+	"AE3_Desktop_EnableFileBrowsing",
+	"CHECKBOX",
+	["File browsing", "Allow browsing the laptop filesystem with the Files app."],
+	"AE3 Desktop",
+	true,
+	1,
+	{ params ["_value"]; },
+	false
+] call CBA_fnc_addSetting;
+
+[
+	"AE3_Desktop_DefaultTheme",
+	"LIST",
+	["Default theme", "Default desktop theme for laptops without a per-laptop selection."],
+	"AE3 Desktop",
+	[
+		["Dark", "Light", "Olive"],
+		[["Dark", "Dark"], ["Light", "Light"], ["Olive", "Olive"]],
+		0
+	],
+	1,
+	{ params ["_value"]; },
+	false
+] call CBA_fnc_addSetting;
+
+/* ================================================================================ */
+/* Server: computer registry + media registry */
+
+if (isServer) then
+{
+	ae3_desktop_computers = [];
+	ae3_desktop_pendingMedia = []; // [_sourcePath, _type, _fsDest] entries applied to future laptops
+
+	// Emitted by AE3_armaos_fnc_device_initComplete after a computer finished initializing
+	["ae3_armaos_deviceReady", {
+		params ["_computer"];
+
+		ae3_desktop_computers pushBackUnique _computer;
+
+		// Apply media registered for "future" laptops
+		{
+			_x params ["_sourcePath", "_type", "_fsDest"];
+			[_sourcePath, _type, _fsDest, [_computer]] call AE3_desktop_fnc_registerMedia;
+		} forEach ae3_desktop_pendingMedia;
+	}] call CBA_fnc_addEventHandler;
+
+	// Client-routed media registration
+	["ae3_desktop_registerMedia", { _this call AE3_desktop_fnc_registerMedia }] call CBA_fnc_addEventHandler;
+
+	// Client-routed interface mode changes
+	["ae3_desktop_setInterfaceMode", { _this call AE3_desktop_fnc_setInterfaceMode }] call CBA_fnc_addEventHandler;
+};

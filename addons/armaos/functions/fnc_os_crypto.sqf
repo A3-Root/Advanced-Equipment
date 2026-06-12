@@ -44,10 +44,10 @@ if (count _options > 0 && {(_options select 0) in ["-h", "--help"]}) exitWith {
 	[_computer, [[[localize "STR_AE3_ArmaOS_Crypto_HelpAlgoColumnar"]]]] call AE3_armaos_fnc_shell_stdout;
 	[_computer, [[[""]]]] call AE3_armaos_fnc_shell_stdout;
 	[_computer, [[[localize "STR_AE3_ArmaOS_Crypto_HelpExamples", "#FFD966"]]]] call AE3_armaos_fnc_shell_stdout;
-	[_computer, [[[localize "STR_AE3_ArmaOS_Crypto_HelpExample1"]]]] call AE3_armaos_fnc_shell_stdout;
-	[_computer, [[[localize "STR_AE3_ArmaOS_Crypto_HelpExample2"]]]] call AE3_armaos_fnc_shell_stdout;
-	[_computer, [[[localize "STR_AE3_ArmaOS_Crypto_HelpExample3"]]]] call AE3_armaos_fnc_shell_stdout;
-	[_computer, [[[localize "STR_AE3_ArmaOS_Crypto_HelpExample4"]]]] call AE3_armaos_fnc_shell_stdout;
+	[_computer, [[["  " + localize "STR_AE3_ArmaOS_Crypto_HelpExample1"]]]] call AE3_armaos_fnc_shell_stdout;
+	[_computer, [[["  " + localize "STR_AE3_ArmaOS_Crypto_HelpExample2"]]]] call AE3_armaos_fnc_shell_stdout;
+	[_computer, [[["  " + localize "STR_AE3_ArmaOS_Crypto_HelpExample3"]]]] call AE3_armaos_fnc_shell_stdout;
+	[_computer, [[["  " + localize "STR_AE3_ArmaOS_Crypto_HelpExample4"]]]] call AE3_armaos_fnc_shell_stdout;
 	[_computer, [[[""]]]] call AE3_armaos_fnc_shell_stdout;
 	[_computer, [[[localize "STR_AE3_ArmaOS_Crypto_HelpNote", "#FFD966"]]]] call AE3_armaos_fnc_shell_stdout;
 	[_computer, [[[localize "STR_AE3_ArmaOS_Crypto_HelpNote1"]]]] call AE3_armaos_fnc_shell_stdout;
@@ -109,7 +109,7 @@ private _username = _terminal get "AE3_terminalLoginUser";
 
 try {
 	// Attempt to read as file
-	private _fileContent = [_pointer, _filesystem, _inputRaw, _username, 1] call AE3_filesystem_fnc_getFile;
+	private _fileContent = [_pointer, _filesystem, _inputRaw, _username, 0] call AE3_filesystem_fnc_getFile;
 
 	if (_fileContent isEqualType "") then {
 		// Successfully read file
@@ -124,8 +124,6 @@ try {
 };
 
 if (_message isEqualTo "") exitWith { [ _computer, format [localize "STR_AE3_ArmaOS_Exception_CommandHasMissingMessage", _commandName] ] call AE3_armaos_fnc_shell_stdout; };
-
-private _encryptedMessage = "";
 
 // select mode
 if ((_mode isEqualTo "encrypt") || (_mode isEqualTo "decrypt")) then
@@ -147,7 +145,7 @@ if ((_mode isEqualTo "encrypt") || (_mode isEqualTo "decrypt")) then
 					try {
 						// Create output file if it doesn't exist (rw-rw- permissions)
 						try {
-							[_pointer, _filesystem, _output, "", _username, _username, [[false, true, true], [false, true, true]]] call AE3_filesystem_fnc_createFile;
+							[_pointer, _filesystem, _output, "", _username, _username, [[true, true, false], [true, true, false]]] call AE3_filesystem_fnc_createFile;
 						} catch {
 							// File already exists, ignore error
 						};
@@ -184,7 +182,7 @@ if ((_mode isEqualTo "encrypt") || (_mode isEqualTo "decrypt")) then
 					try {
 						// Create output file if it doesn't exist (rw-rw- permissions)
 						try {
-							[_pointer, _filesystem, _output, "", _username, _username, [[false, true, true], [false, true, true]]] call AE3_filesystem_fnc_createFile;
+							[_pointer, _filesystem, _output, "", _username, _username, [[true, true, false], [true, true, false]]] call AE3_filesystem_fnc_createFile;
 						} catch {
 							// File already exists, ignore error
 						};

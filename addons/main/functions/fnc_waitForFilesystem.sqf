@@ -1,6 +1,8 @@
 /*
  * Author: Root
- * Description: Waits for a computer's filesystem to be ready before proceeding. Used by Zeus modules to ensure filesystem is initialized before operations.
+ * Description: DEPRECATED - Waits for a computer's filesystem to be ready before proceeding (blocking, scheduled environment only).
+ * Internal callers were migrated to the server event "ae3_main_zeusDeviceOp" / AE3_armaos_fnc_device_ensureInit.
+ * Kept for external API compatibility.
  *
  * Arguments:
  * 0: _computer <OBJECT> - Computer object to check

@@ -99,6 +99,7 @@ _resultOpts set ["_ae3OptsSuccess", true];
 		];
 
 		[_computer, _missingOptions] call AE3_armaos_fnc_shell_stdout;
+		[_computer] call AE3_armaos_fnc_shell_playErrorSound;
 
 		_resultOpts set ["_ae3OptsSuccess", false];
 	};
@@ -110,6 +111,7 @@ if (!_syntaxMatch) then
 {
 	_resultOpts set ["_ae3OptsSuccess", false];
 	[_computer, format [localize "STR_AE3_ArmaOS_Result_GetOpts_SyntaxMismatch", _commandName]] call AE3_armaos_fnc_shell_stdout;
+	[_computer] call AE3_armaos_fnc_shell_playErrorSound;
 };
 
 _result = _resultOpts toArray false; // Convert HashMap to Array

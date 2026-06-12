@@ -16,4 +16,4 @@
 
 params["_entity"];
 
-private _result = [_entity, true] call AE3_power_fnc_getBatteryLevel;
+[_entity, true] call AE3_power_fnc_getBatteryLevel;

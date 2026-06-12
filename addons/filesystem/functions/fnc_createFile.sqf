@@ -9,7 +9,7 @@
  * 3: _content <ANY> - File content (can be string, code, or any serializable type)
  * 4: _user <STRING> - User creating the file
  * 5: _owner <STRING> (Optional, default: _user) - Owner of the new file
- * 6: _permissions <ARRAY> (Optional, default: [[false,true,true],[false,false,false]]) - Permissions [[owner x,r,w],[everyone x,r,w]]
+ * 6: _permissions <ARRAY> (Optional, default: [[false,true,true],[false,false,false]]) - Permissions [[owner r,w,x],[everyone r,w,x]]
  *
  * Return Value:
  * None
@@ -21,7 +21,7 @@
  * Public: Yes
  */
 
-params['_pntr', '_filesystem', '_target', '_content', '_user', '_owner', ['_permissions', [[false, true, true], [false, false, false]]]];
+params['_pntr', '_filesystem', '_target', '_content', '_user', '_owner', ['_permissions', [[true, true, false], [false, false, false]]]];
 
 // allow "x" and "r" on parent folder if file has "r", "w" or "x"
 private _parentDirPermissions = +_permissions;
@@ -38,7 +38,7 @@ private _dir = [_pntr, _filesystem, _target, _user, true, _owner, _parentDirPerm
 private _current = _dir select 1;
 private _new = _dir select 2;
 
-[_current, _user, 2] call AE3_filesystem_fnc_hasPermission;
+[_current, _user, 1] call AE3_filesystem_fnc_hasPermission;
 _current = _current select 0;
 
 if(_new in _current) then

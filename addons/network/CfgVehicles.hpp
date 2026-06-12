@@ -20,7 +20,7 @@ class CfgVehicles
 			defaultPowerLevel = 0;
 
 			turnOnAction = "call AE3_network_fnc_dhcp_onTurnOn; true";
-			turnOffAction = "true";
+			turnOffAction = "call AE3_network_fnc_router_onTurnOff; true";
 
 			class AE3_PowerInterface
 			{
@@ -73,7 +73,7 @@ class CfgVehicles
 			defaultPowerLevel = 0;
 
 			turnOnAction = "call AE3_network_fnc_dhcp_onTurnOn; true";
-			turnOffAction = "true";
+			turnOffAction = "call AE3_network_fnc_router_onTurnOff; true";
 
 			class AE3_PowerInterface
 			{
@@ -126,7 +126,7 @@ class CfgVehicles
 			defaultPowerLevel = 0;
 
 			turnOnAction = "call AE3_network_fnc_dhcp_onTurnOn; true";
-			turnOffAction = "true";
+			turnOffAction = "call AE3_network_fnc_router_onTurnOff; true";
 
 			class AE3_PowerInterface
 			{
