@@ -69,6 +69,21 @@ uiNamespace setVariable ["AE3_desktop_session", _session];
 	[_computer getVariable ["AE3_network_address", [127, 0, 0, 1]]] call AE3_network_fnc_ip2str
 ];
 
+(_display displayCtrl 17003) ctrlSetFont (_theme getOrDefault ["font", "RobotoCondensed"]);
+(_display displayCtrl 17004) ctrlSetFont (_theme getOrDefault ["font", "RobotoCondensed"]);
+
+/* ---------------------------------------- */
+/* Wallpaper texture (per-laptop selection; falls back to the theme color) */
+
+private _wallpaperTex = _computer getVariable ["AE3_desktopWallpaper", ""];
+if (_wallpaperTex isNotEqualTo "") then
+{
+	private _wp = _display ctrlCreate ["RscPicture", -1];
+	_wp ctrlSetPosition [safeZoneX, safeZoneY, safeZoneW, safeZoneH];
+	_wp ctrlSetText _wallpaperTex;
+	_wp ctrlCommit 0;
+};
+
 /* ---------------------------------------- */
 /* Desktop icons */
 

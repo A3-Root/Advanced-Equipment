@@ -1,0 +1,45 @@
+#include "..\script_component.hpp"
+/*
+ * Author: Root
+ * Description: 3DEN/trigger handler for the AE3_AddIntel module. Reads the module attributes
+ * and dispatches the intel to laptops synced to the module (or all laptops when none synced).
+ *
+ * Arguments:
+ * 0: _module <OBJECT>
+ * 1: _units <ARRAY>
+ * 2: _activated <BOOL>
+ *
+ * Return Value:
+ * true <BOOL>
+ *
+ * Public: No
+ */
+
+params ["_module", "_units", "_activated"];
+
+if (!isServer) exitWith {};
+
+if (_activated) then
+{
+	private _type = _module getVariable ["AE3_ModuleIntel_Type", "email"];
+	private _f1 = _module getVariable ["AE3_ModuleIntel_Field1", ""];
+	private _f2 = _module getVariable ["AE3_ModuleIntel_Field2", ""];
+	private _f3 = _module getVariable ["AE3_ModuleIntel_Field3", ""];
+
+	private _laptops = (synchronizedObjects _module) select { isClass (configOf _x >> "AE3_Device") };
+
+	if (_laptops isEqualTo []) then
+	{
+		[_type, "all", _f1, _f2, _f3] call AE3_desktop_fnc_intel_dispatch;
+	}
+	else
+	{
+		{
+			[_type, _x, _f1, _f2, _f3] call AE3_desktop_fnc_intel_dispatch;
+		} forEach _laptops;
+	};
+
+	deleteVehicle _module;
+};
+
+true

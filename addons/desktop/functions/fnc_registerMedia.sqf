@@ -35,6 +35,14 @@ if (!isServer) exitWith
 
 private _marker = format ["AE3_MEDIA|%1|%2", toLower _type, _sourcePath];
 
+// Registered images double as selectable desktop wallpapers (Settings app)
+if ((toLower _type) isEqualTo "image") then
+{
+	private _wallpapers = missionNamespace getVariable ["AE3_Desktop_WallpaperList", []];
+	_wallpapers pushBackUnique _sourcePath;
+	missionNamespace setVariable ["AE3_Desktop_WallpaperList", _wallpapers, true];
+};
+
 private _computers = [];
 
 if (_targets isEqualType []) then

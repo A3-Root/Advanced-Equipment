@@ -10,6 +10,7 @@ class AE3_DesktopTheme
 	titlebarColor[] = {0.18, 0.20, 0.24, 1};
 	accentColor[] = {0.20, 0.55, 0.85, 1};
 	textColor[] = {0.92, 0.92, 0.92, 1};
+	font = "RobotoCondensed";
 };
 
 class CfgAE3Themes
@@ -33,6 +34,7 @@ class CfgAE3Themes
 	class Olive : AE3_DesktopTheme
 	{
 		displayName = "$STR_AE3_Desktop_Theme_Olive";
+		font = "EtelkaMonospacePro";
 		wallpaperColor[] = {0.10, 0.12, 0.08, 1};
 		panelColor[] = {0.07, 0.08, 0.05, 0.95};
 		windowColor[] = {0.13, 0.15, 0.11, 0.98};

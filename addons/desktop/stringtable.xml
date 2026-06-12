@@ -2,6 +2,42 @@
 <Project name="AE3">
     <Package name="Desktop">
         <Container name="Apps">
+            <Key ID="STR_AE3_Desktop_App_Browser">
+                <Original>Browser</Original>
+                <English>Browser</English>
+                <French>Navigateur</French>
+                <Italian>Browser</Italian>
+                <Russian>Browser</Russian>
+                <German>Browser</German>
+                <Chinesesimp>浏览器</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_App_Calendar">
+                <Original>Calendar</Original>
+                <English>Calendar</English>
+                <French>Calendrier</French>
+                <Italian>Calendario</Italian>
+                <Russian>Calendar</Russian>
+                <German>Kalender</German>
+                <Chinesesimp>日历</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_App_Cctv">
+                <Original>CCTV</Original>
+                <English>CCTV</English>
+                <French>CCTV</French>
+                <Italian>CCTV</Italian>
+                <Russian>CCTV</Russian>
+                <German>CCTV</German>
+                <Chinesesimp>监控</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_App_Chat">
+                <Original>Chat</Original>
+                <English>Chat</English>
+                <French>Chat</French>
+                <Italian>Chat</Italian>
+                <Russian>Chat</Russian>
+                <German>Chat</German>
+                <Chinesesimp>聊天</Chinesesimp>
+            </Key>
             <Key ID="STR_AE3_Desktop_App_Files">
                 <Original>Files</Original>
                 <English>Files</English>
@@ -10,6 +46,42 @@
                 <Russian>Files</Russian>
                 <German>Dateien</German>
                 <Chinesesimp>文件</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_App_Mail">
+                <Original>Mail</Original>
+                <English>Mail</English>
+                <French>Courrier</French>
+                <Italian>Posta</Italian>
+                <Russian>Mail</Russian>
+                <German>Mail</German>
+                <Chinesesimp>邮件</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_App_Map">
+                <Original>Map</Original>
+                <English>Map</English>
+                <French>Carte</French>
+                <Italian>Mappa</Italian>
+                <Russian>Map</Russian>
+                <German>Karte</German>
+                <Chinesesimp>地图</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_App_Music">
+                <Original>Music</Original>
+                <English>Music</English>
+                <French>Musique</French>
+                <Italian>Musica</Italian>
+                <Russian>Music</Russian>
+                <German>Musik</German>
+                <Chinesesimp>音乐</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_App_Notepad">
+                <Original>Notepad</Original>
+                <English>Notepad</English>
+                <French>Bloc-notes</French>
+                <Italian>Blocco note</Italian>
+                <Russian>Notepad</Russian>
+                <German>Editor</German>
+                <Chinesesimp>记事本</Chinesesimp>
             </Key>
             <Key ID="STR_AE3_Desktop_App_Settings">
                 <Original>Settings</Original>
@@ -20,6 +92,15 @@
                 <German>Einstellungen</German>
                 <Chinesesimp>设置</Chinesesimp>
             </Key>
+            <Key ID="STR_AE3_Desktop_App_SysInfo">
+                <Original>System Monitor</Original>
+                <English>System Monitor</English>
+                <French>Moniteur système</French>
+                <Italian>Monitor di sistema</Italian>
+                <Russian>System Monitor</Russian>
+                <German>Systemmonitor</German>
+                <Chinesesimp>系统监视器</Chinesesimp>
+            </Key>
             <Key ID="STR_AE3_Desktop_App_Terminal">
                 <Original>Terminal</Original>
                 <English>Terminal</English>
@@ -28,6 +109,168 @@
                 <Russian>Terminal</Russian>
                 <German>Terminal</German>
                 <Chinesesimp>终端</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Browser_Go">
+                <Original>Go</Original>
+                <English>Go</English>
+                <French>Aller</French>
+                <Italian>Vai</Italian>
+                <Russian>Go</Russian>
+                <German>Los</German>
+                <Chinesesimp>转到</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Browser_History">
+                <Original>History</Original>
+                <English>History</English>
+                <French>Historique</French>
+                <Italian>Cronologia</Italian>
+                <Russian>History</Russian>
+                <German>Verlauf</German>
+                <Chinesesimp>历史记录</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Browser_HomeTitle">
+                <Original>RootNet - Index</Original>
+                <English>RootNet - Index</English>
+                <French>RootNet - Index</French>
+                <Italian>RootNet - Indice</Italian>
+                <Russian>RootNet - Index</Russian>
+                <German>RootNet - Index</German>
+                <Chinesesimp>RootNet - 索引</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Browser_NoHistory">
+                <Original>No browsing history.</Original>
+                <English>No browsing history.</English>
+                <French>Aucun historique de navigation.</French>
+                <Italian>Nessuna cronologia di navigazione.</Italian>
+                <Russian>No browsing history.</Russian>
+                <German>Kein Browserverlauf.</German>
+                <Chinesesimp>无浏览历史记录.</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Browser_NoPages">
+                <Original>No pages registered on this network.</Original>
+                <English>No pages registered on this network.</English>
+                <French>Aucune page enregistrée sur ce réseau.</French>
+                <Italian>Nessuna pagina registrata su questa rete.</Italian>
+                <Russian>No pages registered on this network.</Russian>
+                <German>Keine Seiten in diesem Netzwerk registriert.</German>
+                <Chinesesimp>此网络上未注册任何页面.</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Browser_NotFound">
+                <Original>The page %1 could not be found.</Original>
+                <English>The page %1 could not be found.</English>
+                <French>La page %1 est introuvable.</French>
+                <Italian>La pagina %1 non è stata trovata.</Italian>
+                <Russian>The page %1 could not be found.</Russian>
+                <German>Die Seite %1 wurde nicht gefunden.</German>
+                <Chinesesimp>找不到页面%1.</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Calendar_NoEvents">
+                <Original>No events on this day.</Original>
+                <English>No events on this day.</English>
+                <French>Aucun événement ce jour.</French>
+                <Italian>Nessun evento in questo giorno.</Italian>
+                <Russian>No events on this day.</Russian>
+                <German>Keine Ereignisse an diesem Tag.</German>
+                <Chinesesimp>这一天没有事件.</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Cctv_NoCameras">
+                <Original>No cameras registered (AE3_desktop_fnc_registerCamera)</Original>
+                <English>No cameras registered (AE3_desktop_fnc_registerCamera)</English>
+                <French>Aucune caméra enregistrée (AE3_desktop_fnc_registerCamera)</French>
+                <Italian>Nessuna telecamera registrata (AE3_desktop_fnc_registerCamera)</Italian>
+                <Russian>No cameras registered (AE3_desktop_fnc_registerCamera)</Russian>
+                <German>Keine Kameras registriert (AE3_desktop_fnc_registerCamera)</German>
+                <Chinesesimp>未注册摄像头(AE3_desktop_fnc_registerCamera)</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Chat_Empty">
+                <Original>No messages - received messages appear here (/var/mail/inbox)</Original>
+                <English>No messages - received messages appear here (/var/mail/inbox)</English>
+                <French>Aucun message - les messages reçus apparaissent ici (/var/mail/inbox)</French>
+                <Italian>Nessun messaggio - i messaggi ricevuti appaiono qui (/var/mail/inbox)</Italian>
+                <Russian>No messages - received messages appear here (/var/mail/inbox)</Russian>
+                <German>Keine Nachrichten - empfangene Nachrichten erscheinen hier (/var/mail/inbox)</German>
+                <Chinesesimp>无消息 - 收到的消息显示在此处(/var/mail/inbox)</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Config_AddIntelDisplayName">
+                <Original>AE3: Add Intel</Original>
+                <English>AE3: Add Intel</English>
+                <French>AE3 : Ajouter des renseignements</French>
+                <Italian>AE3: Aggiungi Intel</Italian>
+                <Russian>AE3: Add Intel</Russian>
+                <German>AE3: Intel hinzufügen</German>
+                <Chinesesimp>AE3: 添加情报</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Config_IntelField1">
+                <Original>Field 1 (From / URL / Date / Source)</Original>
+                <English>Field 1 (From / URL / Date / Source)</English>
+                <French>Champ 1 (De / URL / Date / Source)</French>
+                <Italian>Campo 1 (Da / URL / Data / Sorgente)</Italian>
+                <Russian>Field 1 (From / URL / Date / Source)</Russian>
+                <German>Feld 1 (Von / URL / Datum / Quelle)</German>
+                <Chinesesimp>字段1(发件人/URL/日期/来源)</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Config_IntelField2">
+                <Original>Field 2 (Subject / Title / Time / Type)</Original>
+                <English>Field 2 (Subject / Title / Time / Type)</English>
+                <French>Champ 2 (Objet / Titre / Heure / Type)</French>
+                <Italian>Campo 2 (Oggetto / Titolo / Ora / Tipo)</Italian>
+                <Russian>Field 2 (Subject / Title / Time / Type)</Russian>
+                <German>Feld 2 (Betreff / Titel / Zeit / Typ)</German>
+                <Chinesesimp>字段2(主题/标题/时间/类型)</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Config_IntelField3">
+                <Original>Field 3 (Body / Content / Details / Destination)</Original>
+                <English>Field 3 (Body / Content / Details / Destination)</English>
+                <French>Champ 3 (Corps / Contenu / Détails / Destination)</French>
+                <Italian>Campo 3 (Corpo / Contenuto / Dettagli / Destinazione)</Italian>
+                <Russian>Field 3 (Body / Content / Details / Destination)</Russian>
+                <German>Feld 3 (Text / Inhalt / Details / Ziel)</German>
+                <Chinesesimp>字段3(正文/内容/详情/目标)</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Config_IntelFieldsTooltip">
+                <Original>Meaning depends on the intel type - see the wiki App-Framework page</Original>
+                <English>Meaning depends on the intel type - see the wiki App-Framework page</English>
+                <French>La signification dépend du type - voir la page wiki App-Framework</French>
+                <Italian>Il significato dipende dal tipo - vedi la pagina wiki App-Framework</Italian>
+                <Russian>Meaning depends on the intel type - see the wiki App-Framework page</Russian>
+                <German>Bedeutung hängt vom Intel-Typ ab - siehe Wiki-Seite App-Framework</German>
+                <Chinesesimp>含义取决于情报类型 - 参见wiki App-Framework页面</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Config_IntelTargetHint">
+                <Original>Place this module on an AE3 laptop to target it; placed anywhere else, the intel goes to ALL laptops. In 3DEN you can also sync the module to laptops.</Original>
+                <English>Place this module on an AE3 laptop to target it; placed anywhere else, the intel goes to ALL laptops. In 3DEN you can also sync the module to laptops.</English>
+                <French>Placez ce module sur un ordinateur AE3 pour le cibler ; ailleurs, le renseignement va à TOUS les ordinateurs. En 3DEN, synchronisez le module avec des ordinateurs.</French>
+                <Italian>Posiziona il modulo su un laptop AE3 per indirizzarlo; altrove, l'intel va a TUTTI i laptop. In 3DEN puoi anche sincronizzare il modulo ai laptop.</Italian>
+                <Russian>Place this module on an AE3 laptop to target it; placed anywhere else, the intel goes to ALL laptops.</Russian>
+                <German>Modul auf einem AE3-Laptop platzieren, um ihn anzuvisieren; sonst geht das Intel an ALLE Laptops. In 3DEN kann das Modul auch mit Laptops synchronisiert werden.</German>
+                <Chinesesimp>将此模块放在AE3笔记本电脑上以定位它;放在其他地方,情报将发送到所有笔记本电脑.在3DEN中也可以将模块同步到笔记本电脑.</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Config_IntelTypeDisplayName">
+                <Original>Intel type</Original>
+                <English>Intel type</English>
+                <French>Type de renseignement</French>
+                <Italian>Tipo di intel</Italian>
+                <Russian>Intel type</Russian>
+                <German>Intel-Typ</German>
+                <Chinesesimp>情报类型</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Config_IntelTypeTooltip">
+                <Original>email, webpage, history, calendar or media</Original>
+                <English>email, webpage, history, calendar or media</English>
+                <French>email, webpage, history, calendar ou media</French>
+                <Italian>email, webpage, history, calendar o media</Italian>
+                <Russian>email, webpage, history, calendar or media</Russian>
+                <German>email, webpage, history, calendar oder media</German>
+                <Chinesesimp>email, webpage, history, calendar 或 media</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Config_ModuleAddIntelDescription">
+                <Original>Plants intel on laptops: emails, webpages, browser history, calendar entries or media files.</Original>
+                <English>Plants intel on laptops: emails, webpages, browser history, calendar entries or media files.</English>
+                <French>Place des renseignements sur les ordinateurs : emails, pages web, historique, calendrier ou médias.</French>
+                <Italian>Pianta intel sui laptop: email, pagine web, cronologia, calendario o media.</Italian>
+                <Russian>Plants intel on laptops: emails, webpages, browser history, calendar entries or media files.</Russian>
+                <German>Platziert Intel auf Laptops: E-Mails, Webseiten, Browserverlauf, Kalendereinträge oder Medien.</German>
+                <Chinesesimp>在笔记本电脑上植入情报:电子邮件、网页、浏览历史、日历条目或媒体文件.</Chinesesimp>
             </Key>
             <Key ID="STR_AE3_Desktop_Files_Disabled">
                 <Original>File browsing is disabled on this server</Original>
@@ -47,6 +290,204 @@
                 <German>Dies ist eine ausführbare Datei - im Terminal ausführen</German>
                 <Chinesesimp>这是可执行文件 - 请在终端应用中运行</Chinesesimp>
             </Key>
+            <Key ID="STR_AE3_Desktop_Intel_Calendar">
+                <Original>Calendar entry</Original>
+                <English>Calendar entry</English>
+                <French>Entrée de calendrier</French>
+                <Italian>Voce di calendario</Italian>
+                <Russian>Calendar entry</Russian>
+                <German>Kalendereintrag</German>
+                <Chinesesimp>日历条目</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Intel_Email">
+                <Original>Email</Original>
+                <English>Email</English>
+                <French>Email</French>
+                <Italian>Email</Italian>
+                <Russian>Email</Russian>
+                <German>E-Mail</German>
+                <Chinesesimp>电子邮件</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Intel_History">
+                <Original>Browser history entry</Original>
+                <English>Browser history entry</English>
+                <French>Entrée d'historique du navigateur</French>
+                <Italian>Voce cronologia browser</Italian>
+                <Russian>Browser history entry</Russian>
+                <German>Browserverlauf-Eintrag</German>
+                <Chinesesimp>浏览器历史条目</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Intel_LabelBody">
+                <Original>Body</Original>
+                <English>Body</English>
+                <French>Corps</French>
+                <Italian>Corpo</Italian>
+                <Russian>Body</Russian>
+                <German>Text</German>
+                <Chinesesimp>正文</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Intel_LabelContent">
+                <Original>Content (| = new line, [[url|label]] = link)</Original>
+                <English>Content (| = new line, [[url|label]] = link)</English>
+                <French>Contenu (| = nouvelle ligne, [[url|label]] = lien)</French>
+                <Italian>Contenuto (| = nuova riga, [[url|label]] = collegamento)</Italian>
+                <Russian>Content (| = new line, [[url|label]] = link)</Russian>
+                <German>Inhalt (| = neue Zeile, [[url|label]] = Link)</German>
+                <Chinesesimp>内容(| = 换行, [[url|label]] = 链接)</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Intel_LabelDate">
+                <Original>Date (YYYY-MM-DD HH:MM)</Original>
+                <English>Date (YYYY-MM-DD HH:MM)</English>
+                <French>Date (AAAA-MM-JJ HH:MM)</French>
+                <Italian>Data (AAAA-MM-GG HH:MM)</Italian>
+                <Russian>Date (YYYY-MM-DD HH:MM)</Russian>
+                <German>Datum (JJJJ-MM-TT HH:MM)</German>
+                <Chinesesimp>日期(YYYY-MM-DD HH:MM)</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Intel_LabelDest">
+                <Original>Filesystem destination (/home/user/...)</Original>
+                <English>Filesystem destination (/home/user/...)</English>
+                <French>Destination du système de fichiers (/home/user/...)</French>
+                <Italian>Destinazione filesystem (/home/user/...)</Italian>
+                <Russian>Filesystem destination (/home/user/...)</Russian>
+                <German>Dateisystem-Ziel (/home/user/...)</German>
+                <Chinesesimp>文件系统目标(/home/user/...)</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Intel_LabelDetails">
+                <Original>Details</Original>
+                <English>Details</English>
+                <French>Détails</French>
+                <Italian>Dettagli</Italian>
+                <Russian>Details</Russian>
+                <German>Details</German>
+                <Chinesesimp>详情</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Intel_LabelFrom">
+                <Original>From</Original>
+                <English>From</English>
+                <French>De</French>
+                <Italian>Da</Italian>
+                <Russian>From</Russian>
+                <German>Von</German>
+                <Chinesesimp>发件人</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Intel_LabelMediaType">
+                <Original>Media type (image / video / audio)</Original>
+                <English>Media type (image / video / audio)</English>
+                <French>Type de média (image / video / audio)</French>
+                <Italian>Tipo di media (image / video / audio)</Italian>
+                <Russian>Media type (image / video / audio)</Russian>
+                <German>Medientyp (image / video / audio)</German>
+                <Chinesesimp>媒体类型(image / video / audio)</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Intel_LabelSource">
+                <Original>Source path (\mod\file.paa)</Original>
+                <English>Source path (\mod\file.paa)</English>
+                <French>Chemin source (\mod\file.paa)</French>
+                <Italian>Percorso sorgente (\mod\file.paa)</Italian>
+                <Russian>Source path (\mod\file.paa)</Russian>
+                <German>Quellpfad (\mod\file.paa)</German>
+                <Chinesesimp>源路径(\mod\file.paa)</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Intel_LabelSubject">
+                <Original>Subject</Original>
+                <English>Subject</English>
+                <French>Objet</French>
+                <Italian>Oggetto</Italian>
+                <Russian>Subject</Russian>
+                <German>Betreff</German>
+                <Chinesesimp>主题</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Intel_LabelTime">
+                <Original>Time (HH:MM, optional)</Original>
+                <English>Time (HH:MM, optional)</English>
+                <French>Heure (HH:MM, facultatif)</French>
+                <Italian>Ora (HH:MM, facoltativo)</Italian>
+                <Russian>Time (HH:MM, optional)</Russian>
+                <German>Zeit (HH:MM, optional)</German>
+                <Chinesesimp>时间(HH:MM,可选)</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Intel_LabelTitle">
+                <Original>Title</Original>
+                <English>Title</English>
+                <French>Titre</French>
+                <Italian>Titolo</Italian>
+                <Russian>Title</Russian>
+                <German>Titel</German>
+                <Chinesesimp>标题</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Intel_LabelUrl">
+                <Original>URL</Original>
+                <English>URL</English>
+                <French>URL</French>
+                <Italian>URL</Italian>
+                <Russian>URL</Russian>
+                <German>URL</German>
+                <Chinesesimp>URL</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Intel_Media">
+                <Original>Media file</Original>
+                <English>Media file</English>
+                <French>Fichier média</French>
+                <Italian>File multimediale</Italian>
+                <Russian>Media file</Russian>
+                <German>Mediendatei</German>
+                <Chinesesimp>媒体文件</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Intel_TargetAll">
+                <Original>all laptops</Original>
+                <English>all laptops</English>
+                <French>tous les ordinateurs</French>
+                <Italian>tutti i laptop</Italian>
+                <Russian>all laptops</Russian>
+                <German>alle Laptops</German>
+                <Chinesesimp>所有笔记本电脑</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Intel_Webpage">
+                <Original>Webpage</Original>
+                <English>Webpage</English>
+                <French>Page web</French>
+                <Italian>Pagina web</Italian>
+                <Russian>Webpage</Russian>
+                <German>Webseite</German>
+                <Chinesesimp>网页</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Mail_Compose">
+                <Original>Compose</Original>
+                <English>Compose</English>
+                <French>Rédiger</French>
+                <Italian>Componi</Italian>
+                <Russian>Compose</Russian>
+                <German>Verfassen</German>
+                <Chinesesimp>撰写</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Mail_Refresh">
+                <Original>Refresh</Original>
+                <English>Refresh</English>
+                <French>Actualiser</French>
+                <Italian>Aggiorna</Italian>
+                <Russian>Refresh</Russian>
+                <German>Aktualisieren</German>
+                <Chinesesimp>刷新</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Mail_Send">
+                <Original>Send</Original>
+                <English>Send</English>
+                <French>Envoyer</French>
+                <Italian>Invia</Italian>
+                <Russian>Send</Russian>
+                <German>Senden</German>
+                <Chinesesimp>发送</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Mail_SubjectHint">
+                <Original>Subject</Original>
+                <English>Subject</English>
+                <French>Objet</French>
+                <Italian>Oggetto</Italian>
+                <Russian>Subject</Russian>
+                <German>Betreff</German>
+                <Chinesesimp>主题</Chinesesimp>
+            </Key>
             <Key ID="STR_AE3_Desktop_Media_Playing">
                 <Original>Playing audio ...</Original>
                 <English>Playing audio ...</English>
@@ -65,6 +506,60 @@
                 <German>Unbekannter Medientyp: %1</German>
                 <Chinesesimp>未知媒体类型: %1</Chinesesimp>
             </Key>
+            <Key ID="STR_AE3_Desktop_Music_Hint">
+                <Original>Double-click a track to play it at the laptop</Original>
+                <English>Double-click a track to play it at the laptop</English>
+                <French>Double-cliquez sur une piste pour la jouer sur l'ordinateur</French>
+                <Italian>Doppio clic su una traccia per riprodurla sul laptop</Italian>
+                <Russian>Double-click a track to play it at the laptop</Russian>
+                <German>Doppelklick auf einen Titel zum Abspielen am Laptop</German>
+                <Chinesesimp>双击曲目在笔记本电脑上播放</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Music_NoTracks">
+                <Original>No audio registered on this laptop (registerMedia type audio)</Original>
+                <English>No audio registered on this laptop (registerMedia type audio)</English>
+                <French>Aucun audio enregistré sur cet ordinateur (registerMedia type audio)</French>
+                <Italian>Nessun audio registrato su questo laptop (registerMedia tipo audio)</Italian>
+                <Russian>No audio registered on this laptop (registerMedia type audio)</Russian>
+                <German>Kein Audio auf diesem Laptop registriert (registerMedia Typ audio)</German>
+                <Chinesesimp>此笔记本电脑上未注册音频(registerMedia类型audio)</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Notepad_Load">
+                <Original>Load</Original>
+                <English>Load</English>
+                <French>Charger</French>
+                <Italian>Carica</Italian>
+                <Russian>Load</Russian>
+                <German>Laden</German>
+                <Chinesesimp>加载</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Notepad_Loaded">
+                <Original>Loaded %1</Original>
+                <English>Loaded %1</English>
+                <French>%1 chargé</French>
+                <Italian>%1 caricato</Italian>
+                <Russian>Loaded %1</Russian>
+                <German>%1 geladen</German>
+                <Chinesesimp>已加载%1</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Notepad_Save">
+                <Original>Save</Original>
+                <English>Save</English>
+                <French>Enregistrer</French>
+                <Italian>Salva</Italian>
+                <Russian>Save</Russian>
+                <German>Speichern</German>
+                <Chinesesimp>保存</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Notepad_Saved">
+                <Original>Saved %1</Original>
+                <English>Saved %1</English>
+                <French>%1 enregistré</French>
+                <Italian>%1 salvato</Italian>
+                <Russian>Saved %1</Russian>
+                <German>%1 gespeichert</German>
+                <Chinesesimp>已保存%1</Chinesesimp>
+            </Key>
             <Key ID="STR_AE3_Desktop_Settings_SwitchCli">
                 <Original>Switch to CLI terminal (next use)</Original>
                 <English>Switch to CLI terminal (next use)</English>
@@ -82,6 +577,24 @@
                 <Russian>Theme (double-click to apply)</Russian>
                 <German>Thema (Doppelklick zum Anwenden)</German>
                 <Chinesesimp>主题(双击应用)</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Settings_Wallpaper">
+                <Original>Wallpaper (double-click to apply)</Original>
+                <English>Wallpaper (double-click to apply)</English>
+                <French>Fond d'écran (double-cliquez pour appliquer)</French>
+                <Italian>Sfondo (doppio clic per applicare)</Italian>
+                <Russian>Wallpaper (double-click to apply)</Russian>
+                <German>Hintergrundbild (Doppelklick zum Anwenden)</German>
+                <Chinesesimp>壁纸(双击应用)</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Settings_WallpaperNone">
+                <Original>None (theme color)</Original>
+                <English>None (theme color)</English>
+                <French>Aucun (couleur du thème)</French>
+                <Italian>Nessuno (colore del tema)</Italian>
+                <Russian>None (theme color)</Russian>
+                <German>Keins (Themenfarbe)</German>
+                <Chinesesimp>无(主题颜色)</Chinesesimp>
             </Key>
             <Key ID="STR_AE3_Desktop_Theme_Dark">
                 <Original>Dark</Original>

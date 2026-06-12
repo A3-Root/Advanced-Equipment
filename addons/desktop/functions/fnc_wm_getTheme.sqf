@@ -26,8 +26,12 @@ if (!isClass _cfg) then
 	_cfg = configFile >> "CfgAE3Themes" >> "Dark";
 };
 
+private _font = getText (_cfg >> "font");
+if (_font isEqualTo "") then { _font = "RobotoCondensed"; };
+
 createHashMapFromArray [
 	["name", _themeName],
+	["font", _font],
 	["wallpaper", getArray (_cfg >> "wallpaperColor")],
 	["panel", getArray (_cfg >> "panelColor")],
 	["window", getArray (_cfg >> "windowColor")],

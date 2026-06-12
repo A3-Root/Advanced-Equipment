@@ -83,6 +83,59 @@ marker file in the laptop filesystem; opening it in the Files app (or `cat` show
 marker) plays/displays the media. Note: the engine cannot enumerate files inside mods at
 runtime - media must be registered with explicit paths.
 
+## Planting intel (mission makers)
+
+Every desktop app reads from plain virtual-filesystem files with documented formats, so the
+existing **Zeus AddFile module**, **3DEN AddFile module** and `AE3_filesystem_fnc_device_addFile`
+all work as universal intel tools - plus dedicated APIs (all callable from any machine, JIP-safe):
+
+| Intel | Found in | File / format | API |
+|-------|----------|---------------|-----|
+| Documents | Files, Notepad, `cat` | any text file | `device_addFile` / AddFile module |
+| Images / video / audio | Files app viewers | `AE3_MEDIA\|<type>\|<path>` marker | `AE3_desktop_fnc_registerMedia` |
+| Emails | Mail app | `/var/mail/<name>`: `From:` / `Subject:` headers + blank line + body | `AE3_desktop_fnc_addEmail [target\|"all", from, subject, body]` |
+| Chat messages | Chat app, `cat /var/mail/inbox` | `/var/mail/inbox`, one line per message | `msg` command / `ae3_network_imSend` |
+| Webpages | Browser app (custom URLs) | global registry | `AE3_desktop_fnc_registerWebpage [url, title, lines]` |
+| Browser history | Browser app History, `cat /var/log/browser_history` | `[HH:MM] url` per line | `AE3_desktop_fnc_addHistoryEntry [target\|"all", url, time]` |
+| Calendar entries | Calendar app | `/home/user/calendar`: `DATE \| TITLE \| DETAILS` per line | `AE3_desktop_fnc_addCalendarEvent [target\|"all", date, title, details]` |
+
+### Zeus / 3DEN: "AE3: Add Intel" module
+
+The **AE3: Add Intel** module (Zeus and 3DEN, category AE3) covers all of the above without
+scripting: pick the type (email / webpage / history / calendar / media) and fill three fields
+(labels adapt to the type). Placed on a laptop it targets that laptop; placed anywhere else it
+targets **all** laptops (in 3DEN you can also sync the module to specific laptops). Webpage
+content supports `|` for line breaks and `[[url|label]]` link tokens.
+
+### Browser pages and links
+
+Page content lines may contain `[[url|label]]` tokens - they render as underlined text and
+appear as clickable link buttons under the page. The browser has Back and session history;
+`home.root` lists all registered pages as links. Every visit lands in
+`/var/log/browser_history`.
+
+### CCTV cameras
+
+```sqf
+["Compound Gate", _cctvProp] call AE3_desktop_fnc_registerCamera; // optional: offset, direction
+```
+
+Registered cameras are viewable in the CCTV desktop app (local render-to-texture on the
+viewing client only - no network traffic).
+
+Example mission setup:
+
+```sqf
+["intel.root/convoys", "Convoy Schedule", ["0400 - Route Red", "0600 - Route Blue"]] call AE3_desktop_fnc_registerWebpage;
+[_laptop, "intel.root/convoys", "02:47"] call AE3_desktop_fnc_addHistoryEntry;   // "they looked this up"
+[_laptop, "informant", "Meeting", "Safehouse, sector C4, 0300."] call AE3_desktop_fnc_addEmail;
+[_laptop, "2035-06-24 04:00", "Convoy departs", "Route Red, 3 trucks"] call AE3_desktop_fnc_addCalendarEvent;
+["\myMod\img\map_photo.paa", "image", "/home/user/photo.paa", [_laptop]] call AE3_desktop_fnc_registerMedia;
+```
+
+Customization: themes (colors + font per theme, 3 built in, extendable via `CfgAE3Themes`),
+per-laptop wallpaper picked in Settings from registered images, per-laptop theme selection.
+
 ## Interface mode
 
 Per-laptop CLI/GUI selection:

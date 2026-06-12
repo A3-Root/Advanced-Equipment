@@ -140,8 +140,18 @@ _listCtrl ctrlAddEventHandler ["LBDblClick", {
 	}
 	else
 	{
-		// file - open with the type dispatcher
-		[_computer, "/" + ((_path + [_name]) joinString "/"), _obj select 0] call AE3_desktop_fnc_openFile;
+		// file - text files open in Notepad (editable), everything else via the dispatcher
+		private _fullPath = "/" + ((_path + [_name]) joinString "/");
+		private _content = _obj select 0;
+
+		if (_content isEqualType "" && {(_content select [0, 10]) isNotEqualTo "AE3_MEDIA|"}) then
+		{
+			["Notepad", [_fullPath]] call AE3_desktop_fnc_wm_createWindow;
+		}
+		else
+		{
+			[_computer, _fullPath, _content] call AE3_desktop_fnc_openFile;
+		};
 	};
 }];
 

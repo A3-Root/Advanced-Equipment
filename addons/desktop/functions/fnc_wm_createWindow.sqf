@@ -71,6 +71,7 @@ _titlebar ctrlSetPosition [0, 0, _w - 0.05, 0.04];
 _titlebar ctrlSetText _displayName;
 _titlebar ctrlSetBackgroundColor (_theme get "titlebar");
 _titlebar ctrlSetTextColor (_theme get "text");
+_titlebar ctrlSetFont (_theme getOrDefault ["font", "RobotoCondensed"]);
 _titlebar ctrlCommit 0;
 
 private _closeBtn = _display ctrlCreate ["RscButton", -1, _group];
