@@ -35,6 +35,33 @@ class CfgVehicles
 				condition = "1"; // Condition for attribute to appear (see the table below)
 				typeName = "NUMBER"; // Defines data type of saved value, can be STRING, NUMBER or BOOL. Used only when control is "Combo", "Edit" or their variants
 			};
+
+			class AE3_EdenAttribute_InterfaceMode
+			{
+				displayName = "$STR_AE3_ArmaOS_EdenAttributes_GuiModeDisplayName"; // Name assigned to UI control class Title
+				tooltip = "$STR_AE3_ArmaOS_EdenAttributes_GuiModeTooltip"; // Tooltip assigned to UI control class Title
+				property = "AE3_EdenAttribute_InterfaceMode"; // Unique config property name saved in SQM
+				control = "Combo"; // UI control base class displayed in Edit Attributes window
+
+				// Which interfaces this laptop offers; 'default' keeps the mission-wide
+				// CBA setting AE3_Desktop_DefaultMode. Who may use which interface is
+				// controlled via AE3_desktop_fnc_setInterfaceAccess (see GUI-Laptop-Guide).
+				expression = "if (_value != 'default') then { _this setVariable ['AE3_interfaceMode', _value, true]; };";
+
+				defaultValue = """default""";
+
+				unique = 0;
+				condition = "1";
+				typeName = "STRING";
+
+				class Values
+				{
+					class ModeDefault { name = "$STR_AE3_ArmaOS_EdenAttributes_ModeDefault"; value = "default"; };
+					class ModeCli     { name = "CLI";  value = "cli"; };
+					class ModeGui     { name = "GUI";  value = "gui"; };
+					class ModeBoth    { name = "$STR_AE3_ArmaOS_EdenAttributes_ModeBoth"; value = "both"; };
+				};
+			};
 		};
 
 		class AE3_Equipment
@@ -165,6 +192,33 @@ class CfgVehicles
 				condition = "1"; // Condition for attribute to appear (see the table below)
 				typeName = "NUMBER"; // Defines data type of saved value, can be STRING, NUMBER or BOOL. Used only when control is "Combo", "Edit" or their variants
 			};
+
+			class AE3_EdenAttribute_InterfaceMode
+			{
+				displayName = "$STR_AE3_ArmaOS_EdenAttributes_GuiModeDisplayName"; // Name assigned to UI control class Title
+				tooltip = "$STR_AE3_ArmaOS_EdenAttributes_GuiModeTooltip"; // Tooltip assigned to UI control class Title
+				property = "AE3_EdenAttribute_InterfaceMode"; // Unique config property name saved in SQM
+				control = "Combo"; // UI control base class displayed in Edit Attributes window
+
+				// Which interfaces this laptop offers; 'default' keeps the mission-wide
+				// CBA setting AE3_Desktop_DefaultMode. Who may use which interface is
+				// controlled via AE3_desktop_fnc_setInterfaceAccess (see GUI-Laptop-Guide).
+				expression = "if (_value != 'default') then { _this setVariable ['AE3_interfaceMode', _value, true]; };";
+
+				defaultValue = """default""";
+
+				unique = 0;
+				condition = "1";
+				typeName = "STRING";
+
+				class Values
+				{
+					class ModeDefault { name = "$STR_AE3_ArmaOS_EdenAttributes_ModeDefault"; value = "default"; };
+					class ModeCli     { name = "CLI";  value = "cli"; };
+					class ModeGui     { name = "GUI";  value = "gui"; };
+					class ModeBoth    { name = "$STR_AE3_ArmaOS_EdenAttributes_ModeBoth"; value = "both"; };
+				};
+			};
 		};
 
 		class AE3_Equipment
@@ -294,6 +348,33 @@ class CfgVehicles
 				validate = "number"; // Validate the value before saving. If the value is not of given type e.g. "number", the default value will be set. Can be "none", "expression", "condition", "number" or "variable"
 				condition = "1"; // Condition for attribute to appear (see the table below)
 				typeName = "NUMBER"; // Defines data type of saved value, can be STRING, NUMBER or BOOL. Used only when control is "Combo", "Edit" or their variants
+			};
+
+			class AE3_EdenAttribute_InterfaceMode
+			{
+				displayName = "$STR_AE3_ArmaOS_EdenAttributes_GuiModeDisplayName"; // Name assigned to UI control class Title
+				tooltip = "$STR_AE3_ArmaOS_EdenAttributes_GuiModeTooltip"; // Tooltip assigned to UI control class Title
+				property = "AE3_EdenAttribute_InterfaceMode"; // Unique config property name saved in SQM
+				control = "Combo"; // UI control base class displayed in Edit Attributes window
+
+				// Which interfaces this laptop offers; 'default' keeps the mission-wide
+				// CBA setting AE3_Desktop_DefaultMode. Who may use which interface is
+				// controlled via AE3_desktop_fnc_setInterfaceAccess (see GUI-Laptop-Guide).
+				expression = "if (_value != 'default') then { _this setVariable ['AE3_interfaceMode', _value, true]; };";
+
+				defaultValue = """default""";
+
+				unique = 0;
+				condition = "1";
+				typeName = "STRING";
+
+				class Values
+				{
+					class ModeDefault { name = "$STR_AE3_ArmaOS_EdenAttributes_ModeDefault"; value = "default"; };
+					class ModeCli     { name = "CLI";  value = "cli"; };
+					class ModeGui     { name = "GUI";  value = "gui"; };
+					class ModeBoth    { name = "$STR_AE3_ArmaOS_EdenAttributes_ModeBoth"; value = "both"; };
+				};
 			};
 		};
 

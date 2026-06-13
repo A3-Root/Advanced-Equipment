@@ -22,6 +22,26 @@ params ["_display", "_exitCode"];
 private _session = uiNamespace getVariable ["AE3_desktop_session", createHashMap];
 private _computer = _session getOrDefault ["computer", objNull];
 
+// Persist the session: open windows, their positions and app state (open paths, urls,
+// unsaved notes, ...) so the next user finds the laptop exactly as it was left
+private _desktopState = [];
+{
+	private _callbacks = _y getOrDefault ["callbacks", createHashMap];
+	private _group = _y getOrDefault ["group", controlNull];
+
+	private _stateData = _callbacks call (_callbacks getOrDefault ["getState", { nil }]);
+	if (isNil "_stateData") then { _stateData = []; };
+
+	private _pos = if (isNull _group) then { [] } else { (ctrlPosition _group) select [0, 2] };
+
+	_desktopState pushBack [_y getOrDefault ["app", ""], _pos, _stateData];
+} forEach (_session getOrDefault ["windows", createHashMap]);
+
+if (!isNull _computer) then
+{
+	_computer setVariable ["AE3_desktopState", _desktopState, true];
+};
+
 // Run app close callbacks
 {
 	private _callbacks = _y getOrDefault ["callbacks", createHashMap];

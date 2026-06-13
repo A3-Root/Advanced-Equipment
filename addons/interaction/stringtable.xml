@@ -193,14 +193,14 @@
                 <German>Öffnen</German>
                 <Chinesesimp>打开</Chinesesimp>
             </Key>
-            <Key ID="STR_AE3_Interaction_SwitchInterface">
-                <Original>Switch Interface (CLI/GUI)</Original>
-                <English>Switch Interface (CLI/GUI)</English>
-                <French>Changer d'interface (CLI/GUI)</French>
-                <Italian>Cambia interfaccia (CLI/GUI)</Italian>
-                <Russian>Switch Interface (CLI/GUI)</Russian>
-                <German>Oberfläche wechseln (CLI/GUI)</German>
-                <Chinesesimp>切换界面(CLI/GUI)</Chinesesimp>
+            <Key ID="STR_AE3_Interaction_UseDesktop">
+                <Original>Use Desktop</Original>
+                <English>Use Desktop</English>
+                <French>Utiliser le bureau</French>
+                <Italian>Usa il desktop</Italian>
+                <Russian>Use Desktop</Russian>
+                <German>Desktop verwenden</German>
+                <Chinesesimp>使用桌面</Chinesesimp>
             </Key>
         </Container>
     </Package>

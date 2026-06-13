@@ -82,6 +82,7 @@ if (isServer) then
 
 	// Client-routed interface mode changes
 	["ae3_desktop_setInterfaceMode", { _this call AE3_desktop_fnc_setInterfaceMode }] call CBA_fnc_addEventHandler;
+	["ae3_desktop_setInterfaceAccess", { _this call AE3_desktop_fnc_setInterfaceAccess }] call CBA_fnc_addEventHandler;
 
 	// Client-routed intel APIs (email, webpages, browser history, calendar)
 	["ae3_desktop_addEmail", { _this call AE3_desktop_fnc_addEmail }] call CBA_fnc_addEventHandler;
@@ -89,4 +90,5 @@ if (isServer) then
 	["ae3_desktop_addHistoryEntry", { _this call AE3_desktop_fnc_addHistoryEntry }] call CBA_fnc_addEventHandler;
 	["ae3_desktop_addCalendarEvent", { _this call AE3_desktop_fnc_addCalendarEvent }] call CBA_fnc_addEventHandler;
 	["ae3_desktop_registerCamera", { _this call AE3_desktop_fnc_registerCamera }] call CBA_fnc_addEventHandler;
+	["ae3_desktop_addLockedFile", { _this call AE3_desktop_fnc_addLockedFile }] call CBA_fnc_addEventHandler;
 };

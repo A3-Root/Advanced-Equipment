@@ -228,6 +228,13 @@ class CfgOsFunctions
 		man = "$STR_AE3_ArmaOS_Config_CommandMsgMan";
 		code = "call AE3_armaos_fnc_os_msg";
 	};
+	class unlock : OsFunction
+	{
+		path = "/bin/unlock";
+		description = "$STR_AE3_ArmaOS_Config_CommandUnlockDescr";
+		man = "$STR_AE3_ArmaOS_Config_CommandUnlockMan";
+		code = "call AE3_armaos_fnc_os_unlock";
+	};
 	class grep : OsFunction
 	{
 		path = "/bin/grep";

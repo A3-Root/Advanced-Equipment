@@ -59,7 +59,7 @@ _listCtrl ctrlCommit 0;
 /* state + refresh logic stored on the list control */
 
 _listCtrl setVariable ["AE3_computer", _computer];
-_listCtrl setVariable ["AE3_path", []];
+_listCtrl setVariable ["AE3_path", + (_args param [0, []])]; // restored session path, if any
 _listCtrl setVariable ["AE3_pathCtrl", _pathCtrl];
 
 private _refresh = {
@@ -140,19 +140,36 @@ _listCtrl ctrlAddEventHandler ["LBDblClick", {
 	}
 	else
 	{
-		// file - text files open in Notepad (editable), everything else via the dispatcher
+		// file - locked files prompt for a password, text files open in Notepad (editable),
+		// everything else via the dispatcher
 		private _fullPath = "/" + ((_path + [_name]) joinString "/");
 		private _content = _obj select 0;
 
-		if (_content isEqualType "" && {(_content select [0, 10]) isNotEqualTo "AE3_MEDIA|"}) then
+		(([_content] call AE3_armaos_fnc_shell_parseLockedFile)) params ["_isLocked", "_filePassword", "_payload"];
+
+		switch (true) do
 		{
-			["Notepad", [_fullPath]] call AE3_desktop_fnc_wm_createWindow;
-		}
-		else
-		{
-			[_computer, _fullPath, _content] call AE3_desktop_fnc_openFile;
+			case (_isLocked):
+			{
+				[_computer, _fullPath, _filePassword, _payload] call AE3_desktop_fnc_promptUnlock;
+			};
+			case (_content isEqualType "" && {(_content select [0, 10]) isNotEqualTo "AE3_MEDIA|"}):
+			{
+				["Notepad", [_fullPath]] call AE3_desktop_fnc_wm_createWindow;
+			};
+			default
+			{
+				[_computer, _fullPath, _content] call AE3_desktop_fnc_openFile;
+			};
 		};
 	};
 }];
 
-createHashMap
+createHashMapFromArray [
+	["listCtrl", _listCtrl],
+	["getState", {
+		private _ctrl = _this getOrDefault ["listCtrl", controlNull];
+		if (isNull _ctrl) exitWith { [] };
+		[+ (_ctrl getVariable ["AE3_path", []])]
+	}]
+]

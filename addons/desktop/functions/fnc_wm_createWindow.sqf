@@ -9,6 +9,7 @@
  * Arguments:
  * 0: _appClass <STRING> - App id (CfgAE3Apps class name or runtime-registered id)
  * 1: _args <ANY> (Optional, default: []) - Passed to the app entry function
+ * 2: _restorePos <ARRAY> (Optional) - Window position [x, y] (used when restoring a session)
  *
  * Return Value:
  * Window id, -1 on failure <NUMBER>
@@ -19,7 +20,7 @@
  * Public: Yes
  */
 
-params ["_appClass", ["_args", []]];
+params ["_appClass", ["_args", []], ["_restorePos", []]];
 
 private _session = uiNamespace getVariable ["AE3_desktop_session", createHashMap];
 private _display = _session getOrDefault ["display", displayNull];
@@ -49,11 +50,17 @@ private _theme = _session get "theme";
 private _winId = _session get "nextWinId";
 _session set ["nextWinId", _winId + 1];
 
-// Cascade new windows
+// Cascade new windows (or restore the saved position of a previous session)
 private _w = safeZoneW * _sizeW;
 private _h = safeZoneH * _sizeH;
 private _x = safeZoneX + 0.18 + 0.02 * (_winId mod 8);
 private _y = safeZoneY + 0.06 + 0.02 * (_winId mod 8);
+
+if (_restorePos isNotEqualTo []) then
+{
+	_x = _restorePos param [0, _x];
+	_y = _restorePos param [1, _y];
+};
 
 private _group = _display ctrlCreate ["RscControlsGroupNoScrollbars", -1];
 _group ctrlSetPosition [_x, _y, _w, _h];

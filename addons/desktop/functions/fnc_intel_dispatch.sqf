@@ -10,6 +10,7 @@
  *  "history"  - f1: URL,  f2: Time (optional, "HH:MM")
  *  "calendar" - f1: Date, f2: Title,   f3: Details
  *  "media"    - f1: Source path, f2: image|video|audio, f3: filesystem destination
+ *  "lockedfile" - f1: filesystem path, f2: password, f3: content ("|" not allowed in password)
  *
  * Arguments:
  * 0: _type <STRING> - See above
@@ -53,6 +54,10 @@ switch (toLower _type) do
 	{
 		private _targets = if (_target isEqualType objNull) then { [_target] } else { _target };
 		[_f1, _f2, _f3, _targets] call AE3_desktop_fnc_registerMedia;
+	};
+	case "lockedfile":
+	{
+		[_target, _f1, _f2, _f3] call AE3_desktop_fnc_addLockedFile;
 	};
 	default
 	{

@@ -136,14 +136,18 @@ Example mission setup:
 Customization: themes (colors + font per theme, 3 built in, extendable via `CfgAE3Themes`),
 per-laptop wallpaper picked in Settings from registered images, per-laptop theme selection.
 
-## Interface mode
+## Interface mode and access control
 
-Per-laptop CLI/GUI selection:
+Per-laptop interface selection and access are mission-maker / framework controlled — players
+cannot switch:
 
 ```sqf
-[_laptop, "gui"] call AE3_desktop_fnc_setInterfaceMode; // or "cli"
+[_laptop, "both"] call AE3_desktop_fnc_setInterfaceMode;   // "cli" | "gui" | "both"
+[_laptop, "gui", [west]] call AE3_desktop_fnc_setInterfaceAccess;            // sides/UIDs
+[_laptop, "gui", { (_this select 1) getVariable ["hasKey", false] }] call AE3_desktop_fnc_setInterfaceAccess; // CODE
+[_laptop, player, "gui"] call AE3_desktop_fnc_canAccessInterface;            // the check, public
 ```
 
-Also available via the ACE interaction "Switch Interface (CLI/GUI)" on the laptop and the
+Also available as the 3DEN laptop attribute "Interface (CLI / GUI / Both)" and the
 `AE3_Desktop_DefaultMode` CBA setting. While the desktop is in use, other players see a
 static lock screen on the laptop texture (zero GUI sync traffic by design).

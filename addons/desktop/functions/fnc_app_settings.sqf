@@ -96,23 +96,8 @@ _wpListCtrl ctrlAddEventHandler ["LBDblClick", {
 	};
 }];
 
-/* ---------------------------------------- */
-
-private _modeBtn = _display ctrlCreate ["RscButton", -1, _ctrlGroup];
-_modeBtn ctrlSetPosition [0.01, _h - 0.085, _w - 0.02, 0.04];
-_modeBtn ctrlSetText (localize "STR_AE3_Desktop_Settings_SwitchCli");
-_modeBtn ctrlSetBackgroundColor (_theme getOrDefault ["titlebar", [0,0,0,1]]);
-_modeBtn ctrlSetTextColor (_theme getOrDefault ["text", [1,1,1,1]]);
-_modeBtn ctrlCommit 0;
-
-_modeBtn setVariable ["AE3_computer", _computer];
-_modeBtn ctrlAddEventHandler ["ButtonClick", {
-	params ["_button"];
-	private _computer = _button getVariable "AE3_computer";
-
-	// Next interaction opens the classic CLI terminal
-	[_computer, "cli"] call AE3_desktop_fnc_setInterfaceMode;
-	(ctrlParent _button) closeDisplay 1;
-}];
+// NOTE: there is intentionally no interface-switch control here - which interfaces a
+// laptop offers (and to whom) is decided by the mission maker via AE3_interfaceMode and
+// the AE3_*AccessCondition variables (see AE3_desktop_fnc_canAccessInterface).
 
 createHashMap

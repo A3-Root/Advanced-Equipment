@@ -52,9 +52,17 @@ private _result = [];
 	{
 		private _content = [_pointer, _filesystem, _path, _username, 0] call AE3_filesystem_fnc_getFile;
 
-		if(!(_content isEqualType "")) exitWith 
+		if(!(_content isEqualType "")) exitWith
 		{
 			_result pushBack (format [localize "STR_AE3_ArmaOS_Exception_UnableToRead", _path]);
+			_result;
+		};
+
+		// Password-protected files are not readable with cat
+		(([_content] call AE3_armaos_fnc_shell_parseLockedFile)) params ["_locked"];
+		if (_locked) exitWith
+		{
+			_result pushBack (format [localize "STR_AE3_ArmaOS_Unlock_LockedNotice", _path]);
 			_result;
 		};
 

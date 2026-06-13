@@ -627,6 +627,15 @@
                 <German>nicht übereinstimmende Zeilen auswählen</German>
                 <Chinesesimp>选择不匹配的行</Chinesesimp>
             </Key>
+            <Key ID="STR_AE3_ArmaOS_CommandHelp_Unlock_permanent">
+                <Original>permanently remove the protection (rewrites the file)</Original>
+                <English>permanently remove the protection (rewrites the file)</English>
+                <French>supprimer définitivement la protection (réécrit le fichier)</French>
+                <Italian>rimuove definitivamente la protezione (riscrive il file)</Italian>
+                <Russian>permanently remove the protection (rewrites the file)</Russian>
+                <German>Schutz dauerhaft entfernen (Datei wird neu geschrieben)</German>
+                <Chinesesimp>永久移除保护(重写文件)</Chinesesimp>
+            </Key>
             <Key ID="STR_AE3_ArmaOS_Config_AddGamesDisplayName">
                 <Original>AE3 Add Games</Original>
                 <English>AE3 Add Games</English>
@@ -1221,6 +1230,24 @@
                 <German>Verwendung umount: 'umount [Name]' hängt USB Stick in gegebenem Port aus.</German>
                 <Chinesesimp>umount说明: 'umount [interface name]'卸载给定的接口.</Chinesesimp>
             </Key>
+            <Key ID="STR_AE3_ArmaOS_Config_CommandUnlockDescr">
+                <Original>Open a password-protected file.</Original>
+                <English>Open a password-protected file.</English>
+                <French>Ouvre un fichier protégé par mot de passe.</French>
+                <Italian>Apre un file protetto da password.</Italian>
+                <Russian>Open a password-protected file.</Russian>
+                <German>Öffnet eine passwortgeschützte Datei.</German>
+                <Chinesesimp>打开受密码保护的文件.</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_ArmaOS_Config_CommandUnlockMan">
+                <Original>Usage unlock: 'unlock FILEPATH PASSWORD' prints the protected content. 'unlock -p FILEPATH PASSWORD' permanently removes the protection (requires write permission).</Original>
+                <English>Usage unlock: 'unlock FILEPATH PASSWORD' prints the protected content. 'unlock -p FILEPATH PASSWORD' permanently removes the protection (requires write permission).</English>
+                <French>Utilisation unlock : 'unlock FICHIER MOTDEPASSE' affiche le contenu protégé. 'unlock -p FICHIER MOTDEPASSE' supprime définitivement la protection.</French>
+                <Italian>Utilizzo unlock: 'unlock FILE PASSWORD' stampa il contenuto protetto. 'unlock -p FILE PASSWORD' rimuove definitivamente la protezione.</Italian>
+                <Russian>Usage unlock: 'unlock FILEPATH PASSWORD' prints the protected content. 'unlock -p FILEPATH PASSWORD' permanently removes the protection.</Russian>
+                <German>Verwendung unlock: 'unlock DATEI PASSWORT' gibt den geschützten Inhalt aus. 'unlock -p DATEI PASSWORT' entfernt den Schutz dauerhaft.</German>
+                <Chinesesimp>unlock说明:'unlock 文件 密码'打印受保护的内容.'unlock -p 文件 密码'永久移除保护.</Chinesesimp>
+            </Key>
             <Key ID="STR_AE3_ArmaOS_Config_CommandWhoamiDescr">
                 <Original>Returns the current user.</Original>
                 <English>Returns the current user.</English>
@@ -1346,6 +1373,42 @@
                 <Russian>Имя авторизованного пользователя, например 'admin', 'guest' or 'stavros'</Russian>
                 <German>Name eines authorisierten Benutzers, zum Beispiel 'admin', 'guest' oder 'stavros'</German>
                 <Chinesesimp>授权用户的名称,例如'admin','guest'或'stavros'.</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_ArmaOS_EdenAttributes_GuiModeDisplayName">
+                <Original>Interface (CLI / GUI / Both)</Original>
+                <English>Interface (CLI / GUI / Both)</English>
+                <French>Interface (CLI / GUI / Les deux)</French>
+                <Italian>Interfaccia (CLI / GUI / Entrambe)</Italian>
+                <Russian>Interface (CLI / GUI / Both)</Russian>
+                <German>Oberfläche (CLI / GUI / Beide)</German>
+                <Chinesesimp>界面(CLI / GUI / 两者)</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_ArmaOS_EdenAttributes_GuiModeTooltip">
+                <Original>Which interfaces this laptop offers. Default uses the AE3_Desktop_DefaultMode CBA setting. Per-player access is controlled by the mission maker (AE3_desktop_fnc_setInterfaceAccess).</Original>
+                <English>Which interfaces this laptop offers. Default uses the AE3_Desktop_DefaultMode CBA setting. Per-player access is controlled by the mission maker (AE3_desktop_fnc_setInterfaceAccess).</English>
+                <French>Interfaces offertes par cet ordinateur. Default utilise le paramètre CBA AE3_Desktop_DefaultMode. L'accès par joueur est contrôlé par le créateur de mission.</French>
+                <Italian>Quali interfacce offre questo laptop. Default usa l'impostazione CBA AE3_Desktop_DefaultMode. L'accesso per giocatore è controllato dal mission maker.</Italian>
+                <Russian>Which interfaces this laptop offers. Default uses the AE3_Desktop_DefaultMode CBA setting.</Russian>
+                <German>Welche Oberflächen dieser Laptop anbietet. Default nutzt die CBA-Einstellung AE3_Desktop_DefaultMode. Der Zugriff pro Spieler wird vom Missionsbauer gesteuert.</German>
+                <Chinesesimp>此笔记本电脑提供的界面.Default使用AE3_Desktop_DefaultMode CBA设置.每个玩家的访问权限由任务制作者控制.</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_ArmaOS_EdenAttributes_ModeBoth">
+                <Original>Both (CLI + GUI)</Original>
+                <English>Both (CLI + GUI)</English>
+                <French>Les deux (CLI + GUI)</French>
+                <Italian>Entrambe (CLI + GUI)</Italian>
+                <Russian>Both (CLI + GUI)</Russian>
+                <German>Beide (CLI + GUI)</German>
+                <Chinesesimp>两者(CLI + GUI)</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_ArmaOS_EdenAttributes_ModeDefault">
+                <Original>Default (CBA setting)</Original>
+                <English>Default (CBA setting)</English>
+                <French>Défaut (paramètre CBA)</French>
+                <Italian>Predefinito (impostazione CBA)</Italian>
+                <Russian>Default (CBA setting)</Russian>
+                <German>Standard (CBA-Einstellung)</German>
+                <Chinesesimp>默认(CBA设置)</Chinesesimp>
             </Key>
             <Key ID="STR_AE3_ArmaOS_Msg_Sent">
                 <Original>Message sent to %1</Original>
@@ -1499,6 +1562,42 @@
                 <Russian>Transferring %1 KB at %2 KB/s ...</Russian>
                 <German>Übertrage %1 KB mit %2 KB/s ...</German>
                 <Chinesesimp>正在以%2 KB/s传输%1 KB ...</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_ArmaOS_Unlock_LockedNotice">
+                <Original>%1: password protected - use: unlock %1 PASSWORD</Original>
+                <English>%1: password protected - use: unlock %1 PASSWORD</English>
+                <French>%1 : protégé par mot de passe - utilisez : unlock %1 MOTDEPASSE</French>
+                <Italian>%1: protetto da password - usa: unlock %1 PASSWORD</Italian>
+                <Russian>%1: password protected - use: unlock %1 PASSWORD</Russian>
+                <German>%1: passwortgeschützt - verwenden: unlock %1 PASSWORT</German>
+                <Chinesesimp>%1: 受密码保护 - 使用: unlock %1 密码</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_ArmaOS_Unlock_NotLocked">
+                <Original>%1 is not password protected</Original>
+                <English>%1 is not password protected</English>
+                <French>%1 n'est pas protégé par mot de passe</French>
+                <Italian>%1 non è protetto da password</Italian>
+                <Russian>%1 is not password protected</Russian>
+                <German>%1 ist nicht passwortgeschützt</German>
+                <Chinesesimp>%1未受密码保护</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_ArmaOS_Unlock_Permanent">
+                <Original>%1 unlocked permanently</Original>
+                <English>%1 unlocked permanently</English>
+                <French>%1 déverrouillé définitivement</French>
+                <Italian>%1 sbloccato definitivamente</Italian>
+                <Russian>%1 unlocked permanently</Russian>
+                <German>%1 dauerhaft entsperrt</German>
+                <Chinesesimp>%1已永久解锁</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_ArmaOS_Unlock_WrongPassword">
+                <Original>unlock: wrong password. This incident will be reported.</Original>
+                <English>unlock: wrong password. This incident will be reported.</English>
+                <French>unlock : mot de passe incorrect. Cet incident sera signalé.</French>
+                <Italian>unlock: password errata. L'incidente verrà segnalato.</Italian>
+                <Russian>unlock: wrong password. This incident will be reported.</Russian>
+                <German>unlock: falsches Passwort. Dieser Vorfall wird gemeldet.</German>
+                <Chinesesimp>unlock: 密码错误.此事件将被报告.</Chinesesimp>
             </Key>
         </Container>
         <Container name="Crack">

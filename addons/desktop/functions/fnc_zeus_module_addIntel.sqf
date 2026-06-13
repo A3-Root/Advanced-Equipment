@@ -45,7 +45,8 @@ if (_event isEqualTo "onLoad") exitWith
 		["webpage", localize "STR_AE3_Desktop_Intel_Webpage"],
 		["history", localize "STR_AE3_Desktop_Intel_History"],
 		["calendar", localize "STR_AE3_Desktop_Intel_Calendar"],
-		["media", localize "STR_AE3_Desktop_Intel_Media"]
+		["media", localize "STR_AE3_Desktop_Intel_Media"],
+		["lockedfile", localize "STR_AE3_Desktop_Intel_LockedFile"]
 	];
 	_combo lbSetCurSel 0;
 
@@ -59,6 +60,7 @@ if (_event isEqualTo "onLoad") exitWith
 			case "history":  { [localize "STR_AE3_Desktop_Intel_LabelUrl", localize "STR_AE3_Desktop_Intel_LabelTime", ""] };
 			case "calendar": { [localize "STR_AE3_Desktop_Intel_LabelDate", localize "STR_AE3_Desktop_Intel_LabelTitle", localize "STR_AE3_Desktop_Intel_LabelDetails"] };
 			case "media":    { [localize "STR_AE3_Desktop_Intel_LabelSource", localize "STR_AE3_Desktop_Intel_LabelMediaType", localize "STR_AE3_Desktop_Intel_LabelDest"] };
+			case "lockedfile": { [localize "STR_AE3_Desktop_Intel_LabelDest", localize "STR_AE3_Desktop_Intel_LabelPassword", localize "STR_AE3_Desktop_Intel_LabelContent"] };
 			default          { [localize "STR_AE3_Desktop_Intel_LabelFrom", localize "STR_AE3_Desktop_Intel_LabelSubject", localize "STR_AE3_Desktop_Intel_LabelBody"] };
 		};
 		(_display displayCtrl 1710) ctrlSetText (_labels select 0);

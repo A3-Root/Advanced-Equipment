@@ -131,4 +131,21 @@ if ((_args param [0, ""]) isNotEqualTo "") then
 	};
 };
 
-createHashMap
+// Restored session: unsaved editor text from the previous user takes precedence
+private _restoredText = _args param [1, ""];
+if (_restoredText isNotEqualTo "") then
+{
+	_editCtrl ctrlSetText _restoredText;
+	_statusCtrl ctrlSetText (localize "STR_AE3_Desktop_Notepad_Restored");
+};
+
+createHashMapFromArray [
+	["pathCtrl", _pathCtrl],
+	["editCtrl", _editCtrl],
+	["getState", {
+		private _pathCtrl = _this getOrDefault ["pathCtrl", controlNull];
+		private _editCtrl = _this getOrDefault ["editCtrl", controlNull];
+		if (isNull _pathCtrl || isNull _editCtrl) exitWith { [] };
+		[ctrlText _pathCtrl, ctrlText _editCtrl]
+	}]
+]

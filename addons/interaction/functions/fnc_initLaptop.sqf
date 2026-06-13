@@ -92,7 +92,12 @@ if(!isDedicated) then
             _parentPath = ["ACE_MainActions"];
         };
 
-        // Add "Use Terminal" action directly under Laptop action (no submenu)
+        // The available interfaces (CLI terminal / GUI desktop) and who may use them are
+        // decided by the mission maker (AE3_interfaceMode + AE3_*AccessCondition via
+        // AE3_desktop_fnc_setInterfaceMode / fnc_setInterfaceAccess) - there is intentionally
+        // no player-facing switch. Without the desktop addon, only the CLI action exists.
+
+        // "Use Terminal" (CLI)
         private _useAction =
         [
             "AE3_UseTerminalAction", // internal name
@@ -103,31 +108,57 @@ if(!isDedicated) then
                 params ["_target", "_player", "_params"];
 
                 _target setVariable ["AE3_computer_mutex", _player, true];
-
-                // Per-laptop interface mode: classic CLI terminal or the GUI desktop
-                private _mode = _target getVariable ["AE3_interfaceMode", missionNamespace getVariable ["AE3_Desktop_DefaultMode", "cli"]];
-                private _desktopFnc = missionNamespace getVariable ["AE3_desktop_fnc_desktop_open", {}];
-
-                if ((_mode isEqualTo "gui") && {_desktopFnc isNotEqualTo {}}) then
-                {
-                    [_target] spawn _desktopFnc;
-                }
-                else
-                {
-                    [_target] spawn AE3_armaos_fnc_terminal_init;
-                };
+                [_target] spawn AE3_armaos_fnc_terminal_init;
             },
             {
                 // condition
                 params ["_target", "_player", "_params"];
 
-                (alive _target) && (_target getVariable "AE3_power_powerState" == 1) &&
-                (isNull (_target getVariable ["AE3_computer_mutex", objNull]))
+                private _allowed = if (isNil "AE3_desktop_fnc_canAccessInterface") then
+                {
+                    true // desktop addon absent: classic behavior, CLI always available
+                }
+                else
+                {
+                    [_target, _player, "cli"] call AE3_desktop_fnc_canAccessInterface
+                };
+
+                _allowed &&
+                {alive _target} &&
+                {_target getVariable "AE3_power_powerState" == 1} &&
+                {isNull (_target getVariable ["AE3_computer_mutex", objNull])}
             }
         ] call ace_interact_menu_fnc_createAction;
         [_laptop, 0, _parentPath, _useAction] call ace_interact_menu_fnc_addActionToObject;
+
+        // "Use Desktop" (GUI) - only functional when the desktop addon is loaded
+        private _useDesktopAction =
+        [
+            "AE3_UseDesktopAction",
+            localize "STR_AE3_Interaction_UseDesktop",
+            "",
+            {
+                // statement
+                params ["_target", "_player", "_params"];
+
+                _target setVariable ["AE3_computer_mutex", _player, true];
+                [_target] spawn (missionNamespace getVariable ["AE3_desktop_fnc_desktop_open", {}]);
+            },
+            {
+                // condition
+                params ["_target", "_player", "_params"];
+
+                !isNil "AE3_desktop_fnc_canAccessInterface" &&
+                {[_target, _player, "gui"] call AE3_desktop_fnc_canAccessInterface} &&
+                {alive _target} &&
+                {_target getVariable "AE3_power_powerState" == 1} &&
+                {isNull (_target getVariable ["AE3_computer_mutex", objNull])}
+            }
+        ] call ace_interact_menu_fnc_createAction;
+        [_laptop, 0, _parentPath, _useDesktopAction] call ace_interact_menu_fnc_addActionToObject;
+
         if (AE3_DebugMode) then {
-            diag_log format ["[AE3 DEBUG] [%1] Added Use Terminal action for %2 under path: %3", time, _laptop, _parentPath];
+            diag_log format ["[AE3 DEBUG] [%1] Added Use Terminal/Desktop actions for %2 under path: %3", time, _laptop, _parentPath];
         };
 
         // Add "Pickup to Inventory" action
@@ -159,28 +190,6 @@ if(!isDedicated) then
         ] call ace_interact_menu_fnc_createAction;
         [_laptop, 0, _parentPath, _pickupAction] call ace_interact_menu_fnc_addActionToObject;
 
-        // Switch between CLI terminal and GUI desktop (only when the desktop addon is loaded)
-        private _switchAction =
-        [
-            "AE3_SwitchInterfaceAction",
-            localize "STR_AE3_Interaction_SwitchInterface",
-            "",
-            {
-                params ["_target", "_player", "_params"];
-
-                private _mode = _target getVariable ["AE3_interfaceMode", missionNamespace getVariable ["AE3_Desktop_DefaultMode", "cli"]];
-                private _newMode = ["gui", "cli"] select (_mode isEqualTo "gui");
-                [_target, _newMode] call (missionNamespace getVariable ["AE3_desktop_fnc_setInterfaceMode", {}]);
-            },
-            {
-                // condition - desktop addon loaded, laptop alive and not in use
-                params ["_target", "_player", "_params"];
-                !isNil "AE3_desktop_fnc_setInterfaceMode" &&
-                {alive _target} &&
-                {isNull (_target getVariable ["AE3_computer_mutex", objNull])}
-            }
-        ] call ace_interact_menu_fnc_createAction;
-        [_laptop, 0, _parentPath, _switchAction] call ace_interact_menu_fnc_addActionToObject;
         if (AE3_DebugMode) then {
             diag_log format ["[AE3 DEBUG] [%1] Added Pickup action for %2", time, _laptop];
 

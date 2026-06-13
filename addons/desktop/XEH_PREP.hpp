@@ -2,6 +2,8 @@
 PREP(desktop_open);
 PREP(desktop_onUnload);
 PREP(setInterfaceMode);
+PREP(setInterfaceAccess);
+PREP(canAccessInterface);
 
 /* Window manager */
 PREP(wm_createWindow);
@@ -35,6 +37,8 @@ PREP(addHistoryEntry);
 PREP(addCalendarEvent);
 PREP(registerCamera);
 PREP(intel_dispatch);
+PREP(addLockedFile);
+PREP(promptUnlock);
 
 /* Zeus/3DEN modules */
 PREP(zeus_module_addIntel);

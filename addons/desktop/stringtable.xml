@@ -380,6 +380,15 @@
                 <German>Medientyp (image / video / audio)</German>
                 <Chinesesimp>媒体类型(image / video / audio)</Chinesesimp>
             </Key>
+            <Key ID="STR_AE3_Desktop_Intel_LabelPassword">
+                <Original>Password (no | character)</Original>
+                <English>Password (no | character)</English>
+                <French>Mot de passe (sans caractère |)</French>
+                <Italian>Password (senza carattere |)</Italian>
+                <Russian>Password (no | character)</Russian>
+                <German>Passwort (kein |-Zeichen)</German>
+                <Chinesesimp>密码(不含|字符)</Chinesesimp>
+            </Key>
             <Key ID="STR_AE3_Desktop_Intel_LabelSource">
                 <Original>Source path (\mod\file.paa)</Original>
                 <English>Source path (\mod\file.paa)</English>
@@ -424,6 +433,15 @@
                 <Russian>URL</Russian>
                 <German>URL</German>
                 <Chinesesimp>URL</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Intel_LockedFile">
+                <Original>Password-protected file</Original>
+                <English>Password-protected file</English>
+                <French>Fichier protégé par mot de passe</French>
+                <Italian>File protetto da password</Italian>
+                <Russian>Password-protected file</Russian>
+                <German>Passwortgeschützte Datei</German>
+                <Chinesesimp>受密码保护的文件</Chinesesimp>
             </Key>
             <Key ID="STR_AE3_Desktop_Intel_Media">
                 <Original>Media file</Original>
@@ -542,6 +560,15 @@
                 <German>%1 geladen</German>
                 <Chinesesimp>已加载%1</Chinesesimp>
             </Key>
+            <Key ID="STR_AE3_Desktop_Notepad_Restored">
+                <Original>Restored unsaved text from the previous session</Original>
+                <English>Restored unsaved text from the previous session</English>
+                <French>Texte non enregistré de la session précédente restauré</French>
+                <Italian>Testo non salvato della sessione precedente ripristinato</Italian>
+                <Russian>Restored unsaved text from the previous session</Russian>
+                <German>Nicht gespeicherter Text der letzten Sitzung wiederhergestellt</German>
+                <Chinesesimp>已恢复上次会话未保存的文本</Chinesesimp>
+            </Key>
             <Key ID="STR_AE3_Desktop_Notepad_Save">
                 <Original>Save</Original>
                 <English>Save</English>
@@ -559,15 +586,6 @@
                 <Russian>Saved %1</Russian>
                 <German>%1 gespeichert</German>
                 <Chinesesimp>已保存%1</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_Desktop_Settings_SwitchCli">
-                <Original>Switch to CLI terminal (next use)</Original>
-                <English>Switch to CLI terminal (next use)</English>
-                <French>Passer au terminal CLI (prochaine utilisation)</French>
-                <Italian>Passa al terminale CLI (prossimo utilizzo)</Italian>
-                <Russian>Switch to CLI terminal (next use)</Russian>
-                <German>Zum CLI-Terminal wechseln (nächste Benutzung)</German>
-                <Chinesesimp>切换到CLI终端(下次使用)</Chinesesimp>
             </Key>
             <Key ID="STR_AE3_Desktop_Settings_Theme">
                 <Original>Theme (double-click to apply)</Original>
@@ -622,6 +640,24 @@
                 <Russian>Olive</Russian>
                 <German>Oliv</German>
                 <Chinesesimp>橄榄色</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Unlock_Open">
+                <Original>Unlock</Original>
+                <English>Unlock</English>
+                <French>Déverrouiller</French>
+                <Italian>Sblocca</Italian>
+                <Russian>Unlock</Russian>
+                <German>Entsperren</German>
+                <Chinesesimp>解锁</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Unlock_Title">
+                <Original>Password required: %1</Original>
+                <English>Password required: %1</English>
+                <French>Mot de passe requis : %1</French>
+                <Italian>Password richiesta: %1</Italian>
+                <Russian>Password required: %1</Russian>
+                <German>Passwort erforderlich: %1</German>
+                <Chinesesimp>需要密码: %1</Chinesesimp>
             </Key>
         </Container>
     </Package>

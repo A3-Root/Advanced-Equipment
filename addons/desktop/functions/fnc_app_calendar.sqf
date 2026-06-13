@@ -55,7 +55,10 @@ _detailsCtrl ctrlCommit 0;
 
 date params ["_year", "_month"];
 
-_monthCtrl setVariable ["AE3_state", [_year, _month]];
+// Restored session: re-open the month the previous user was looking at
+(_args param [0, [_year, _month]]) params [["_stateYear", _year], ["_stateMonth", _month]];
+
+_monthCtrl setVariable ["AE3_state", [_stateYear, _stateMonth]];
 _monthCtrl setVariable ["AE3_computer", _computer];
 _monthCtrl setVariable ["AE3_ctx", [_display, _ctrlGroup, _theme, _w, _h, _detailsCtrl]];
 _monthCtrl setVariable ["AE3_dayCtrls", []];
@@ -186,4 +189,11 @@ _nextBtn ctrlAddEventHandler ["ButtonClick", {
 	[_monthCtrl] call (_monthCtrl getVariable "AE3_render");
 }];
 
-createHashMap
+createHashMapFromArray [
+	["monthCtrl", _monthCtrl],
+	["getState", {
+		private _ctrl = _this getOrDefault ["monthCtrl", controlNull];
+		if (isNull _ctrl) exitWith { [] };
+		[+ (_ctrl getVariable ["AE3_state", []])]
+	}]
+]

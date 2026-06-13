@@ -137,3 +137,14 @@ _display displayAddEventHandler ["MouseButtonUp", {
 	private _session = uiNamespace getVariable ["AE3_desktop_session", createHashMap];
 	_session set ["drag", []];
 }];
+
+/* ---------------------------------------- */
+/* Restore the previous session: re-open the windows the last user left open */
+
+{
+	_x params [["_appClass", ""], ["_pos", []], ["_stateData", []]];
+	if (_appClass isNotEqualTo "") then
+	{
+		[_appClass, _stateData, _pos] call AE3_desktop_fnc_wm_createWindow;
+	};
+} forEach (_computer getVariable ["AE3_desktopState", []]);

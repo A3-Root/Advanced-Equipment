@@ -233,7 +233,14 @@ _historyBtn ctrlAddEventHandler ["ButtonClick", {
 	_pageCtrl ctrlSetStructuredText (parseText ((_text splitString endl) joinString "<br/>"));
 }];
 
-// open homepage (or the passed url) immediately
+// open homepage (or the passed/restored url) immediately
 [_pageCtrl, _args param [0, "home.root"]] call _navigate;
 
-createHashMap
+createHashMapFromArray [
+	["addressCtrl", _addressCtrl],
+	["getState", {
+		private _ctrl = _this getOrDefault ["addressCtrl", controlNull];
+		if (isNull _ctrl) exitWith { [] };
+		[ctrlText _ctrl]
+	}]
+]
