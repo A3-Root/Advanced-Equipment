@@ -2,6 +2,82 @@
 <Project name="AE3">
     <Package name="Desktop">
         <Container name="Apps">
+            <Key ID="STR_AE3_Desktop_Access_Applied">
+                <Original>Access applied</Original>
+                <English>Access applied</English>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Access_Both">
+                <Original>Both</Original>
+                <English>Both</English>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Access_CLI">
+                <Original>CLI</Original>
+                <English>CLI</English>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Access_CameraHint">
+                <Original>The camera view originates from the object this module is placed on or synced to.</Original>
+                <English>The camera view originates from the object this module is placed on or synced to.</English>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Access_CameraName">
+                <Original>Camera name</Original>
+                <English>Camera name</English>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Access_CameraNameTooltip">
+                <Original>Name shown for this feed in the CCTV app.</Original>
+                <English>Name shown for this feed in the CCTV app.</English>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Access_GUI">
+                <Original>GUI</Original>
+                <English>GUI</English>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Access_Hint">
+                <Original>A player's own setting wins; everyone else falls back to their side. Leave everything on Both for the default (everyone can switch freely).</Original>
+                <English>A player's own setting wins; everyone else falls back to their side. Leave everything on Both for the default (everyone can switch freely).</English>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Access_Mode">
+                <Original>Interface mode</Original>
+                <English>Interface mode</English>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Access_ModeDefault">
+                <Original>Default (mission setting)</Original>
+                <English>Default (mission setting)</English>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Access_NoCamera">
+                <Original>Place this module on the object the camera should view.</Original>
+                <English>Place this module on the object the camera should view.</English>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Access_NoLaptop">
+                <Original>Place this module on a laptop.</Original>
+                <English>Place this module on a laptop.</English>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Access_None">
+                <Original>None</Original>
+                <English>None</English>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Access_Players">
+                <Original>Players (select one, then click an access button)</Original>
+                <English>Players (select one, then click an access button)</English>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Access_SideCiv">
+                <Original>Civilian</Original>
+                <English>Civilian</English>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Access_SideEast">
+                <Original>OPFOR</Original>
+                <English>OPFOR</English>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Access_SideFallback">
+                <Original>Side fallback (players not listed above, including those who join later)</Original>
+                <English>Side fallback (players not listed above, including those who join later)</English>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Access_SideGuer">
+                <Original>Independent</Original>
+                <English>Independent</English>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Access_SideWest">
+                <Original>BLUFOR</Original>
+                <English>BLUFOR</English>
+            </Key>
             <Key ID="STR_AE3_Desktop_App_Browser">
                 <Original>Browser</Original>
                 <English>Browser</English>
@@ -191,6 +267,10 @@
                 <German>Keine Nachrichten - empfangene Nachrichten erscheinen hier (/var/mail/inbox)</German>
                 <Chinesesimp>无消息 - 收到的消息显示在此处(/var/mail/inbox)</Chinesesimp>
             </Key>
+            <Key ID="STR_AE3_Desktop_Config_AddCameraDisplayName">
+                <Original>AE3: Add Camera</Original>
+                <English>AE3: Add Camera</English>
+            </Key>
             <Key ID="STR_AE3_Desktop_Config_AddIntelDisplayName">
                 <Original>AE3: Add Intel</Original>
                 <English>AE3: Add Intel</English>
@@ -199,6 +279,10 @@
                 <Russian>AE3: Add Intel</Russian>
                 <German>AE3: Intel hinzufügen</German>
                 <Chinesesimp>AE3: 添加情报</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Config_CrashDeviceDisplayName">
+                <Original>AE3: Crash Device</Original>
+                <English>AE3: Crash Device</English>
             </Key>
             <Key ID="STR_AE3_Desktop_Config_IntelField1">
                 <Original>Field 1 (From / URL / Date / Source)</Original>
@@ -263,6 +347,14 @@
                 <German>email, webpage, history, calendar oder media</German>
                 <Chinesesimp>email, webpage, history, calendar 或 media</Chinesesimp>
             </Key>
+            <Key ID="STR_AE3_Desktop_Config_InterfaceAccessDisplayName">
+                <Original>AE3: Interface &amp; Access</Original>
+                <English>AE3: Interface &amp; Access</English>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Config_ModuleAddCameraDescription">
+                <Original>Registers a CCTV feed for the desktop CCTV app. Place on / sync to the object the camera view should originate from.</Original>
+                <English>Registers a CCTV feed for the desktop CCTV app. Place on / sync to the object the camera view should originate from.</English>
+            </Key>
             <Key ID="STR_AE3_Desktop_Config_ModuleAddIntelDescription">
                 <Original>Plants intel on laptops: emails, webpages, browser history, calendar entries or media files.</Original>
                 <English>Plants intel on laptops: emails, webpages, browser history, calendar entries or media files.</English>
@@ -271,6 +363,14 @@
                 <Russian>Plants intel on laptops: emails, webpages, browser history, calendar entries or media files.</Russian>
                 <German>Platziert Intel auf Laptops: E-Mails, Webseiten, Browserverlauf, Kalendereinträge oder Medien.</German>
                 <Chinesesimp>在笔记本电脑上植入情报:电子邮件、网页、浏览历史、日历条目或媒体文件.</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Config_ModuleCrashDeviceDescription">
+                <Original>Crashes every synced AE3 laptop (blue screen until power-cycled). Place on / sync to a laptop; optionally gate behind a trigger.</Original>
+                <English>Crashes every synced AE3 laptop (blue screen until power-cycled). Place on / sync to a laptop; optionally gate behind a trigger.</English>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Config_ModuleInterfaceAccessDescription">
+                <Original>Place ON a laptop to set its interface mode and grant each player (and, as a fallback, each side) access to CLI, GUI, Both or None. Optional - laptops already offer both interfaces with free switching by default.</Original>
+                <English>Place ON a laptop to set its interface mode and grant each player (and, as a fallback, each side) access to CLI, GUI, Both or None. Optional - laptops already offer both interfaces with free switching by default.</English>
             </Key>
             <Key ID="STR_AE3_Desktop_Files_Disabled">
                 <Original>File browsing is disabled on this server</Original>

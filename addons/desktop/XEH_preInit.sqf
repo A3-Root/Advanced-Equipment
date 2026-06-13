@@ -7,12 +7,12 @@
 [
 	"AE3_Desktop_DefaultMode",
 	"LIST",
-	["Default laptop interface", "Interface used by laptops that have no explicit per-laptop setting. CLI = classic terminal, GUI = desktop."],
+	["Default laptop interface", "Interface offered by laptops that have no explicit per-laptop setting. CLI = classic terminal, GUI = desktop, Both = laptop offers both and players freely switch between them."],
 	"AE3 Desktop",
 	[
-		["cli", "gui"],
-		[["CLI", "CLI"], ["GUI", "GUI"]],
-		0
+		["cli", "gui", "both"],
+		[["CLI", "CLI"], ["GUI", "GUI"], ["Both (CLI + GUI)", "Both (CLI + GUI)"]],
+		2
 	],
 	1,
 	{ params ["_value"]; },

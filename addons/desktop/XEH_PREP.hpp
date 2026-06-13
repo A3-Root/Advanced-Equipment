@@ -43,3 +43,8 @@ PREP(promptUnlock);
 /* Zeus/3DEN modules */
 PREP(zeus_module_addIntel);
 PREP(module_addIntel);
+PREP(zeus_module_interfaceAccess);
+PREP(module_interfaceAccess);
+PREP(zeus_module_addCamera);
+PREP(module_addCamera);
+PREP(module_crashDevice);

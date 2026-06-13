@@ -17,6 +17,10 @@
 
 params ["_module", "_units", "_activated"];
 
+// Zeus placement is handled by the curator dialog (fnc_zeus_module_addIntel);
+// ignore the Eden/trigger path there to avoid a duplicate dispatch with empty fields.
+if (_module getVariable ["BIS_fnc_moduleInit_isCuratorPlaced", false]) exitWith { false; };
+
 if (!isServer) exitWith {};
 
 if (_activated) then

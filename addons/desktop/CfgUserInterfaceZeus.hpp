@@ -1,6 +1,8 @@
 // RscText is already declared in ui\RscAE3Desktop.hpp (included earlier in config.cpp)
 class RscEdit;
 class RscCombo;
+class RscListBox;
+class RscButton;
 class RscButtonMenuOK;
 class RscButtonMenuCancel;
 
@@ -139,6 +141,319 @@ class AE3_UserInterface_Zeus_Module_AddIntel
 			idc = 1601;
 			x = 0.5 * GUI_GRID_W + GUI_GRID_X;
 			y = 14.5 * GUI_GRID_H + GUI_GRID_Y;
+			w = 9.5 * GUI_GRID_W;
+			h = 1 * GUI_GRID_H;
+		};
+	};
+};
+
+// Zeus dialog for the AE3_InterfaceAccess module: interface-mode combo, a per-player
+// CLI/GUI/Both/None list and a per-side fallback for players not in the list (e.g. JIP).
+// See fnc_zeus_module_interfaceAccess for the logic.
+class AE3_UserInterface_Zeus_Module_InterfaceAccess
+{
+	idd = 17110;
+	movingEnable = 1;
+	enableSimulation = 1;
+
+	onLoad = "params ['_display']; [_display, 0, 'onLoad'] call AE3_desktop_fnc_zeus_module_interfaceAccess;";
+	onUnload = "params ['_display', '_exitCode']; [_display, _exitCode, 'onUnload'] call AE3_desktop_fnc_zeus_module_interfaceAccess;";
+
+	class controlsBackground
+	{
+		class RscText_900: RscText
+		{
+			idc = 900;
+			x = 0 * GUI_GRID_W + GUI_GRID_X;
+			y = 2 * GUI_GRID_H + GUI_GRID_Y;
+			w = 40 * GUI_GRID_W;
+			h = 18 * GUI_GRID_H;
+			colorBackground[] = {0.2,0.2,0.2,1};
+		};
+	};
+
+	class controls
+	{
+		class RscText_1000: RscText
+		{
+			idc = 1000;
+			text = "$STR_AE3_Desktop_Config_InterfaceAccessDisplayName";
+			x = 0 * GUI_GRID_W + GUI_GRID_X;
+			y = 0 * GUI_GRID_H + GUI_GRID_Y;
+			w = 40 * GUI_GRID_W;
+			h = 1.5 * GUI_GRID_H;
+			colorBackground[] = {-1,-1,-1,1};
+		};
+
+		// Interface mode
+		class RscText_1731: RscText
+		{
+			idc = 1731;
+			text = "$STR_AE3_Desktop_Access_Mode";
+			x = 0.5 * GUI_GRID_W + GUI_GRID_X;
+			y = 2.5 * GUI_GRID_H + GUI_GRID_Y;
+			w = 9 * GUI_GRID_W;
+			h = 1 * GUI_GRID_H;
+		};
+		class RscCombo_1730: RscCombo
+		{
+			idc = 1730;
+			x = 10 * GUI_GRID_W + GUI_GRID_X;
+			y = 2.5 * GUI_GRID_H + GUI_GRID_Y;
+			w = 29 * GUI_GRID_W;
+			h = 1 * GUI_GRID_H;
+		};
+
+		// Per-player list
+		class RscText_1739: RscText
+		{
+			idc = 1739;
+			text = "$STR_AE3_Desktop_Access_Players";
+			x = 0.5 * GUI_GRID_W + GUI_GRID_X;
+			y = 4 * GUI_GRID_H + GUI_GRID_Y;
+			w = 39 * GUI_GRID_W;
+			h = 1 * GUI_GRID_H;
+		};
+		class RscListBox_1740: RscListBox
+		{
+			idc = 1740;
+			x = 0.5 * GUI_GRID_W + GUI_GRID_X;
+			y = 5 * GUI_GRID_H + GUI_GRID_Y;
+			w = 39 * GUI_GRID_W;
+			h = 5 * GUI_GRID_H;
+		};
+
+		// Access buttons applied to the selected player
+		class RscButton_1741: RscButton
+		{
+			idc = 1741;
+			text = "$STR_AE3_Desktop_Access_CLI";
+			x = 0.5 * GUI_GRID_W + GUI_GRID_X;
+			y = 10.5 * GUI_GRID_H + GUI_GRID_Y;
+			w = 9 * GUI_GRID_W;
+			h = 1 * GUI_GRID_H;
+		};
+		class RscButton_1742: RscButton
+		{
+			idc = 1742;
+			text = "$STR_AE3_Desktop_Access_GUI";
+			x = 10.5 * GUI_GRID_W + GUI_GRID_X;
+			y = 10.5 * GUI_GRID_H + GUI_GRID_Y;
+			w = 9 * GUI_GRID_W;
+			h = 1 * GUI_GRID_H;
+		};
+		class RscButton_1743: RscButton
+		{
+			idc = 1743;
+			text = "$STR_AE3_Desktop_Access_Both";
+			x = 20.5 * GUI_GRID_W + GUI_GRID_X;
+			y = 10.5 * GUI_GRID_H + GUI_GRID_Y;
+			w = 9 * GUI_GRID_W;
+			h = 1 * GUI_GRID_H;
+		};
+		class RscButton_1744: RscButton
+		{
+			idc = 1744;
+			text = "$STR_AE3_Desktop_Access_None";
+			x = 30.5 * GUI_GRID_W + GUI_GRID_X;
+			y = 10.5 * GUI_GRID_H + GUI_GRID_Y;
+			w = 9 * GUI_GRID_W;
+			h = 1 * GUI_GRID_H;
+		};
+
+		// Per-side fallback (players not individually listed, incl. JIP)
+		class RscText_1749: RscText
+		{
+			idc = 1749;
+			text = "$STR_AE3_Desktop_Access_SideFallback";
+			x = 0.5 * GUI_GRID_W + GUI_GRID_X;
+			y = 12 * GUI_GRID_H + GUI_GRID_Y;
+			w = 39 * GUI_GRID_W;
+			h = 1 * GUI_GRID_H;
+		};
+		class RscText_1751: RscText
+		{
+			idc = 1751;
+			text = "$STR_AE3_Desktop_Access_SideWest";
+			x = 0.5 * GUI_GRID_W + GUI_GRID_X;
+			y = 13 * GUI_GRID_H + GUI_GRID_Y;
+			w = 6 * GUI_GRID_W;
+			h = 1 * GUI_GRID_H;
+		};
+		class RscCombo_1750: RscCombo
+		{
+			idc = 1750;
+			x = 7 * GUI_GRID_W + GUI_GRID_X;
+			y = 13 * GUI_GRID_H + GUI_GRID_Y;
+			w = 12 * GUI_GRID_W;
+			h = 1 * GUI_GRID_H;
+		};
+		class RscText_1753: RscText
+		{
+			idc = 1753;
+			text = "$STR_AE3_Desktop_Access_SideEast";
+			x = 20 * GUI_GRID_W + GUI_GRID_X;
+			y = 13 * GUI_GRID_H + GUI_GRID_Y;
+			w = 6 * GUI_GRID_W;
+			h = 1 * GUI_GRID_H;
+		};
+		class RscCombo_1752: RscCombo
+		{
+			idc = 1752;
+			x = 27 * GUI_GRID_W + GUI_GRID_X;
+			y = 13 * GUI_GRID_H + GUI_GRID_Y;
+			w = 12 * GUI_GRID_W;
+			h = 1 * GUI_GRID_H;
+		};
+		class RscText_1755: RscText
+		{
+			idc = 1755;
+			text = "$STR_AE3_Desktop_Access_SideGuer";
+			x = 0.5 * GUI_GRID_W + GUI_GRID_X;
+			y = 14 * GUI_GRID_H + GUI_GRID_Y;
+			w = 6 * GUI_GRID_W;
+			h = 1 * GUI_GRID_H;
+		};
+		class RscCombo_1754: RscCombo
+		{
+			idc = 1754;
+			x = 7 * GUI_GRID_W + GUI_GRID_X;
+			y = 14 * GUI_GRID_H + GUI_GRID_Y;
+			w = 12 * GUI_GRID_W;
+			h = 1 * GUI_GRID_H;
+		};
+		class RscText_1757: RscText
+		{
+			idc = 1757;
+			text = "$STR_AE3_Desktop_Access_SideCiv";
+			x = 20 * GUI_GRID_W + GUI_GRID_X;
+			y = 14 * GUI_GRID_H + GUI_GRID_Y;
+			w = 6 * GUI_GRID_W;
+			h = 1 * GUI_GRID_H;
+		};
+		class RscCombo_1756: RscCombo
+		{
+			idc = 1756;
+			x = 27 * GUI_GRID_W + GUI_GRID_X;
+			y = 14 * GUI_GRID_H + GUI_GRID_Y;
+			w = 12 * GUI_GRID_W;
+			h = 1 * GUI_GRID_H;
+		};
+
+		class RscText_1760: RscText
+		{
+			idc = 1760;
+			text = "$STR_AE3_Desktop_Access_Hint";
+			x = 0.5 * GUI_GRID_W + GUI_GRID_X;
+			y = 15.2 * GUI_GRID_H + GUI_GRID_Y;
+			w = 39 * GUI_GRID_W;
+			h = 2 * GUI_GRID_H;
+			style = ST_MULTI;
+			lineSpacing = 1;
+			colorText[] = {0.7,0.7,0.7,1};
+		};
+
+		class RscButtonMenuOK_1600: RscButtonMenuOK
+		{
+			idc = 1600;
+			x = 30 * GUI_GRID_W + GUI_GRID_X;
+			y = 18.5 * GUI_GRID_H + GUI_GRID_Y;
+			w = 9.5 * GUI_GRID_W;
+			h = 1 * GUI_GRID_H;
+		};
+		class RscButtonMenuCancel_1601: RscButtonMenuCancel
+		{
+			idc = 1601;
+			x = 0.5 * GUI_GRID_W + GUI_GRID_X;
+			y = 18.5 * GUI_GRID_H + GUI_GRID_Y;
+			w = 9.5 * GUI_GRID_W;
+			h = 1 * GUI_GRID_H;
+		};
+	};
+};
+
+// Zeus dialog for the AE3_AddCamera module: a single camera-name field. The camera object is
+// the one the module is placed on / synced to. See fnc_zeus_module_addCamera.
+class AE3_UserInterface_Zeus_Module_AddCamera
+{
+	idd = 17120;
+	movingEnable = 1;
+	enableSimulation = 1;
+
+	onLoad = "params ['_display']; [_display, 0, 'onLoad'] call AE3_desktop_fnc_zeus_module_addCamera;";
+	onUnload = "params ['_display', '_exitCode']; [_display, _exitCode, 'onUnload'] call AE3_desktop_fnc_zeus_module_addCamera;";
+
+	class controlsBackground
+	{
+		class RscText_900: RscText
+		{
+			idc = 900;
+			x = 0 * GUI_GRID_W + GUI_GRID_X;
+			y = 2 * GUI_GRID_H + GUI_GRID_Y;
+			w = 40 * GUI_GRID_W;
+			h = 5 * GUI_GRID_H;
+			colorBackground[] = {0.2,0.2,0.2,1};
+		};
+	};
+
+	class controls
+	{
+		class RscText_1000: RscText
+		{
+			idc = 1000;
+			text = "$STR_AE3_Desktop_Config_AddCameraDisplayName";
+			x = 0 * GUI_GRID_W + GUI_GRID_X;
+			y = 0 * GUI_GRID_H + GUI_GRID_Y;
+			w = 40 * GUI_GRID_W;
+			h = 1.5 * GUI_GRID_H;
+			colorBackground[] = {-1,-1,-1,1};
+		};
+
+		class RscText_1710: RscText
+		{
+			idc = 1710;
+			text = "$STR_AE3_Desktop_Access_CameraName";
+			x = 0.5 * GUI_GRID_W + GUI_GRID_X;
+			y = 2.5 * GUI_GRID_H + GUI_GRID_Y;
+			w = 9 * GUI_GRID_W;
+			h = 1 * GUI_GRID_H;
+		};
+		class RscEdit_1401: RscEdit
+		{
+			idc = 1401;
+			text = "Camera";
+			x = 10 * GUI_GRID_W + GUI_GRID_X;
+			y = 2.5 * GUI_GRID_H + GUI_GRID_Y;
+			w = 29 * GUI_GRID_W;
+			h = 1 * GUI_GRID_H;
+		};
+
+		class RscText_1720: RscText
+		{
+			idc = 1720;
+			text = "$STR_AE3_Desktop_Access_CameraHint";
+			x = 0.5 * GUI_GRID_W + GUI_GRID_X;
+			y = 4 * GUI_GRID_H + GUI_GRID_Y;
+			w = 39 * GUI_GRID_W;
+			h = 1.5 * GUI_GRID_H;
+			style = ST_MULTI;
+			lineSpacing = 1;
+			colorText[] = {0.7,0.7,0.7,1};
+		};
+
+		class RscButtonMenuOK_1600: RscButtonMenuOK
+		{
+			idc = 1600;
+			x = 30 * GUI_GRID_W + GUI_GRID_X;
+			y = 6 * GUI_GRID_H + GUI_GRID_Y;
+			w = 9.5 * GUI_GRID_W;
+			h = 1 * GUI_GRID_H;
+		};
+		class RscButtonMenuCancel_1601: RscButtonMenuCancel
+		{
+			idc = 1601;
+			x = 0.5 * GUI_GRID_W + GUI_GRID_X;
+			y = 6 * GUI_GRID_H + GUI_GRID_Y;
 			w = 9.5 * GUI_GRID_W;
 			h = 1 * GUI_GRID_H;
 		};
