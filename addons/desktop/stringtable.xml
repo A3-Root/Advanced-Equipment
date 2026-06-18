@@ -606,6 +606,15 @@
                 <German>Betreff</German>
                 <Chinesesimp>主题</Chinesesimp>
             </Key>
+            <Key ID="STR_AE3_Desktop_Map_Recenter">
+                <Original>Recenter</Original>
+                <English>Recenter</English>
+                <French>Recentrer</French>
+                <Italian>Ricentra</Italian>
+                <Russian>Recenter</Russian>
+                <German>Zentrieren</German>
+                <Chinesesimp>重新居中</Chinesesimp>
+            </Key>
             <Key ID="STR_AE3_Desktop_Media_Playing">
                 <Original>Playing audio ...</Original>
                 <English>Playing audio ...</English>

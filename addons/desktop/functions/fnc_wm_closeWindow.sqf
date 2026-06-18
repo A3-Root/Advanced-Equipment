@@ -30,3 +30,10 @@ private _onClose = _callbacks getOrDefault ["onClose", {}];
 
 ctrlDelete (_window get "group");
 _windows deleteAt _winId;
+
+if ((_session getOrDefault ["activeWin", -1]) isEqualTo _winId) then
+{
+	_session set ["activeWin", -1];
+};
+
+[] call AE3_desktop_fnc_wm_updateTaskbar;

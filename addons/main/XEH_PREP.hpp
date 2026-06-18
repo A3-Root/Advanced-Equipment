@@ -8,6 +8,7 @@ PREP(sendVarToRemote);
 /* Debug Mode and Overlay */
 PREP(manageDebugMode);
 PREP(manageNetworkDebug);
+PREP(netLog);
 PREP(initDebugOverlay);
 PREP(killDebugOverlay);
 

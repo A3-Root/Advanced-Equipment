@@ -91,11 +91,16 @@ private _refresh = {
 	{
 		private _obj = _content get _x;
 		private _isDir = (_obj select 0) isEqualType createHashMap;
-		private _index = _listCtrl lbAdd ([_x, "[DIR] " + _x] select _isDir);
+		private _index = _listCtrl lbAdd _x;
 		_listCtrl lbSetData [_index, _x];
 		if (_isDir) then
 		{
 			_listCtrl lbSetColor [_index, [0, 0.55, 0.97, 1]];
+			_listCtrl lbSetPicture [_index, "\z\ae3\addons\filesystem\ui\AE3_Module_Icons_addDir.paa"];
+		}
+		else
+		{
+			_listCtrl lbSetPicture [_index, "\z\ae3\addons\filesystem\ui\AE3_Module_Icons_addFile.paa"];
 		};
 	} forEach _names;
 };

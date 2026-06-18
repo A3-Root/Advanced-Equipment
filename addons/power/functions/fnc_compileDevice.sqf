@@ -46,8 +46,10 @@ if(isNil {missionNamespace getVariable _class_name}) then
 
 private _config = missionNamespace getVariable _class_name;
 
-// if no power/device config found then exit and set status accordingly
-if(_config isEqualType "") exitWith { if (isServer) then { _entity setVariable ["AE3_power_isDevice", false, true]; }; };
+// No power/device config -> not a device. Do NOT broadcast a public variable here: this function
+// runs on every object that inits (rocks, weapon holders, units, ...) and a public setVariable per
+// object would flood the JIP queue. Zeus derives "is device" directly from config instead.
+if(_config isEqualType "") exitWith {};
 
 // it seems that there is a AE3_Device config, therefore this is a power device
 if (isServer) then { _entity setVariable ["AE3_power_isDevice", true, true]; };

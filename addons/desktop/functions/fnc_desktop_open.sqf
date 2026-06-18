@@ -129,7 +129,19 @@ _display displayAddEventHandler ["MouseMoving", {
 
 	_drag params ["_group", "_dx", "_dy"];
 	private _pos = ctrlPosition _group;
-	_group ctrlSetPosition [_xPos - _dx, _yPos - _dy, _pos select 2, _pos select 3];
+	private _w = _pos select 2;
+	private _h = _pos select 3;
+
+	private _newX = _xPos - _dx;
+	private _newY = _yPos - _dy;
+
+	// Clamp so the titlebar always stays reachable on-screen: keep a slice of the window
+	// inside the safezone horizontally and never let the titlebar leave the top/bottom edges.
+	private _minVisible = 0.08;
+	_newX = (_newX max (safeZoneX - _w + _minVisible)) min (safeZoneX + safeZoneW - _minVisible);
+	_newY = (_newY max safeZoneY) min (safeZoneY + safeZoneH - 0.04);
+
+	_group ctrlSetPosition [_newX, _newY, _w, _h];
 	_group ctrlCommit 0;
 }];
 

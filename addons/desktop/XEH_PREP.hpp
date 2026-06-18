@@ -9,6 +9,9 @@ PREP(canAccessInterface);
 PREP(wm_createWindow);
 PREP(wm_closeWindow);
 PREP(wm_getTheme);
+PREP(wm_focusWindow);
+PREP(wm_minimizeWindow);
+PREP(wm_updateTaskbar);
 
 /* App framework */
 PREP(app_list);

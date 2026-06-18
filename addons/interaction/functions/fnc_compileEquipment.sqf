@@ -18,12 +18,6 @@
 
 params["_equipment"];
 
-if (AE3_DebugMode) then {
-	// DEBUG: Log every call to compileEquipment with timestamp
-	diag_log format ["[AE3 DEBUG] [%1] ========== compileEquipment CALLED on %2 (type: %3) ==========", time, _equipment, typeOf _equipment];
-	diag_log format ["[AE3 DEBUG] [%1] Call stack: %2", time, diag_stacktrace];
-};
-
 private _class = typeOf _equipment;
 
 private _equipmentConfigVarName = _class + "_Equipment";
@@ -45,19 +39,13 @@ if(isNil {missionNamespace getVariable _equipmentConfigVarName}) then
 
 private _config = missionNamespace getVariable _equipmentConfigVarName;
 
-if(_config isEqualType "") exitWith {
-	if (AE3_DebugMode) then {
-		diag_log format ["[AE3 DEBUG] [%1] compileEquipment: No config found for %2, exiting", time, _equipment];
-	};
-};
+// Non-equipment objects (rocks, weapon holders, units, ...) cache "" and exit cheaply with no logging.
+if(_config isEqualType "") exitWith {};
 
 if (AE3_DebugMode) then {
-	diag_log format ["[AE3 DEBUG] [%1] compileEquipment: Calling initInteraction for %2", time, _equipment];
+	diag_log format ["[AE3 DEBUG] [%1] compileEquipment: initInteraction for %2 (%3)", time, _equipment, _class];
 };
 [_equipment] + (_config get "equipment") + [(_config get "animationPoints")] call AE3_interaction_fnc_initInteraction;
-if (AE3_DebugMode) then {
-	diag_log format ["[AE3 DEBUG] [%1] compileEquipment: initInteraction completed for %2", time, _equipment];
-};
 
 /* ---------------------------------------- */
 

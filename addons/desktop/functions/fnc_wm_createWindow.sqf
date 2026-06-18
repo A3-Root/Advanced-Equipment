@@ -73,35 +73,54 @@ _body ctrlSetPosition [0, 0, _w, _h];
 _body ctrlSetBackgroundColor (_theme get "window");
 _body ctrlCommit 0;
 
+// Flat title bar (Win10/11 style). Window controls sit at the right: minimize, close.
 private _titlebar = _display ctrlCreate ["RscButton", -1, _group];
-_titlebar ctrlSetPosition [0, 0, _w - 0.05, 0.04];
-_titlebar ctrlSetText _displayName;
+_titlebar ctrlSetPosition [0, 0, _w - 0.10, 0.04];
+_titlebar ctrlSetText ("  " + _displayName);
 _titlebar ctrlSetBackgroundColor (_theme get "titlebar");
 _titlebar ctrlSetTextColor (_theme get "text");
 _titlebar ctrlSetFont (_theme getOrDefault ["font", "RobotoCondensed"]);
 _titlebar ctrlCommit 0;
 
+private _minBtn = _display ctrlCreate ["RscButton", -1, _group];
+_minBtn ctrlSetPosition [_w - 0.10, 0, 0.05, 0.04];
+_minBtn ctrlSetText "_";
+_minBtn ctrlSetBackgroundColor (_theme get "titlebar");
+_minBtn ctrlSetTextColor (_theme get "text");
+_minBtn ctrlCommit 0;
+
 private _closeBtn = _display ctrlCreate ["RscButton", -1, _group];
 _closeBtn ctrlSetPosition [_w - 0.05, 0, 0.05, 0.04];
 _closeBtn ctrlSetText "X";
-_closeBtn ctrlSetBackgroundColor (_theme get "accent");
-_closeBtn ctrlSetTextColor (_theme get "text");
+// Win10/11 red close affordance.
+_closeBtn ctrlSetBackgroundColor [0.78, 0.16, 0.16, 1];
+_closeBtn ctrlSetTextColor [1, 1, 1, 1];
 _closeBtn ctrlCommit 0;
 
 /* ---------------------------------------- */
 /* Drag start (display-level MouseMoving/Up handlers do the actual move) */
 
 _titlebar setVariable ["AE3_winGroup", _group];
+_titlebar setVariable ["AE3_winId", _winId];
 _titlebar ctrlAddEventHandler ["MouseButtonDown", {
 	params ["_ctrl", "_button", "_xPos", "_yPos"];
+	[_ctrl getVariable "AE3_winId"] call AE3_desktop_fnc_wm_focusWindow;
 	if (_button != 0) exitWith {};
 	if (!(missionNamespace getVariable ["AE3_Desktop_EnableDragDrop", true])) exitWith {};
 
 	private _group = _ctrl getVariable "AE3_winGroup";
-	private _pos = ctrlPosition _group;
-
+	// A maximized window cannot be dragged.
 	private _session = uiNamespace getVariable ["AE3_desktop_session", createHashMap];
+	private _win = (_session getOrDefault ["windows", createHashMap]) getOrDefault [_ctrl getVariable "AE3_winId", createHashMap];
+	if (_win getOrDefault ["maximized", false]) exitWith {};
+
+	private _pos = ctrlPosition _group;
 	_session set ["drag", [_group, _xPos - (_pos select 0), _yPos - (_pos select 1)]];
+}];
+
+_minBtn setVariable ["AE3_winId", _winId];
+_minBtn ctrlAddEventHandler ["ButtonClick", {
+	[_this select 0 getVariable "AE3_winId", true] call AE3_desktop_fnc_wm_minimizeWindow;
 }];
 
 _closeBtn setVariable ["AE3_winId", _winId];
@@ -121,7 +140,13 @@ if (!(_callbacks isEqualType createHashMap)) then { _callbacks = createHashMap; 
 _windows set [_winId, createHashMapFromArray [
 	["app", _appClass],
 	["group", _group],
-	["callbacks", _callbacks]
+	["title", _displayName],
+	["callbacks", _callbacks],
+	["minimized", false],
+	["maximized", false],
+	["normalPos", [_x, _y, _w, _h]]
 ]];
+
+[] call AE3_desktop_fnc_wm_updateTaskbar;
 
 _winId

@@ -38,8 +38,8 @@ if (isNull _entity) exitWith {};
     private _displayName = [_entity, true] call ace_cargo_fnc_getNameItem;
 	_headlineCtrl ctrlSetText format [localize "STR_AE3_Main_Zeus_ObjectHeader", _displayName];
 
-    waitUntil { !isNil { _entity getVariable "AE3_power_isDevice" }; };
-    private _isPowerDevice = _entity getVariable ["AE3_power_isDevice", false];
+    // Derive device status directly from config (compileDevice no longer broadcasts this per object).
+    private _isPowerDevice = isClass (configOf _entity >> "AE3_Device");
 
     // This could be the case for the desk
     if (!_isPowerDevice) exitWith {};
