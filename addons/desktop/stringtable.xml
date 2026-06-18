@@ -427,13 +427,13 @@
                 <Chinesesimp>正文</Chinesesimp>
             </Key>
             <Key ID="STR_AE3_Desktop_Intel_LabelContent">
-                <Original>Content (| = new line, [[url|label]] = link)</Original>
-                <English>Content (| = new line, [[url|label]] = link)</English>
-                <French>Contenu (| = nouvelle ligne, [[url|label]] = lien)</French>
-                <Italian>Contenuto (| = nuova riga, [[url|label]] = collegamento)</Italian>
-                <Russian>Content (| = new line, [[url|label]] = link)</Russian>
-                <German>Inhalt (| = neue Zeile, [[url|label]] = Link)</German>
-                <Chinesesimp>内容(| = 换行, [[url|label]] = 链接)</Chinesesimp>
+                <Original>Content — | starts a new line, [[url|label]] makes a link</Original>
+                <English>Content — | starts a new line, [[url|label]] makes a link</English>
+                <French>Contenu — | commence une nouvelle ligne, [[url|label]] crée un lien</French>
+                <Italian>Contenuto — | inizia una nuova riga, [[url|label]] crea un collegamento</Italian>
+                <Russian>Content — | starts a new line, [[url|label]] makes a link</Russian>
+                <German>Inhalt — | beginnt eine neue Zeile, [[url|label]] erstellt einen Link</German>
+                <Chinesesimp>内容 — | 表示换行,[[url|label]] 表示链接</Chinesesimp>
             </Key>
             <Key ID="STR_AE3_Desktop_Intel_LabelDate">
                 <Original>Date (YYYY-MM-DD HH:MM)</Original>
@@ -445,13 +445,13 @@
                 <Chinesesimp>日期(YYYY-MM-DD HH:MM)</Chinesesimp>
             </Key>
             <Key ID="STR_AE3_Desktop_Intel_LabelDest">
-                <Original>Filesystem destination (/home/user/...)</Original>
-                <English>Filesystem destination (/home/user/...)</English>
-                <French>Destination du système de fichiers (/home/user/...)</French>
-                <Italian>Destinazione filesystem (/home/user/...)</Italian>
-                <Russian>Filesystem destination (/home/user/...)</Russian>
-                <German>Dateisystem-Ziel (/home/user/...)</German>
-                <Chinesesimp>文件系统目标(/home/user/...)</Chinesesimp>
+                <Original>Save to path (e.g. /home/user/file.txt)</Original>
+                <English>Save to path (e.g. /home/user/file.txt)</English>
+                <French>Enregistrer vers (ex. /home/user/file.txt)</French>
+                <Italian>Salva nel percorso (es. /home/user/file.txt)</Italian>
+                <Russian>Save to path (e.g. /home/user/file.txt)</Russian>
+                <German>Speichern unter (z. B. /home/user/file.txt)</German>
+                <Chinesesimp>保存到路径(例如 /home/user/file.txt)</Chinesesimp>
             </Key>
             <Key ID="STR_AE3_Desktop_Intel_LabelDetails">
                 <Original>Details</Original>
@@ -481,13 +481,13 @@
                 <Chinesesimp>媒体类型(image / video / audio)</Chinesesimp>
             </Key>
             <Key ID="STR_AE3_Desktop_Intel_LabelPassword">
-                <Original>Password (no | character)</Original>
-                <English>Password (no | character)</English>
-                <French>Mot de passe (sans caractère |)</French>
-                <Italian>Password (senza carattere |)</Italian>
-                <Russian>Password (no | character)</Russian>
-                <German>Passwort (kein |-Zeichen)</German>
-                <Chinesesimp>密码(不含|字符)</Chinesesimp>
+                <Original>Password to open the file</Original>
+                <English>Password to open the file</English>
+                <French>Mot de passe pour ouvrir le fichier</French>
+                <Italian>Password per aprire il file</Italian>
+                <Russian>Password to open the file</Russian>
+                <German>Passwort zum Öffnen der Datei</German>
+                <Chinesesimp>打开文件所需的密码</Chinesesimp>
             </Key>
             <Key ID="STR_AE3_Desktop_Intel_LabelSource">
                 <Original>Source path (\mod\file.paa)</Original>

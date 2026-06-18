@@ -10,7 +10,7 @@
 
   // ---------------- Files ----------------
   Apps.register({
-    id: "files", title: "Files", glyph: "📁", width: 660, height: 440,
+    id: "files", title: "Files", glyph: Icons.files, width: 660, height: 440,
     showOnDesktop: true, showInDock: true,
     render: function (body, win, args) {
       body.innerHTML =
@@ -38,7 +38,7 @@
           var items = res.entries || [];
           if (!items.length) { entries.innerHTML = '<li class="muted pad">Empty</li>'; return; }
           items.forEach(function (it) {
-            var li = h('<li><span>' + (it.dir ? "📁" : "📄") + '</span><span>' + esc(it.name) + "</span></li>");
+            var li = h('<li><span class="ico">' + (it.dir ? Icons.folder : Icons.file) + '</span><span>' + esc(it.name) + "</span></li>");
             li.addEventListener("click", function () {
               entries.querySelectorAll("li").forEach(function (n) { n.classList.remove("sel"); });
               li.classList.add("sel"); sel = it;
@@ -86,7 +86,7 @@
 
   // ---------------- Notepad ----------------
   Apps.register({
-    id: "notepad", title: "Text Editor", glyph: "📝", width: 620, height: 460,
+    id: "notepad", title: "Text Editor", glyph: Icons.notepad, width: 620, height: 460,
     showInDock: true,
     render: function (body, win, args) {
       var path = (args && args.path) || null;
@@ -132,7 +132,7 @@
 
   // ---------------- Settings (absorbs System Monitor, #14) ----------------
   Apps.register({
-    id: "settings", title: "Settings", glyph: "⚙", width: 560, height: 400,
+    id: "settings", title: "Settings", glyph: Icons.settings, width: 560, height: 400,
     showOnDesktop: true, showInDock: true, singleton: true,
     render: function (body) {
       body.innerHTML = '<div class="pad"><h3>System</h3><div id="sysinfo" class="muted">Reading&hellip;</div></div>';
@@ -150,7 +150,7 @@
 
   // ---------------- Network (#11) ----------------
   Apps.register({
-    id: "network", title: "Network", glyph: "📶", width: 560, height: 380,
+    id: "network", title: "Network", glyph: Icons.network, width: 560, height: 380,
     showInDock: true,
     render: function (body) {
       body.innerHTML = '<div class="pad"><div style="display:flex;align-items:center"><h3 style="flex:1">Wireless networks</h3><button class="btn rescan">Rescan</button></div><ul class="list nets"><li class="muted">Scanning&hellip;</li></ul></div>';
@@ -160,7 +160,7 @@
         A3.request("net_scan", {}).then(function (list) {
           nets.innerHTML = "";
           (list || []).forEach(function (n) {
-            var li = h('<li><span>📶</span><span>' + esc(n.ssid) + (n.current ? " <span class=\"muted\">(connected)</span>" : "") +
+            var li = h('<li><span class="ico">' + Icons.wifi + '</span><span>' + esc(n.ssid) + (n.current ? " <span class=\"muted\">(connected)</span>" : "") +
               "</span><span class=\"muted\" style=\"margin-left:auto\">" + esc(n.ip || "") + "</span></li>");
             li.addEventListener("dblclick", function () {
               A3.send("net_connect", { netId: n.netId });
@@ -178,7 +178,7 @@
 
   // ---------------- Calendar (#12: month/year nav + go-to-date) ----------------
   Apps.register({
-    id: "calendar", title: "Calendar", glyph: "📅", width: 520, height: 460,
+    id: "calendar", title: "Calendar", glyph: Icons.calendar, width: 520, height: 460,
     showInDock: true, singleton: true,
     render: function (body) {
       var months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
@@ -237,46 +237,112 @@
     }
   });
 
-  // ---------------- Browser (#18: real pages incl. wiki site) ----------------
+  // ---------------- Browser (#18: real pages incl. the wiki rendered from markdown) ----------------
+  // CEF cannot resolve relative <iframe src> from a PBO file, so pages are fetched through
+  // A3.loadFile and shown via iframe.srcdoc (self-contained). The wiki's *.md (vendored from the
+  // repo wiki/) are rendered client-side with MD.render. Links inside the iframe are intercepted
+  // and routed back to the address bar via window.AE3_browserNav.
   Apps.register({
-    id: "browser", title: "Browser", glyph: "🌐", width: 820, height: 560,
+    id: "browser", title: "Browser", glyph: Icons.browser, width: 820, height: 560,
     showOnDesktop: true, showInDock: true,
-    render: function (body) {
-      // Friendly names resolve to bundled local sites under ui/web/sites/.
+    render: function (body, win) {
+      // Friendly names -> bundled pages. Addresses may also be explicit paths: an absolute VFS path
+      // into any loaded mod (\z\othermod\...\page.html) or a mission-relative path
+      // (sites/intel/report.md), both resolved through A3.loadFile's root search.
       var sites = {
-        "home": "sites/portal/index.html",
-        "rootnet": "sites/portal/index.html",
-        "wiki": "sites/wiki/index.html"
+        "home":    { type: "html", path: "sites/portal/index.html", label: "home" },
+        "rootnet": { type: "html", path: "sites/portal/index.html", label: "rootnet" },
+        "wiki":    { type: "md",   path: "wiki/Home.md",            label: "wiki" }
       };
-      function resolve(addr) {
-        addr = (addr || "home").trim().toLowerCase().replace(/^https?:\/\//, "").replace(/\/$/, "");
-        if (sites[addr]) return sites[addr];
-        if (addr.indexOf("sites/") === 0 || addr.indexOf(".html") >= 0) return addr;
-        return sites.home;
+
+      // Injected into every page so in-page links drive the address bar instead of dead relative nav.
+      var HOOK = '<script>document.addEventListener("click",function(e){' +
+        'var a=e.target&&e.target.closest?e.target.closest("a"):null;if(!a)return;' +
+        'var href=a.getAttribute("href")||"";' +
+        'if(href&&href.charAt(0)!=="#"){e.preventDefault();if(parent&&parent.AE3_browserNav)parent.AE3_browserNav(href);}});<\/script>';
+
+      function wikiDoc(htmlBody) {
+        return '<!DOCTYPE html><html><head><meta charset="utf-8"><style>' +
+          'body{margin:0;font-family:"Ubuntu","Noto Sans",sans-serif;color:#222;background:#fff;line-height:1.55}' +
+          '.wrap{max-width:860px;margin:0 auto;padding:26px 34px}' +
+          'h1,h2,h3{color:#c7411f;margin:1.1em 0 .4em}h1{border-bottom:2px solid #eee;padding-bottom:.2em}' +
+          'a{color:#e95420;text-decoration:none}a:hover{text-decoration:underline}' +
+          'code{background:#f0f0f0;padding:1px 5px;border-radius:4px;font-family:monospace;font-size:.92em}' +
+          'pre{background:#2b2b2b;color:#eee;padding:12px 14px;border-radius:8px;overflow:auto}pre code{background:none;color:inherit;padding:0}' +
+          'blockquote{border-left:3px solid #e95420;margin:.6em 0;padding:.2em 12px;color:#555;background:#faf3f0}' +
+          'ul,ol{padding-left:22px}hr{border:none;border-top:1px solid #e2e2e2;margin:1.2em 0}' +
+          '</style></head><body><div class="wrap">' + htmlBody + '</div>' + HOOK + '</body></html>';
       }
+
       body.innerHTML =
         '<div class="toolbar">' +
-          '<button class="btn back">&#8592;</button><button class="btn fwd">&#8594;</button>' +
-          '<button class="btn home">&#8962;</button>' +
+          '<button class="btn back" title="Back">&#8592;</button><button class="btn fwd" title="Forward">&#8594;</button>' +
+          '<button class="btn home" title="Home">&#8962;</button>' +
           '<input class="input addr" style="flex:1" value="home">' +
           '<button class="btn accent go">Go</button>' +
         '</div>' +
         '<iframe class="page" style="width:100%;height:calc(100% - 50px);border:none;background:#fff"></iframe>';
       var frame = body.querySelector(".page");
-      var addr = body.querySelector(".addr");
-      function nav(a) { addr.value = a; frame.src = resolve(a); }
-      body.querySelector(".go").addEventListener("click", function () { nav(addr.value); });
+      var addrEl = body.querySelector(".addr");
+      var history = [], hi = -1;
+
+      function setDoc(htmlText) { frame.srcdoc = htmlText + HOOK; }
+
+      function resolve(addrRaw) {
+        var addr = String(addrRaw == null ? "home" : addrRaw).trim();
+        var hasPath = addr.charAt(0) === "\\" || /^[a-z]:/i.test(addr) || addr.indexOf("/") >= 0 || addr.indexOf("\\") >= 0;
+        var mdName = addr.match(/([^\/\\]+\.md)(?:[#?].*)?$/i); // keep original case for the VFS lookup
+
+        // Explicit .md: a bare filename is a wiki page; a pathed .md (mod/mission) loads as given.
+        if (/\.md($|[#?])/i.test(addr)) {
+          if (mdName && !hasPath) return { type: "md", path: "wiki/" + mdName[1], label: mdName[1] };
+          return { type: "md", path: addr, label: addr };
+        }
+        // Explicit .html / any pathed address: load through the root search (mod or mission).
+        if (/\.html?($|[#?])/i.test(addr) || hasPath) return { type: "html", path: addr, label: addr };
+
+        var lower = addr.toLowerCase().replace(/^https?:\/\//, "").replace(/\/+$/, "");
+        if (sites[lower]) return sites[lower];
+        if (lower.indexOf("wiki") >= 0) return sites.wiki;
+        return sites.home;
+      }
+
+      function load(t) {
+        addrEl.value = t.label;
+        if (t.type === "md") {
+          A3.loadFile(t.path).then(function (mdText) {
+            setDoc(wikiDoc(MD.render(mdText || "")));
+          }).catch(function () { setDoc(wikiDoc("<h1>Page not found</h1><p><a href=\"Home.md\">Back to wiki home</a></p>")); });
+        } else {
+          A3.loadFile(t.path).then(function (htmlText) {
+            setDoc(htmlText || "<p>Empty page.</p>");
+          }).catch(function () { setDoc("<p style='font-family:sans-serif;padding:20px'>Page unavailable.</p>"); });
+        }
+      }
+
+      function nav(addrRaw, fromHistory) {
+        var t = resolve(addrRaw);
+        if (!fromHistory) { history = history.slice(0, hi + 1); history.push(t.label); hi = history.length - 1; }
+        window.AE3_browserNav = function (href) { nav(href); }; // active browser drives in-page links
+        load(t);
+      }
+
+      body.querySelector(".go").addEventListener("click", function () { nav(addrEl.value); });
       body.querySelector(".home").addEventListener("click", function () { nav("home"); });
-      body.querySelector(".back").addEventListener("click", function () { try { frame.contentWindow.history.back(); } catch (e) {} });
-      body.querySelector(".fwd").addEventListener("click", function () { try { frame.contentWindow.history.forward(); } catch (e) {} });
-      addr.addEventListener("keydown", function (e) { if (e.key === "Enter") nav(addr.value); });
+      body.querySelector(".back").addEventListener("click", function () { if (hi > 0) { hi--; nav(history[hi], true); } });
+      body.querySelector(".fwd").addEventListener("click", function () { if (hi < history.length - 1) { hi++; nav(history[hi], true); } });
+      addrEl.addEventListener("keydown", function (e) { if (e.key === "Enter") nav(addrEl.value); });
+
+      // Re-bind the in-page link hook to this window whenever it gains focus.
+      win.el.addEventListener("mousedown", function () { window.AE3_browserNav = function (href) { nav(href); }; });
+
       nav("home");
     }
   });
 
   // ---------------- Map (#13/#20: in-window canvas minimap) ----------------
   Apps.register({
-    id: "map", title: "Map", glyph: "🗺", width: 520, height: 540,
+    id: "map", title: "Map", glyph: Icons.map, width: 520, height: 540,
     showInDock: true, singleton: true,
     render: function (body, win) {
       body.innerHTML =
@@ -319,7 +385,7 @@
 
   // ---------------- Mail (#18) ----------------
   Apps.register({
-    id: "mail", title: "Mail", glyph: "✉", width: 760, height: 480,
+    id: "mail", title: "Mail", glyph: Icons.mail, width: 760, height: 480,
     showOnDesktop: true, showInDock: true,
     render: function (body) {
       body.innerHTML =
@@ -381,7 +447,7 @@
 
   // ---------------- Messenger (#18) ----------------
   Apps.register({
-    id: "messenger", title: "Messenger", glyph: "💬", width: 600, height: 480,
+    id: "messenger", title: "Messenger", glyph: Icons.messenger, width: 600, height: 480,
     showInDock: true, singleton: true,
     render: function (body, win) {
       body.innerHTML =
@@ -422,11 +488,11 @@
 
   // ---------------- About ----------------
   Apps.register({
-    id: "about", title: "About AE3 OS", glyph: "ℹ", width: 420, height: 260, singleton: true,
+    id: "about", title: "About AE3 OS", glyph: Icons.about, width: 420, height: 260, singleton: true,
     render: function (body) {
       body.innerHTML =
         '<div class="pad" style="text-align:center">' +
-          '<div style="font-size:48px">💻</div><h2>AE3 OS</h2>' +
+          '<div style="font-size:48px;color:var(--accent)">' + Icons.terminal + '</div><h2>AE3 OS</h2>' +
           '<p class="muted">Advanced Equipment Revamped — Ubuntu edition</p>' +
           '<p class="muted">Web desktop on Arma 3 CEF</p></div>';
     }

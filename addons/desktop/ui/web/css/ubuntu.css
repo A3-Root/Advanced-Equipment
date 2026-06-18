@@ -128,6 +128,12 @@ html, body {
 .muted { color: var(--muted); }
 .pad { padding: 14px; }
 
+/* inline SVG icons (js/icons.js): inherit size from font-size, colour from currentColor */
+svg { vertical-align: middle; }
+.dock-item svg, .desktop-icon .glyph svg { display: block; }
+.list li .ico { display: inline-flex; align-items: center; font-size: 18px; color: var(--muted); }
+.list li.sel .ico, .list li:hover .ico { color: var(--text); }
+
 /* login */
 #login {
   position: fixed; inset: 0; z-index: 2000; display: none;

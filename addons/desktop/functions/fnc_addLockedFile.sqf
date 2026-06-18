@@ -8,7 +8,7 @@
  * Arguments:
  * 0: _target <OBJECT|STRING> - Target laptop, its netId, or "all"
  * 1: _path <STRING> - Virtual filesystem path
- * 2: _password <STRING> - Password (must not contain "|")
+ * 2: _password <STRING> - Password (any character allowed)
  * 3: _content <STRING> - Protected content (use endl for line breaks)
  *
  * Return Value:
@@ -21,11 +21,6 @@
  */
 
 params ["_target", "_path", "_password", "_content"];
-
-if ((_password find "|") >= 0) exitWith
-{
-	WARNING_1("Locked file password for %1 may not contain '|'",_path);
-};
 
 if (!isServer) exitWith
 {
@@ -41,7 +36,8 @@ switch (true) do
 	default                             { _computers = [objectFromNetId _target]; };
 };
 
-private _locked = format ["AE3_LOCKED|%1|%2", _password, _content];
+// Length-prefixed so the password may contain any character (incl. '|'); see fnc_shell_parseLockedFile.
+private _locked = format ["AE3_LOCKED|%1|%2%3", count _password, _password, _content];
 
 {
 	if (!isNull _x && {_x getVariable ["AE3_cap_hasFilesystem", false]}) then

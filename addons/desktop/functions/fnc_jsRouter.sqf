@@ -50,11 +50,12 @@ private _reply = {
 
 switch (_command) do {
 
-    // UI is up: push session/hostname so the desktop can seed itself.
+    // UI is up: seed the hostname only (does NOT skip login - the user still authenticates via
+    // "login"). Auto-login, when wanted, is a separate explicit "boot" push.
     case "ready": {
         if (!isNull _computer) then {
             private _host = _computer getVariable ["ace_cargo_customName", "ae3-os"];
-            ["boot", createHashMapFromArray [["hostname", _host]]] call FUNC(jsSend);
+            ["hostname", createHashMapFromArray [["hostname", _host]]] call FUNC(jsSend);
         };
         // Push apps registered by other addons (e.g. Root Cyberwarfare) into the launcher.
         private _ext = missionNamespace getVariable [QGVAR(extApps), []];

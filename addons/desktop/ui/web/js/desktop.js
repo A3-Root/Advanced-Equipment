@@ -71,6 +71,8 @@
   var Desktop = {
     init: function () {
       WM.onTaskbarChange = refreshDockRunning;
+      var tray = document.querySelector("#topbar .tray");
+      if (tray && window.Icons) tray.innerHTML = Icons.power + " " + Icons.wifi;
       buildDock();
       buildDesktopIcons();
       startClock();

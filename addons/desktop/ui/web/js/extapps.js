@@ -13,11 +13,21 @@
   A3.on("dev_list", function (p) { if (p && listSubs[p.type] != null) listSubs[p.type](p.items || []); });
   A3.on("dev_result", function (p) { if (p && resultSubs[p.type] != null) resultSubs[p.type](p); });
 
+  // Prefer a named SVG icon (desc.icon or desc.extra.icon), fall back to a glyph string, then a
+  // default device icon. Lets ext apps opt into the SVG set without changing registerExtApp's API.
+  function glyphFor(desc) {
+    var iconName = desc.icon || (desc.extra && desc.extra.icon);
+    if (window.Icons && iconName && Icons[iconName]) return Icons[iconName];
+    if (desc.glyph) return desc.glyph;
+    return window.Icons ? Icons.device : "🔌";
+  }
+
   function makeDeviceApp(desc) {
     var extra = desc.extra || {};
     var actions = extra.actions || [];
+    var glyph = glyphFor(desc);
     return {
-      id: desc.id, title: desc.title, glyph: desc.glyph || "🔌",
+      id: desc.id, title: desc.title, glyph: glyph,
       kind: "deviceList", width: 620, height: 440,
       showOnDesktop: true, showInDock: true, singleton: true,
       render: function (body, win) {
@@ -33,7 +43,7 @@
           if (!items.length) { devs.innerHTML = '<li class="muted pad">No devices</li>'; return; }
           items.forEach(function (d) {
             var li = document.createElement("li");
-            li.innerHTML = '<span>' + (desc.glyph || "🔌") + '</span><span style="flex:1">' + esc(d.label || d.name || ("#" + d.id)) + "</span>";
+            li.innerHTML = '<span class="ico">' + glyph + '</span><span style="flex:1">' + esc(d.label || d.name || ("#" + d.id)) + "</span>";
             actions.forEach(function (a) {
               var b = document.createElement("button");
               b.className = "btn"; b.textContent = a.label;

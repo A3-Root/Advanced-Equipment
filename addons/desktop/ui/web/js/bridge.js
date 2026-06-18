@@ -47,6 +47,34 @@
       (handlers[channel] = handlers[channel] || []).push(cb);
     },
 
+    // Load a UI asset (html/md/media/...) by path. CEF cannot resolve relative URLs from a PBO
+    // file, so everything goes through A3API. Resolution order for a NON-absolute path:
+    //   extraRoots (optional) -> this addon's PBO -> mission root.
+    // Absolute paths (\z\ae3\..., \z\othermod\..., or any other loaded mod) are used as-is, so
+    // other mods and mission-relative content both work.
+    loadFile: function (rel, extraRoots) {
+      rel = String(rel).replace(/\//g, "\\");
+      if (typeof A3API === "undefined" || !A3API || !A3API.RequestFile) {
+        // Plain-browser preview: fetch relatively.
+        return fetch(rel.replace(/\\/g, "/")).then(function (r) { return r.text(); });
+      }
+      function requestOne(full) {
+        return Promise.resolve(A3API.RequestFile(full)).then(function (t) {
+          if (t == null || t === "") throw new Error("empty/missing: " + full);
+          return t;
+        });
+      }
+      if (rel.charAt(0) === "\\") return requestOne(rel); // absolute - this or any other mod
+      var roots = (extraRoots || []).concat(window.AE3_WEB_ROOTS ||
+        [window.AE3_WEB_ROOT || "\\z\\ae3\\addons\\desktop\\ui\\web\\", ""]);
+      var i = 0;
+      function next() {
+        if (i >= roots.length) return Promise.reject(new Error("not found in any root: " + rel));
+        return requestOne(roots[i++] + rel).catch(next);
+      }
+      return next();
+    },
+
     emit: emit
   };
 

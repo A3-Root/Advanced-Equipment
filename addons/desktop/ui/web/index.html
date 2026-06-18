@@ -1,14 +1,109 @@
 <!DOCTYPE html>
 <!--
-  AE3 web desktop (WS-B/C). Ubuntu/Yaru-reskinned shell ported from os-master's Win99UI patterns.
-  Loaded into the type-106 CEF browser control by AE3_desktop_fnc_desktop_openWeb. Talks to SQF
-  through window.A3 / window.AE3_recv (see js/bridge.js and AE3_desktop_fnc_jsRouter / _jsSend).
+  AE3 web desktop (Ubuntu/Yaru-reskinned shell ported from os-master's Win99UI patterns).
+  Loaded into the type-106 CEF browser control by AE3_desktop_fnc_desktop_openWeb.
+
+  IMPORTANT: Arma's CEF browser does NOT resolve relative <link>/<script>/<iframe> paths from a
+  PBO-loaded file. So we bootstrap exactly like os-master: pull every asset through
+  A3API.RequestFile() with an ABSOLUTE addon path and inject it. A normal browser (no A3API) falls
+  back to relative loading so the shell can still be previewed during development.
 -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <title>AE3 OS</title>
-<link rel="stylesheet" href="css/ubuntu.css">
+<script>
+(function () {
+  // Absolute VFS root of this web UI inside the packed addon (matches the LoadFile path used by
+  // AE3_desktop_fnc_desktop_openWeb). A3API takes Windows-style backslash paths.
+  var WEB_ROOT = "\\z\\ae3\\addons\\desktop\\ui\\web\\";
+  window.AE3_WEB_ROOT = WEB_ROOT;
+  // Search order for non-absolute asset paths: this addon's PBO first, then the mission root
+  // (so mission makers can ship/override content). Absolute paths (\z\othermod\..., other loaded
+  // mods) are used as-is. Shared with bridge.js (A3.loadFile) via window.AE3_WEB_ROOTS.
+  var ROOTS = [WEB_ROOT, ""];
+  window.AE3_WEB_ROOTS = ROOTS;
+
+  // CSS first (so there is no unstyled flash), then JS modules in strict dependency order.
+  var CSS = ["css/ubuntu.css"];
+  var JS = [
+    "js/bridge.js",   // window.A3 / AE3_recv + A3.loadFile
+    "js/icons.js",    // inline SVG icon set
+    "js/md.js",       // tiny markdown renderer (wiki site)
+    "js/wm.js",       // window manager
+    "js/modal.js",    // alert/confirm/prompt overlays
+    "js/desktop.js",  // shell: top bar, dock, desktop icons, app registry
+    "js/apps.js",     // built-in apps
+    "js/extapps.js",  // apps registered by other addons (e.g. Root Cyberwarfare)
+    "js/main.js"      // boot + login
+  ];
+
+  function requestOne(full) {
+    // A3API.RequestFile returns a Promise (or thenable) resolving to file text.
+    return Promise.resolve(A3API.RequestFile(full)).then(function (t) {
+      if (t == null || t === "") throw new Error("empty/missing: " + full);
+      return t;
+    });
+  }
+
+  function reqFile(rel) {
+    rel = String(rel).replace(/\//g, "\\");
+    if (rel.charAt(0) === "\\") return requestOne(rel); // absolute (this/other mod) - use as-is
+    var i = 0;
+    function next() {
+      if (i >= ROOTS.length) return Promise.reject(new Error("not found in any root: " + rel));
+      return requestOne(ROOTS[i++] + rel).catch(next);
+    }
+    return next();
+  }
+
+  function injectCss(text) {
+    var s = document.createElement("style");
+    s.type = "text/css";
+    s.textContent = text;
+    document.head.appendChild(s);
+  }
+
+  function injectJs(text) {
+    var s = document.createElement("script");
+    s.text = text;
+    document.head.appendChild(s); // executes synchronously on append
+  }
+
+  function loadSequential(list, loadOne) {
+    return list.reduce(function (chain, item) {
+      return chain.then(function () { return reqFile(item).then(loadOne); });
+    }, Promise.resolve());
+  }
+
+  function bootViaA3API() {
+    loadSequential(CSS, injectCss)
+      .then(function () { return loadSequential(JS, injectJs); })
+      .catch(function (e) {
+        // Surface load failures to the RPT via the bridge if it made it in, else console.
+        try { A3API.SendAlert("[AE3] web boot failed: " + e); } catch (_) { console.error(e); }
+      });
+  }
+
+  function bootViaRelative() {
+    // Plain-browser preview fallback: let the browser resolve the relative paths itself.
+    CSS.forEach(function (href) {
+      var l = document.createElement("link");
+      l.rel = "stylesheet"; l.href = href; document.head.appendChild(l);
+    });
+    JS.forEach(function (src) {
+      var sc = document.createElement("script");
+      sc.src = src; sc.async = false; document.head.appendChild(sc);
+    });
+  }
+
+  if (typeof A3API !== "undefined" && A3API && A3API.RequestFile) {
+    bootViaA3API();
+  } else {
+    bootViaRelative();
+  }
+})();
+</script>
 </head>
 <body>
   <div id="wallpaper"></div>
@@ -18,7 +113,7 @@
     <span id="hostname" class="muted" style="margin-left:10px">ae3-os</span>
     <span class="spacer"></span>
     <span id="clock"></span>
-    <span class="tray">&#9889; &#128246;</span>
+    <span class="tray"></span>
   </div>
 
   <div id="dock"></div>
@@ -26,7 +121,7 @@
   <div id="screen" style="position:fixed; inset:0; z-index:150; pointer-events:none;"></div>
 
   <div id="login">
-    <div class="avatar">&#128100;</div>
+    <div class="avatar"></div>
     <h2>Sign in</h2>
     <div class="row">
       <input id="loginUser" class="input" placeholder="Username" value="root" autocomplete="off">
@@ -35,13 +130,5 @@
       <div id="loginErr" class="err"></div>
     </div>
   </div>
-
-  <script src="js/bridge.js"></script>
-  <script src="js/wm.js"></script>
-  <script src="js/modal.js"></script>
-  <script src="js/desktop.js"></script>
-  <script src="js/apps.js"></script>
-  <script src="js/extapps.js"></script>
-  <script src="js/main.js"></script>
 </body>
 </html>

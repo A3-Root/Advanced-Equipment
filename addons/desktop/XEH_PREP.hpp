@@ -9,6 +9,7 @@ PREP(browserAction);
 PREP(jsRouter);
 PREP(jsSend);
 PREP(jsReply);
+PREP(deviceLabel);
 PREP(registerExtApp);
 PREP(registerCmd);
 PREP(authUser);

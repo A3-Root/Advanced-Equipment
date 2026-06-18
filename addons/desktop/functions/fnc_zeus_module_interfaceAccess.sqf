@@ -158,7 +158,7 @@ if (_event isEqualTo "onUnload") exitWith
 	[_computer, "cli", ["cli"] call _mkCond] call AE3_desktop_fnc_setInterfaceAccess;
 	[_computer, "gui", ["gui"] call _mkCond] call AE3_desktop_fnc_setInterfaceAccess;
 
-	[localize "STR_AE3_Desktop_Config_InterfaceAccessDisplayName", format ["%1: %2", localize "STR_AE3_Desktop_Access_Applied", name _computer], 5] call BIS_fnc_curatorHint;
+	[localize "STR_AE3_Desktop_Config_InterfaceAccessDisplayName", format ["%1: %2", localize "STR_AE3_Desktop_Access_Applied", [_computer] call FUNC(deviceLabel)], 5] call BIS_fnc_curatorHint;
 
 	deleteVehicle _module;
 };

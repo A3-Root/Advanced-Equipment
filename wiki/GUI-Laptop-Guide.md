@@ -127,8 +127,9 @@ The easiest way is the **Add Intel** module with type **Password-protected file*
 in path, password and content. You can also create one with the plain **Add File** module by
 typing the on-disk format directly:
 
-`AE3_LOCKED|<password>|<content>` — the password must not contain `|`; the content may be
-anything, including a media marker (`AE3_MEDIA|image|\mod\img.paa`) for a locked photo.
+`AE3_LOCKED|<passwordLength>|<password><content>` — the length prefix lets the password contain
+any character (including `|`), and the content may be anything, including a media marker
+(`AE3_MEDIA|image|\mod\img.paa`) for a locked photo. The Add Intel module fills this in for you.
 
 - **CLI:** `cat` shows *password protected*; `unlock /home/user/codes.txt hunter2` prints the
   content; `unlock -p ...` permanently removes the protection (needs write permission).

@@ -96,7 +96,7 @@ if (_event isEqualTo "onUnload") exitWith
 		ctrlText (_display displayCtrl 1403)
 	] call AE3_desktop_fnc_intel_dispatch;
 
-	[localize "STR_AE3_Desktop_Config_AddIntelDisplayName", format ["%1 -> %2", _type, [localize "STR_AE3_Desktop_Intel_TargetAll", name _computer] select (!isNull _computer)], 5] call BIS_fnc_curatorHint;
+	[localize "STR_AE3_Desktop_Config_AddIntelDisplayName", format ["%1 -> %2", _type, [localize "STR_AE3_Desktop_Intel_TargetAll", [_computer] call FUNC(deviceLabel)] select (!isNull _computer)], 5] call BIS_fnc_curatorHint;
 
 	deleteVehicle _module;
 };
