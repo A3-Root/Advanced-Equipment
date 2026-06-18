@@ -91,4 +91,7 @@ if (isServer) then
 	["ae3_desktop_addCalendarEvent", { _this call AE3_desktop_fnc_addCalendarEvent }] call CBA_fnc_addEventHandler;
 	["ae3_desktop_registerCamera", { _this call AE3_desktop_fnc_registerCamera }] call CBA_fnc_addEventHandler;
 	["ae3_desktop_addLockedFile", { _this call AE3_desktop_fnc_addLockedFile }] call CBA_fnc_addEventHandler;
+
+	// Web Messenger: client requests its laptop's live IM inbox
+	["ae3_desktop_chatPull", { _this call AE3_desktop_fnc_chatPullServer }] call CBA_fnc_addEventHandler;
 };

@@ -19,3 +19,12 @@ if (isServer) then
 		]
 	] call AE3_desktop_fnc_registerWebpage;
 };
+
+// Web Messenger: server pushes the laptop's IM inbox text here; forward it to the open browser.
+if (hasInterface) then
+{
+	["ae3_desktop_chatData", {
+		params ["_text"];
+		["chat_data", createHashMapFromArray [["text", _text]]] call AE3_desktop_fnc_jsSend;
+	}] call CBA_fnc_addEventHandler;
+};

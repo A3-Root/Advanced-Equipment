@@ -1,6 +1,25 @@
 /* Desktop core */
 PREP(desktop_open);
 PREP(desktop_onUnload);
+
+/* Web desktop (WS-B CEF port): browser display, JS<->SQF bridge */
+PREP(desktop_openWeb);
+PREP(desktop_webUnload);
+PREP(browserAction);
+PREP(jsRouter);
+PREP(jsSend);
+PREP(jsReply);
+PREP(registerExtApp);
+PREP(registerCmd);
+PREP(authUser);
+PREP(fsHandle);
+PREP(sysInfo);
+PREP(netScan);
+PREP(netConnectServer);
+PREP(mapData);
+PREP(mailHandle);
+PREP(chatPullServer);
+
 PREP(setInterfaceMode);
 PREP(setInterfaceAccess);
 PREP(canAccessInterface);

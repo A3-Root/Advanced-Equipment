@@ -142,7 +142,8 @@ if(!isDedicated) then
                 params ["_target", "_player", "_params"];
 
                 _target setVariable ["AE3_computer_mutex", _player, true];
-                [_target] spawn (missionNamespace getVariable ["AE3_desktop_fnc_desktop_open", {}]);
+                // GUI is the web (CEF) desktop; openWeb claims the laptop and handles cleanup on close.
+                [_target] spawn (missionNamespace getVariable ["AE3_desktop_fnc_desktop_openWeb", {}]);
             },
             {
                 // condition

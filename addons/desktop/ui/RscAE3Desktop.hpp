@@ -57,3 +57,44 @@ class AE3_Desktop_Display
 
 	class controls {};
 };
+
+// R1 spike: fullscreen CEF web-browser display for the HTML/JS desktop port (WS-B).
+// A single control of type 106 (Arma's web browser control) fills the screen; the HTML/JS
+// UI is loaded via ctrlWebBrowserAction ["LoadFile", ...] in AE3_desktop_fnc_desktop_openWeb.
+// Mirrors os-master's RscWin99OSDisplayControl. Kept separate from AE3_Desktop_Display so the
+// existing native desktop keeps working until the web port reaches feature parity.
+class AE3_Desktop_BrowserDisplay
+{
+	idd = 17010;
+	movingEnable = 0;
+	enableSimulation = 1;
+	fadein = 0;
+	fadeout = 0;
+	onUnload = "call AE3_desktop_fnc_desktop_webUnload";
+
+	class controlsBackground
+	{
+		class AE3_Browser_Bg : RscText
+		{
+			idc = 17011;
+			x = "safezoneX";
+			y = "safezoneY";
+			w = "safezoneW";
+			h = "safezoneH";
+			colorBackground[] = {0, 0, 0, 1};
+		};
+	};
+
+	class controls
+	{
+		class AE3_Browser : RscText
+		{
+			type = 106; // CT_WEB_BROWSER (CEF)
+			idc = 1337;
+			x = "safezoneX";
+			y = "safezoneY";
+			w = "safezoneW";
+			h = "safezoneH";
+		};
+	};
+};

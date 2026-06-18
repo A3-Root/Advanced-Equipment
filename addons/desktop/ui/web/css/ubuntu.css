@@ -1,0 +1,141 @@
+/*
+ * AE3 web desktop - Yaru (Ubuntu/Debian) theme. Replaces os-master's Win98 silver chrome.
+ * Flat, dark, GNOME-like: dark top bar, left dock, flat windows with a single accent.
+ */
+:root {
+  --bg: #2c001e;                 /* aubergine fallback (wallpaper covers it) */
+  --panel: #1d1d1d;              /* top bar / window chrome */
+  --panel-2: #2c2c2c;            /* dock */
+  --surface: #353535;            /* window body */
+  --surface-2: #3d3d3d;          /* inputs, list rows */
+  --line: #1a1a1a;
+  --text: #ffffff;
+  --muted: #b9b9b9;
+  --accent: #e95420;             /* Ubuntu orange */
+  --accent-2: #5e2750;
+  --good: #26a269;
+  --shadow: 0 14px 40px rgba(0,0,0,0.55);
+  --radius: 8px;
+  --topbar-h: 28px;
+  --dock-w: 64px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  height: 100%; width: 100%; overflow: hidden;
+  font-family: "Ubuntu", "Noto Sans", "DejaVu Sans", sans-serif;
+  font-size: 14px; color: var(--text);
+  user-select: none; -webkit-user-select: none; cursor: default;
+}
+
+#wallpaper {
+  position: fixed; inset: 0; z-index: 0;
+  background:
+    radial-gradient(circle at 25% 25%, #77216f 0%, rgba(119,33,111,0) 55%),
+    radial-gradient(circle at 80% 70%, #2c2c2c 0%, rgba(44,44,44,0) 50%),
+    linear-gradient(135deg, #2c001e 0%, #3b0a2e 60%, #1f1f1f 100%);
+}
+
+/* ---------- top bar ---------- */
+#topbar {
+  position: fixed; top: 0; left: 0; right: 0; height: var(--topbar-h); z-index: 1000;
+  background: var(--panel); display: flex; align-items: center;
+  padding: 0 12px; font-size: 13px; box-shadow: 0 1px 0 rgba(0,0,0,0.6);
+}
+#topbar .activities { font-weight: 600; cursor: pointer; padding: 2px 8px; border-radius: 4px; }
+#topbar .activities:hover { background: rgba(255,255,255,0.12); }
+#topbar .spacer { flex: 1; }
+#topbar #clock { font-weight: 600; }
+#topbar .tray { margin-left: 14px; color: var(--muted); }
+
+/* ---------- dock ---------- */
+#dock {
+  position: fixed; top: var(--topbar-h); left: 0; bottom: 0; width: var(--dock-w); z-index: 900;
+  background: var(--panel-2); display: flex; flex-direction: column; align-items: center;
+  padding: 10px 0; gap: 8px;
+}
+.dock-item {
+  width: 46px; height: 46px; border-radius: 10px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--surface); position: relative; transition: background 0.12s;
+  font-size: 22px; line-height: 1;
+}
+.dock-item:hover { background: #474747; }
+.dock-item.running::before {
+  content: ""; position: absolute; left: -6px; top: 50%; transform: translateY(-50%);
+  width: 3px; height: 22px; border-radius: 2px; background: var(--accent);
+}
+.dock-item .tip {
+  position: absolute; left: 56px; white-space: nowrap; background: #000; color: #fff;
+  padding: 3px 8px; border-radius: 4px; font-size: 12px; opacity: 0; pointer-events: none;
+  transition: opacity 0.1s;
+}
+.dock-item:hover .tip { opacity: 0.95; }
+
+/* ---------- desktop icons ---------- */
+#desktop {
+  position: fixed; top: var(--topbar-h); left: var(--dock-w); right: 0; bottom: 0; z-index: 100;
+  padding: 16px; display: grid; grid-template-columns: repeat(auto-fill, 92px);
+  grid-auto-rows: 92px; gap: 6px; align-content: start;
+}
+.desktop-icon {
+  width: 92px; height: 92px; border-radius: 8px; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+  text-align: center; color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+}
+.desktop-icon:hover, .desktop-icon.sel { background: rgba(233,84,32,0.22); }
+.desktop-icon .glyph { font-size: 34px; line-height: 1; }
+.desktop-icon .label { font-size: 12px; max-width: 88px; overflow: hidden; text-overflow: ellipsis; }
+
+/* ---------- windows ---------- */
+.window {
+  position: fixed; z-index: 200; min-width: 280px; min-height: 160px; pointer-events: auto;
+  background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow);
+  display: flex; flex-direction: column; overflow: hidden; border: 1px solid var(--line);
+}
+.window.active { box-shadow: 0 18px 52px rgba(0,0,0,0.7); }
+.window.active .titlebar { background: var(--panel); }
+.titlebar {
+  height: 36px; background: #262626; display: flex; align-items: center;
+  padding: 0 6px 0 12px; cursor: grab; flex: 0 0 auto;
+}
+.titlebar.dragging { cursor: grabbing; }
+.titlebar .title { flex: 1; font-size: 13px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.titlebar .ctrls { display: flex; gap: 6px; }
+.titlebar .ctrl {
+  width: 22px; height: 22px; border-radius: 50%; cursor: pointer; border: none;
+  display: flex; align-items: center; justify-content: center; font-size: 12px; color: #fff;
+  background: #4a4a4a;
+}
+.titlebar .ctrl.min:hover { background: #6a6a6a; }
+.titlebar .ctrl.max:hover { background: #6a6a6a; }
+.titlebar .ctrl.close { background: var(--accent); }
+.titlebar .ctrl.close:hover { background: #ff6a3d; }
+.window-body { flex: 1; overflow: auto; background: var(--surface); }
+.window.minimized { display: none; }
+
+/* generic widgets used by apps */
+.toolbar { display: flex; align-items: center; gap: 6px; padding: 8px; background: #2b2b2b; border-bottom: 1px solid var(--line); }
+.btn { background: var(--surface-2); color: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 6px 12px; cursor: pointer; font-size: 13px; }
+.btn:hover { background: #4a4a4a; }
+.btn.accent { background: var(--accent); border-color: transparent; }
+.btn.accent:hover { background: #ff6a3d; }
+.input { background: var(--surface-2); color: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px; font-size: 13px; }
+.list { list-style: none; }
+.list li { padding: 7px 12px; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+.list li:hover { background: rgba(255,255,255,0.07); }
+.list li.sel { background: rgba(233,84,32,0.25); }
+.muted { color: var(--muted); }
+.pad { padding: 14px; }
+
+/* login */
+#login {
+  position: fixed; inset: 0; z-index: 2000; display: none;
+  flex-direction: column; align-items: center; justify-content: center; gap: 16px;
+  background: linear-gradient(135deg, #2c001e, #1f1f1f);
+}
+#login.show { display: flex; }
+#login .avatar { width: 84px; height: 84px; border-radius: 50%; background: var(--accent-2); display: flex; align-items: center; justify-content: center; font-size: 40px; }
+#login h2 { font-weight: 500; }
+#login .row { display: flex; flex-direction: column; gap: 8px; width: 280px; }
+#login .err { color: #ff8a6a; font-size: 13px; height: 16px; }

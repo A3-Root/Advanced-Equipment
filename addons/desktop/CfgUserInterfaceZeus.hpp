@@ -67,15 +67,17 @@ class AE3_UserInterface_Zeus_Module_AddIntel
 			text = "";
 			x = 0.5 * GUI_GRID_W + GUI_GRID_X;
 			y = 4.5 * GUI_GRID_H + GUI_GRID_Y;
-			w = 9 * GUI_GRID_W;
-			h = 1 * GUI_GRID_H;
+			w = 13 * GUI_GRID_W;
+			h = 1.4 * GUI_GRID_H;
+			style = ST_MULTI;
+			lineSpacing = 1;
 		};
 		class RscEdit_1401: RscEdit
 		{
 			idc = 1401;
-			x = 10 * GUI_GRID_W + GUI_GRID_X;
+			x = 14 * GUI_GRID_W + GUI_GRID_X;
 			y = 4.5 * GUI_GRID_H + GUI_GRID_Y;
-			w = 29 * GUI_GRID_W;
+			w = 25 * GUI_GRID_W;
 			h = 1 * GUI_GRID_H;
 		};
 
@@ -85,15 +87,17 @@ class AE3_UserInterface_Zeus_Module_AddIntel
 			text = "";
 			x = 0.5 * GUI_GRID_W + GUI_GRID_X;
 			y = 6 * GUI_GRID_H + GUI_GRID_Y;
-			w = 9 * GUI_GRID_W;
-			h = 1 * GUI_GRID_H;
+			w = 13 * GUI_GRID_W;
+			h = 1.4 * GUI_GRID_H;
+			style = ST_MULTI;
+			lineSpacing = 1;
 		};
 		class RscEdit_1402: RscEdit
 		{
 			idc = 1402;
-			x = 10 * GUI_GRID_W + GUI_GRID_X;
+			x = 14 * GUI_GRID_W + GUI_GRID_X;
 			y = 6 * GUI_GRID_H + GUI_GRID_Y;
-			w = 29 * GUI_GRID_W;
+			w = 25 * GUI_GRID_W;
 			h = 1 * GUI_GRID_H;
 		};
 
@@ -103,15 +107,17 @@ class AE3_UserInterface_Zeus_Module_AddIntel
 			text = "";
 			x = 0.5 * GUI_GRID_W + GUI_GRID_X;
 			y = 7.5 * GUI_GRID_H + GUI_GRID_Y;
-			w = 9 * GUI_GRID_W;
-			h = 1 * GUI_GRID_H;
+			w = 13 * GUI_GRID_W;
+			h = 1.4 * GUI_GRID_H;
+			style = ST_MULTI;
+			lineSpacing = 1;
 		};
 		class RscEdit_1403: RscEdit
 		{
 			idc = 1403;
-			x = 10 * GUI_GRID_W + GUI_GRID_X;
+			x = 14 * GUI_GRID_W + GUI_GRID_X;
 			y = 7.5 * GUI_GRID_H + GUI_GRID_Y;
-			w = 29 * GUI_GRID_W;
+			w = 25 * GUI_GRID_W;
 			h = 3 * GUI_GRID_H;
 		};
 
@@ -130,7 +136,7 @@ class AE3_UserInterface_Zeus_Module_AddIntel
 
 		class RscButtonMenuOK_1600: RscButtonMenuOK
 		{
-			idc = 1600;
+			idc = 1; // IDC_OK: engine auto-closes the dialog with exit code 1 (do not change)
 			x = 30 * GUI_GRID_W + GUI_GRID_X;
 			y = 14.5 * GUI_GRID_H + GUI_GRID_Y;
 			w = 9.5 * GUI_GRID_W;
@@ -138,7 +144,7 @@ class AE3_UserInterface_Zeus_Module_AddIntel
 		};
 		class RscButtonMenuCancel_1601: RscButtonMenuCancel
 		{
-			idc = 1601;
+			idc = 2; // IDC_CANCEL: engine auto-closes the dialog with exit code 2 (do not change)
 			x = 0.5 * GUI_GRID_W + GUI_GRID_X;
 			y = 14.5 * GUI_GRID_H + GUI_GRID_Y;
 			w = 9.5 * GUI_GRID_W;
@@ -355,7 +361,7 @@ class AE3_UserInterface_Zeus_Module_InterfaceAccess
 
 		class RscButtonMenuOK_1600: RscButtonMenuOK
 		{
-			idc = 1600;
+			idc = 1; // IDC_OK: engine auto-closes the dialog with exit code 1 (do not change)
 			x = 30 * GUI_GRID_W + GUI_GRID_X;
 			y = 18.5 * GUI_GRID_H + GUI_GRID_Y;
 			w = 9.5 * GUI_GRID_W;
@@ -363,7 +369,7 @@ class AE3_UserInterface_Zeus_Module_InterfaceAccess
 		};
 		class RscButtonMenuCancel_1601: RscButtonMenuCancel
 		{
-			idc = 1601;
+			idc = 2; // IDC_CANCEL: engine auto-closes the dialog with exit code 2 (do not change)
 			x = 0.5 * GUI_GRID_W + GUI_GRID_X;
 			y = 18.5 * GUI_GRID_H + GUI_GRID_Y;
 			w = 9.5 * GUI_GRID_W;
@@ -443,7 +449,7 @@ class AE3_UserInterface_Zeus_Module_AddCamera
 
 		class RscButtonMenuOK_1600: RscButtonMenuOK
 		{
-			idc = 1600;
+			idc = 1; // IDC_OK: engine auto-closes the dialog with exit code 1 (do not change)
 			x = 30 * GUI_GRID_W + GUI_GRID_X;
 			y = 6 * GUI_GRID_H + GUI_GRID_Y;
 			w = 9.5 * GUI_GRID_W;
@@ -451,7 +457,7 @@ class AE3_UserInterface_Zeus_Module_AddCamera
 		};
 		class RscButtonMenuCancel_1601: RscButtonMenuCancel
 		{
-			idc = 1601;
+			idc = 2; // IDC_CANCEL: engine auto-closes the dialog with exit code 2 (do not change)
 			x = 0.5 * GUI_GRID_W + GUI_GRID_X;
 			y = 6 * GUI_GRID_H + GUI_GRID_Y;
 			w = 9.5 * GUI_GRID_W;

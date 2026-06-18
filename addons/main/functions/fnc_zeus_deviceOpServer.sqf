@@ -32,7 +32,7 @@ private _ready = [_computer] call AE3_armaos_fnc_device_ensureInit;
 if (!_ready) exitWith
 {
 	WARNING_2("Zeus op '%1' failed: %2 is not an initialized AE3 device",_op,typeOf _computer);
-	["ae3_main_zeusOpFeedback", [false, _op, _args], _curatorOwner] call CBA_fnc_targetEvent;
+	["ae3_main_zeusOpFeedback", [false, _op, _args], _curatorOwner] call CBA_fnc_ownerEvent;
 };
 
 switch (_op) do
@@ -48,4 +48,4 @@ switch (_op) do
 	};
 };
 
-["ae3_main_zeusOpFeedback", [true, _op, _args], _curatorOwner] call CBA_fnc_targetEvent;
+["ae3_main_zeusOpFeedback", [true, _op, _args], _curatorOwner] call CBA_fnc_ownerEvent;

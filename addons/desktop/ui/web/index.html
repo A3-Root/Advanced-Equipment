@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<!--
+  AE3 web desktop (WS-B/C). Ubuntu/Yaru-reskinned shell ported from os-master's Win99UI patterns.
+  Loaded into the type-106 CEF browser control by AE3_desktop_fnc_desktop_openWeb. Talks to SQF
+  through window.A3 / window.AE3_recv (see js/bridge.js and AE3_desktop_fnc_jsRouter / _jsSend).
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>AE3 OS</title>
+<link rel="stylesheet" href="css/ubuntu.css">
+</head>
+<body>
+  <div id="wallpaper"></div>
+
+  <div id="topbar">
+    <span class="activities">Activities</span>
+    <span id="hostname" class="muted" style="margin-left:10px">ae3-os</span>
+    <span class="spacer"></span>
+    <span id="clock"></span>
+    <span class="tray">&#9889; &#128246;</span>
+  </div>
+
+  <div id="dock"></div>
+  <div id="desktop"></div>
+  <div id="screen" style="position:fixed; inset:0; z-index:150; pointer-events:none;"></div>
+
+  <div id="login">
+    <div class="avatar">&#128100;</div>
+    <h2>Sign in</h2>
+    <div class="row">
+      <input id="loginUser" class="input" placeholder="Username" value="root" autocomplete="off">
+      <input id="loginPass" class="input" type="password" placeholder="Password" autocomplete="off">
+      <button id="loginBtn" class="btn accent">Log In</button>
+      <div id="loginErr" class="err"></div>
+    </div>
+  </div>
+
+  <script src="js/bridge.js"></script>
+  <script src="js/wm.js"></script>
+  <script src="js/modal.js"></script>
+  <script src="js/desktop.js"></script>
+  <script src="js/apps.js"></script>
+  <script src="js/extapps.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
