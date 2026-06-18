@@ -28,6 +28,11 @@ private _callbacks = _window getOrDefault ["callbacks", createHashMap];
 private _onClose = _callbacks getOrDefault ["onClose", {}];
 [_winId, _session getOrDefault ["computer", objNull]] call _onClose;
 
+// Apps may register a throttled per-frame handler (e.g. live refresh, drone feed, GPS marker)
+// by returning a "pfh" handle. The window manager removes it here so nothing leaks after close.
+private _pfh = _callbacks getOrDefault ["pfh", -1];
+if (_pfh >= 0) then { [_pfh] call CBA_fnc_removePerFrameHandler; };
+
 ctrlDelete (_window get "group");
 _windows deleteAt _winId;
 

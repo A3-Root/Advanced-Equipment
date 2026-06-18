@@ -76,22 +76,28 @@ private _refresh = {
 	private _names = keys (_mailDir select 0);
 	_names sort true;
 
+	private _theme = (uiNamespace getVariable ["AE3_desktop_session", createHashMap]) getOrDefault ["theme", createHashMap];
+	private _readSet = uiNamespace getVariable ["AE3_mail_read", createHashMap];
+
 	{
 		private _entry = (_mailDir select 0) get _x;
 		private _content = _entry select 0;
 		if (_content isEqualType "") then
 		{
-			// display the Subject line if present, otherwise the file name
+			// parse the From / Subject headers for a clean two-column list entry
 			private _subject = _x;
+			private _from = "";
 			{
-				if ((_x select [0, 8]) isEqualTo "Subject:") exitWith
-				{
-					_subject = [_x select [8]] call CBA_fnc_trim;
-				};
+				if ((_x select [0, 8]) isEqualTo "Subject:") then { _subject = [_x select [8]] call CBA_fnc_trim; };
+				if ((_x select [0, 5]) isEqualTo "From:") then { _from = [_x select [5]] call CBA_fnc_trim; };
 			} forEach (_content splitString endl);
 
-			private _index = _listCtrl lbAdd _subject;
+			private _isUnread = !(_readSet getOrDefault [_x, false]);
+			private _index = _listCtrl lbAdd ((["", "* "] select _isUnread) + _subject);
 			_listCtrl lbSetData [_index, _x];
+			if (_from isNotEqualTo "") then { _listCtrl lbSetTextRight [_index, _from]; };
+			// unread mail uses the accent colour, read mail the regular text colour
+			_listCtrl lbSetColor [_index, _theme getOrDefault [["text", "accent"] select _isUnread, [1, 1, 1, 1]]];
 		};
 	} forEach _names;
 };
@@ -106,6 +112,7 @@ _listCtrl ctrlAddEventHandler ["LBSelChanged", {
 	private _readCtrl = _listCtrl getVariable "AE3_readCtrl";
 	private _name = _listCtrl lbData _index;
 
+	if (_name isEqualTo "") exitWith {};
 	private _filesystem = _computer getVariable ["AE3_filesystem", []];
 
 	try
@@ -113,7 +120,29 @@ _listCtrl ctrlAddEventHandler ["LBSelChanged", {
 		private _content = [[], _filesystem, format ["/var/mail/%1", _name], "root", 0] call AE3_filesystem_fnc_getFile;
 		if (_content isEqualType "") then
 		{
-			_readCtrl ctrlSetStructuredText (parseText ((_content splitString endl) joinString "<br/>"));
+			// split headers (From/Subject) from the body and render a clean styled email
+			private _lines = _content splitString endl;
+			private _from = "";
+			private _subject = _name;
+			private _bodyStart = 0;
+			{
+				if ((_x select [0, 5]) isEqualTo "From:") then { _from = [_x select [5]] call CBA_fnc_trim; };
+				if ((_x select [0, 8]) isEqualTo "Subject:") then { _subject = [_x select [8]] call CBA_fnc_trim; };
+				if (([_x] call CBA_fnc_trim) isEqualTo "" && {_bodyStart == 0}) then { _bodyStart = _forEachIndex + 1; };
+			} forEach _lines;
+
+			private _body = (_lines select [_bodyStart]) joinString "<br/>";
+			private _html = format [
+				"<t size='1.3'>%1</t><br/><t color='#8aa0b4'>%2: %3</t><br/><br/>%4",
+				_subject, localize "STR_AE3_Desktop_Mail_From", _from, _body
+			];
+			_readCtrl ctrlSetStructuredText (parseText _html);
+
+			// mark as read and refresh the list highlight
+			private _readSet = uiNamespace getVariable ["AE3_mail_read", createHashMap];
+			_readSet set [_name, true];
+			uiNamespace setVariable ["AE3_mail_read", _readSet];
+			[_listCtrl] call (_listCtrl getVariable "AE3_refresh");
 		};
 	}
 	catch

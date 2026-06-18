@@ -91,10 +91,9 @@ _refreshBtn ctrlAddEventHandler ["ButtonClick", {
 	[_historyCtrl] call (_historyCtrl getVariable "AE3_refresh");
 }];
 
-_sendBtn setVariable ["AE3_ctx", [_computer, _toCtrl, _msgCtrl, _historyCtrl]];
-_sendBtn ctrlAddEventHandler ["ButtonClick", {
-	params ["_button"];
-	((_button getVariable "AE3_ctx")) params ["_computer", "_toCtrl", "_msgCtrl", "_historyCtrl"];
+// Shared send routine, used by both the Send button and the Enter key in the message field.
+private _send = {
+	params ["_computer", "_toCtrl", "_msgCtrl", "_historyCtrl"];
 
 	private _text = ctrlText _msgCtrl;
 	if (_text isEqualTo "") exitWith {};
@@ -112,7 +111,38 @@ _sendBtn ctrlAddEventHandler ["ButtonClick", {
 	["ae3_network_imSend", [netId _target, _senderIp, _text]] call CBA_fnc_serverEvent;
 
 	_msgCtrl ctrlSetText "";
-	hintSilent format [localize "STR_AE3_ArmaOS_Msg_Sent", ctrlText _toCtrl];
+};
+
+_sendBtn setVariable ["AE3_ctx", [_computer, _toCtrl, _msgCtrl, _historyCtrl]];
+_sendBtn setVariable ["AE3_send", _send];
+_sendBtn ctrlAddEventHandler ["ButtonClick", {
+	params ["_button"];
+	(_button getVariable "AE3_ctx") call (_button getVariable "AE3_send");
 }];
 
-createHashMap
+// Enter in the message field sends (keys 28 = Return, 156 = numpad Enter).
+_msgCtrl setVariable ["AE3_ctx", [_computer, _toCtrl, _msgCtrl, _historyCtrl]];
+_msgCtrl setVariable ["AE3_send", _send];
+_msgCtrl setVariable ["AE3_historyCtrl", _historyCtrl];
+_msgCtrl ctrlAddEventHandler ["KeyDown", {
+	params ["_ctrl", "_key"];
+	if (_key in [28, 156]) exitWith
+	{
+		(_ctrl getVariable "AE3_ctx") call (_ctrl getVariable "AE3_send");
+		private _h = _ctrl getVariable "AE3_historyCtrl";
+		[_h] call (_h getVariable "AE3_refresh");
+		true
+	};
+	false
+}];
+
+// Auto-refresh incoming messages on a throttled timer (no per-frame cost). The handle is removed
+// when the window closes via the onClose callback below.
+private _pfh = [
+	{ params ["_args"]; _args params ["_historyCtrl"]; [_historyCtrl] call (_historyCtrl getVariable "AE3_refresh"); },
+	2,
+	[_historyCtrl]
+] call CBA_fnc_addPerFrameHandler;
+
+// The window manager removes any returned "pfh" handle automatically on close (see fnc_wm_closeWindow).
+createHashMapFromArray [["pfh", _pfh]]

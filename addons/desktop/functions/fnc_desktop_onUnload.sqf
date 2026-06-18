@@ -42,11 +42,14 @@ if (!isNull _computer) then
 	_computer setVariable ["AE3_desktopState", _desktopState, true];
 };
 
-// Run app close callbacks
+// Run app close callbacks and remove any per-frame handlers the apps registered
 {
 	private _callbacks = _y getOrDefault ["callbacks", createHashMap];
 	private _onClose = _callbacks getOrDefault ["onClose", {}];
 	[_x, _computer] call _onClose;
+
+	private _pfh = _callbacks getOrDefault ["pfh", -1];
+	if (_pfh >= 0) then { [_pfh] call CBA_fnc_removePerFrameHandler; };
 } forEach (_session getOrDefault ["windows", createHashMap]);
 
 uiNamespace setVariable ["AE3_desktop_session", nil];

@@ -31,8 +31,8 @@ private _btns = [];
 private _i = 0;
 
 {
-	private _winId = _y;
-	private _win = _x;
+	private _winId = _x;
+	private _win = _y;
 
 	private _btn = _display ctrlCreate ["RscButton", -1];
 	_btn ctrlSetPosition [safeZoneX + 0.42 + 0.135 * _i, safeZoneY + safeZoneH - 0.038, 0.13, 0.036];
