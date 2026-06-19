@@ -27,9 +27,18 @@
       var entries = body.querySelector(".entries");
       var pathInput = body.querySelector(".path");
 
+      var loadTries = 0;
       function load() {
         pathInput.value = cwd; sel = null;
         A3.request("fs_list", { path: cwd }).then(function (res) {
+          // Filesystem still syncing from the server (MP): the backend kicked an authoritative
+          // pull - show a spinner and retry a few times before giving up.
+          if (res.loading) {
+            if (loadTries < 6) { loadTries++; entries.innerHTML = '<li class="muted pad">Loading&hellip;</li>'; setTimeout(load, 500); }
+            else { entries.innerHTML = '<li class="muted pad">Filesystem unavailable</li>'; }
+            return;
+          }
+          loadTries = 0;
           entries.innerHTML = "";
           if (res.error && res.error !== "") {
             entries.innerHTML = '<li class="muted pad">' + (res.error === "denied" ? "Permission denied" : "Unavailable") + "</li>";
@@ -102,7 +111,7 @@
       var ta = body.querySelector(".editor");
       var fname = body.querySelector(".fname");
       if (args && args.content != null) ta.value = args.content;
-      function setName() { fname.textContent = path || "(unsaved)"; win.el.querySelector(".title").textContent = "Text Editor — " + (path ? path.split("/").pop() : "Untitled"); }
+      function setName() { fname.textContent = path || "(unsaved)"; win.el.querySelector(".title").textContent = "Text Editor - " + (path ? path.split("/").pop() : "Untitled"); }
       setName();
 
       function save(toPath) {
@@ -176,14 +185,18 @@
     }
   });
 
-  // ---------------- Calendar (#12: month/year nav + go-to-date) ----------------
+  // ---------------- Calendar (#12: month/year nav + go-to-date + intel events) ----------------
+  // Events are intel/lore entries (meetings, sightings) attached to a date. The full set is fetched
+  // ONCE on open and cached, so month/year navigation is instant (the old per-nav request made
+  // navigation feel frozen). Clicking a day shows its events and an add/delete form.
   Apps.register({
-    id: "calendar", title: "Calendar", glyph: Icons.calendar, width: 520, height: 460,
+    id: "calendar", title: "Calendar", glyph: Icons.calendar, width: 560, height: 560,
     showInDock: true, singleton: true,
     render: function (body) {
       var months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
       var view = new Date(); view.setDate(1);
-      var events = {};
+      var events = {};       // iso -> [{date,title,location,body,index}]
+      var selIso = null;
       body.innerHTML =
         '<div class="toolbar">' +
           '<button class="btn py" title="Previous year">&#171;</button>' +
@@ -192,10 +205,12 @@
           '<button class="btn nm" title="Next month">&#8250;</button>' +
           '<button class="btn ny" title="Next year">&#187;</button>' +
         '</div>' +
-        '<div class="toolbar"><input class="input goto" type="date" style="flex:1"><button class="btn accent go">Go</button><button class="btn today">Today</button></div>' +
-        '<div class="grid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;padding:8px"></div>';
+        '<div class="toolbar"><input class="input goto" type="date" style="flex:1"><button class="btn accent go">Go</button><button class="btn today">Today</button><button class="btn refresh" title="Refresh">&#8635;</button></div>' +
+        '<div class="grid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;padding:8px"></div>' +
+        '<div class="detail pad" style="border-top:1px solid var(--line);max-height:200px;overflow:auto"><p class="muted">Select a day to view or add events.</p></div>';
       var hdr = body.querySelector(".hdr");
       var grid = body.querySelector(".grid");
+      var detail = body.querySelector(".detail");
 
       function draw() {
         hdr.textContent = months[view.getMonth()] + " " + view.getFullYear();
@@ -211,29 +226,69 @@
           var iso = view.getFullYear() + "-" + String(view.getMonth() + 1).padStart(2, "0") + "-" + String(d).padStart(2, "0");
           var isToday = (today.getFullYear() === view.getFullYear() && today.getMonth() === view.getMonth() && today.getDate() === d);
           var has = events[iso];
-          var cell = h('<div style="text-align:center;padding:8px 0;border-radius:6px;cursor:pointer;' +
+          var cell = h('<div data-iso="' + iso + '" style="text-align:center;padding:8px 0;border-radius:6px;cursor:pointer;' +
+            (iso === selIso ? "outline:2px solid var(--accent);" : "") +
             (isToday ? "background:var(--accent);color:#fff;" : "background:var(--surface-2);") + '">' + d +
-            (has ? '<div style="font-size:9px;color:#ffd2c2">●</div>' : "") + "</div>");
+            (has ? '<div style="font-size:9px;color:#ffd2c2">&#9679;</div>' : "") + "</div>");
+          cell.addEventListener("click", function () { showDay(this.getAttribute("data-iso")); });
           grid.appendChild(cell);
         }
       }
-      function loadEvents() {
-        A3.request("cal_list", { year: view.getFullYear(), month: view.getMonth() + 1 }).then(function (list) {
+
+      function showDay(iso) {
+        selIso = iso; draw();
+        var list = events[iso] || [];
+        var html = '<div style="display:flex;align-items:center"><h3 style="flex:1;margin:0">' + esc(iso) + '</h3></div>';
+        if (!list.length) html += '<p class="muted">No events.</p>';
+        list.forEach(function (e) {
+          html += '<div class="ev" data-idx="' + e.index + '" style="margin:8px 0;padding:8px;background:var(--surface-2);border-radius:6px">' +
+            '<div style="display:flex;align-items:center"><b style="flex:1">' + esc(e.title) + '</b><button class="btn evdel" data-idx="' + e.index + '">&#215;</button></div>' +
+            (e.location ? '<div class="muted" style="font-size:12px">@ ' + esc(e.location) + '</div>' : "") +
+            (e.body ? '<div style="margin-top:4px;white-space:pre-wrap">' + esc(e.body) + '</div>' : "") +
+            '</div>';
+        });
+        html += '<hr style="border-color:var(--line)"><div style="display:flex;flex-direction:column;gap:6px">' +
+          '<input class="input ntitle" placeholder="New event title">' +
+          '<input class="input nloc" placeholder="Location (optional)">' +
+          '<textarea class="input nbody" rows="3" placeholder="Details (optional)"></textarea>' +
+          '<div><button class="btn accent nadd">Add event</button> <span class="muted nst"></span></div></div>';
+        detail.innerHTML = html;
+        detail.querySelectorAll(".evdel").forEach(function (b) {
+          b.addEventListener("click", function () {
+            A3.request("cal_delete", { index: +this.getAttribute("data-idx") }).then(function () { setTimeout(function () { fetchAll(iso); }, 350); });
+          });
+        });
+        detail.querySelector(".nadd").addEventListener("click", function () {
+          var title = detail.querySelector(".ntitle").value.trim();
+          var st = detail.querySelector(".nst");
+          if (!title) { st.textContent = "Title required."; return; }
+          A3.request("cal_add", { date: iso, title: title, location: detail.querySelector(".nloc").value, body: detail.querySelector(".nbody").value }).then(function (r) {
+            st.textContent = (r && r.error && r.error !== "") ? ("Failed: " + r.error) : "Added.";
+            if (!r || !r.error || r.error === "") setTimeout(function () { fetchAll(iso); }, 350);
+          });
+        });
+      }
+
+      function fetchAll(reopenIso) {
+        A3.request("cal_list", {}).then(function (list) {
           events = {};
           (list || []).forEach(function (e) { events[e.date] = (events[e.date] || []).concat(e); });
           draw();
+          if (reopenIso) showDay(reopenIso);
         }).catch(draw);
       }
-      body.querySelector(".pm").addEventListener("click", function () { view.setMonth(view.getMonth() - 1); loadEvents(); });
-      body.querySelector(".nm").addEventListener("click", function () { view.setMonth(view.getMonth() + 1); loadEvents(); });
-      body.querySelector(".py").addEventListener("click", function () { view.setFullYear(view.getFullYear() - 1); loadEvents(); });
-      body.querySelector(".ny").addEventListener("click", function () { view.setFullYear(view.getFullYear() + 1); loadEvents(); });
-      body.querySelector(".today").addEventListener("click", function () { view = new Date(); view.setDate(1); loadEvents(); });
+
+      body.querySelector(".pm").addEventListener("click", function () { view.setMonth(view.getMonth() - 1); draw(); });
+      body.querySelector(".nm").addEventListener("click", function () { view.setMonth(view.getMonth() + 1); draw(); });
+      body.querySelector(".py").addEventListener("click", function () { view.setFullYear(view.getFullYear() - 1); draw(); });
+      body.querySelector(".ny").addEventListener("click", function () { view.setFullYear(view.getFullYear() + 1); draw(); });
+      body.querySelector(".today").addEventListener("click", function () { view = new Date(); view.setDate(1); draw(); });
+      body.querySelector(".refresh").addEventListener("click", function () { fetchAll(selIso); });
       body.querySelector(".go").addEventListener("click", function () {
         var v = body.querySelector(".goto").value; if (!v) return;
-        var p = v.split("-"); view = new Date(+p[0], +p[1] - 1, 1); loadEvents();
+        var p = v.split("-"); view = new Date(+p[0], +p[1] - 1, 1); draw(); showDay(v);
       });
-      loadEvents();
+      fetchAll();
     }
   });
 
@@ -256,10 +311,25 @@
       };
 
       // Injected into every page so in-page links drive the address bar instead of dead relative nav.
+      // Arma's CEF renders iframe srcdoc with an opaque origin, so a direct parent.AE3_browserNav()
+      // call throws a cross-origin SecurityError (the old dead-link bug, #5). postMessage is
+      // origin-agnostic and always reaches the host window, where a single listener routes it.
       var HOOK = '<script>document.addEventListener("click",function(e){' +
         'var a=e.target&&e.target.closest?e.target.closest("a"):null;if(!a)return;' +
         'var href=a.getAttribute("href")||"";' +
-        'if(href&&href.charAt(0)!=="#"){e.preventDefault();if(parent&&parent.AE3_browserNav)parent.AE3_browserNav(href);}});<\/script>';
+        'if(href&&href.charAt(0)!=="#"){e.preventDefault();try{parent.postMessage({__ae3nav:href},"*");}catch(_){}}});<\/script>';
+
+      // One host-side listener (added once) forwards in-page link clicks to whichever browser
+      // window is currently active (window.AE3_browserNav is rebound on nav/focus below).
+      if (!window.AE3_navListener) {
+        window.AE3_navListener = true;
+        window.addEventListener("message", function (e) {
+          var d = e && e.data;
+          if (d && typeof d.__ae3nav === "string" && typeof window.AE3_browserNav === "function") {
+            window.AE3_browserNav(d.__ae3nav);
+          }
+        });
+      }
 
       function wikiDoc(htmlBody) {
         return '<!DOCTYPE html><html><head><meta charset="utf-8"><style>' +
@@ -340,44 +410,92 @@
     }
   });
 
-  // ---------------- Map (#13/#20: in-window canvas minimap) ----------------
+  // ---------------- Map (#6/#13/#20: in-window minimap, terrain image + blips) ----------------
+  // Renders a player-centred minimap from map_data (self/router/device blips). A static terrain
+  // image is drawn underneath when one is registered for the world (window.AE3_MAP_IMAGES[world] =
+  // url, populated by mission/asset content); otherwise a styled terrain backdrop + grid is used so
+  // the map is always informative (the old version could show a blank olive panel).
   Apps.register({
-    id: "map", title: "Map", glyph: Icons.map, width: 520, height: 540,
+    id: "map", title: "Map", glyph: Icons.map, width: 540, height: 560,
     showInDock: true, singleton: true,
     render: function (body, win) {
       body.innerHTML =
         '<div class="toolbar"><span class="muted world" style="flex:1"></span>' +
-          '<button class="btn zin">+</button><button class="btn zout">&#8211;</button></div>' +
-        '<canvas class="map" style="display:block;background:#1b2a1b;width:100%;height:calc(100% - 50px)"></canvas>';
+          '<button class="btn zin" title="Zoom in">+</button><button class="btn zout" title="Zoom out">&#8211;</button></div>' +
+        '<div class="mapwrap" style="position:relative;height:calc(100% - 50px)">' +
+          '<canvas class="map" style="display:block;width:100%;height:100%;background:#1b2a1b"></canvas>' +
+          '<div class="legend muted" style="position:absolute;left:8px;bottom:6px;font-size:11px">' +
+            '<span style="color:#e95420">&#9679;</span> you &nbsp;<span style="color:#5da8e8">&#9679;</span> router &nbsp;<span style="color:#8ce10b">&#9679;</span> device</div>' +
+        '</div>';
       var cv = body.querySelector(".map");
+      var wrap = body.querySelector(".mapwrap");
       var worldEl = body.querySelector(".world");
       var range = 250;
+      var bgImg = null, bgWorld = null;
+
+      function ensureImage(world) {
+        if (world === bgWorld) return;
+        bgWorld = world; bgImg = null;
+        var src = (window.AE3_MAP_IMAGES || {})[world];
+        if (src) { var im = new Image(); im.onload = function () { bgImg = im; }; im.src = src; }
+      }
+
       function draw(d) {
-        worldEl.textContent = (d && d.world ? d.world : "") + " — " + Math.round(range) + "m";
-        var w = cv.clientWidth, hh = cv.clientHeight;
+        var world = d && d.world ? d.world : "";
+        ensureImage(world);
+        worldEl.textContent = (world || "(unknown)") + " - " + Math.round(range) + "m";
+        // Measure from the wrapper (robust if the canvas hasn't been laid out yet).
+        var w = cv.clientWidth || wrap.clientWidth || 480;
+        var hh = cv.clientHeight || (wrap.clientHeight - 0) || 440;
         cv.width = w; cv.height = hh;
         var ctx = cv.getContext("2d");
-        ctx.clearRect(0, 0, w, hh);
+        if (!ctx) return;
         var cx = w / 2, cy = hh / 2, scale = (Math.min(w, hh) / 2) / range;
-        // grid
+
+        // Backdrop: terrain image if available, else a tinted gradient.
+        if (bgImg) {
+          ctx.drawImage(bgImg, 0, 0, w, hh);
+          ctx.fillStyle = "rgba(10,20,10,0.25)"; ctx.fillRect(0, 0, w, hh);
+        } else {
+          var grd = ctx.createRadialGradient(cx, cy, 10, cx, cy, Math.max(w, hh) / 1.4);
+          grd.addColorStop(0, "#243524"); grd.addColorStop(1, "#141f14");
+          ctx.fillStyle = grd; ctx.fillRect(0, 0, w, hh);
+        }
+
+        // Range grid + rings.
         ctx.strokeStyle = "rgba(255,255,255,0.08)";
         for (var g = -range; g <= range; g += 50) {
           ctx.beginPath(); ctx.moveTo(cx + g * scale, 0); ctx.lineTo(cx + g * scale, hh); ctx.stroke();
           ctx.beginPath(); ctx.moveTo(0, cy + g * scale); ctx.lineTo(w, cy + g * scale); ctx.stroke();
         }
+        ctx.strokeStyle = "rgba(255,255,255,0.15)";
+        [range / 2, range].forEach(function (r) {
+          ctx.beginPath(); ctx.arc(cx, cy, r * scale, 0, 2 * Math.PI); ctx.stroke();
+        });
+        // North marker.
+        ctx.fillStyle = "rgba(255,255,255,0.6)"; ctx.font = "11px sans-serif"; ctx.textAlign = "center";
+        ctx.fillText("N", cx, 12); ctx.textAlign = "start";
+
         (d && d.blips ? d.blips : []).forEach(function (b) {
+          if (b.kind === "self") return; // player drawn at centre below
           var x = cx + b.dx * scale, y = cy - b.dy * scale;
-          var color = b.kind === "self" ? "#e95420" : (b.kind === "router" ? "#5da8e8" : "#8ce10b");
-          ctx.fillStyle = color; ctx.beginPath(); ctx.arc(x, y, 5, 0, 7); ctx.fill();
+          var color = b.kind === "router" ? "#5da8e8" : "#8ce10b";
+          ctx.fillStyle = color; ctx.beginPath(); ctx.arc(x, y, 5, 0, 2 * Math.PI); ctx.fill();
           if (b.label) { ctx.fillStyle = "#ddd"; ctx.font = "11px sans-serif"; ctx.fillText(b.label, x + 7, y + 3); }
         });
-        // player at centre
-        ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(cx, cy, 4, 0, 7); ctx.fill();
+
+        // Player at centre as a heading triangle.
+        var dir = (d && typeof d.dir === "number" ? d.dir : 0) * Math.PI / 180;
+        ctx.save(); ctx.translate(cx, cy); ctx.rotate(dir);
+        ctx.fillStyle = "#e95420"; ctx.beginPath();
+        ctx.moveTo(0, -8); ctx.lineTo(5, 6); ctx.lineTo(0, 3); ctx.lineTo(-5, 6); ctx.closePath(); ctx.fill();
+        ctx.restore();
       }
+
       function refresh() { A3.request("map_data", { range: range }).then(draw).catch(function () { draw(null); }); }
       body.querySelector(".zin").addEventListener("click", function () { range = Math.max(50, range / 1.5); refresh(); });
       body.querySelector(".zout").addEventListener("click", function () { range = Math.min(2000, range * 1.5); refresh(); });
-      win.timer = setInterval(refresh, 1000);
+      win.timer = setInterval(refresh, 2000);
       win.app.onClose = function (w) { if (w.timer) clearInterval(w.timer); };
       refresh();
     }
@@ -493,7 +611,7 @@
       body.innerHTML =
         '<div class="pad" style="text-align:center">' +
           '<div style="font-size:48px;color:var(--accent)">' + Icons.terminal + '</div><h2>AE3 OS</h2>' +
-          '<p class="muted">Advanced Equipment Revamped — Ubuntu edition</p>' +
+          '<p class="muted">Advanced Equipment Revamped - Ubuntu edition</p>' +
           '<p class="muted">Web desktop on Arma 3 CEF</p></div>';
     }
   });

@@ -2,6 +2,11 @@
 PREP(module_addUser);
 PREP(module_addSecurityCommands);
 PREP(module_addGames);
+PREP(module_addCalendarEvent);
+
+/* Calendar */
+PREP(computer_addCalendarEvent);
+PREP(computer_removeCalendarEvent);
 
 /* Shell Functions */
 PREP(shell_process);

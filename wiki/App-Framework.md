@@ -138,7 +138,7 @@ per-laptop wallpaper picked in Settings from registered images, per-laptop theme
 
 ## Interface mode and access control
 
-Per-laptop interface selection and access are mission-maker / framework controlled — players
+Per-laptop interface selection and access are mission-maker / framework controlled - players
 cannot switch:
 
 ```sqf

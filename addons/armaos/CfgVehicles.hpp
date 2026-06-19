@@ -563,6 +563,80 @@ class CfgVehicles
 
 	/* ================================================================================ */
 
+	// MODULE ADD CALENDAR EVENT
+	class AE3_AddCalendarEvent: Module_F
+	{
+		scope = 2;
+		scopeCurator = 2;
+		displayName = "Add Calendar Event";
+		icon = "\z\ae3\addons\armaos\ui\AE3_Module_Icons_addUser.paa";
+		category = "AE3_armaosModules";
+
+		function = "AE3_armaos_fnc_module_addCalendarEvent";
+		functionPriority = 1;
+		isGlobal = 1;
+		isTriggerActivated = 1;
+		isDisposable = 1;
+		is3DEN = 0;
+
+		curatorInfoType = "AE3_UserInterface_Zeus_Module_AddCalendarEvent";
+
+		class Attributes: AttributesBase
+		{
+			// property names match exactly what AE3_armaos_fnc_module_addCalendarEvent reads.
+			class AE3_ModuleCalendar_Date: Edit
+			{
+				property = "AE3_ModuleCalendar_Date";
+				displayName = "Date (YYYY-MM-DD)";
+				tooltip = "ISO date the event is shown on, e.g. 2035-06-19";
+				typeName = "STRING";
+				defaultValue = """2035-06-19""";
+			};
+			class AE3_ModuleCalendar_Title: Edit
+			{
+				property = "AE3_ModuleCalendar_Title";
+				displayName = "Title";
+				tooltip = "Short event title";
+				typeName = "STRING";
+				defaultValue = """Meeting""";
+			};
+			class AE3_ModuleCalendar_Location: Edit
+			{
+				property = "AE3_ModuleCalendar_Location";
+				displayName = "Location";
+				tooltip = "Optional location text";
+				typeName = "STRING";
+				defaultValue = """""";
+			};
+			class AE3_ModuleCalendar_Body: Edit
+			{
+				property = "AE3_ModuleCalendar_Body";
+				displayName = "Details";
+				tooltip = "Optional longer description / intel body";
+				typeName = "STRING";
+				defaultValue = """""";
+			};
+			class ModuleDescription: ModuleDescription{};
+		};
+
+		class ModuleDescription: ModuleDescription
+		{
+			description = "Adds a calendar/intel event (date, title, location, details) to every synced computer. Shown in the laptop Calendar app.";
+			sync[] = { "Land_Laptop_03_sand_F_AE3" };
+
+			class Land_Laptop_03_sand_F_AE3
+			{
+				description[] = { "Target computer" };
+				position = 1;
+				direction = 1;
+				optional = 0;
+				duplicate = 0;
+			};
+		};
+	};
+
+	/* ================================================================================ */
+
 	// MODULE ADD SECURITY COMMANDS
 	class AE3_AddSecurityCommands: Module_F
 	{

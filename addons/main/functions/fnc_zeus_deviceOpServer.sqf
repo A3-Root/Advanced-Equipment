@@ -8,7 +8,7 @@
  *
  * Arguments:
  * 0: _computerNetId <STRING> - netId of the target computer
- * 1: _op <STRING> - Operation: "addUser", "addSecurityCommands", "addGames", "addFile", "addDir"
+ * 1: _op <STRING> - Operation: "addUser", "addCalendarEvent", "addSecurityCommands", "addGames", "addFile", "addDir"
  * 2: _args <ARRAY> - Operation arguments (see the matching AE3 server function)
  * 3: _curatorOwner <NUMBER> - clientOwner of the requesting curator (for feedback)
  *
@@ -38,6 +38,7 @@ if (!_ready) exitWith
 switch (_op) do
 {
 	case "addUser":              { ([_computer] + _args) call AE3_armaos_fnc_computer_addUser; };
+	case "addCalendarEvent":     { ([_computer] + _args) call AE3_armaos_fnc_computer_addCalendarEvent; };
 	case "addSecurityCommands":  { ([_computer] + _args) call AE3_armaos_fnc_computer_addSecurityCommands; };
 	case "addGames":             { ([_computer] + _args) call AE3_armaos_fnc_computer_addGames; };
 	case "addFile":              { ([_computer] + _args) call AE3_filesystem_fnc_device_addFile; };

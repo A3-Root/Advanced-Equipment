@@ -1,23 +1,23 @@
-# GUI Laptop — Mission Maker Guide
+# GUI Laptop - Mission Maker Guide
 
 Set up the AE3 desktop (GUI) laptop in **3DEN** and **Zeus** using only placed assets,
-attributes and modules — **no scripting required**. Plant intel for players to find, lock
+attributes and modules - **no scripting required**. Plant intel for players to find, lock
 files with passwords, add CCTV feeds, and (optionally) control who gets which interface.
 
-The GUI laptop is the same laptop as the CLI one — same filesystem, users, power and network.
+The GUI laptop is the same laptop as the CLI one - same filesystem, users, power and network.
 Everything you plant is reachable from both interfaces.
 
 ---
 
 ## 0. Quick start (zero config)
 
-1. Place an **AE3 laptop** (Assets ▸ AE3, e.g. *Rugged Laptop* — `Land_Laptop_03_black_F_AE3`).
-   The vanilla `Land_Laptop_03_black_F` prop has **no** ArmaOS — use the AE3 variant.
+1. Place an **AE3 laptop** (Assets ▸ AE3, e.g. *Rugged Laptop* - `Land_Laptop_03_black_F_AE3`).
+   The vanilla `Land_Laptop_03_black_F` prop has **no** ArmaOS - use the AE3 variant.
 2. Done. By default the laptop offers **both interfaces** and players freely switch between
    them: walk up, open the ACE interaction, and pick **Use Terminal** (CLI) or **Use Desktop**
    (GUI).
 
-That's the whole minimum setup. Everything below is **optional** — add it only when you want
+That's the whole minimum setup. Everything below is **optional** - add it only when you want
 intel, restrictions or extra apps.
 
 > The mission-wide default is the CBA setting **`AE3_Desktop_DefaultMode`** (default **Both**).
@@ -37,13 +37,13 @@ same way.
 ### In Zeus
 
 Place the **AE3: Add Intel** module **on a laptop** to target it, or anywhere else to target
-all laptops. Pick the **Type** — the three fields re-label themselves:
+all laptops. Pick the **Type** - the three fields re-label themselves:
 
 | Type | Field 1 | Field 2 | Field 3 |
 |------|---------|---------|---------|
 | Email | From | Subject | Body |
 | Webpage | URL | Title | Content (`\|` = new line, `[[url\|label]]` = link) |
-| Browser history entry | URL | Time (HH:MM, optional) | — |
+| Browser history entry | URL | Time (HH:MM, optional) | - |
 | Calendar entry | Date (YYYY-MM-DD HH:MM) | Title | Details |
 | Media file | Source path (`\mod\file.paa`) | image / video / audio | Filesystem destination |
 | Password-protected file | Filesystem path | Password | Content |
@@ -56,7 +56,7 @@ Security Commands**) work on GUI laptops exactly as on CLI laptops, in both 3DEN
 ## 2. CCTV cameras (optional)
 
 Place the **AE3: Add Camera** module on (or synced to) the object the camera view should come
-from — a CCTV prop, a vehicle, anything. Set the **Camera name**. The feed then appears in the
+from - a CCTV prop, a vehicle, anything. Set the **Camera name**. The feed then appears in the
 laptop's **CCTV** app for every laptop in the mission.
 
 ---
@@ -71,15 +71,15 @@ laptop crashes it immediately. Useful for "the enemy wiped the device" beats.
 
 ## 4. Controlling who gets CLI / GUI (optional, Zeus)
 
-By default everyone gets both interfaces and switches freely — you only need this if you want
+By default everyone gets both interfaces and switches freely - you only need this if you want
 to **restrict** access (e.g. only the hacker may open the desktop).
 
 Place the **AE3: Interface & Access** module **on a laptop** in Zeus. The dialog gives you:
 
-- **Interface mode** — what the laptop offers: *Default*, *CLI only*, *GUI only*, *Both*.
-- **Players** — pick a connected player, then click **CLI**, **GUI**, **Both** or **None** to
+- **Interface mode** - what the laptop offers: *Default*, *CLI only*, *GUI only*, *Both*.
+- **Players** - pick a connected player, then click **CLI**, **GUI**, **Both** or **None** to
   set what they can open. A player set to **Both** keeps the free CLI/GUI switch.
-- **Side fallback** — what each side (BLUFOR / OPFOR / Independent / Civilian) gets if a player
+- **Side fallback** - what each side (BLUFOR / OPFOR / Independent / Civilian) gets if a player
   isn't listed individually. This covers players who **join after** you set it.
 
 A player's own setting always wins; everyone else falls back to their side. Leave everything on
@@ -92,12 +92,12 @@ A player's own setting always wins; everyone else falls back to their side. Leav
 
 ### How the switch works
 
-Each laptop shows up to two ACE actions — **Use Terminal** (CLI) and **Use Desktop** (GUI) —
+Each laptop shows up to two ACE actions - **Use Terminal** (CLI) and **Use Desktop** (GUI) -
 and a player sees the ones they're allowed to use. A player allowed both simply picks either
 each time; that **is** the switch. There is no separate toggle to manage.
 
 While someone uses the desktop, other players see a static lock screen on the laptop texture
-(intentional: zero GUI network traffic). The laptop is locked (mutex) — one user at a time,
+(intentional: zero GUI network traffic). The laptop is locked (mutex) - one user at a time,
 including over SSH.
 
 ---
@@ -123,11 +123,11 @@ including over SSH.
 
 ## 6. Password-protected files
 
-The easiest way is the **Add Intel** module with type **Password-protected file** (Zeus) — fill
+The easiest way is the **Add Intel** module with type **Password-protected file** (Zeus) - fill
 in path, password and content. You can also create one with the plain **Add File** module by
 typing the on-disk format directly:
 
-`AE3_LOCKED|<passwordLength>|<password><content>` — the length prefix lets the password contain
+`AE3_LOCKED|<passwordLength>|<password><content>` - the length prefix lets the password contain
 any character (including `|`), and the content may be anything, including a media marker
 (`AE3_MEDIA|image|\mod\img.paa`) for a locked photo. The Add Intel module fills this in for you.
 
@@ -135,7 +135,7 @@ any character (including `|`), and the content may be anything, including a medi
   content; `unlock -p ...` permanently removes the protection (needs write permission).
 - **GUI:** opening the file in Files pops up a password prompt; the correct password opens the
   content with the normal viewer (text or media).
-- Wrong attempts (CLI and GUI) are logged to `/var/log/auth.log` — itself readable intel.
+- Wrong attempts (CLI and GUI) are logged to `/var/log/auth.log` - itself readable intel.
 
 ---
 
@@ -145,7 +145,7 @@ The laptop keeps the state the previous user left it in:
 
 - **GUI:** open windows, their positions, the Files path, the Browser URL, the Calendar month
   and **unsaved Notepad text** are stored on the laptop (synced) when the desktop closes and
-  restored for the next user — even on a different client.
+  restored for the next user - even on a different client.
 - **CLI:** the terminal buffer, login, prompt and history are persisted via `AE3_terminal_sync`;
   `/var/log/browser_history`, `/var/mail` and all files live in the server-side filesystem.
 - Picking the laptop up into the inventory and redeploying it also preserves the filesystem.
@@ -159,18 +159,18 @@ with his mail, his browser tab and his half-written note still on screen.
 
 | Setting | Effect |
 |---------|--------|
-| `AE3_Desktop_DefaultMode` | Default interface for laptops without a per-laptop override — **CLI / GUI / Both** (default **Both**) |
+| `AE3_Desktop_DefaultMode` | Default interface for laptops without a per-laptop override - **CLI / GUI / Both** (default **Both**) |
 | `AE3_Desktop_DefaultTheme` | default theme (Dark / Light / Olive) |
 | `AE3_Desktop_EnableDragDrop` | allow window dragging |
 | `AE3_Desktop_EnableFileBrowsing` | allow the Files app |
-| `AE3_AllowRootLogin` | allow direct root login (default off — use sudo) |
+| `AE3_AllowRootLogin` | allow direct root login (default off - use sudo) |
 | `AE3_EnableErrorSound` | error beep on failed commands |
 | `AE3_TransferSpeedLocal/Usb/Network` | simulated copy speeds (0 = instant) |
 | `AE3_UiKeystrokeSyncInterval` etc. | CLI screen-texture sync tuning |
 
 ---
 
-# Appendix — Advanced / scripting (optional)
+# Appendix - Advanced / scripting (optional)
 
 Everything above is doable with buttons. This appendix is for power users and mod developers who
 want to drive the same systems from `init.sqf`, triggers, the debug console, or another mod.
@@ -178,7 +178,7 @@ All of it is server-routed and JIP-safe (public object variables).
 
 ### Interface mode & access (framework)
 
-There is intentionally **no player-facing switch** at the variable level — which interfaces a
+There is intentionally **no player-facing switch** at the variable level - which interfaces a
 laptop offers, and who may open each, is fully mod/mission controlled so other mods can layer
 their own access models (keycards, hacking states, ranks) on top.
 
@@ -233,12 +233,12 @@ The Zeus **Interface & Access** module is just a front-end that builds these con
 ```
 
 `"all"` targets every initialized laptop; media also accepts `"future"` (current **and** laptops
-spawned later). The engine cannot list files inside mods — media must be registered with explicit
+spawned later). The engine cannot list files inside mods - media must be registered with explicit
 paths.
 
 ### Creating your own app
 
-Config (addon) or runtime (mission) registration — see `App-Framework.md` for the full API.
+Config (addon) or runtime (mission) registration - see `App-Framework.md` for the full API.
 
 ```sqf
 // initPlayerLocal.sqf - runtime registration (local effect, register on every client)

@@ -59,31 +59,96 @@
     });
   }
 
+  var clockTimer = null, batteryTimer = null;
+
   function startClock() {
     function tick() {
       var d = new Date();
       var t = d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-      document.getElementById("clock").textContent = t;
+      var c = document.getElementById("clock");
+      if (c) c.textContent = t;
     }
-    setInterval(tick, 1000); tick();
+    if (clockTimer) clearInterval(clockTimer);
+    clockTimer = setInterval(tick, 1000); tick();
+  }
+
+  // Top-bar battery widget (#7): polls sysinfo on a slow cadence (the SQF battery level is synced
+  // at ~1% granularity, so 5s is plenty) and reflects charge + power state.
+  function buildTray() {
+    var tray = document.querySelector("#topbar .tray");
+    if (!tray || !window.Icons) return;
+    tray.innerHTML =
+      '<span class="battery" title="Battery" style="margin-right:8px">' + Icons.battery + ' <span class="batpct">--</span></span>' +
+      '<span class="wifi" style="margin-right:8px">' + Icons.wifi + '</span>' +
+      '<span class="powerbtn" title="Power" style="cursor:pointer">' + Icons.power + '</span>';
+
+    var pct = tray.querySelector(".batpct");
+    function poll() {
+      A3.request("sysinfo", {}).then(function (s) {
+        s = s || {};
+        if (pct) pct.textContent = (s.battery != null && s.battery >= 0) ? (s.battery + "%") : "--";
+        var bat = tray.querySelector(".battery");
+        if (bat) {
+          var low = (s.battery != null && s.battery >= 0 && s.battery <= 15);
+          bat.style.color = low ? "#e9542d" : "";
+          bat.title = "Battery " + ((s.battery != null && s.battery >= 0) ? s.battery + "%" : "?") +
+            (s.power ? " - " + s.power : "");
+        }
+      }).catch(function () {});
+    }
+    if (batteryTimer) clearInterval(batteryTimer);
+    batteryTimer = setInterval(poll, 5000); poll();
+
+    // Power menu (#8): Sign out -> login; Shut down -> power off the laptop.
+    var btn = tray.querySelector(".powerbtn");
+    if (btn) btn.addEventListener("click", function (e) {
+      e.stopPropagation();
+      var existing = document.getElementById("powermenu");
+      if (existing) { existing.remove(); return; }
+      var m = el("div", null,
+        '<div class="pm-item signout">Sign out</div><div class="pm-item shutdown">Shut down</div>');
+      m.id = "powermenu";
+      m.style.cssText = "position:fixed;top:30px;right:6px;z-index:300;background:var(--panel,#2b2b2b);" +
+        "border:1px solid var(--line,#000);border-radius:6px;overflow:hidden;min-width:130px;box-shadow:0 4px 14px rgba(0,0,0,.4)";
+      m.querySelectorAll(".pm-item").forEach(function (it) {
+        it.style.cssText = "padding:8px 14px;cursor:pointer;color:var(--text,#eee)";
+        it.addEventListener("mouseenter", function () { it.style.background = "var(--accent,#e95420)"; });
+        it.addEventListener("mouseleave", function () { it.style.background = ""; });
+      });
+      m.querySelector(".signout").addEventListener("click", function () { m.remove(); Desktop.signOut(); });
+      m.querySelector(".shutdown").addEventListener("click", function () { m.remove(); A3.send("shutdown", {}); });
+      document.body.appendChild(m);
+      setTimeout(function () {
+        document.addEventListener("mousedown", function close(ev) {
+          if (!m.contains(ev.target)) { m.remove(); document.removeEventListener("mousedown", close); }
+        });
+      }, 0);
+    });
   }
 
   var Desktop = {
     init: function () {
       WM.onTaskbarChange = refreshDockRunning;
-      var tray = document.querySelector("#topbar .tray");
-      if (tray && window.Icons) tray.innerHTML = Icons.power + " " + Icons.wifi;
+      buildTray();
       buildDock();
       buildDesktopIcons();
       startClock();
       var act = document.querySelector("#topbar .activities");
-      if (act) act.addEventListener("click", function () {
-        document.getElementById("desktop").classList.toggle("show-all");
-      });
+      if (act && !act.dataset.bound) {
+        act.dataset.bound = "1";
+        act.addEventListener("click", function () {
+          document.getElementById("desktop").classList.toggle("show-all");
+        });
+      }
     },
     setHostname: function (name) {
       var h = document.getElementById("hostname");
       if (h) h.textContent = name || "ae3-os";
+    },
+    signOut: function () {
+      if (window.WM && WM.closeAll) WM.closeAll();
+      A3.send("signout", {});
+      if (typeof window.AE3_showLogin === "function") window.AE3_showLogin();
     },
     refresh: function () { buildDock(); buildDesktopIcons(); refreshDockRunning(); }
   };

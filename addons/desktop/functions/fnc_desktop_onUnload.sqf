@@ -64,8 +64,8 @@ if (!isNil "_filesystem") then
 };
 _computer setVariable ["AE3_filepointer", _computer getVariable ["AE3_filepointer", []], 2];
 
-// Restore the running screen texture and release the laptop
-_computer setObjectTextureGlobal [1, "\z\ae3\addons\armaos\textures\Laptop_4_to_3_On.paa"];
+// Restore the running screen texture (GUI idle image) and release the laptop
+_computer setObjectTextureGlobal [1, "\z\ae3\addons\armaos\textures\Laptop_PowerOn.paa"];
 _computer setVariable ["AE3_computer_mutex", objNull, true];
 
 [_computer, "inUse", false] remoteExecCall ["AE3_interaction_fnc_manageAce3Interactions", 2];

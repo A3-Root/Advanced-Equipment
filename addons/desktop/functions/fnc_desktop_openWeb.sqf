@@ -34,12 +34,19 @@ if (isNull _display) exitWith { displayNull };
 
 _display setVariable [QGVAR(computer), _computer];
 
-// Pull the authoritative filesystem onto the laptop object (object-as-namespace), as the native
-// desktop does. getRemoteVar self-spawns into a scheduled environment; the Files/Notepad apps
-// read the cached copy and push mutations back via setVariable. AE3_Userlist is already broadcast.
-if (!isNull _computer && isMultiplayer) then {
+// Pull the authoritative per-laptop state onto the laptop object (object-as-namespace), exactly
+// as the native desktop does (AE3_desktop_fnc_desktop_open). The filesystem and userlist are
+// server-only (initFilesystem / computer_addUser run with isServer), so the web login (authUser)
+// and the Files/Notepad apps need the synced copy - pulling only in MP previously left module-
+// added users unauthenticated and the filesystem "unavailable" on clients (#1, #2).
+// getRemoteVar is a no-op in SP (the server-local copy is already present) and self-spawns into a
+// scheduled environment in MP; the apps read the cached copy and push mutations back via setVariable.
+if (!isNull _computer) then {
+    // Safety net for a freshly placed laptop whose server-side init has not completed yet.
+    [_computer] remoteExecCall ["AE3_armaos_fnc_device_ensureInit", 2];
     [_computer, "AE3_filesystem"] call AE3_main_fnc_getRemoteVar;
     [_computer, "AE3_filepointer"] call AE3_main_fnc_getRemoteVar;
+    [_computer, "AE3_Userlist"] call AE3_main_fnc_getRemoteVar;
 };
 
 // Claim the laptop and show the static "in use" screen for other players (mirrors native open).

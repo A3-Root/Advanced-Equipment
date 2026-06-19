@@ -43,7 +43,9 @@ for "_i" from 0 to 3 do
 
 };
 
-_computer setObjectTextureGlobal [1, "\z\ae3\addons\armaos\textures\Laptop_4_to_3_On.paa"];
+// Default powered-on/idle screen is the GUI image (a copy of Laptop_4_to_3_On.paa for now, so it
+// can be reskinned independently). The CLI/terminal restores Laptop_4_to_3_On.paa on close.
+_computer setObjectTextureGlobal [1, "\z\ae3\addons\armaos\textures\Laptop_PowerOn.paa"];
 
 [_computer] call AE3_armaos_fnc_computer_playSoundStart;
 

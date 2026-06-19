@@ -70,12 +70,12 @@ AE3 provides six major systems:
 - **Locality-aware operations** - server/client execution control
 
 ### Included Equipment
-- **Terminal Laptop (ArmaOS)** — core interactive computer.
-- **Flash Drive** — removable storage.
-- **Solar Power Generator** — clean energy source.
-- **Fuel/Electric Generators** — primary power supply.
-- **Battery Units** — charge and discharge dynamically.
-- **Interactable Lights & Lamps** — power-sensitive illumination.
+- **Terminal Laptop (ArmaOS)** - core interactive computer.
+- **Flash Drive** - removable storage.
+- **Solar Power Generator** - clean energy source.
+- **Fuel/Electric Generators** - primary power supply.
+- **Battery Units** - charge and discharge dynamically.
+- **Interactable Lights & Lamps** - power-sensitive illumination.
 
 ## For Mod Developers
 
@@ -472,4 +472,4 @@ See [LICENSE](LICENSE) for full terms.
 
 ---
 
-*Advanced Equipment Revamped (AE3) — functional ArmaOS terminals and connected equipment for Arma 3.*
+*Advanced Equipment Revamped (AE3) - functional ArmaOS terminals and connected equipment for Arma 3.*

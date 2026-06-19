@@ -83,10 +83,14 @@ if (_enableSync) then
         0
     };
 
-    // Only sync if power state changed OR battery level changed beyond threshold
+    // Only sync if power state changed OR battery level changed beyond threshold. The battery LEVEL
+    // is broadcast in this same throttled branch (no extra messages) so clients can show an
+    // accurate charge in the desktop Settings panel / battery widget (#7) and the CLI battery
+    // status, without a per-second global broadcast.
     if (_oldPowerState != _powerState || _percentChange >= _changeThreshold) then
     {
         _battery setVariable ['AE3_power_powerState', _powerState, true];
+        _battery setVariable ['AE3_power_batteryLevel', _newBatteryLevel, true];
         _battery setVariable ["AE3_power_powerState_previous", _powerState];
         _battery setVariable ["AE3_power_batteryLevel_previous", _newBatteryLevel];
     } else {

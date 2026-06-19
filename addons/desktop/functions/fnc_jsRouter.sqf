@@ -87,9 +87,41 @@ switch (_command) do {
     // --- Network (#11) + system info (#14). ---
     case "net_scan": { [[_computer] call FUNC(netScan)] call _reply; };
     case "sysinfo":  { [[_computer] call FUNC(sysInfo)] call _reply; };
-    // Calendar events for the given month (store wiring lands with the Mail/intel pass; the
-    // calendar UI navigation works regardless). Returns [] when none.
-    case "cal_list": { [[]] call _reply; };
+    // Calendar intel events. The store (AE3_calendar_events) is broadcast by the server, so the
+    // client reads it locally and the JS app caches the whole set on open (#12). Returns every
+    // event as {date,title,location,body,index}; the app filters per month client-side.
+    case "cal_list": {
+        private _events = _computer getVariable ["AE3_calendar_events", []];
+        private _out = [];
+        {
+            _x params [["_date", ""], ["_title", ""], ["_loc", ""], ["_body", ""]];
+            _out pushBack createHashMapFromArray [
+                ["date", _date], ["title", _title], ["location", _loc], ["body", _body], ["index", _forEachIndex]
+            ];
+        } forEach _events;
+        [_out] call _reply;
+    };
+    case "cal_add": {
+        private _ares = createHashMapFromArray [["error", ""]];
+        private _date = _data getOrDefault ["date", ""];
+        private _title = _data getOrDefault ["title", ""];
+        if (isNull _computer || {_date isEqualTo "" || {_title isEqualTo ""}}) then { _ares set ["error", "bad_input"]; }
+        else {
+            [_computer, _date, _title, _data getOrDefault ["location", ""], _data getOrDefault ["body", ""]] remoteExec ["AE3_armaos_fnc_computer_addCalendarEvent", 2];
+            _ares set ["ok", true];
+        };
+        [_ares] call _reply;
+    };
+    case "cal_delete": {
+        private _dres = createHashMapFromArray [["error", ""]];
+        private _idx = _data getOrDefault ["index", -1];
+        if (isNull _computer || {_idx < 0}) then { _dres set ["error", "bad_input"]; }
+        else {
+            [_computer, _idx] remoteExec ["AE3_armaos_fnc_computer_removeCalendarEvent", 2];
+            _dres set ["ok", true];
+        };
+        [_dres] call _reply;
+    };
 
     // In-window minimap data (#13/#20).
     case "map_data": { [[_computer, _data] call FUNC(mapData)] call _reply; };
@@ -143,6 +175,21 @@ switch (_command) do {
                 [_computer, _router] remoteExec ["AE3_desktop_fnc_netConnectServer", 2];
             };
         };
+    };
+
+    // Sign out (#8): drop the session user; the JS side re-shows the login overlay. The display
+    // (and the laptop claim/mutex) stay - this is a user switch, not a shutdown.
+    case "signout": {
+        _display setVariable [QGVAR(user), ""];
+    };
+
+    // Shut down (#8): close the desktop (the AE3_Desktop_BrowserDisplay onUnload restores the idle
+    // texture, releases the mutex and clears the ACE "in use" state) then power the laptop off.
+    case "shutdown": {
+        if (!isNull _computer) then {
+            [_computer] remoteExec ["AE3_armaos_fnc_computer_turnOff", 2];
+        };
+        _display closeDisplay 0;
     };
 
     default {

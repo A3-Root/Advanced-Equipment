@@ -27,7 +27,15 @@ private _res = createHashMapFromArray [["error", ""]];
 if (isNull _computer) exitWith { _res set ["error", "no_device"]; _res };
 
 private _fs = _computer getVariable ["AE3_filesystem", []];
-if (_fs isEqualTo []) exitWith { _res set ["error", "fs_not_ready"]; _res };
+if (_fs isEqualTo []) exitWith {
+    // The open-time getRemoteVar (desktop_openWeb) may still be in flight on this client. Kick an
+    // authoritative re-pull and tell the Files/Notepad app to retry rather than failing outright.
+    // No-op in SP, where an empty filesystem genuinely means the device is not initialized.
+    [_computer] remoteExecCall ["AE3_armaos_fnc_device_ensureInit", 2];
+    [_computer, "AE3_filesystem"] call AE3_main_fnc_getRemoteVar;
+    _res set ["loading", true];
+    _res
+};
 
 // #9: root and admin see/modify everything; everyone else is permission-bound.
 private _fsUser = [_user, "root"] select (_user in ["root", "admin"]);

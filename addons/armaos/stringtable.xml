@@ -2183,7 +2183,7 @@
                 <Original>The message is %1 characters long. Since %1 is a prime number, the message was not encrypted by a complete columnar transposition</Original>
                 <English>The message is %1 characters long. Since %1 is a prime number, the message was not encrypted by a complete columnar transposition</English>
                 <French>Le message contient %1 caractères. Étant donné que %1 est un nombre premier, le message n'a pas été chiffré par une transposition en colonne complète</French>
-                <Russian>Сообщение содержит %1 символов. Поскольку %1 — простое число, сообщение не было зашифровано с помощью полной перестановки столбцов.</Russian>
+                <Russian>Сообщение содержит %1 символов. Поскольку %1 - простое число, сообщение не было зашифровано с помощью полной перестановки столбцов.</Russian>
                 <German>Die Nachricht is %1 Zeichen lang. Da %1 eine Primzahl ist, kann die Nachricht nicht durch eine komplette Spaltentransposition verschlüsselt worden sein</German>
                 <Chinesesimp>信息的长度是 %1 个字符.且由于 %1 是素数,所以消息没有通过完全列移位进行加密</Chinesesimp>
             </Key>

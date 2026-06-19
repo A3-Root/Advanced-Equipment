@@ -23,21 +23,41 @@
     var err = document.getElementById("loginErr");
     err.textContent = "";
 
-    function submit() {
+    function submit(isRetry) {
       err.textContent = "";
       A3.request("login", { user: user.value, pass: pass.value }).then(function (res) {
-        if (res && res.ok) { startDesktop(res); }
-        else { err.textContent = (res && res.message) || "Login failed"; pass.value = ""; }
+        if (res && res.ok) { startDesktop(res); return; }
+        // MP account-sync race: the backend kicked an authoritative re-pull; retry once silently.
+        if (res && res.retry && !isRetry) {
+          err.textContent = res.message || "Syncing…";
+          setTimeout(function () { submit(true); }, 700);
+          return;
+        }
+        err.textContent = (res && res.message) || "Login failed"; pass.value = "";
       }).catch(function () {
         // Offline/browser preview: allow straight in so the shell can be inspected.
         startDesktop({ hostname: "ae3-os", user: user.value || "user" });
       });
     }
 
-    document.getElementById("loginBtn").addEventListener("click", submit);
+    document.getElementById("loginBtn").addEventListener("click", function () { submit(); });
     pass.addEventListener("keydown", function (e) { if (e.key === "Enter") submit(); });
     user.focus();
   }
+
+  // Re-show the login overlay (used by Sign out). The submit listeners were bound once in
+  // showLogin() at boot and stay attached, so this only toggles visibility and resets the form.
+  window.AE3_showLogin = function () {
+    var login = document.getElementById("login");
+    if (!login) return;
+    login.classList.add("show");
+    var pass = document.getElementById("loginPass");
+    var err = document.getElementById("loginErr");
+    if (pass) pass.value = "";
+    if (err) err.textContent = "";
+    var user = document.getElementById("loginUser");
+    if (user) user.focus();
+  };
 
   // Hostname seed (login stays up); apply to the top bar when the desktop starts.
   A3.on("hostname", function (s) { seededHost = (s && s.hostname) || seededHost; });

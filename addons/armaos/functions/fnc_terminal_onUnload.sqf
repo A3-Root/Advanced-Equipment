@@ -54,4 +54,13 @@ _computer setVariable ["AE3_terminal_sync", _terminalSyncData, [clientOwner, 2]]
 private _filepointer = _computer getVariable "AE3_filepointer";
 _computer setVariable ["AE3_filepointer", _filepointer, [clientOwner, 2]];
 
+// CLI home screen: restore the classic terminal idle texture when the STANDALONE terminal closes.
+// When the terminal runs inside the (native) desktop, an AE3_desktop_session is active and that
+// desktop manages the screen (lock texture while open, idle image on its own unload) - don't touch
+// it here, or we'd clobber the desktop lock screen.
+private _inDesktop = !isNull ((uiNamespace getVariable ["AE3_desktop_session", createHashMap]) getOrDefault ["display", displayNull]);
+if (!_inDesktop) then {
+    _computer setObjectTextureGlobal [1, "\z\ae3\addons\armaos\textures\Laptop_4_to_3_On.paa"];
+};
+
 [_computer, "inUse", false] remoteExecCall ["AE3_interaction_fnc_manageAce3Interactions", 2];

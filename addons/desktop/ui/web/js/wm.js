@@ -122,6 +122,9 @@
       win.el.remove();
       WM.onTaskbarChange();
     },
+    closeAll: function () {
+      openWindows.slice().forEach(function (w) { WM.close(w); });
+    },
     restoreOrFocus: function (appId) {
       var ex = openWindows.filter(function (w) { return w.app.id === appId; })[0];
       if (ex) { ex.el.classList.remove("minimized"); focus(ex); return true; }

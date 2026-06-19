@@ -26,8 +26,8 @@ This file provides example usage of the encryption and cracking functions provid
 
 These snippets demonstrate programmatic use of the following functions:
 
-- `AE3_armaos_fnc_encryption_crypto` — encrypt/decrypt operations
-- `AE3_armaos_fnc_encryption_crack` — cracking/bruteforce/statistics for ciphers
+- `AE3_armaos_fnc_encryption_crypto` - encrypt/decrypt operations
+- `AE3_armaos_fnc_encryption_crack` - cracking/bruteforce/statistics for ciphers
 
 ### crypto
 The `crypto` command is meant to be used in conjuction with the `crack` command. The `crypto` command allows you to encrypt and decrypt text by using various algorithms. See the list below for available algorithms. `crypto` is no real world linux command. It's meant to create gameplay options.

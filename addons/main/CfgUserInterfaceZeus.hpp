@@ -770,6 +770,158 @@ class AE3_UserInterface_Zeus_Module_AddUser
 
 /* ================================================================================ */
 
+class AE3_UserInterface_Zeus_Module_AddCalendarEvent
+{
+	idd = 16995;
+	movingEnable = 1;
+	enableSimulation = 1;
+
+    onLoad = "params ['_display', ['_config', configNull]]; [_display, 0, 'onLoad'] spawn AE3_main_fnc_zeus_module_addCalendarEvent;";
+    onUnload = "params ['_display', '_exitCode']; [_display, _exitCode, 'onUnload'] call AE3_main_fnc_zeus_module_addCalendarEvent;";
+
+	class controlsBackground
+	{
+		class RscText_900: RscText
+		{
+			idc = 900;
+			x = 0 * GUI_GRID_W + GUI_GRID_X;
+			y = 2 * GUI_GRID_H + GUI_GRID_Y;
+			w = 40 * GUI_GRID_W;
+			h = 21 * GUI_GRID_H;
+			colorBackground[] = {0.2,0.2,0.2,1};
+		};
+	};
+
+	class controls
+	{
+        class RscText_1000: RscText
+        {
+            idc = 1000;
+            text = "Add Calendar Event";
+            x = 0 * GUI_GRID_W + GUI_GRID_X;
+            y = 0 * GUI_GRID_H + GUI_GRID_Y;
+            w = 40 * GUI_GRID_W;
+            h = 1.5 * GUI_GRID_H;
+            colorBackground[] = {-1,-1,-1,1};
+        };
+
+        class RscText_1400: RscText
+        {
+            idc = 1400;
+            text = "Adds a calendar/intel event to the synced computer(s). Date must be ISO format YYYY-MM-DD.";
+            x = 0.5 * GUI_GRID_W + GUI_GRID_X;
+            y = 2.5 * GUI_GRID_H + GUI_GRID_Y;
+            w = 39 * GUI_GRID_W;
+            h = 6 * GUI_GRID_H;
+            colorBackground[] = {-1,-1,-1,0.5};
+			style = ST_MULTI;
+			lineSpacing = 1;
+        };
+
+        class RscText_1001: RscText
+        {
+            idc = 1001;
+            text = "Date";
+            x = 0.5 * GUI_GRID_W + GUI_GRID_X;
+            y = 9 * GUI_GRID_H + GUI_GRID_Y;
+            w = 7 * GUI_GRID_W;
+            h = 1 * GUI_GRID_H;
+            style = ST_RIGHT;
+        };
+        class RscText_1002: RscText
+        {
+            idc = 1002;
+            text = "Title";
+            x = 0.5 * GUI_GRID_W + GUI_GRID_X;
+            y = 10.5 * GUI_GRID_H + GUI_GRID_Y;
+            w = 7 * GUI_GRID_W;
+            h = 1 * GUI_GRID_H;
+            style = ST_RIGHT;
+        };
+        class RscText_1003: RscText
+        {
+            idc = 1003;
+            text = "Location";
+            x = 0.5 * GUI_GRID_W + GUI_GRID_X;
+            y = 12 * GUI_GRID_H + GUI_GRID_Y;
+            w = 7 * GUI_GRID_W;
+            h = 1 * GUI_GRID_H;
+            style = ST_RIGHT;
+        };
+        class RscText_1004: RscText
+        {
+            idc = 1004;
+            text = "Details";
+            x = 0.5 * GUI_GRID_W + GUI_GRID_X;
+            y = 13.5 * GUI_GRID_H + GUI_GRID_Y;
+            w = 7 * GUI_GRID_W;
+            h = 1 * GUI_GRID_H;
+            style = ST_RIGHT;
+        };
+
+        class RscEdit_1401: RscEdit
+        {
+            idc = 1401;
+            text = "2035-06-19";
+            x = 8 * GUI_GRID_W + GUI_GRID_X;
+            y = 9 * GUI_GRID_H + GUI_GRID_Y;
+            w = 31.5 * GUI_GRID_W;
+            h = 1 * GUI_GRID_H;
+            colorBackground[] = {-1,-1,-1,0.5};
+        };
+        class RscEdit_1402: RscEdit
+        {
+            idc = 1402;
+            text = "Meeting";
+            x = 8 * GUI_GRID_W + GUI_GRID_X;
+            y = 10.5 * GUI_GRID_H + GUI_GRID_Y;
+            w = 31.5 * GUI_GRID_W;
+            h = 1 * GUI_GRID_H;
+            colorBackground[] = {-1,-1,-1,0.5};
+        };
+        class RscEdit_1403: RscEdit
+        {
+            idc = 1403;
+            text = "";
+            x = 8 * GUI_GRID_W + GUI_GRID_X;
+            y = 12 * GUI_GRID_H + GUI_GRID_Y;
+            w = 31.5 * GUI_GRID_W;
+            h = 1 * GUI_GRID_H;
+            colorBackground[] = {-1,-1,-1,0.5};
+        };
+        class RscEdit_1404: RscEdit
+        {
+            idc = 1404;
+            text = "";
+            x = 8 * GUI_GRID_W + GUI_GRID_X;
+            y = 13.5 * GUI_GRID_H + GUI_GRID_Y;
+            w = 31.5 * GUI_GRID_W;
+            h = 4 * GUI_GRID_H;
+            colorBackground[] = {-1,-1,-1,0.5};
+			style = ST_MULTI;
+			lineSpacing = 1;
+        };
+
+        class RscButtonMenuOK_2600: RscButtonMenuOK
+        {
+            x = 37 * GUI_GRID_W + GUI_GRID_X;
+            y = 23.5 * GUI_GRID_H + GUI_GRID_Y;
+            w = 3 * GUI_GRID_W;
+            h = 1.5 * GUI_GRID_H;
+        };
+
+        class RscButtonMenuCancel_2700: RscButtonMenuCancel
+        {
+            x = 31 * GUI_GRID_W + GUI_GRID_X;
+            y = 23.5 * GUI_GRID_H + GUI_GRID_Y;
+            w = 5 * GUI_GRID_W;
+            h = 1.5 * GUI_GRID_H;
+        };
+	};
+};
+
+/* ================================================================================ */
+
 class AE3_UserInterface_Zeus_Module_AddSecurityCommands
 {
 	idd = 16988;
