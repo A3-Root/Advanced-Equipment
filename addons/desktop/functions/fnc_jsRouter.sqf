@@ -23,7 +23,9 @@ params [["_control", controlNull, [controlNull]], ["_isConfirm", false, [false]]
 
 if (_message isEqualTo "") exitWith { true };
 
-private _req = [_message] call CBA_fnc_parseJSON;
+// _objectType 2 = native hash map. The default (0) returns a CBA namespace (LOCATION), which fails
+// the isEqualType check below and the getOrDefault/hashmap reads throughout this dispatcher.
+private _req = [_message, 2] call CBA_fnc_parseJSON;
 if (isNil "_req" || {!(_req isEqualType createHashMap)}) exitWith {
     diag_log text format ["[AE3 desktop] unparseable JS payload: %1", _message];
     true
