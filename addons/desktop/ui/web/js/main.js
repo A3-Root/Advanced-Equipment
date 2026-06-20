@@ -25,18 +25,24 @@
 
     function submit(isRetry) {
       err.textContent = "";
-      A3.request("login", { user: user.value, pass: pass.value }).then(function (res) {
+      // Longer timeout: in MP the SQF side may block on an authoritative userlist sync before it
+      // can give a verdict (see AE3_desktop_fnc_jsRouter "login").
+      A3.request("login", { user: user.value, pass: pass.value }, 15000).then(function (res) {
         if (res && res.ok) { startDesktop(res); return; }
-        // MP account-sync race: the backend kicked an authoritative re-pull; retry once silently.
+        // The backend now resolves the sync race itself, so "retry" should be rare. Keep a single
+        // silent retry purely as a safety net.
         if (res && res.retry && !isRetry) {
           err.textContent = res.message || "Syncing…";
           setTimeout(function () { submit(true); }, 700);
           return;
         }
         err.textContent = (res && res.message) || "Login failed"; pass.value = "";
-      }).catch(function () {
-        // Offline/browser preview: allow straight in so the shell can be inspected.
-        startDesktop({ hostname: "ae3-os", user: user.value || "user" });
+      }).catch(function (e) {
+        // No A3API => plain-browser preview: allow straight in so the shell can be inspected.
+        // In-game (A3API present) a timeout is a real failure - surface it instead of faking a login.
+        if (typeof A3API === "undefined") { startDesktop({ hostname: "ae3-os", user: user.value || "user" }); return; }
+        console.error("[AE3] login request failed:", e);
+        err.textContent = "Login timed out - check the server connection."; pass.value = "";
       });
     }
 

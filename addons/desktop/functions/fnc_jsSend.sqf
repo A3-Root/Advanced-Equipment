@@ -27,5 +27,8 @@ if (isNull _ctrl) exitWith {};
 if (_command isEqualTo "") exitWith {};
 
 private _json = [_payload] call CBA_fnc_encodeJSON;
+if ((missionNamespace getVariable [QGVAR(debug), false]) || {missionNamespace getVariable ["AE3_DebugMode", false]}) then {
+    diag_log text format ["[AE3 desktop] SQF->JS '%1'", _command];
+};
 private _js = format ["window.AE3_recv && window.AE3_recv('%1', %2)", _command, _json];
 [_ctrl, ["ExecJS", _js]] call FUNC(browserAction);

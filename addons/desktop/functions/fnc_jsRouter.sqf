@@ -37,8 +37,9 @@ if !(_data isEqualType createHashMap) then { _data = createHashMap; };
 private _display = ctrlParent _control;
 private _computer = _display getVariable [QGVAR(computer), objNull];
 
-if (missionNamespace getVariable [QGVAR(debug), false]) then {
+if ((missionNamespace getVariable [QGVAR(debug), false]) || {missionNamespace getVariable ["AE3_DebugMode", false]}) then {
     systemChat format ["[AE3] JS: %1", _command];
+    diag_log text format ["[AE3 desktop] JS->SQF '%1' rid=%2 data=%3", _command, _rid, _data];
 };
 
 // Reply helper: only sends when the JS side used A3.request (has a rid).
@@ -62,7 +63,11 @@ switch (_command) do {
         if (_ext isNotEqualTo []) then { ["ext_apps", _ext] call FUNC(jsSend); };
     };
 
-    // Login against the synced user list (issue #9).
+    // Login against the synced user list (issue #9). Replies synchronously (the proven path).
+    // authUser kicks a non-blocking userlist re-pull and returns "retry" when the account has not
+    // reached this client yet (MP race right after a Zeus "Add User"); the JS side retries once.
+    // The userlist is normally already cached by the open-time background sync (desktop_openWeb), so
+    // the common case takes a single round-trip.
     case "login": {
         private _user = _data getOrDefault ["user", ""];
         private _pass = _data getOrDefault ["pass", ""];
@@ -174,6 +179,12 @@ switch (_command) do {
             if (!isNull _router) then {
                 [_computer, _router] remoteExec ["AE3_desktop_fnc_netConnectServer", 2];
             };
+        };
+    };
+
+    case "net_disconnect": {
+        if (!isNull _computer) then {
+            [_computer] remoteExec ["AE3_desktop_fnc_netDisconnectServer", 2];
         };
     };
 

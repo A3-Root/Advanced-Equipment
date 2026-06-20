@@ -37,16 +37,29 @@ _display setVariable [QGVAR(computer), _computer];
 // Pull the authoritative per-laptop state onto the laptop object (object-as-namespace), exactly
 // as the native desktop does (AE3_desktop_fnc_desktop_open). The filesystem and userlist are
 // server-only (initFilesystem / computer_addUser run with isServer), so the web login (authUser)
-// and the Files/Notepad apps need the synced copy - pulling only in MP previously left module-
-// added users unauthenticated and the filesystem "unavailable" on clients (#1, #2).
-// getRemoteVar is a no-op in SP (the server-local copy is already present) and self-spawns into a
-// scheduled environment in MP; the apps read the cached copy and push mutations back via setVariable.
+// and the Files/Notepad/Settings apps need the synced copy - pulling only in MP previously left
+// module-added users unauthenticated and the filesystem "unavailable" on clients (#1, #2).
+//
+// This runs in a BACKGROUND spawn so the login screen paints immediately instead of waiting on
+// several sequential server round-trips (the main cause of the "Sign-In is extremely slow" report).
+// Nothing downstream needs it to block: the login handler (jsRouter) re-pulls and waits
+// authoritatively for the userlist before replying, and the Files app retries while the filesystem
+// is still syncing. getRemoteVar is a no-op in SP (the server-local copy is already present).
+// AE3_power_*/AE3_network_* are added so the Settings/System panel (fnc_sysInfo) shows real values
+// on clients instead of defaults (#14).
 if (!isNull _computer) then {
-    // Safety net for a freshly placed laptop whose server-side init has not completed yet.
-    [_computer] remoteExecCall ["AE3_armaos_fnc_device_ensureInit", 2];
-    [_computer, "AE3_filesystem"] call AE3_main_fnc_getRemoteVar;
-    [_computer, "AE3_filepointer"] call AE3_main_fnc_getRemoteVar;
-    [_computer, "AE3_Userlist"] call AE3_main_fnc_getRemoteVar;
+    [_computer] spawn {
+        params ["_computer"];
+        // Safety net for a freshly placed laptop whose server-side init has not completed yet.
+        [_computer] remoteExecCall ["AE3_armaos_fnc_device_ensureInit", 2];
+        {
+            [_computer, _x] call AE3_main_fnc_getRemoteVar;
+        } forEach [
+            "AE3_filesystem", "AE3_filepointer", "AE3_Userlist",
+            "AE3_power_powerState", "AE3_power_internal",
+            "AE3_network_parent", "AE3_network_address"
+        ];
+    };
 };
 
 // Claim the laptop and show the static "in use" screen for other players (mirrors native open).

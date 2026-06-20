@@ -171,6 +171,17 @@
           (list || []).forEach(function (n) {
             var li = h('<li><span class="ico">' + Icons.wifi + '</span><span>' + esc(n.ssid) + (n.current ? " <span class=\"muted\">(connected)</span>" : "") +
               "</span><span class=\"muted\" style=\"margin-left:auto\">" + esc(n.ip || "") + "</span></li>");
+            // Per-row action: Disconnect on the connected network, otherwise Connect. (Double-click
+            // the row still connects, as before.)
+            var btn = document.createElement("button");
+            btn.className = "btn"; btn.style.marginLeft = "6px";
+            btn.textContent = n.current ? "Disconnect" : "Connect";
+            btn.addEventListener("click", function (e) {
+              e.stopPropagation();
+              A3.send(n.current ? "net_disconnect" : "net_connect", { netId: n.netId });
+              setTimeout(scan, 800);
+            });
+            li.appendChild(btn);
             li.addEventListener("dblclick", function () {
               A3.send("net_connect", { netId: n.netId });
               setTimeout(scan, 800);
@@ -382,11 +393,11 @@
         if (t.type === "md") {
           A3.loadFile(t.path).then(function (mdText) {
             setDoc(wikiDoc(MD.render(mdText || "")));
-          }).catch(function () { setDoc(wikiDoc("<h1>Page not found</h1><p><a href=\"Home.md\">Back to wiki home</a></p>")); });
+          }).catch(function (e) { console.error("[AE3] browser md load failed:", t.path, e); setDoc(wikiDoc("<h1>Page not found</h1><p><a href=\"Home.md\">Back to wiki home</a></p>")); });
         } else {
           A3.loadFile(t.path).then(function (htmlText) {
             setDoc(htmlText || "<p>Empty page.</p>");
-          }).catch(function () { setDoc("<p style='font-family:sans-serif;padding:20px'>Page unavailable.</p>"); });
+          }).catch(function (e) { console.error("[AE3] browser html load failed:", t.path, e); setDoc("<p style='font-family:sans-serif;padding:20px'>Page unavailable.</p>"); });
         }
       }
 
@@ -492,7 +503,7 @@
         ctx.restore();
       }
 
-      function refresh() { A3.request("map_data", { range: range }).then(draw).catch(function () { draw(null); }); }
+      function refresh() { A3.request("map_data", { range: range }).then(draw).catch(function (e) { console.error("[AE3] map_data failed:", e); draw(null); }); }
       body.querySelector(".zin").addEventListener("click", function () { range = Math.max(50, range / 1.5); refresh(); });
       body.querySelector(".zout").addEventListener("click", function () { range = Math.min(2000, range * 1.5); refresh(); });
       win.timer = setInterval(refresh, 2000);

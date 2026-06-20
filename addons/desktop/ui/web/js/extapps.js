@@ -71,6 +71,7 @@
   }
 
   A3.on("ext_apps", function (list) {
+    console.log("[AE3] ext_apps received:", (list || []).length, "app(s)");
     (list || []).forEach(function (desc) {
       if (Apps.get(desc.id)) return;
       if (desc.kind === "deviceList") Apps.register(makeDeviceApp(desc));

@@ -17,6 +17,7 @@ PREP(fsHandle);
 PREP(sysInfo);
 PREP(netScan);
 PREP(netConnectServer);
+PREP(netDisconnectServer);
 PREP(mapData);
 PREP(mailHandle);
 PREP(chatPullServer);

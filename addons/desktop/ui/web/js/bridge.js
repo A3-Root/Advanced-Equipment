@@ -10,7 +10,17 @@
   var handlers = {};   // channel -> [cb]
   var pending = {};    // rid -> {resolve, timer}
   var ridSeq = 1;
-  var offline = !(typeof window.alert === "function");
+
+  // JS -> SQF transport. Arma raises the control's "JSDialog" event for A3API.SendAlert (and
+  // SendConfirm) - NOT for the native window.alert(), which CEF shows/suppresses locally and never
+  // delivers to SQF. Using window.alert here was why every A3.request timed out and the desktop
+  // looked "logged in but dead". This matches the working os-master bridge (A3API.SendAlert).
+  var hasA3 = (typeof A3API !== "undefined" && A3API && typeof A3API.SendAlert === "function");
+  function rawSend(msg) {
+    if (hasA3) { A3API.SendAlert(msg); return; }
+    // Plain-browser preview (no A3API): nothing to talk to; log so it can be inspected.
+    console.log("[A3 offline]", msg);
+  }
 
   function emit(channel, payload) {
     (handlers[channel] || []).forEach(function (cb) {
@@ -21,9 +31,7 @@
   var A3 = {
     // Fire-and-forget command to SQF.
     send: function (command, data) {
-      var msg = JSON.stringify({ command: command, data: data === undefined ? null : data });
-      if (offline) { console.log("[A3.send]", msg); return; }
-      window.alert(msg);
+      rawSend(JSON.stringify({ command: command, data: data === undefined ? null : data }));
     },
 
     // Command expecting a reply. Resolves when SQF pushes back the same command with _rid.
@@ -38,8 +46,7 @@
             reject(new Error("AE3 request timeout: " + command));
           }, timeoutMs || 8000)
         };
-        if (offline) { console.log("[A3.request]", msg); return; }
-        window.alert(msg);
+        rawSend(msg);
       });
     },
 
