@@ -43,7 +43,7 @@
         // The backend now resolves the sync race itself, so "retry" should be rare. Keep a single
         // silent retry purely as a safety net.
         if (res && res.retry && !isRetry) {
-          err.textContent = res.message || "Syncing…";
+          err.textContent = res.message || "Syncing...";
           setTimeout(function () { submit(true); }, 700);
           return;
         }

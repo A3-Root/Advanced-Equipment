@@ -185,13 +185,13 @@
         e.preventDefault();
         var deskPath = (window.AE3_HOME || "/root") + "/Desktop";
         window.AE3_ctxMenu(e.clientX, e.clientY, [
-          { label: "New Folder…", action: function () {
+          { label: "New Folder", action: function () {
             Modal.prompt("New folder name", "untitled").then(function (name) {
               if (!name) return;
               A3.request("fs_mkdir", { path: deskPath + "/" + name }).then(function () { Desktop.refresh(); });
             });
           } },
-          { label: "New File…", action: function () {
+          { label: "New File", action: function () {
             Modal.prompt("New file name", "untitled.txt").then(function (name) {
               if (!name) return;
               A3.request("fs_save", { path: deskPath + "/" + name, content: "" }).then(function () { Desktop.refresh(); });

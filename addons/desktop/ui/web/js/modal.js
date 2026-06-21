@@ -66,7 +66,7 @@
                 '<input class="input snum" type="number" style="width:90px" min="' + min + '" max="' + max + '" step="' + step + '" value="' + value + '">' +
                 '<span class="muted sunit">' + unit + '</span>' +
               '</div>' +
-              '<div class="muted" style="font-size:12px;margin-top:6px">Range: ' + min + ' – ' + max + ' ' + unit + '</div>' +
+              '<div class="muted" style="font-size:12px;margin-top:6px">Range: ' + min + ' - ' + max + ' ' + unit + '</div>' +
               '<div style="margin-top:12px;text-align:right;display:flex;gap:8px;justify-content:flex-end">' +
               '<button class="btn cancel">Cancel</button><button class="btn accent ok">Apply</button></div></div>';
           var range = box.querySelector(".srange");

@@ -171,8 +171,8 @@
     }
     function emptyMenu(x, y) {
       window.AE3_ctxMenu(x, y, [
-        { label: "New Folder…", action: newFolder },
-        { label: "New File…", action: newFile },
+        { label: "New Folder", action: newFolder },
+        { label: "New File", action: newFile },
         { label: "Paste", disabled: !window.AE3_clipboard, action: function () { paste(cwd); } },
         { sep: true },
         { label: "Refresh", action: load }
@@ -1002,7 +1002,7 @@
     render: function (body) {
       body.innerHTML =
         '<div class="toolbar"><button class="btn refresh">&#8635;</button><button class="btn restore">Restore</button><button class="btn empty">Empty Bin</button></div>' +
-        '<ul class="list trash"><li class="muted pad">Loading…</li></ul>';
+        '<ul class="list trash"><li class="muted pad">Loading</li></ul>';
       var listEl = body.querySelector(".trash");
       var sel = null;
       // Restore to the item's original location; if something is already there, confirm overwrite (#4).
@@ -1111,7 +1111,7 @@
         });
       }
       function list() {
-        mails.innerHTML = '<li class="muted pad">Loading…</li>';
+        mails.innerHTML = '<li class="muted pad">Loading</li>';
         A3.request("mail_list", {}).then(function (res) {
           allMail = (res && res.mails) || [];
           render();
@@ -1375,7 +1375,7 @@
           '</div>';
         body.querySelector(".sgo").addEventListener("click", function () {
           var c = { to: body.querySelector(".sto").value, user: body.querySelector(".suser").value, pass: body.querySelector(".spass").value };
-          body.querySelector(".smsg").textContent = "Connecting…";
+          body.querySelector(".smsg").textContent = "Connecting";
           A3.request("ssh_connect", c).then(function (r) {
             if (!r || (r.error && r.error !== "")) {
               showConnect({ ssh_disabled: "SSH is disabled on that host.", auth_failed: "Wrong username or password.", no_route: "No route to host.", bad_addr: "Invalid address." }[r && r.error] || "Connection failed.");
@@ -1415,7 +1415,7 @@
         var rcwd = "/";
         function rload() {
           rpath.value = rcwd;
-          rentries.innerHTML = '<li class="muted pad">Loading…</li>';
+          rentries.innerHTML = '<li class="muted pad">Loading</li>';
           A3.request("ssh_ls", { to: conn.to, user: conn.user, pass: conn.pass, path: rcwd }).then(function (res) {
             rentries.innerHTML = "";
             if (res.error && res.error !== "") { rentries.innerHTML = '<li class="muted pad">' + esc(res.error) + "</li>"; return; }

@@ -117,7 +117,7 @@ if (hasInterface) then
 		8
 	],
     0, // "_isGlobal" flag. '1' = all clients share the same setting, '2' = setting can’t be overwritten (optional, default: 0)
-    {  
+    {
         params ["_value"];
     }, // function that will be executed once on mission start and every time the setting is changed.
     false // Setting will be marked as needing mission restart after being changed. (optional, default false) <BOOL>
@@ -133,9 +133,9 @@ if (hasInterface) then
 	[
 		[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
 		[
-			["STR_AE3_Main_CbaSettings_TerminalDesignNameArmaOS", "STR_AE3_Main_CbaSettings_TerminalDesignTooltipArmaOS"], 
-			["STR_AE3_Main_CbaSettings_TerminalDesignNameC64", "STR_AE3_Main_CbaSettings_TerminalDesignTooltipC64"], 
-			["STR_AE3_Main_CbaSettings_TerminalDesignNameAppleII", "STR_AE3_Main_CbaSettings_TerminalDesignTooltipAppleII"], 
+			["STR_AE3_Main_CbaSettings_TerminalDesignNameArmaOS", "STR_AE3_Main_CbaSettings_TerminalDesignTooltipArmaOS"],
+			["STR_AE3_Main_CbaSettings_TerminalDesignNameC64", "STR_AE3_Main_CbaSettings_TerminalDesignTooltipC64"],
+			["STR_AE3_Main_CbaSettings_TerminalDesignNameAppleII", "STR_AE3_Main_CbaSettings_TerminalDesignTooltipAppleII"],
 			["STR_AE3_Main_CbaSettings_TerminalDesignNameAmber", "STR_AE3_Main_CbaSettings_TerminalDesignTooltipAmber"],
 			["STR_AE3_Main_CbaSettings_TerminalDesignNameMidnightBlue", "STR_AE3_Main_CbaSettings_TerminalDesignTooltipMidnightBlue"],
 			["STR_AE3_Main_CbaSettings_TerminalDesignNameLightMode", "STR_AE3_Main_CbaSettings_TerminalDesignTooltipLightMode"],
@@ -157,7 +157,7 @@ if (hasInterface) then
 		9
 	],
     0, // "_isGlobal" flag. '1' = all clients share the same setting, '2' = setting can’t be overwritten (optional, default: 0)
-    {  
+    {
         params ["_value"];
     }, // function that will be executed once on mission start and every time the setting is changed.
     false // Setting will be marked as needing mission restart after being changed. (optional, default false) <BOOL>
@@ -404,7 +404,7 @@ if (hasInterface) then
 	"EDITBOX",
 	["Terminal Tagline", "The tagline shown in the terminal header after ASCII art"],
 	"STR_AE3_ArmaOS_CbaSettings_ArmaOSCategoryName",
-	"Powered by SHITE™ Technologies – Excellence, from the ground up.",
+	"Powered by SHITE™ Technologies - Excellence, from the ground up.",
     1, // "_isGlobal" flag. '1' = all clients share the same setting, '2' = setting can’t be overwritten (optional, default: 0)
     {
         params ["_value"];

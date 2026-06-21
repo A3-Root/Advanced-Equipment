@@ -38,7 +38,7 @@
           '<div class="toolbar"><span class="muted" style="flex:1">' + esc(desc.title) + '</span>' +
             (extra.globalActions ? '<span class="globals"></span>' : '') +
             '<button class="btn refresh">&#8635;</button></div>' +
-          '<ul class="list devs"><li class="muted pad">Loading…</li></ul>' +
+          '<ul class="list devs"><li class="muted pad">Loading...</li></ul>' +
           '<div class="dev-status" style="min-height:22px;padding:8px 12px;font-weight:600"></div>';
         var devs = body.querySelector(".devs");
         var status = body.querySelector(".dev-status");
@@ -57,7 +57,7 @@
             var b = document.createElement("button"); b.className = "btn"; b.textContent = a.label; b.style.marginLeft = "6px";
             b.addEventListener("click", function () {
               A3.send("dev_action", { app: desc.id, type: extra.type, id: "", action: a.id, path: "" });
-              setStatus(a.label + "…");
+              setStatus(a.label + "...");
             });
             glWrap.appendChild(b);
           });
@@ -71,7 +71,7 @@
             if (a.confirm && a.confirm !== "" && typeof Modal !== "undefined") {
               Modal.confirm(a.label, a.confirm).then(function (ok) {
                 if (ok) A3.send("dev_action", { app: desc.id, type: extra.type, id: d.id, action: a.id, sub: sub || "", path: d.path || "" });
-                if (ok) setStatus(a.label + "…");
+                if (ok) setStatus(a.label + "...");
               });
               return;
             }
@@ -81,7 +81,7 @@
               Modal.slider(a.label + (d.label ? (" - " + d.label) : ""), a.min, a.max, a.value, a.step, a.unit).then(function (v) {
                 if (v == null) return;
                 A3.send("dev_action", { app: desc.id, type: extra.type, id: d.id, action: a.id, sub: sub || "", path: d.path || "", value: v });
-                setStatus(a.label + " → " + v + (a.unit || "") + "…");
+                setStatus(a.label + " → " + v + (a.unit || "") + "...");
               });
               return;
             }
@@ -97,7 +97,7 @@
               return;
             }
             A3.send("dev_action", { app: desc.id, type: extra.type, id: d.id, action: a.id, sub: sub || "", path: d.path || "" });
-            setStatus(a.label + "…");
+            setStatus(a.label + "...");
           });
           return b;
         }
@@ -105,7 +105,7 @@
         // Animated progress bar in the status area over the given number of seconds (#5).
         function runProgress(seconds, done) {
           var secs = Number(seconds) || 0;
-          if (secs <= 0) { setStatus("Downloading…"); done(); return; }
+          if (secs <= 0) { setStatus("Downloading..."); done(); return; }
           var start = Date.now(); var total = secs * 1000;
           status.innerHTML = '<div style="background:#2b2b2b;border-radius:6px;overflow:hidden;height:14px;width:200px;display:inline-block;vertical-align:middle"><div class="dlbar" style="height:100%;width:0;background:var(--accent)"></div></div> <span class="dlpct">0%</span>';
           var bar = status.querySelector(".dlbar"); var pct = status.querySelector(".dlpct");
@@ -181,7 +181,7 @@
           }
           if (r.ok) setTimeout(request, 300);
         };
-        function request() { devs.innerHTML = '<li class="muted pad">Loading…</li>'; A3.send("dev_request", { type: extra.type }); }
+        function request() { devs.innerHTML = '<li class="muted pad">Loading...</li>'; A3.send("dev_request", { type: extra.type }); }
         body.querySelector(".refresh").addEventListener("click", request);
         win.app.onClose = function () { delete listSubs[extra.type]; delete resultSubs[extra.type]; };
         request();

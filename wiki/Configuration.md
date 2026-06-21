@@ -568,7 +568,7 @@ AE3_TerminalTipMessage = "> Tip: Type 'help' for available commands.";
 
 **Type:** Text Box (String)
 
-**Default:** `"Powered by SHITE™ Technologies – Excellence, from the ground up."`
+**Default:** `"Powered by SHITE™ Technologies - Excellence, from the ground up."`
 
 **Global Setting:** Yes
 
