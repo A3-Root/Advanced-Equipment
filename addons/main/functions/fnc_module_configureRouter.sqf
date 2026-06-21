@@ -29,8 +29,7 @@ private _password = _module getVariable ["AE3_ModuleRouter_Password", ""];
 
 {
     if (_x getVariable ["AE3_cap_isRouter", false]) then {
-        _x setVariable ["AE3_network_wirelessRange", _range, true];
-        _x setVariable ["AE3_network_password", _password, true];
+        [_x, "", _range, _password] call AE3_network_fnc_applyRouterConfig;
     };
 } forEach _syncedUnits;
 

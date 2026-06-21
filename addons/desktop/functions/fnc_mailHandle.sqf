@@ -8,8 +8,8 @@
  *
  * Arguments:
  * 0: _computer <OBJECT> - The bound laptop
- * 1: _op <STRING> - "list" | "read"
- * 2: _data <HASHMAP> - key "file" for read
+ * 1: _op <STRING> - "list" | "read" | "delete"
+ * 2: _data <HASHMAP> - key "file" for read/delete
  *
  * Return Value:
  * Result <HASHMAP>
@@ -54,7 +54,8 @@ switch (_op) do {
             reverse _names;
             {
                 private _entry = _content get _x;
-                if ((_entry select 0) isEqualType "") then {
+                // Skip the legacy IM inbox if present - chat now lives in /var/chat (#7).
+                if ((_entry select 0) isEqualType "" && {_x isNotEqualTo "inbox"}) then {
                     private _meta = [_entry select 0, _x] call _parse;
                     _meta set ["body", ""]; // list view: headers only
                     _items pushBack _meta;
@@ -72,6 +73,19 @@ switch (_op) do {
                 private _mail = [_content, _file] call _parse;
                 { _res set [_x, _mail get _x]; } forEach (keys _mail);
             } else { _res set ["error", "not_text"]; };
+        } catch {
+            _res set ["error", "not_found"];
+        };
+    };
+
+    // Delete an email (#6): drop the file from /var/mail and push the updated filesystem.
+    case "delete": {
+        private _file = _data getOrDefault ["file", ""];
+        if (_file isEqualTo "") exitWith { _res set ["error", "bad_input"]; };
+        try {
+            [[], _fs, format ["/var/mail/%1", _file], "root"] call AE3_filesystem_fnc_delObj;
+            _computer setVariable ["AE3_filesystem", _fs, 2];
+            _res set ["ok", true];
         } catch {
             _res set ["error", "not_found"];
         };

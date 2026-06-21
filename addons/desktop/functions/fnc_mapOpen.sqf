@@ -9,6 +9,8 @@
  *
  * Arguments:
  * 0: _computer <OBJECT> (Optional, default: objNull) - The laptop this session is bound to
+ * 1: _data <HASHMAP> (Optional) - Optional focus: key "pos" [x,y(,z)] to centre on + "label" to mark
+ *    (used by the shared device map-link, #0f). When absent, centres on the laptop/player.
  *
  * Return Value:
  * The created display <DISPLAY>
@@ -16,9 +18,12 @@
  * Public: No
  */
 
-params [["_computer", objNull, [objNull]]];
+params [["_computer", objNull, [objNull]], ["_data", createHashMap, [createHashMap]]];
 
 if (!hasInterface) exitWith { displayNull };
+
+private _focus = _data getOrDefault ["pos", []];
+private _focusLabel = _data getOrDefault ["label", ""];
 
 // Parent to the open browser display so the overlay sits on top of the CEF desktop.
 private _parent = findDisplay 17010;
@@ -31,8 +36,10 @@ private _map = _display displayCtrl 17021;
 
 private _center = getPosWorld player;
 if (!isNull _computer) then { _center = getPosWorld _computer; };
+// A device map-link (#0f) overrides the centre with the requested grid position.
+if (_focus isEqualType [] && {count _focus >= 2}) then { _center = [_focus select 0, _focus select 1, 0]; };
 
-// Centre + zoom the map on the laptop/player.
+// Centre + zoom the map on the laptop/player (or the focused device).
 _map ctrlMapAnimAdd [0, 0.08, _center];
 ctrlMapAnimCommit _map;
 
@@ -60,6 +67,16 @@ _markers pushBack _self;
         _markers pushBack _mk;
     };
 } forEach (nearestObjects [_center, [], 2000]);
+
+// Highlighted marker for a focused device (#0f).
+if (_focus isEqualType [] && {count _focus >= 2}) then {
+    private _fm = createMarkerLocal [format ["AE3_mapFocus_%1", _stamp], _center];
+    _fm setMarkerTypeLocal "mil_objective";
+    _fm setMarkerColorLocal "ColorOrange";
+    _fm setMarkerSizeLocal [1, 1];
+    if (_focusLabel isNotEqualTo "") then { _fm setMarkerTextLocal _focusLabel; };
+    _markers pushBack _fm;
+};
 
 uiNamespace setVariable ["AE3_mapOverlayMarkers", _markers];
 

@@ -9,169 +9,273 @@
   function joinPath(dir, name) { return (dir.replace(/\/+$/, "") + "/" + name).replace(/\/+/g, "/"); }
 
   // ---------------- Files ----------------
-  Apps.register({
-    id: "files", title: "Files", glyph: Icons.files, width: 660, height: 440,
-    showOnDesktop: true, showInDock: true,
-    render: function (body, win, args) {
-      body.innerHTML =
-        '<div class="toolbar">' +
-          '<button class="btn up" title="Up">&#8593;</button>' +
-          '<input class="input path" style="flex:1" readonly>' +
-          '<button class="btn mkdir">New Folder</button>' +
-          '<button class="btn del">Delete</button>' +
-          '<button class="btn refresh">&#8635;</button>' +
-        '</div>' +
-        '<ul class="list entries"><li class="muted pad">Loading&hellip;</li></ul>';
-      var cwd = (args && args.path) || "/";
-      var sel = null;
-      var entries = body.querySelector(".entries");
-      var pathInput = body.querySelector(".path");
+  // Reusable file-browser core (also powers My Computer's embedded pane and the file picker).
+  // opts: { extraTools (HTML), onReady(api) }. Returns nothing; drives the given body element.
+  // Exposed on window.AE3_FileBrowser so other apps reuse the exact same browser (#11/#13).
+  window.AE3_FileBrowser = function (body, win, args, opts) {
+    opts = opts || {};
+    body.innerHTML =
+      '<div class="toolbar">' +
+        '<button class="btn up" title="Up">&#8593;</button>' +
+        '<input class="input path" style="flex:1.4">' +
+        '<input class="input search" placeholder="Search (use * )" style="flex:1">' +
+        '<button class="btn mkdir">New Folder</button>' +
+        '<button class="btn del">Delete</button>' +
+        '<button class="btn refresh">&#8635;</button>' +
+        (opts.extraTools || "") +
+      '</div>' +
+      '<ul class="list entries" tabindex="0"><li class="muted pad">Loading&hellip;</li></ul>';
+    var cwd = (args && args.path) || "/";
+    var sel = null;
+    var searching = false;
+    var entries = body.querySelector(".entries");
+    var pathInput = body.querySelector(".path");
+    var searchInput = body.querySelector(".search");
 
-      var loadTries = 0;
-      function load() {
-        pathInput.value = cwd; sel = null;
-        A3.request("fs_list", { path: cwd }).then(function (res) {
-          // Filesystem still syncing from the server (MP): the backend kicked an authoritative
-          // pull - show a spinner and retry a few times before giving up.
-          if (res.loading) {
-            if (loadTries < 6) { loadTries++; entries.innerHTML = '<li class="muted pad">Loading&hellip;</li>'; setTimeout(load, 500); }
-            else { entries.innerHTML = '<li class="muted pad">Filesystem unavailable</li>'; }
-            return;
-          }
-          loadTries = 0;
-          entries.innerHTML = "";
-          if (res.error && res.error !== "") {
-            entries.innerHTML = '<li class="muted pad">' + (res.error === "denied" ? "Permission denied" : "Unavailable") + "</li>";
-            return;
-          }
-          var items = res.entries || [];
-          if (!items.length) { entries.innerHTML = '<li class="muted pad">Empty</li>'; return; }
-          items.forEach(function (it) {
-            var li = h('<li><span class="ico">' + (it.dir ? Icons.folder : Icons.file) + '</span><span>' + esc(it.name) + "</span></li>");
-            li.addEventListener("click", function () {
-              entries.querySelectorAll("li").forEach(function (n) { n.classList.remove("sel"); });
-              li.classList.add("sel"); sel = it;
-            });
-            li.addEventListener("dblclick", function () {
-              if (it.dir) { cwd = joinPath(cwd, it.name); load(); }
-              else { openFile(joinPath(cwd, it.name)); }
-            });
-            li.addEventListener("contextmenu", function (e) {
-              e.preventDefault(); e.stopPropagation();
-              entries.querySelectorAll("li").forEach(function (n) { n.classList.remove("sel"); });
-              li.classList.add("sel"); sel = it;
-              fileMenu(e.clientX, e.clientY, it);
-            });
-            entries.appendChild(li);
-          });
-        }).catch(function () { entries.innerHTML = '<li class="muted pad">Filesystem unavailable</li>'; });
+    function go(path) { cwd = path; searching = false; searchInput.value = ""; load(); }
+
+    var loadTries = 0;
+    function load() {
+      pathInput.value = cwd; sel = null;
+      A3.request("fs_list", { path: cwd }).then(function (res) {
+        if (res.loading) {
+          if (loadTries < 6) { loadTries++; entries.innerHTML = '<li class="muted pad">Loading&hellip;</li>'; setTimeout(load, 500); }
+          else { entries.innerHTML = '<li class="muted pad">Filesystem unavailable</li>'; }
+          return;
+        }
+        loadTries = 0;
+        entries.innerHTML = "";
+        if (res.error && res.error !== "") {
+          entries.innerHTML = '<li class="muted pad">' + (res.error === "denied" ? "Permission denied" : "Unavailable") + "</li>";
+          return;
+        }
+        var items = res.entries || [];
+        if (!items.length) { entries.innerHTML = '<li class="muted pad">Empty</li>'; return; }
+        items.forEach(function (it) { entries.appendChild(rowFor(it, joinPath(cwd, it.name))); });
+      }).catch(function () { entries.innerHTML = '<li class="muted pad">Filesystem unavailable</li>'; });
+    }
+
+    function rowFor(it, full) {
+      var link = it.link ? ' <span class="muted" title="Link &#8594; ' + esc(it.link) + '">&#8631;</span>' : "";
+      var li = h('<li><span class="ico">' + (it.dir ? Icons.folder : Icons.file) + '</span><span>' + esc(it.name) + link + "</span></li>");
+      li.addEventListener("click", function () {
+        entries.querySelectorAll("li").forEach(function (n) { n.classList.remove("sel"); });
+        li.classList.add("sel"); sel = { name: it.name, dir: it.dir, link: it.link, path: full };
+      });
+      li.addEventListener("dblclick", function () { activate(it, full); });
+      li.addEventListener("contextmenu", function (e) {
+        e.preventDefault(); e.stopPropagation();
+        entries.querySelectorAll("li").forEach(function (n) { n.classList.remove("sel"); });
+        li.classList.add("sel"); sel = { name: it.name, dir: it.dir, link: it.link, path: full };
+        fileMenu(e.clientX, e.clientY, it, full);
+      });
+      return li;
+    }
+
+    // Open behaviour. An app-launcher (a .app symlink/file holding "app=<id>") launches the app;
+    // a directory (or link to one) navigates; anything else opens in the default viewer. (#9)
+    function activate(it, full) {
+      if (it.dir) {
+        // A link to a directory: navigate to the link target so the browser shows the real path.
+        go(it.link && it.link !== "" ? it.link : full);
+        return;
       }
+      // Picker mode: a file double-click resolves the picker instead of opening it.
+      if (opts.onPick) { opts.onPick(it, full); return; }
+      if (/\.app$/i.test(it.name)) { launchLauncher(full); return; }
+      openFile(it.link && it.link !== "" ? it.link : full);
+    }
 
-      function openFile(path) {
-        A3.request("fs_read", { path: path }).then(function (res) {
-          if (res.error && res.error !== "") { Modal.alert("Open", res.error === "not_text" ? "Not a text file." : "Cannot open file."); return; }
-          // Password-protected file (#7): the backend reports only "locked" (never the password or
-          // payload). Prompt, verify server-side via fs_unlock, then open the decrypted content.
-          if (res.locked) { unlockAndOpen(path); return; }
+    function launchLauncher(path) {
+      A3.request("fs_read", { path: path }).then(function (res) {
+        if (res.error && res.error !== "") { Modal.alert("Open", "Cannot open launcher."); return; }
+        var m = String(res.content || "").match(/app\s*=\s*([\w-]+)/i);
+        if (m) { Apps.launch(m[1]); } else { Apps.launch("notepad", { path: path, content: res.content || "" }); }
+      });
+    }
+
+    function openFile(path) {
+      A3.request("fs_read", { path: path }).then(function (res) {
+        if (res.error && res.error !== "") { Modal.alert("Open", res.error === "not_text" ? "Not a text file." : "Cannot open file."); return; }
+        if (res.locked) { unlockAndOpen(path); return; }
+        Apps.launch("notepad", { path: path, content: res.content || "" });
+      });
+    }
+    function unlockAndOpen(path) {
+      Modal.prompt("This file is password protected. Enter password:", "").then(function (pass) {
+        if (pass == null) return;
+        A3.request("fs_unlock", { path: path, pass: pass }).then(function (res) {
+          if (res.error === "bad_pass") { Modal.alert("Locked", "Wrong password."); return; }
+          if (res.error && res.error !== "") { Modal.alert("Open", "Cannot open file."); return; }
           Apps.launch("notepad", { path: path, content: res.content || "" });
         });
-      }
-
-      function unlockAndOpen(path) {
-        Modal.prompt("This file is password protected. Enter password:", "").then(function (pass) {
-          if (pass == null) return;
-          A3.request("fs_unlock", { path: path, pass: pass }).then(function (res) {
-            if (res.error === "bad_pass") { Modal.alert("Locked", "Wrong password."); return; }
-            if (res.error && res.error !== "") { Modal.alert("Open", "Cannot open file."); return; }
-            Apps.launch("notepad", { path: path, content: res.content || "" });
-          });
-        });
-      }
-
-      // Right-click context menu (#16): per-item (open/cut/copy/delete/rename) and empty-area
-      // (new folder/file, paste, refresh). Cut/copy stash to window.AE3_clipboard; paste moves/copies
-      // via the fs_move / fs_copy backend ops.
-      function paste() {
-        var cb = window.AE3_clipboard; if (!cb) return;
-        var dest = joinPath(cwd, cb.name);
-        A3.request(cb.op === "cut" ? "fs_move" : "fs_copy", { path: cb.path, dest: dest }).then(function (r) {
-          if (r.error && r.error !== "") { Modal.alert("Paste", "Could not paste here."); return; }
-          if (cb.op === "cut") window.AE3_clipboard = null;
-          load();
-        });
-      }
-      function fileMenu(x, y, it) {
-        var full = joinPath(cwd, it.name);
-        window.AE3_ctxMenu(x, y, [
-          { label: it.dir ? "Open" : "Open", action: function () { if (it.dir) { cwd = full; load(); } else openFile(full); } },
-          { sep: true },
-          { label: "Cut", action: function () { window.AE3_clipboard = { path: full, name: it.name, op: "cut" }; } },
-          { label: "Copy", action: function () { window.AE3_clipboard = { path: full, name: it.name, op: "copy" }; } },
-          { label: "Paste", disabled: !window.AE3_clipboard, action: paste },
-          { sep: true },
-          { label: "Rename", action: function () {
-            Modal.prompt("Rename to", it.name).then(function (nn) {
-              if (!nn || nn === it.name) return;
-              A3.request("fs_move", { path: full, dest: joinPath(cwd, nn) }).then(function (r) {
-                if (r.error && r.error !== "") Modal.alert("Rename", "Could not rename."); else load();
-              });
-            });
-          } },
-          { label: "Delete", action: function () {
-            A3.request("fs_delete", { path: full }).then(function (r) {
-              if (r.error && r.error !== "") Modal.alert("Delete", "Permission denied."); else load();
-            });
-          } }
-        ]);
-      }
-      function emptyMenu(x, y) {
-        window.AE3_ctxMenu(x, y, [
-          { label: "New Folder…", action: function () {
-            Modal.prompt("New folder name", "untitled").then(function (name) {
-              if (!name) return;
-              A3.request("fs_mkdir", { path: joinPath(cwd, name) }).then(function (r) { if (r.error && r.error !== "") Modal.alert("New Folder", "Permission denied."); else load(); });
-            });
-          } },
-          { label: "New File…", action: function () {
-            Modal.prompt("New file name", "untitled.txt").then(function (name) {
-              if (!name) return;
-              A3.request("fs_save", { path: joinPath(cwd, name), content: "" }).then(function (r) { if (r.error && r.error !== "") Modal.alert("New File", "Permission denied."); else load(); });
-            });
-          } },
-          { label: "Paste", disabled: !window.AE3_clipboard, action: paste },
-          { sep: true },
-          { label: "Refresh", action: load }
-        ]);
-      }
-      entries.addEventListener("contextmenu", function (e) {
-        if (e.target !== entries) return; // item menus handle their own; this is the empty area
-        e.preventDefault(); emptyMenu(e.clientX, e.clientY);
       });
-
-      body.querySelector(".up").addEventListener("click", function () {
-        if (cwd !== "/") { cwd = cwd.replace(/\/+$/, "").split("/").slice(0, -1).join("/") || "/"; load(); }
-      });
-      body.querySelector(".refresh").addEventListener("click", load);
-      body.querySelector(".mkdir").addEventListener("click", function () {
-        Modal.prompt("New folder name", "untitled").then(function (name) {
-          if (!name) return;
-          A3.request("fs_mkdir", { path: joinPath(cwd, name) }).then(function (r) {
-            if (r.error && r.error !== "") Modal.alert("New Folder", "Permission denied."); else load();
-          });
-        });
-      });
-      body.querySelector(".del").addEventListener("click", function () {
-        if (!sel) return;
-        Modal.confirm("Delete", "Delete '" + sel.name + "'?").then(function (ok) {
-          if (!ok) return;
-          A3.request("fs_delete", { path: joinPath(cwd, sel.name) }).then(function (r) {
-            if (r.error && r.error !== "") Modal.alert("Delete", "Permission denied."); else load();
-          });
-        });
-      });
-      load();
     }
+
+    function paste(destDir) {
+      var cb = window.AE3_clipboard; if (!cb) return;
+      var dest = joinPath(destDir, cb.name);
+      A3.request(cb.op === "cut" ? "fs_move" : "fs_copy", { path: cb.path, dest: dest }).then(function (r) {
+        if (r.error && r.error !== "") { Modal.alert("Paste", "Could not paste here."); return; }
+        if (cb.op === "cut") window.AE3_clipboard = null;
+        if (!searching) load();
+      });
+    }
+    function doRename(full, name) {
+      Modal.prompt("Rename to", name).then(function (nn) {
+        if (!nn || nn === name) return;
+        var dir = full.replace(/\/+$/, "").split("/").slice(0, -1).join("/") || "/";
+        A3.request("fs_move", { path: full, dest: joinPath(dir, nn) }).then(function (r) {
+          if (r.error && r.error !== "") Modal.alert("Rename", "Could not rename."); else load();
+        });
+      });
+    }
+    function doDelete(full) {
+      A3.request("fs_delete", { path: full }).then(function (r) {
+        if (r.error && r.error !== "") Modal.alert("Delete", "Permission denied."); else load();
+      });
+    }
+    function fileMenu(x, y, it, full) {
+      window.AE3_ctxMenu(x, y, [
+        { label: "Open", action: function () { activate(it, full); } },
+        { sep: true },
+        { label: "Cut", action: function () { window.AE3_clipboard = { path: full, name: it.name, op: "cut" }; } },
+        { label: "Copy", action: function () { window.AE3_clipboard = { path: full, name: it.name, op: "copy" }; } },
+        { label: "Paste", disabled: !window.AE3_clipboard, action: function () { paste(cwd); } },
+        { sep: true },
+        { label: "Rename", action: function () { doRename(full, it.name); } },
+        { label: "Delete", action: function () { doDelete(full); } }
+      ]);
+    }
+    function newFolder() {
+      Modal.prompt("New folder name", "untitled").then(function (name) {
+        if (!name) return;
+        A3.request("fs_mkdir", { path: joinPath(cwd, name) }).then(function (r) { if (r.error && r.error !== "") Modal.alert("New Folder", "Permission denied."); else load(); });
+      });
+    }
+    function newFile() {
+      Modal.prompt("New file name", "untitled.txt").then(function (name) {
+        if (!name) return;
+        A3.request("fs_save", { path: joinPath(cwd, name), content: "" }).then(function (r) { if (r.error && r.error !== "") Modal.alert("New File", "Permission denied."); else load(); });
+      });
+    }
+    function emptyMenu(x, y) {
+      window.AE3_ctxMenu(x, y, [
+        { label: "New Folder…", action: newFolder },
+        { label: "New File…", action: newFile },
+        { label: "Paste", disabled: !window.AE3_clipboard, action: function () { paste(cwd); } },
+        { sep: true },
+        { label: "Refresh", action: load }
+      ]);
+    }
+    // Empty-area right-click (#2). Bind on the <ul> AND its wrapper; the previous strict
+    // "e.target === entries" check failed whenever the list was empty/short or the click landed on
+    // padding, so the menu never appeared. Treat any click not on an <li> as the empty area.
+    entries.addEventListener("contextmenu", function (e) {
+      if (e.target.closest("li")) return; // item rows handle their own menu
+      e.preventDefault(); e.stopPropagation();
+      emptyMenu(e.clientX, e.clientY);
+    });
+
+    // Ctrl+C / Ctrl+X / Ctrl+V on the focused list (#12).
+    entries.addEventListener("keydown", function (e) {
+      if (!(e.ctrlKey || e.metaKey)) return;
+      var k = e.key.toLowerCase();
+      if (k === "c" && sel) { window.AE3_clipboard = { path: sel.path, name: sel.name, op: "copy" }; e.preventDefault(); }
+      else if (k === "x" && sel) { window.AE3_clipboard = { path: sel.path, name: sel.name, op: "cut" }; e.preventDefault(); }
+      else if (k === "v" && window.AE3_clipboard) { paste(cwd); e.preventDefault(); }
+    });
+
+    function runSearch(q) {
+      if (!q || q.trim() === "") { searching = false; load(); return; }
+      searching = true; sel = null;
+      entries.innerHTML = '<li class="muted pad">Searching&hellip;</li>';
+      A3.request("fs_search", { query: q, root: cwd }).then(function (res) {
+        entries.innerHTML = "";
+        var hits = (res && res.results) || [];
+        if (!hits.length) { entries.innerHTML = '<li class="muted pad">No matches</li>'; return; }
+        hits.forEach(function (it) {
+          var name = it.path.split("/").pop();
+          var li = h('<li><span class="ico">' + (it.dir ? Icons.folder : Icons.file) + '</span><span>' + esc(name) +
+            ' <span class="muted" style="font-size:11px">' + esc(it.path) + '</span></span></li>');
+          li.addEventListener("dblclick", function () {
+            if (it.dir) { go(it.path); } else { openFile(it.path); }
+          });
+          li.addEventListener("click", function () {
+            entries.querySelectorAll("li").forEach(function (n) { n.classList.remove("sel"); });
+            li.classList.add("sel"); sel = { name: name, dir: it.dir, path: it.path };
+          });
+          entries.appendChild(li);
+        });
+      }).catch(function () { entries.innerHTML = '<li class="muted pad">Search failed</li>'; });
+    }
+    searchInput.addEventListener("keydown", function (e) { if (e.key === "Enter") runSearch(searchInput.value); });
+
+    pathInput.addEventListener("keydown", function (e) { if (e.key === "Enter") go(pathInput.value.trim() || "/"); });
+    body.querySelector(".up").addEventListener("click", function () {
+      if (searching) { searching = false; searchInput.value = ""; load(); return; }
+      if (cwd !== "/") { go(cwd.replace(/\/+$/, "").split("/").slice(0, -1).join("/") || "/"); }
+    });
+    body.querySelector(".refresh").addEventListener("click", function () { if (searching) runSearch(searchInput.value); else load(); });
+    body.querySelector(".mkdir").addEventListener("click", newFolder);
+    body.querySelector(".del").addEventListener("click", function () {
+      if (!sel) return;
+      Modal.confirm("Delete", "Delete '" + sel.name + "'?").then(function (ok) {
+        if (!ok) return;
+        doDelete(sel.path);
+      });
+    });
+    if (opts.onReady) opts.onReady({ go: go, reload: load, getCwd: function () { return cwd; }, getSel: function () { return sel; } });
+    load();
+  };
+
+  Apps.register({
+    id: "files", title: "Files", glyph: Icons.files, width: 680, height: 460,
+    showOnDesktop: true, showInDock: true,
+    render: function (body, win, args) { window.AE3_FileBrowser(body, win, args, {}); }
   });
+
+  // ---------------- File picker (#5) ----------------
+  // window.AE3_pickFile("open"|"save", { start, filename, title }) -> Promise<path|null>.
+  // "open": double-click a file (or select + Choose) resolves its path. "save": browse to a folder,
+  // type a filename, Save resolves "<folder>/<filename>". Reuses the exact Files browser core.
+  window.AE3_pickFile = function (mode, opts) {
+    opts = opts || {};
+    return new Promise(function (resolve) {
+      var ov = h('<div class="pk-overlay"><div class="pk-dialog">' +
+        '<div class="pk-title">' + esc(opts.title || (mode === "save" ? "Save As" : "Open")) + '</div>' +
+        '<div class="pk-body"></div>' +
+        '<div class="pk-foot">' +
+          (mode === "save" ? '<input class="input pk-name" placeholder="filename.ext">' : '') +
+          '<span style="flex:1"></span>' +
+          '<button class="btn pk-cancel">Cancel</button>' +
+          '<button class="btn accent pk-ok">' + (mode === "save" ? "Save" : "Choose") + '</button>' +
+        '</div></div></div>');
+      document.body.appendChild(ov);
+      var bodyEl = ov.querySelector(".pk-body");
+      var nameEl = ov.querySelector(".pk-name");
+      if (nameEl && opts.filename) nameEl.value = opts.filename;
+      var apiRef = null, lastFile = null;
+      function close(val) { ov.remove(); resolve(val); }
+      window.AE3_FileBrowser(bodyEl, null, { path: opts.start || "/home" }, {
+        onReady: function (api) { apiRef = api; },
+        onPick: function (it, full) {
+          if (mode === "open") { close(full); }
+          else { lastFile = full; if (nameEl) nameEl.value = it.name; }
+        }
+      });
+      ov.querySelector(".pk-cancel").addEventListener("click", function () { close(null); });
+      ov.querySelector(".pk-ok").addEventListener("click", function () {
+        if (mode === "save") {
+          var fn = (nameEl.value || "").trim(); if (!fn) { nameEl.focus(); return; }
+          var dir = apiRef ? apiRef.getCwd() : (opts.start || "/home");
+          close(joinPath(dir, fn));
+        } else {
+          if (lastFile) close(lastFile);
+        }
+      });
+    });
+  };
 
   // ---------------- Notepad ----------------
   Apps.register({
@@ -202,7 +306,7 @@
       }
       body.querySelector(".n").addEventListener("click", function () { ta.value = ""; path = null; setName(); });
       body.querySelector(".o").addEventListener("click", function () {
-        Modal.prompt("Open file (full path)", path || "/home/").then(function (p) {
+        AE3_pickFile("open", { title: "Open file", start: path ? path.replace(/\/[^/]*$/, "") || "/home" : "/home" }).then(function (p) {
           if (!p) return;
           function openInto(res) { ta.value = res.content || ""; path = p; setName(); }
           A3.request("fs_read", { path: p }).then(function (res) {
@@ -226,7 +330,7 @@
         if (path) save(path); else body.querySelector(".sa").click();
       });
       body.querySelector(".sa").addEventListener("click", function () {
-        Modal.prompt("Save As (full path)", path || "/home/untitled.txt").then(function (p) { if (p) save(p); });
+        AE3_pickFile("save", { title: "Save As", start: path ? path.replace(/\/[^/]*$/, "") || "/home" : "/home", filename: path ? path.split("/").pop() : "untitled.txt" }).then(function (p) { if (p) save(p); });
       });
     }
   });
@@ -247,12 +351,19 @@
             '<input class="input swall" placeholder="#1d1d1d or linear-gradient(...) or \\\\z\\\\...\\\\bg.jpg">' +
             '<div><button class="btn accent ssave">Apply</button> <span class="muted sst"></span></div>' +
           '</div>' +
+          '<h3 style="margin-top:14px">Access</h3>' +
+          '<label class="muted" style="display:flex;align-items:center;gap:8px"><input type="checkbox" class="ssh"> Allow SSH access to this device (#19)</label>' +
         '</div>';
       var box = body.querySelector("#sysinfo");
       var hostEl = body.querySelector(".shost");
       var wallEl = body.querySelector(".swall");
+      var sshEl = body.querySelector(".ssh");
+      sshEl.addEventListener("change", function () {
+        A3.request("ssh_config", { enabled: sshEl.checked });
+      });
       A3.request("sysinfo", {}).then(function (s) {
         s = s || {};
+        if (sshEl) sshEl.checked = !!s.sshEnabled;
         box.innerHTML =
           "Hostname: " + esc(s.hostname || "?") + "<br>" +
           "IP: " + esc(s.ip || "?") + " &nbsp; Gateway: " + esc(s.gateway || "?") + "<br>" +
@@ -520,6 +631,7 @@
 
       function resolve(addrRaw) {
         var addr = String(addrRaw == null ? "home" : addrRaw).trim();
+        if (isRouterAddr(addr)) return { router: true, label: "router" };
         var hasPath = addr.charAt(0) === "\\" || /^[a-z]:/i.test(addr) || addr.indexOf("/") >= 0 || addr.indexOf("\\") >= 0;
         var mdName = addr.match(/([^\/\\]+\.md)(?:[#?].*)?$/i); // keep original case for the VFS lookup
 
@@ -542,7 +654,51 @@
         return sites.home;
       }
 
+      // Router admin page (#1/#3): browsing to the gateway IP or "router" opens a live settings
+      // form backed by router_page / router_set instead of a static file.
+      function routerPage() {
+        addrEl.value = "router";
+        A3.request("router_page", {}).then(function (r) {
+          if (r && r.error === "not_connected") {
+            setDoc("<div style='font-family:sans-serif;padding:24px'><h2>Not connected</h2><p>Connect to a wireless network first (Network app), then reload this page.</p></div>");
+            return;
+          }
+          if (!r || (r.error && r.error !== "")) { setDoc("<p style='padding:20px;font-family:sans-serif'>Router unavailable.</p>"); return; }
+          var doc = '<!DOCTYPE html><html><head><meta charset="utf-8"><style>' +
+            'body{font-family:sans-serif;background:#f4f4f4;margin:0;padding:24px;color:#222}' +
+            '.card{max-width:520px;margin:0 auto;background:#fff;border-radius:10px;padding:22px;box-shadow:0 2px 10px rgba(0,0,0,.12)}' +
+            'h1{color:#c7411f;font-size:20px;margin:0 0 4px}.sub{color:#777;margin:0 0 18px;font-size:13px}' +
+            'label{display:block;font-size:13px;margin:12px 0 4px;font-weight:600}' +
+            'input{width:100%;padding:8px 10px;border:1px solid #ccc;border-radius:6px;font-size:14px;box-sizing:border-box}' +
+            'button{margin-top:18px;background:#e95420;color:#fff;border:none;border-radius:6px;padding:10px 18px;font-size:14px;cursor:pointer}' +
+            '.ok{color:#26a269;margin-left:10px;font-size:13px}</style></head><body><div class="card">' +
+            '<h1>Router Settings</h1><p class="sub">Gateway ' + (r.gateway || "") + '</p>' +
+            '<label>Network name (SSID)</label><input id="rn" value="' + esc(r.name || "") + '">' +
+            '<label>Wireless range (m)</label><input id="rr" type="number" value="' + esc(String(r.range || 50)) + '">' +
+            '<label>Password (blank = open network)</label><input id="rp" value="' + esc(r.password || "") + '">' +
+            '<div><button id="rs">Apply</button><span class="ok" id="rstat"></span></div></div>' +
+            '<script>document.getElementById("rs").addEventListener("click",function(){' +
+            'parent.postMessage({__ae3router:{name:document.getElementById("rn").value,range:document.getElementById("rr").value,password:document.getElementById("rp").value}},"*");' +
+            'document.getElementById("rstat").textContent="Applied.";});<\/script></body></html>';
+          setDoc(doc);
+        });
+      }
+      // Host-side listener for the router form submit (postMessage, like the nav hook).
+      if (!window.AE3_routerListener) {
+        window.AE3_routerListener = true;
+        window.addEventListener("message", function (e) {
+          var d = e && e.data;
+          if (d && d.__ae3router) { A3.request("router_set", d.__ae3router); }
+        });
+      }
+      function isRouterAddr(addr) {
+        var a = String(addr || "").toLowerCase().replace(/^https?:\/\//, "").replace(/\/+$/, "");
+        if (a === "router" || a === "gateway") return true;
+        return /^192\.168\.\d+\.1$/.test(a) || /^10\.\d+\.\d+\.1$/.test(a);
+      }
+
       function load(t) {
+        if (t.router) { routerPage(); return; }
         addrEl.value = t.label;
         curDir = dirOf(t.path); // base for any relative links on the page we are about to show
         if (t.type === "md") {
@@ -783,6 +939,24 @@
         '<ul class="list trash"><li class="muted pad">Loading…</li></ul>';
       var listEl = body.querySelector(".trash");
       var sel = null;
+      // Restore to the item's original location; if something is already there, confirm overwrite (#4).
+      function restore(name) {
+        A3.request("fs_restore", { name: name }).then(function (r) {
+          if (r.needsConfirm) {
+            Modal.confirm("Restore", "'" + (r.dest || name) + "' already exists. Overwrite it?").then(function (ok) {
+              if (!ok) return;
+              A3.request("fs_restore", { name: name, overwrite: true }).then(function (r2) {
+                if (r2.error && r2.error !== "") Modal.alert("Restore", "Could not restore."); else load();
+              });
+            });
+            return;
+          }
+          if (r.error && r.error !== "") Modal.alert("Restore", "Could not restore."); else load();
+        });
+      }
+      function purge(name) {
+        A3.request("fs_purge", { name: name }).then(load);
+      }
       function load() {
         sel = null;
         A3.request("fs_list", { path: "/.trash" }).then(function (res) {
@@ -796,6 +970,19 @@
               listEl.querySelectorAll("li").forEach(function (n) { n.classList.remove("sel"); });
               li.classList.add("sel"); sel = it.name;
             });
+            li.addEventListener("dblclick", function () { restore(it.name); });
+            li.addEventListener("contextmenu", function (e) {
+              e.preventDefault(); e.stopPropagation();
+              listEl.querySelectorAll("li").forEach(function (n) { n.classList.remove("sel"); });
+              li.classList.add("sel"); sel = it.name;
+              window.AE3_ctxMenu(e.clientX, e.clientY, [
+                { label: "Restore", action: function () { restore(it.name); } },
+                { sep: true },
+                { label: "Delete permanently", action: function () {
+                  Modal.confirm("Delete", "Permanently delete '" + it.name + "'?").then(function (ok) { if (ok) purge(it.name); });
+                } }
+              ]);
+            });
             listEl.appendChild(li);
           });
         }).catch(function () { listEl.innerHTML = '<li class="muted pad">Recycle Bin is empty.</li>'; });
@@ -803,9 +990,7 @@
       body.querySelector(".refresh").addEventListener("click", load);
       body.querySelector(".restore").addEventListener("click", function () {
         if (!sel) return;
-        A3.request("fs_restore", { name: sel }).then(function (r) {
-          if (r.error && r.error !== "") Modal.alert("Restore", "Could not restore."); else load();
-        });
+        restore(sel);
       });
       body.querySelector(".empty").addEventListener("click", function () {
         Modal.confirm("Empty Bin", "Permanently delete all items?").then(function (ok) {
@@ -819,39 +1004,73 @@
 
   // ---------------- Mail (#18) ----------------
   Apps.register({
-    id: "mail", title: "Mail", glyph: Icons.mail, width: 760, height: 480,
+    id: "mail", title: "Email", glyph: Icons.mail, width: 760, height: 480,
     showOnDesktop: true, showInDock: true,
     render: function (body) {
       body.innerHTML =
-        '<div class="toolbar"><button class="btn refresh">&#8635;</button><button class="btn compose accent">Compose</button></div>' +
+        '<div class="toolbar"><button class="btn refresh">&#8635;</button><button class="btn compose accent">Compose</button>' +
+          '<input class="input msearch" placeholder="Search from / subject" style="flex:1;margin-left:8px"></div>' +
         '<div style="display:flex;height:calc(100% - 50px)">' +
-          '<ul class="list mails" style="width:38%;border-right:1px solid var(--line);overflow:auto"></ul>' +
+          '<ul class="list mails" style="width:40%;border-right:1px solid var(--line);overflow:auto"></ul>' +
           '<div class="reader pad" style="flex:1;overflow:auto"><p class="muted">Select a message.</p></div>' +
         '</div>';
       var mails = body.querySelector(".mails");
       var reader = body.querySelector(".reader");
+      var searchEl = body.querySelector(".msearch");
+      var allMail = [];
 
+      // The filename is the delivery timestamp; show it as the received date.
+      function dateOf(file) { return String(file || "").replace(/_/g, " "); }
+      function render() {
+        var q = (searchEl.value || "").toLowerCase();
+        mails.innerHTML = "";
+        var items = allMail.filter(function (m) {
+          if (!q) return true;
+          return (m.from || "").toLowerCase().indexOf(q) >= 0 || (m.subject || "").toLowerCase().indexOf(q) >= 0;
+        });
+        if (!items.length) { mails.innerHTML = '<li class="muted pad">No mail</li>'; return; }
+        items.forEach(function (m) {
+          var li = h('<li style="flex-direction:column;align-items:flex-start"><span>' + esc(m.subject || "(no subject)") +
+            '</span><span class="muted" style="font-size:12px">From: ' + esc(m.from || "?") + ' &middot; ' + esc(dateOf(m.file)) + "</span></li>");
+          li.addEventListener("click", function () { open(m.file); });
+          li.addEventListener("contextmenu", function (e) {
+            e.preventDefault(); e.stopPropagation();
+            window.AE3_ctxMenu(e.clientX, e.clientY, [
+              { label: "Open", action: function () { open(m.file); } },
+              { sep: true },
+              { label: "Delete", action: function () { del(m.file); } }
+            ]);
+          });
+          mails.appendChild(li);
+        });
+      }
       function list() {
         mails.innerHTML = '<li class="muted pad">Loading…</li>';
         A3.request("mail_list", {}).then(function (res) {
-          mails.innerHTML = "";
-          var items = (res && res.mails) || [];
-          if (!items.length) { mails.innerHTML = '<li class="muted pad">No mail</li>'; return; }
-          items.forEach(function (m) {
-            var li = h('<li style="flex-direction:column;align-items:flex-start"><span>' + esc(m.subject || "(no subject)") +
-              '</span><span class="muted" style="font-size:12px">' + esc(m.from || "") + "</span></li>");
-            li.addEventListener("click", function () { open(m.file); });
-            mails.appendChild(li);
-          });
+          allMail = (res && res.mails) || [];
+          render();
         }).catch(function () { mails.innerHTML = '<li class="muted pad">Unavailable</li>'; });
+      }
+      function del(file) {
+        Modal.confirm("Delete", "Delete this email?").then(function (ok) {
+          if (!ok) return;
+          A3.request("mail_delete", { file: file }).then(function (r) {
+            if (r.error && r.error !== "") { Modal.alert("Delete", "Could not delete."); return; }
+            reader.innerHTML = '<p class="muted">Select a message.</p>';
+            list();
+          });
+        });
       }
       function open(file) {
         A3.request("mail_read", { file: file }).then(function (m) {
           if (m.error && m.error !== "") { reader.innerHTML = '<p class="muted">Cannot open.</p>'; return; }
-          reader.innerHTML = '<h2>' + esc(m.subject || "") + '</h2><p class="muted">From: ' + esc(m.from || "") +
+          reader.innerHTML = '<div style="display:flex;align-items:center"><h2 style="flex:1;margin:0">' + esc(m.subject || "") + '</h2>' +
+            '<button class="btn mdel">Delete</button></div><p class="muted">From: ' + esc(m.from || "") + ' &middot; ' + esc(dateOf(file)) +
             '</p><hr style="border-color:var(--line)"><pre style="white-space:pre-wrap;font-family:inherit">' + esc(m.body || "") + "</pre>";
+          reader.querySelector(".mdel").addEventListener("click", function () { del(file); });
         });
       }
+      searchEl.addEventListener("input", render);
       function compose() {
         reader.innerHTML =
           '<h3>New message</h3>' +
@@ -879,44 +1098,288 @@
     }
   });
 
-  // ---------------- Messenger (#18) ----------------
+  // ---------------- Messenger (#7: per-peer threads, sent vs received, search) ----------------
   Apps.register({
-    id: "messenger", title: "Messenger", glyph: Icons.messenger, width: 600, height: 480,
+    id: "messenger", title: "Messenger", glyph: Icons.messenger, width: 720, height: 500,
     showInDock: true, singleton: true,
     render: function (body, win) {
       body.innerHTML =
-        '<div class="msgs" style="flex:1;overflow:auto;padding:12px;height:calc(100% - 96px);background:#262626"></div>' +
-        '<div class="toolbar"><input class="input to" placeholder="To (IP)" value="192.168.0." style="width:160px"></div>' +
-        '<div class="toolbar"><input class="input text" placeholder="Message" style="flex:1"><button class="btn accent send">Send</button></div>';
+        '<div class="toolbar"><input class="input csearch" placeholder="Search conversations / messages" style="flex:1">' +
+          '<button class="btn newchat accent" title="New conversation">New</button></div>' +
+        '<div style="display:flex;height:calc(100% - 50px)">' +
+          '<ul class="list peers" style="width:34%;border-right:1px solid var(--line);overflow:auto"></ul>' +
+          '<div style="flex:1;display:flex;flex-direction:column">' +
+            '<div class="msgs" style="flex:1;overflow:auto;padding:12px;background:#262626"></div>' +
+            '<div class="toolbar"><input class="input text" placeholder="Message" style="flex:1"><button class="btn accent send">Send</button></div>' +
+          '</div>' +
+        '</div>';
+      var peersEl = body.querySelector(".peers");
       var msgs = body.querySelector(".msgs");
-      var toEl = body.querySelector(".to");
       var textEl = body.querySelector(".text");
+      var searchEl = body.querySelector(".csearch");
+      var threads = [];      // [{peer, messages:[{dir,time,text}]}]
+      var active = null;     // active peer IP
 
-      function render(text) {
+      function renderPeers() {
+        var q = (searchEl.value || "").toLowerCase();
+        peersEl.innerHTML = "";
+        var shown = threads.filter(function (t) {
+          if (!q) return true;
+          if (t.peer.toLowerCase().indexOf(q) >= 0) return true;
+          return t.messages.some(function (m) { return (m.text || "").toLowerCase().indexOf(q) >= 0; });
+        });
+        if (!shown.length) { peersEl.innerHTML = '<li class="muted pad">No conversations</li>'; return; }
+        shown.forEach(function (t) {
+          var last = t.messages.length ? t.messages[t.messages.length - 1] : null;
+          var li = h('<li style="flex-direction:column;align-items:flex-start' + (t.peer === active ? ';background:var(--surface-2)' : '') + '">' +
+            '<span>' + esc(t.peer) + '</span>' +
+            '<span class="muted" style="font-size:12px">' + esc(last ? (last.dir === "o" ? "You: " : "") + last.text : "") + '</span></li>');
+          li.addEventListener("click", function () { active = t.peer; renderThread(); renderPeers(); });
+          peersEl.appendChild(li);
+        });
+      }
+      function renderThread() {
         msgs.innerHTML = "";
-        (text || "").split("\n").forEach(function (line) {
-          if (line.trim() === "") return;
-          msgs.appendChild(h('<div style="margin:4px 0">' + esc(line) + "</div>"));
+        var t = threads.filter(function (x) { return x.peer === active; })[0];
+        if (!t) { msgs.innerHTML = '<p class="muted">Select or start a conversation.</p>'; return; }
+        var q = (searchEl.value || "").toLowerCase();
+        t.messages.forEach(function (m) {
+          if (q && (m.text || "").toLowerCase().indexOf(q) < 0) return;
+          var out = m.dir === "o";
+          msgs.appendChild(h('<div style="margin:6px 0;display:flex;' + (out ? "justify-content:flex-end" : "") + '">' +
+            '<div style="max-width:75%;padding:6px 10px;border-radius:10px;background:' + (out ? "var(--accent);color:#fff" : "#3a3a3a") + '">' +
+            esc(m.text) + '<div style="font-size:10px;opacity:.7;text-align:right">' + esc(m.time) + '</div></div></div>'));
         });
         msgs.scrollTop = msgs.scrollHeight;
       }
-      var onData = function (d) { render(d && d.text); };
-      A3.on("chat_data", onData);
+
+      A3.on("chat_data", function (d) {
+        threads = (d && d.threads) || [];
+        if (!active && threads.length) active = threads[0].peer;
+        renderPeers(); renderThread();
+      });
 
       function send() {
+        var to = active;
+        if (!to) { Modal.alert("Messenger", "Pick or start a conversation first."); return; }
         if (textEl.value.trim() === "") return;
-        A3.request("chat_send", { to: toEl.value, text: textEl.value }).then(function (r) {
-          if (r.error && r.error !== "") { Modal.alert("Messenger", "Could not send: " + r.error); return; }
+        A3.request("chat_send", { to: to, text: textEl.value }).then(function (r) {
+          if (r.error && r.error !== "") { Modal.alert("Messenger", r.error === "no_route" ? "No route to that address." : ("Could not send: " + r.error)); return; }
           textEl.value = "";
           setTimeout(function () { A3.send("chat_pull", {}); }, 300);
         });
       }
       body.querySelector(".send").addEventListener("click", send);
       textEl.addEventListener("keydown", function (e) { if (e.key === "Enter") send(); });
+      searchEl.addEventListener("input", function () { renderPeers(); renderThread(); });
+      body.querySelector(".newchat").addEventListener("click", function () {
+        Modal.prompt("Start conversation with IP", "192.168.0.").then(function (ip) {
+          if (!ip) return;
+          if (!threads.some(function (t) { return t.peer === ip; })) threads.push({ peer: ip, messages: [] });
+          active = ip; renderPeers(); renderThread();
+        });
+      });
 
       A3.send("chat_pull", {});
       win.timer = setInterval(function () { A3.send("chat_pull", {}); }, 3000);
       win.app.onClose = function (w) { if (w.timer) clearInterval(w.timer); };
+    }
+  });
+
+  // ---------------- My Computer (#11) ----------------
+  // Central computer view: removable volumes (auto-mounted USB), mount/unmount, shortcuts to Network
+  // & System properties, plus an embedded file browser - like a real Debian/Ubuntu "Computer".
+  Apps.register({
+    id: "mycomputer", title: "My Computer", glyph: (Icons.computer || Icons.files), width: 720, height: 520,
+    showInDock: true, singleton: true,
+    render: function (body, win) {
+      body.innerHTML =
+        '<div style="display:flex;height:100%">' +
+          '<div class="mc-side" style="width:230px;border-right:1px solid var(--line);overflow:auto">' +
+            '<div class="pad" style="font-weight:600">Volumes</div>' +
+            '<div class="mc-vols"></div>' +
+            '<div class="pad" style="font-weight:600;border-top:1px solid var(--line)">Shortcuts</div>' +
+            '<div style="padding:6px 12px;display:flex;flex-direction:column;gap:6px">' +
+              '<button class="btn mc-net">Network properties</button>' +
+              '<button class="btn mc-sys">System properties</button>' +
+            '</div>' +
+          '</div>' +
+          '<div class="mc-main" style="flex:1;display:flex;flex-direction:column;min-width:0"></div>' +
+        '</div>';
+      var volsEl = body.querySelector(".mc-vols");
+      var main = body.querySelector(".mc-main");
+      var browserApi = null;
+
+      function openIn(path) {
+        window.AE3_FileBrowser(main, win, { path: path }, { onReady: function (api) { browserApi = api; } });
+      }
+      function loadVols() {
+        A3.request("vol_list", {}).then(function (res) {
+          volsEl.innerHTML = "";
+          (res && res.volumes || []).forEach(function (v) {
+            var card = h('<div class="mc-vol"><div class="mc-name">' + esc(v.label) + '</div>' +
+              '<div class="mc-sub">' + (v.type === "usb" ? (v.mounted ? "USB &middot; mounted" : "USB &middot; not mounted") : "Local disk") + '</div>' +
+              '<div class="mc-actions"></div></div>');
+            var acts = card.querySelector(".mc-actions");
+            if (v.type === "usb") {
+              if (v.mounted) {
+                var openB = h('<button class="btn">Open</button>'); openB.addEventListener("click", function (e) { e.stopPropagation(); openIn(v.path); }); acts.appendChild(openB);
+                var um = h('<button class="btn">Eject</button>'); um.addEventListener("click", function (e) { e.stopPropagation(); A3.request("vol_unmount", { interface: v.id }).then(function () { setTimeout(loadVols, 400); }); }); acts.appendChild(um);
+              } else {
+                var mt = h('<button class="btn accent">Mount</button>'); mt.addEventListener("click", function (e) { e.stopPropagation(); A3.request("vol_mount", { interface: v.id }).then(function () { setTimeout(loadVols, 400); }); }); acts.appendChild(mt);
+              }
+            }
+            card.addEventListener("click", function () { if (v.type !== "usb" || v.mounted) openIn(v.path); });
+            volsEl.appendChild(card);
+          });
+          if (!volsEl.children.length) volsEl.innerHTML = '<div class="pad muted">No volumes</div>';
+        }).catch(function () { volsEl.innerHTML = '<div class="pad muted">Unavailable</div>'; });
+      }
+
+      body.querySelector(".mc-net").addEventListener("click", function () { Apps.launch("network"); });
+      body.querySelector(".mc-sys").addEventListener("click", function () { Apps.launch("settings"); });
+      A3.on("vol_changed", loadVols);
+      openIn("/");
+      loadVols();
+    }
+  });
+
+  // ---------------- Calculator (#18) ----------------
+  Apps.register({
+    id: "calculator", title: "Calculator", glyph: (Icons.calculator || Icons.about), width: 280, height: 380,
+    showInDock: false, singleton: true,
+    render: function (body) {
+      var keys = ["C","(",")","/","7","8","9","*","4","5","6","-","1","2","3","+","0",".","=",""];
+      body.innerHTML =
+        '<div class="pad" style="display:flex;flex-direction:column;gap:8px;height:100%">' +
+          '<input class="input cdisp" readonly style="text-align:right;font-size:20px;height:40px" value="0">' +
+          '<div class="ckeys" style="flex:1;display:grid;grid-template-columns:repeat(4,1fr);gap:6px"></div>' +
+        '</div>';
+      var disp = body.querySelector(".cdisp");
+      var grid = body.querySelector(".ckeys");
+      var expr = "";
+      function setDisp() { disp.value = expr === "" ? "0" : expr; }
+      function press(k) {
+        if (k === "") return;
+        if (k === "C") { expr = ""; setDisp(); return; }
+        if (k === "=") {
+          // Safe arithmetic only: digits, operators, parens, dot, spaces.
+          if (!/^[0-9+\-*/().\s]+$/.test(expr)) { disp.value = "Error"; expr = ""; return; }
+          try {
+            // eslint-disable-next-line no-new-func
+            var r = Function('"use strict";return (' + expr + ")")();
+            expr = (r == null || !isFinite(r)) ? "" : String(r);
+          } catch (e) { disp.value = "Error"; expr = ""; return; }
+          setDisp(); return;
+        }
+        expr += k; setDisp();
+      }
+      keys.forEach(function (k) {
+        if (k === "") { grid.appendChild(h('<div></div>')); return; }
+        var b = h('<button class="btn' + (k === "=" ? " accent" : "") + '" style="font-size:16px">' + k + "</button>");
+        b.addEventListener("click", function () { press(k); });
+        grid.appendChild(b);
+      });
+      body.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" || e.key === "=") { press("="); e.preventDefault(); }
+        else if (e.key === "Escape") press("C");
+        else if (e.key === "Backspace") { expr = expr.slice(0, -1); setDisp(); }
+        else if (/^[0-9+\-*/().]$/.test(e.key)) press(e.key);
+      });
+      setDisp();
+    }
+  });
+
+  // ---------------- SSH (#19) ----------------
+  // Connect to another SSH-enabled device on the network, then browse/copy files between the local
+  // laptop (left pane) and the remote device (right pane).
+  Apps.register({
+    id: "ssh", title: "SSH", glyph: (Icons.terminal || Icons.network), width: 820, height: 560,
+    showInDock: false, singleton: true,
+    render: function (body, win) {
+      var conn = null; // { to, user, pass }
+      function showConnect(msg) {
+        body.innerHTML =
+          '<div class="pad" style="display:flex;flex-direction:column;gap:8px;max-width:360px">' +
+            '<h3>Connect via SSH</h3>' +
+            '<input class="input sto" placeholder="Host IP (e.g. 192.168.0.3)" value="192.168.0.">' +
+            '<input class="input suser" placeholder="Username">' +
+            '<input class="input spass" type="password" placeholder="Password">' +
+            '<div><button class="btn accent sgo">Connect</button> <span class="muted smsg">' + (msg || "") + '</span></div>' +
+          '</div>';
+        body.querySelector(".sgo").addEventListener("click", function () {
+          var c = { to: body.querySelector(".sto").value, user: body.querySelector(".suser").value, pass: body.querySelector(".spass").value };
+          body.querySelector(".smsg").textContent = "Connecting…";
+          A3.request("ssh_connect", c).then(function (r) {
+            if (!r || (r.error && r.error !== "")) {
+              showConnect({ ssh_disabled: "SSH is disabled on that host.", auth_failed: "Wrong username or password.", no_route: "No route to host.", bad_addr: "Invalid address." }[r && r.error] || "Connection failed.");
+              return;
+            }
+            conn = c; showSession(r.host || c.to);
+          });
+        });
+      }
+      function showSession(host) {
+        body.innerHTML =
+          '<div class="toolbar"><span style="flex:1">Connected to <b>' + esc(host) + '</b> as ' + esc(conn.user) + '</span><button class="btn sdisc">Disconnect</button></div>' +
+          '<div style="display:flex;height:calc(100% - 50px)">' +
+            '<div class="ssh-local" style="width:50%;border-right:1px solid var(--line);display:flex;flex-direction:column"><div class="pad" style="font-weight:600;display:flex;align-items:center">This computer<button class="btn supload" style="margin-left:auto">Upload &#8594;</button></div><div class="ssh-localbody" style="flex:1;min-height:0;display:flex;flex-direction:column"></div></div>' +
+            '<div class="ssh-remote" style="flex:1;display:flex;flex-direction:column"><div class="pad" style="font-weight:600">Remote: ' + esc(host) + '</div>' +
+              '<div class="toolbar"><button class="btn rup">&#8593;</button><input class="input rpath" style="flex:1" readonly></div>' +
+              '<ul class="list rentries" style="flex:1;overflow:auto"></ul></div>' +
+          '</div>';
+        body.querySelector(".sdisc").addEventListener("click", function () { conn = null; showConnect(); });
+        // Local pane reuses the standard file browser; double-click a file pushes it to remote cwd.
+        var localApi = null;
+        window.AE3_FileBrowser(body.querySelector(".ssh-localbody"), win, { path: window.AE3_HOME || "/home" }, {
+          onReady: function (api) { localApi = api; }
+        });
+        body.querySelector(".supload").addEventListener("click", function () {
+          var s = localApi && localApi.getSel();
+          if (!s || s.dir) { Modal.alert("Upload", "Select a file in the left pane first."); return; }
+          var dest = joinPath(rcwd, s.name);
+          A3.request("ssh_push", { to: conn.to, user: conn.user, pass: conn.pass, path: s.path, dest: dest }).then(function (r) {
+            Modal.alert("SSH", (r.error && r.error !== "") ? "Upload failed." : "Uploaded to " + dest);
+            rload();
+          });
+        });
+        // Remote pane.
+        var rentries = body.querySelector(".rentries");
+        var rpath = body.querySelector(".rpath");
+        var rcwd = "/";
+        function rload() {
+          rpath.value = rcwd;
+          rentries.innerHTML = '<li class="muted pad">Loading…</li>';
+          A3.request("ssh_ls", { to: conn.to, user: conn.user, pass: conn.pass, path: rcwd }).then(function (res) {
+            rentries.innerHTML = "";
+            if (res.error && res.error !== "") { rentries.innerHTML = '<li class="muted pad">' + esc(res.error) + "</li>"; return; }
+            (res.entries || []).forEach(function (it) {
+              var li = h('<li><span class="ico">' + (it.dir ? Icons.folder : Icons.file) + '</span><span>' + esc(it.name) + "</span></li>");
+              li.addEventListener("dblclick", function () { if (it.dir) { rcwd = joinPath(rcwd, it.name); rload(); } });
+              li.addEventListener("contextmenu", function (e) {
+                e.preventDefault(); e.stopPropagation();
+                if (it.dir) return;
+                var full = joinPath(rcwd, it.name);
+                window.AE3_ctxMenu(e.clientX, e.clientY, [
+                  { label: "Download to this computer", action: function () {
+                    var dest = joinPath(window.AE3_HOME || "/home", it.name);
+                    A3.request("ssh_pull", { to: conn.to, user: conn.user, pass: conn.pass, path: full, dest: dest }).then(function (r) {
+                      Modal.alert("SSH", (r.error && r.error !== "") ? "Download failed." : "Downloaded to " + dest);
+                      if (localApi) localApi.reload();
+                    });
+                  } }
+                ]);
+              });
+              rentries.appendChild(li);
+            });
+            if (!rentries.children.length) rentries.innerHTML = '<li class="muted pad">Empty</li>';
+          }).catch(function () { rentries.innerHTML = '<li class="muted pad">Unavailable</li>'; });
+        }
+        body.querySelector(".rup").addEventListener("click", function () { if (rcwd !== "/") { rcwd = rcwd.replace(/\/+$/, "").split("/").slice(0, -1).join("/") || "/"; rload(); } });
+        // Upload: drag not available; provide a button via toolbar prompt.
+        rload();
+      }
+      showConnect();
     }
   });
 

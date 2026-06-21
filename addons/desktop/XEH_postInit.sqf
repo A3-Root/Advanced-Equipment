@@ -18,14 +18,28 @@ if (isServer) then
 			"[[home.root|Home]]"
 		]
 	] call AE3_desktop_fnc_registerWebpage;
+
+	// SSH client ops (#19) run on the server (authoritative filesystems + auth).
+	["ae3_desktop_sshOp", { _this call AE3_desktop_fnc_sshOpServer }] call CBA_fnc_addEventHandler;
 };
 
 // Web Messenger: server pushes the laptop's IM inbox text here; forward it to the open browser.
 if (hasInterface) then
 {
 	["ae3_desktop_chatData", {
-		params ["_text"];
-		["chat_data", createHashMapFromArray [["text", _text]]] call AE3_desktop_fnc_jsSend;
+		params ["_threads"];
+		// Threads: [[peerIp, [[dir,time,text], ...]], ...] -> structured payload for the Messenger app.
+		private _out = [];
+		{
+			_x params ["_peer", "_msgs"];
+			private _jmsgs = [];
+			{
+				_x params ["_dir", "_time", "_text"];
+				_jmsgs pushBack createHashMapFromArray [["dir", _dir], ["time", _time], ["text", _text]];
+			} forEach _msgs;
+			_out pushBack createHashMapFromArray [["peer", _peer], ["messages", _jmsgs]];
+		} forEach _threads;
+		["chat_data", createHashMapFromArray [["threads", _out]]] call AE3_desktop_fnc_jsSend;
 	}] call CBA_fnc_addEventHandler;
 
 	// Calendar store changed on the server (Zeus/Eden module or in-app add/delete): nudge the open
@@ -33,6 +47,17 @@ if (hasInterface) then
 	// refresh (#4). No-op when no desktop is open or the Calendar app is not subscribed.
 	["ae3_desktop_calChanged", {
 		["cal_changed", []] call AE3_desktop_fnc_jsSend;
+	}] call CBA_fnc_addEventHandler;
+
+	// SSH server reply (#19): forward to the SSH app, echoing the rid so its A3.request resolves.
+	["ae3_desktop_sshReply", {
+		params ["_owner", "_rid", "_cmd", "_payload"];
+		[_cmd, createHashMapFromArray [["_rid", _rid], ["data", _payload]]] call AE3_desktop_fnc_jsSend;
+	}] call CBA_fnc_addEventHandler;
+
+	// USB volume change (connect/auto-mount, #11): nudge an open My Computer app to refresh.
+	["ae3_desktop_volChanged", {
+		["vol_changed", []] call AE3_desktop_fnc_jsSend;
 	}] call CBA_fnc_addEventHandler;
 
 	// Wireless connect result (#14): forward the server's verdict (ok + message) to the Network app.

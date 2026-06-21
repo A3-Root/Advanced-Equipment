@@ -53,9 +53,21 @@ switch (_op) do {
             _names sort true;
             {
                 private _child = _content get _x;
+                private _link = [(_child select 0)] call AE3_filesystem_fnc_symlinkTarget;
+                private _isDir = (_child select 0) isEqualType createHashMap;
+                // A symlink reports the target's kind so the GUI knows to navigate (dir) vs open (file)
+                // vs launch (app launcher). Resolve the target's dir-ness best-effort.
+                if (_link isNotEqualTo "") then {
+                    _isDir = false;
+                    try {
+                        ([[], _fs, _link, _fsUser] call AE3_filesystem_fnc_chdir) params ["", "_ld"];
+                        _isDir = (_ld select 0) isEqualType createHashMap;
+                    } catch {};
+                };
                 _entries pushBack createHashMapFromArray [
                     ["name", _x],
-                    ["dir", (_child select 0) isEqualType createHashMap]
+                    ["dir", _isDir],
+                    ["link", _link]
                 ];
             } forEach _names;
             _res set ["entries", _entries];
@@ -67,7 +79,16 @@ switch (_op) do {
 
     case "read": {
         try {
-            private _content = [[], _fs, _path, _fsUser, 0] call AE3_filesystem_fnc_getFile;
+            // Follow symlinks (depth-guarded) so opening a link reads its target (#9).
+            private _rpath = _path;
+            private _content = "";
+            for "_i" from 0 to 16 do {
+                _content = [[], _fs, _rpath, _fsUser, 0] call AE3_filesystem_fnc_getFile;
+                private _lt = [_content] call AE3_filesystem_fnc_symlinkTarget;
+                if (_lt isEqualTo "") exitWith {};
+                if (_i isEqualTo 16) throw "symlink_loop";
+                _rpath = _lt;
+            };
             if (_content isEqualType "") then {
                 // Password-protected file: report it as locked WITHOUT shipping the password or payload
                 // to the browser. The app prompts for the password and verifies via "unlock" (#7). The
@@ -130,12 +151,18 @@ switch (_op) do {
             [[], _fs, "/.trash", _fsUser, _fsUser] call AE3_filesystem_fnc_ensureDir;
             private _parts = _path splitString "/";
             private _name = _parts param [(count _parts) - 1, ""];
+            private _trashName = _name;
             private _target = "/.trash/" + _name;
             private _i = 1;
             while { [[], _fs, _target, _fsUser] call AE3_filesystem_fnc_fsObjExists } do {
-                _target = format ["/.trash/%1.%2", _name, _i]; _i = _i + 1;
+                _trashName = format ["%1.%2", _name, _i];
+                _target = "/.trash/" + _trashName; _i = _i + 1;
             };
             [[], _fs, _path, _target, _fsUser, false] call AE3_filesystem_fnc_mvObj;
+            // Remember where it came from so Restore can return it to the original location (#4).
+            private _meta = _computer getVariable ["AE3_trash_meta", createHashMap];
+            _meta set [_trashName, _path];
+            _computer setVariable ["AE3_trash_meta", _meta, 2];
             _computer setVariable ["AE3_filesystem", _fs, 2];
             _res set ["ok", true];
         } catch {
@@ -157,13 +184,42 @@ switch (_op) do {
         };
     };
 
-    // Recycle Bin restore: move an item out of /.trash back into the user's home (#17). _data: name.
+    // Recycle Bin restore: move an item out of /.trash back to its ORIGINAL location (#4). If the
+    // original is unknown (deleted before this tracking existed) fall back to the user's home. When a
+    // file already exists at the destination, report needsConfirm and wait for an overwrite:true retry.
     case "restore": {
         private _name = _data getOrDefault ["name", ""];
+        private _overwrite = _data getOrDefault ["overwrite", false];
         if (_name isEqualTo "") exitWith { _res set ["error", "bad_input"]; };
+        private _meta = _computer getVariable ["AE3_trash_meta", createHashMap];
         private _home = [format ["/home/%1", _user], "/root"] select (_fsUser isEqualTo "root");
+        private _dest = _meta getOrDefault [_name, _home + "/" + _name];
         try {
-            [[], _fs, "/.trash/" + _name, _home + "/", _fsUser, false] call AE3_filesystem_fnc_mvObj;
+            if (!_overwrite && {[[], _fs, _dest, _fsUser] call AE3_filesystem_fnc_fsObjExists}) exitWith {
+                _res set ["needsConfirm", true];
+                _res set ["dest", _dest];
+            };
+            if (_overwrite && {[[], _fs, _dest, _fsUser] call AE3_filesystem_fnc_fsObjExists}) then {
+                [[], _fs, _dest, _fsUser] call AE3_filesystem_fnc_delObj;
+            };
+            [[], _fs, "/.trash/" + _name, _dest, _fsUser, false] call AE3_filesystem_fnc_mvObj;
+            _meta deleteAt _name;
+            _computer setVariable ["AE3_trash_meta", _meta, 2];
+            _computer setVariable ["AE3_filesystem", _fs, 2];
+            _res set ["ok", true];
+        } catch {
+            _res set ["error", "denied"];
+        };
+    };
+
+    // Permanently delete a single Recycle Bin item (#4). _data: name (relative to /.trash).
+    case "purge": {
+        private _name = _data getOrDefault ["name", ""];
+        if (_name isEqualTo "") exitWith { _res set ["error", "bad_input"]; };
+        try {
+            [[], _fs, "/.trash/" + _name, _fsUser] call AE3_filesystem_fnc_delObj;
+            private _meta = _computer getVariable ["AE3_trash_meta", createHashMap];
+            if (_name in _meta) then { _meta deleteAt _name; _computer setVariable ["AE3_trash_meta", _meta, 2]; };
             _computer setVariable ["AE3_filesystem", _fs, 2];
             _res set ["ok", true];
         } catch {
@@ -181,6 +237,49 @@ switch (_op) do {
             _res set ["ok", true];
         } catch {
             _res set ["error", "denied"];
+        };
+    };
+
+    // Create a symbolic link (#9): _data path=link location, target=absolute target path.
+    case "symlink": {
+        private _target = _data getOrDefault ["target", ""];
+        if (_target isEqualTo "") exitWith { _res set ["error", "bad_input"]; };
+        try {
+            [[], _fs, _path, _target, _fsUser, _user] call AE3_filesystem_fnc_symlink;
+            _computer setVariable ["AE3_filesystem", _fs, 2];
+            _res set ["ok", true];
+        } catch {
+            _res set ["error", "denied"];
+        };
+    };
+
+    // Recursive, case-insensitive glob search (#13/#14). _data: query (with optional "*"), root.
+    case "search": {
+        private _query = _data getOrDefault ["query", ""];
+        private _root = _data getOrDefault ["root", "/"];
+        if (_query isEqualTo "") exitWith { _res set ["error", "bad_input"]; _res set ["results", []]; };
+        // Translate the user glob to a lowercased, fully-anchored regex: escape regex metacharacters,
+        // then turn the escaped "*" back into ".*". Bare text (no "*") matches as a substring.
+        private _q = toLower _query;
+        if !("*" in _q) then { _q = "*" + _q + "*"; };
+        private _rx = "";
+        for "_i" from 0 to (count _q - 1) do {
+            private _c = _q select [_i, 1];
+            if (_c in ["\", ".", "^", "$", "+", "?", "(", ")", "[", "]", "{", "}", "|"]) then { _rx = _rx + "\" + _c; }
+            else { if (_c isEqualTo "*") then { _rx = _rx + ".*"; } else { _rx = _rx + _c; }; };
+        };
+        private _hits = [];
+        try {
+            ([[], _fs, _root, _fsUser] call AE3_filesystem_fnc_chdir) params ["_rootPntr", "_rootDir"];
+            private _found = [_rootPntr, _rootDir, _fsUser, _rx] call AE3_filesystem_fnc_searchFilesystem;
+            {
+                _x params ["_p", "_d"];
+                _hits pushBack createHashMapFromArray [["path", _p], ["dir", _d]];
+            } forEach _found;
+            _res set ["results", _hits];
+        } catch {
+            _res set ["error", "denied"];
+            _res set ["results", []];
         };
     };
 

@@ -59,6 +59,9 @@ if (_username isNotEqualTo "root") then
             ["AE3 WARNING: Failed to create user directory for '%1': %2", _username, _exception] call BIS_fnc_error;
         };
     };
+
+    // Seed ~/Desktop with default app launchers + ensure the app catalog (#9).
+    [_filesystem, "/home/" + _username, _username] call AE3_filesystem_fnc_seedDesktop;
 };
 
 // Sync filesystem

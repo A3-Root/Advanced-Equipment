@@ -17,24 +17,34 @@
   };
 
   // Applications-menu category for built-in apps (#8). Ext apps (Root Cyberwarfare) carry their own
-  // app.menu (a "Parent/Child" path). "/" nests submenus. Apps absent here fall back to "Other".
+  // app.menu (a "Parent/Child" path under "Tools"). "/" nests submenus. Apps absent here fall back to
+  // "Other". CATEGORY_ORDER fixes the category sequence; APP_ORDER fixes the within-category order.
   var CATEGORY = {
-    files: "System", settings: "System", network: "System",
-    notepad: "Accessories", recyclebin: "System",
-    calendar: "Office", mail: "Office",
-    browser: "Internet", map: "Internet",
-    messenger: "Communication",
-    crack: "Cryptography", crypto: "Cryptography",
-    snake: "Games"
+    settings: "System & Core Utilities", network: "System & Core Utilities", about: "System & Core Utilities",
+    mycomputer: "System & Core Utilities", ssh: "System & Core Utilities",
+    notepad: "Productivity & Files", calculator: "Productivity & Files", calendar: "Productivity & Files",
+    files: "Productivity & Files", recyclebin: "Productivity & Files",
+    browser: "Communication & Web", mail: "Communication & Web", messenger: "Communication & Web", map: "Communication & Web",
+    snake: "Games & Entertainment",
+    crypto: "Security", crack: "Security"
   };
+  var CATEGORY_ORDER = ["System & Core Utilities", "Productivity & Files", "Communication & Web", "Games & Entertainment", "Security", "Tools"];
+  var APP_ORDER = ["settings", "network", "about", "mycomputer", "ssh",
+    "notepad", "calculator", "calendar", "files", "recyclebin",
+    "browser", "mail", "messenger", "map", "snake", "crypto", "crack"];
+  function appRank(app) { var i = APP_ORDER.indexOf(app.id); return i < 0 ? 999 : i; }
 
-  // The desktop surface holds only these three icons (#18); everything else lives in the
-  // Applications menu. "My Computer" and "File Explorer" are two entry points into the Files app.
+  // Fixed system icons that always sit on the desktop (like Ubuntu's Home/Trash). "My Computer" is
+  // the computer-management app (#11); "File Explorer" opens the plain Files browser; Recycle Bin
+  // opens the trash. Everything else on the desktop is loaded dynamically from the user's
+  // ~/Desktop folder (#9) by loadUserDesktop().
   var DESKTOP_ICONS = [
-    { label: "My Computer", glyph: function () { return Icons.files; }, app: "files", args: { path: "/" } },
+    { label: "My Computer", glyph: function () { return Icons.computer || Icons.files; }, app: "mycomputer" },
     { label: "File Explorer", glyph: function () { return Icons.files; }, app: "files", args: { path: "/home" } },
     { label: "Recycle Bin", glyph: function () { return Icons.trash || Icons.files; }, app: "recyclebin" }
   ];
+  // Resolved on login from sysinfo (#9). The desktop surface mirrors this folder.
+  window.AE3_HOME = null;
 
   function el(tag, cls, html) {
     var e = document.createElement(tag);
@@ -80,45 +90,85 @@
     });
   }
 
-  // ---------------- Desktop icons (fixed three) ----------------
+  // ---------------- Desktop icons (fixed system + dynamic ~/Desktop, #9) ----------------
+  function makeIcon(desk, label, glyph, onOpen) {
+    var icon = el("div", "desktop-icon", '<div class="glyph">' + (glyph || "") + '</div><div class="label">' + label + "</div>");
+    icon.addEventListener("dblclick", onOpen);
+    icon.addEventListener("click", function () {
+      desk.querySelectorAll(".desktop-icon").forEach(function (n) { n.classList.remove("sel"); });
+      icon.classList.add("sel");
+    });
+    desk.appendChild(icon);
+    return icon;
+  }
+
+  // Load and render the logged-in user's ~/Desktop folder. Launchers (.app, holding "app=<id>")
+  // launch the app; folders open Files there; files open in the default viewer; symlinks follow
+  // their target. Mirrors a real Ubuntu/Debian desktop (#9).
+  function loadUserDesktop(desk) {
+    var home = window.AE3_HOME;
+    if (!home) return;
+    var path = home + "/Desktop";
+    A3.request("fs_list", { path: path }).then(function (res) {
+      if (!res || (res.error && res.error !== "")) return;
+      (res.entries || []).forEach(function (it) {
+        var full = (path + "/" + it.name).replace(/\/+/g, "/");
+        var glyph = it.dir ? Icons.folder : (/\.app$/i.test(it.name) ? (Icons.app || Icons.terminal) : Icons.file);
+        makeIcon(desk, it.name.replace(/\.app$/i, ""), glyph, function () { openDesktopEntry(it, full); });
+      });
+    }).catch(function () {});
+  }
+
+  function openDesktopEntry(it, full) {
+    if (it.dir) { Apps.launch("files", { path: (it.link && it.link !== "") ? it.link : full }); return; }
+    if (/\.app$/i.test(it.name)) {
+      A3.request("fs_read", { path: full }).then(function (res) {
+        var m = String((res && res.content) || "").match(/app\s*=\s*([\w-]+)/i);
+        if (m) Apps.launch(m[1]); else Apps.launch("notepad", { path: full, content: (res && res.content) || "" });
+      });
+      return;
+    }
+    A3.request("fs_read", { path: (it.link && it.link !== "") ? it.link : full }).then(function (res) {
+      if (res && !res.error) Apps.launch("notepad", { path: full, content: res.content || "" });
+    });
+  }
+
   function buildDesktopIcons() {
     var desk = document.getElementById("desktop");
     desk.innerHTML = "";
     DESKTOP_ICONS.forEach(function (d) {
       if (!Apps.get(d.app)) return; // skip if the backing app is not present (e.g. recyclebin disabled)
       var glyph = (typeof d.glyph === "function") ? d.glyph() : d.glyph;
-      var icon = el("div", "desktop-icon", '<div class="glyph">' + (glyph || "") + '</div><div class="label">' + d.label + "</div>");
-      icon.addEventListener("dblclick", function () { Apps.launch(d.app, d.args); });
-      icon.addEventListener("click", function () {
-        desk.querySelectorAll(".desktop-icon").forEach(function (n) { n.classList.remove("sel"); });
-        icon.classList.add("sel");
-      });
-      desk.appendChild(icon);
+      makeIcon(desk, d.label, glyph, function () { Apps.launch(d.app, d.args); });
     });
+    loadUserDesktop(desk);
     desk.addEventListener("mousedown", function (e) {
       if (e.target === desk) desk.querySelectorAll(".desktop-icon").forEach(function (n) { n.classList.remove("sel"); });
     });
-    // Desktop right-click (#16): file actions live in the Files app, which has a real working dir,
-    // so the desktop menu opens it (optionally creating an item first) plus quick shortcuts.
+    // Desktop right-click (#9/#16): create items directly in the user's ~/Desktop folder so they
+    // appear on the desktop surface, like a real Ubuntu/Debian desktop.
     if (!desk.dataset.ctx) {
       desk.dataset.ctx = "1";
       desk.addEventListener("contextmenu", function (e) {
+        if (e.target !== desk && !e.target.closest("#desktop")) return;
+        if (e.target.closest(".desktop-icon")) return; // icons would carry their own menu
         e.preventDefault();
+        var deskPath = (window.AE3_HOME || "/root") + "/Desktop";
         window.AE3_ctxMenu(e.clientX, e.clientY, [
           { label: "New Folder…", action: function () {
             Modal.prompt("New folder name", "untitled").then(function (name) {
               if (!name) return;
-              A3.request("fs_mkdir", { path: "/home/" + name }).then(function () { Apps.launch("files", { path: "/home" }); });
+              A3.request("fs_mkdir", { path: deskPath + "/" + name }).then(function () { Desktop.refresh(); });
             });
           } },
           { label: "New File…", action: function () {
             Modal.prompt("New file name", "untitled.txt").then(function (name) {
               if (!name) return;
-              A3.request("fs_save", { path: "/home/" + name, content: "" }).then(function () { Apps.launch("files", { path: "/home" }); });
+              A3.request("fs_save", { path: deskPath + "/" + name, content: "" }).then(function () { Desktop.refresh(); });
             });
           } },
           { sep: true },
-          { label: "Open File Explorer", action: function () { Apps.launch("files", { path: "/home" }); } },
+          { label: "Open File Explorer", action: function () { Apps.launch("files", { path: deskPath }); } },
           { label: "Open Recycle Bin", action: function () { Apps.launch("recyclebin"); } },
           { label: "Refresh", action: function () { Desktop.refresh(); } }
         ]);
@@ -158,12 +208,15 @@
     if (!menu) return;
     menu.innerHTML = "";
     var tree = menuTree();
-    Object.keys(tree).sort().forEach(function (cat) {
+    // Fixed category sequence (#8); any unexpected categories follow, alphabetically.
+    var cats = CATEGORY_ORDER.filter(function (c) { return tree[c]; })
+      .concat(Object.keys(tree).filter(function (c) { return CATEGORY_ORDER.indexOf(c) < 0; }).sort());
+    cats.forEach(function (cat) {
       var node = tree[cat];
       var subNames = Object.keys(node._subs);
-      // Leaf category: a single app and no submenus -> show the app directly (e.g. "Notepad").
+      node._apps.sort(function (a, b) { return appRank(a) - appRank(b); });
+      // Leaf category: a single app and no submenus -> show the app directly.
       if (node._apps.length === 1 && subNames.length === 0) { menu.appendChild(itemRow(node._apps[0])); return; }
-      // Category with one app and no subs already handled; otherwise render a submenu fly-out.
       var catRow = el("div", "am-item am-cat", '<span class="am-ico">&#128193;</span><span style="flex:1">' + cat + '</span><span class="am-arrow">&#9656;</span>');
       var fly = el("div", "am-fly");
       subNames.sort().forEach(function (sub) {
@@ -177,6 +230,67 @@
       catRow.appendChild(fly);
       menu.appendChild(catRow);
     });
+  }
+
+  // ---------------- Global search (#14) ----------------
+  // Searches installed apps, files/folders (recursive fs_search from /), the Recycle Bin, and
+  // wireless network names. Mail and Messenger are intentionally excluded (they have their own
+  // in-app search). Debounced; results render in a dropdown under the search box.
+  function bindGlobalSearch() {
+    var input = document.getElementById("globalsearch");
+    var box = document.getElementById("gsresults");
+    if (!input || !box || input.dataset.bound) return;
+    input.dataset.bound = "1";
+    var timer = null;
+
+    function hide() { box.classList.remove("show"); box.innerHTML = ""; }
+    function addRow(icon, label, sub, action) {
+      var r = el("div", "gs-row", '<span class="gs-ico">' + (icon || "") + '</span><span class="gs-l">' + label +
+        (sub ? '<span class="gs-sub">' + sub + '</span>' : "") + "</span>");
+      r.addEventListener("mousedown", function (e) { e.preventDefault(); hide(); input.value = ""; action(); });
+      box.appendChild(r);
+    }
+    function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+
+    function run(q) {
+      box.innerHTML = ""; box.classList.add("show");
+      var ql = q.toLowerCase();
+      // Apps (registry).
+      registry.filter(function (a) { return a.showInMenu !== false && a.title.toLowerCase().indexOf(ql) >= 0; })
+        .slice(0, 6).forEach(function (a) {
+          addRow(a.glyph || "", esc(a.title), "App", function () { Apps.launch(a.id); });
+        });
+      // Networks.
+      A3.request("net_scan", {}).then(function (list) {
+        (list || []).filter(function (n) { return (n.ssid || "").toLowerCase().indexOf(ql) >= 0; })
+          .slice(0, 5).forEach(function (n) {
+            addRow(Icons.wifi, esc(n.ssid), "Network", function () { Apps.launch("network"); });
+          });
+      }).catch(function () {});
+      // Files/folders (recursive) + Recycle Bin.
+      A3.request("fs_search", { query: q, root: "/" }).then(function (res) {
+        var hits = (res && res.results) || [];
+        hits.slice(0, 12).forEach(function (it) {
+          var name = it.path.split("/").pop();
+          var inTrash = it.path.indexOf("/.trash/") === 0;
+          addRow(it.dir ? Icons.folder : Icons.file, esc(name), inTrash ? "Recycle Bin" : esc(it.path), function () {
+            if (inTrash) { Apps.launch("recyclebin"); }
+            else if (it.dir) { Apps.launch("files", { path: it.path }); }
+            else { Apps.launch("files", { path: it.path.replace(/\/[^/]*$/, "") || "/" }); }
+          });
+        });
+        if (!box.children.length) box.innerHTML = '<div class="gs-row muted">No results</div>';
+      }).catch(function () {});
+    }
+
+    input.addEventListener("input", function () {
+      var q = input.value.trim();
+      if (timer) clearTimeout(timer);
+      if (q === "") { hide(); return; }
+      timer = setTimeout(function () { run(q); }, 250);
+    });
+    input.addEventListener("blur", function () { setTimeout(hide, 150); });
+    input.addEventListener("keydown", function (e) { if (e.key === "Escape") { hide(); input.value = ""; } });
   }
 
   function bindAppsButton() {
@@ -302,13 +416,26 @@
     });
   }
 
+  // Open-window layout persistence (#17): debounce-save the WM snapshot to the laptop so reopening
+  // resumes exactly where it was left. Suppressed while restoring to avoid feedback churn.
+  var uiSaveTimer = null, uiRestoring = false;
+  function bindUiPersist() {
+    WM.onStateChange = function () {
+      if (uiRestoring) return;
+      if (uiSaveTimer) clearTimeout(uiSaveTimer);
+      uiSaveTimer = setTimeout(function () { A3.send("ui_save", { state: WM.snapshot() }); }, 600);
+    };
+  }
+
   var Desktop = {
     init: function () {
       WM.onTaskbarChange = onTaskbarChange;
+      bindUiPersist();
       buildTray();
       buildDock();
       buildDesktopIcons();
       bindAppsButton();
+      bindGlobalSearch();
       startClock();
       buildTaskbar();
     },
@@ -327,7 +454,20 @@
       A3.send("signout", {});
       if (typeof window.AE3_showLogin === "function") window.AE3_showLogin();
     },
-    refresh: function () { buildDock(); buildDesktopIcons(); onTaskbarChange(); }
+    refresh: function () { buildDock(); buildDesktopIcons(); onTaskbarChange(); },
+    // Reopen the windows saved from the previous session (#17).
+    restoreUi: function (list) {
+      uiRestoring = true;
+      if (window.WM && WM.restoreState) WM.restoreState(list);
+      setTimeout(function () { uiRestoring = false; }, 200);
+    }
+  };
+
+  // Shared device map-link (#0f): open the full in-game map centred on a grid position, with a
+  // labelled marker. Used by Root Cyberwarfare device apps' [Map] buttons. pos = [x,y].
+  window.AE3_openMap = function (pos, label) {
+    if (!pos || pos.length < 2) { A3.send("map_open", {}); return; }
+    A3.send("map_open", { pos: pos, label: label || "" });
   };
 
   window.Apps = Apps;

@@ -141,6 +141,19 @@ class AE3_Desktop_MapOverlay
 			text = "Map";
 		};
 
+		// Pan instruction (#10): the RscMapControl only pans while RMB is held.
+		class AE3_MapHint : RscText
+		{
+			idc = -1;
+			x = "safezoneX + 0.28";
+			y = "safezoneY + 0.03";
+			w = "safezoneW - 0.44";
+			h = "0.04";
+			sizeEx = 0.03;
+			colorText[] = {1, 0.85, 0.35, 1};
+			text = "Hold Right Mouse Button to pan the map";
+		};
+
 		class AE3_MapClose : RscButton
 		{
 			idc = 17022;

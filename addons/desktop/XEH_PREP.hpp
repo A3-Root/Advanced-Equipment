@@ -24,6 +24,9 @@ PREP(chatPullServer);
 PREP(cryptoRun);
 PREP(crackRun);
 PREP(mapOpen);
+PREP(volHandle);
+PREP(routerHandle);
+PREP(sshOpServer);
 PREP(setSystemConfig);
 
 PREP(setInterfaceMode);

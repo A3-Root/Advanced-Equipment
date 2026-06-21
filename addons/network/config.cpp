@@ -22,3 +22,8 @@ class CfgPatches
 #include "CfgEventHandlers.hpp"
 #include "CfgVehicles.hpp"
 #include "Cfg3DEN.hpp"
+
+class RscText;
+class RscEdit;
+class RscButton;
+#include "ui\RscRouterConfig.hpp"

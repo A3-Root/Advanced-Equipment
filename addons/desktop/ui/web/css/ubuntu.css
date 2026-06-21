@@ -16,7 +16,7 @@
   --good: #26a269;
   --shadow: 0 14px 40px rgba(0,0,0,0.55);
   --radius: 8px;
-  --topbar-h: 28px;
+  --topbar-h: 40px;
   --dock-w: 64px;
 }
 
@@ -40,11 +40,33 @@ html, body {
 #topbar {
   position: fixed; top: 0; left: 0; right: 0; height: var(--topbar-h); z-index: 1000;
   background: var(--panel); display: flex; align-items: center;
-  padding: 0 12px; font-size: 13px; box-shadow: 0 1px 0 rgba(0,0,0,0.6);
+  padding: 0 14px; font-size: 15px; box-shadow: 0 1px 0 rgba(0,0,0,0.6);
 }
-#topbar .appsbtn { font-weight: 600; cursor: pointer; padding: 2px 10px; border-radius: 4px; }
+#topbar .appsbtn { font-weight: 600; font-size: 15px; cursor: pointer; padding: 5px 14px; border-radius: 5px; }
 #topbar .appsbtn:hover, #topbar .appsbtn.active { background: rgba(255,255,255,0.14); }
-#topbar #hostname { margin-left: 10px; }
+#topbar #hostname { margin-left: 12px; font-size: 14px; }
+
+/* ---------- global search (#14) ---------- */
+.gsearch-wrap { position: relative; margin-left: 12px; }
+#topbar .gsearch {
+  width: 200px; height: 26px; border-radius: 13px; border: 1px solid var(--line);
+  background: var(--surface-2); color: var(--text); padding: 0 12px; font-size: 13px; outline: none;
+}
+#topbar .gsearch:focus { width: 280px; border-color: var(--accent); }
+#gsresults {
+  display: none; position: absolute; top: 32px; left: 0; min-width: 320px; max-height: 60vh; overflow: auto;
+  background: var(--panel); border: 1px solid var(--line); border-radius: 8px; box-shadow: var(--shadow); z-index: 1600; padding: 4px 0;
+}
+#gsresults.show { display: block; }
+.gs-row { display: flex; align-items: center; gap: 10px; padding: 7px 12px; cursor: pointer; font-size: 13px; }
+.gs-row:hover { background: var(--accent); }
+.gs-row.muted { color: var(--muted); cursor: default; }
+.gs-row.muted:hover { background: none; }
+.gs-ico { display: inline-flex; width: 18px; }
+.gs-ico svg { width: 16px; height: 16px; }
+.gs-l { display: flex; flex-direction: column; line-height: 1.2; }
+.gs-sub { font-size: 11px; color: var(--muted); }
+.gs-row:hover .gs-sub { color: #ffe; }
 #topbar .spacer { flex: 1; }
 #topbar #clock {
   position: absolute; left: 50%; transform: translateX(-50%);
@@ -67,11 +89,12 @@ html, body {
 .task .task-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 /* ---------- tray (#12/#13) ---------- */
-#topbar .tray { margin-left: 14px; color: var(--muted); display: flex; align-items: center; gap: 10px; }
-#topbar .tray .tray-ico { display: inline-flex; align-items: center; gap: 5px; cursor: pointer; font-size: 13px; padding: 2px 4px; border-radius: 4px; }
+#topbar .tray { margin-left: 14px; color: var(--muted); display: flex; align-items: center; gap: 14px; }
+#topbar .tray .tray-ico { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-size: 15px; padding: 4px 6px; border-radius: 5px; }
 #topbar .tray .tray-ico:hover { background: rgba(255,255,255,0.12); color: var(--text); }
-#topbar .tray .tray-ico svg { width: 16px; height: 16px; }
-#topbar .tray .batpct { font-size: 12px; font-weight: 600; }
+#topbar .tray .tray-ico svg { width: 20px; height: 20px; }
+#topbar .tray .batpct { font-size: 14px; font-weight: 600; }
+#topbar #clock { font-size: 14px; }
 
 /* ---------- Applications menu (#8) ---------- */
 #appsmenu {
@@ -212,3 +235,29 @@ svg { vertical-align: middle; }
 #login h2 { font-weight: 500; }
 #login .row { display: flex; flex-direction: column; gap: 8px; width: 280px; }
 #login .err { color: #ff8a6a; font-size: 13px; height: 16px; }
+
+/* ---------- file picker (#5) ---------- */
+.pk-overlay {
+  position: fixed; inset: 0; z-index: 2100; background: rgba(0,0,0,0.5);
+  display: flex; align-items: center; justify-content: center;
+}
+.pk-dialog {
+  width: 640px; max-width: 92vw; height: 480px; max-height: 88vh;
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+  box-shadow: var(--shadow); display: flex; flex-direction: column; overflow: hidden;
+}
+.pk-title { padding: 10px 14px; font-weight: 600; background: var(--panel); border-bottom: 1px solid var(--line); }
+.pk-body { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.pk-foot { display: flex; align-items: center; gap: 8px; padding: 10px; border-top: 1px solid var(--line); }
+.pk-foot .pk-name { flex: 0 0 240px; }
+
+/* ---------- My Computer volumes (#11) ---------- */
+.mc-vols { display: flex; flex-wrap: wrap; gap: 10px; padding: 12px; }
+.mc-vol {
+  width: 150px; padding: 12px; border: 1px solid var(--line); border-radius: 8px;
+  background: var(--surface-2); cursor: pointer; display: flex; flex-direction: column; gap: 6px;
+}
+.mc-vol:hover { background: #474747; }
+.mc-vol .mc-name { font-weight: 600; }
+.mc-vol .mc-sub { font-size: 11px; color: var(--muted); }
+.mc-actions { display: flex; gap: 6px; flex-wrap: wrap; }

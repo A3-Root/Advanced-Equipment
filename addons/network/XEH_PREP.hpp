@@ -5,6 +5,9 @@
 PREP(initNetworkDevice);
 PREP(initRouter);
 PREP(router_onTurnOff);
+PREP(applyRouterConfig);
+PREP(router_openConfig);
+PREP(router_applyConfigDialog);
 
 /* Backend */
 PREP(connect_router2router);

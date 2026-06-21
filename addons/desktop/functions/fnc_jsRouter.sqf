@@ -63,6 +63,17 @@ switch (_command) do {
         // Push apps registered by other addons (e.g. Root Cyberwarfare) into the launcher.
         private _ext = missionNamespace getVariable [QGVAR(extApps), []];
         if (_ext isNotEqualTo []) then { ["ext_apps", _ext] call FUNC(jsSend); };
+        // Seamless re-entry (#17): if the laptop still has an active session (the previous user did
+        // NOT sign out), auto-resume that session instead of demanding the password again. Anyone who
+        // opens the laptop continues where it was left.
+        if (!isNull _computer) then {
+            private _session = _computer getVariable [QGVAR(sessionUser), ""];
+            if (_session isNotEqualTo "") then {
+                _display setVariable [QGVAR(user), _session];
+                private _host = _computer getVariable ["ace_cargo_customName", "ae3-os"];
+                ["boot", createHashMapFromArray [["user", _session], ["hostname", _host]]] call FUNC(jsSend);
+            };
+        };
     };
 
     // Login against the synced user list (issue #9). Replies synchronously (the proven path).
@@ -76,6 +87,8 @@ switch (_command) do {
         private _res = [_computer, _user, _pass] call FUNC(authUser);
         if (_res getOrDefault ["ok", false]) then {
             _display setVariable [QGVAR(user), _user];
+            // Persist the session on the laptop so closing/reopening resumes without re-login (#17).
+            if (!isNull _computer) then { _computer setVariable [QGVAR(sessionUser), _user, true]; };
         };
         [_res] call _reply;
     };
@@ -89,7 +102,10 @@ switch (_command) do {
     case "fs_delete";
     case "fs_move";
     case "fs_copy";
+    case "fs_symlink";
+    case "fs_search";
     case "fs_restore";
+    case "fs_purge";
     case "fs_empty_trash": {
         private _user = _display getVariable [QGVAR(user), ""];
         private _op = _command select [3]; // strip "fs_"
@@ -97,8 +113,17 @@ switch (_command) do {
     };
 
     // --- Network (#11) + system info (#14). ---
+    // My Computer volumes (#11): list/mount/unmount USB drives.
+    case "vol_list";
+    case "vol_mount";
+    case "vol_unmount": {
+        private _user = _display getVariable [QGVAR(user), ""];
+        private _op = _command select [4]; // strip "vol_"
+        [[_computer, _user, _op, _data] call FUNC(volHandle)] call _reply;
+    };
+
     case "net_scan": { [[_computer] call FUNC(netScan)] call _reply; };
-    case "sysinfo":  { [[_computer] call FUNC(sysInfo)] call _reply; };
+    case "sysinfo":  { [[_computer, _display getVariable [QGVAR(user), ""]] call FUNC(sysInfo)] call _reply; };
     // Calendar intel events. The store (AE3_calendar_events) is broadcast by the server, so the
     // client reads it locally and the JS app caches the whole set on open (#12). Returns every
     // event as {date,title,location,body,index}; the app filters per month client-side.
@@ -143,7 +168,7 @@ switch (_command) do {
     case "crack_run":  { [[_data] call FUNC(crackRun)] call _reply; };
 
     // Native real-world map overlay (#5): CEF cannot host the map control, so open it as a dialog.
-    case "map_open": { [_computer] call FUNC(mapOpen); };
+    case "map_open": { [_computer, _data] call FUNC(mapOpen); };
 
     // Settings (#15): change system name / wallpaper, applied server-side and broadcast.
     case "sys_set": {
@@ -159,6 +184,7 @@ switch (_command) do {
     // Mail (#18).
     case "mail_list": { [[_computer, "list", _data] call FUNC(mailHandle)] call _reply; };
     case "mail_read": { [[_computer, "read", _data] call FUNC(mailHandle)] call _reply; };
+    case "mail_delete": { [[_computer, "delete", _data] call FUNC(mailHandle)] call _reply; };
     case "mail_send": {
         private _mres = createHashMapFromArray [["error", ""]];
         private _targetIp = ((_data getOrDefault ["to", ""]) splitString ".") apply { parseNumber _x };
@@ -170,12 +196,15 @@ switch (_command) do {
             private _isLoopback = (_targetIp isEqualTo _ownIp) || {_targetIp isEqualTo [127, 0, 0, 1]};
             private _target = _computer;
             if (!_isLoopback) then { ([_computer, _targetIp] call AE3_network_fnc_ping) params ["_target"]; };
-            if (isNull _target) then { _mres set ["error", "no_route"]; }
-            else {
+            // Reject ghost IPs (#6): route must resolve and the device must own the requested address.
+            private _valid = !isNull _target
+                && {_isLoopback || {(_target getVariable ["AE3_network_address", []]) isEqualTo _targetIp}}
+                && {_isLoopback || {_ownIp isNotEqualTo [127, 0, 0, 1]}};
+            if (_valid) then {
                 private _senderIp = [_ownIp] call AE3_network_fnc_ip2str;
                 ["ae3_desktop_addEmail", [netId _target, _senderIp, _data getOrDefault ["subject", ""], _data getOrDefault ["body", ""]]] call CBA_fnc_serverEvent;
                 _mres set ["ok", true];
-            };
+            } else { _mres set ["error", "no_route"]; };
         };
         [_mres] call _reply;
     };
@@ -196,14 +225,56 @@ switch (_command) do {
             private _isLoopback = (_targetIp isEqualTo _ownIp) || {_targetIp isEqualTo [127, 0, 0, 1]};
             private _target = _computer;
             if (!_isLoopback) then { ([_computer, _targetIp] call AE3_network_fnc_ping) params ["_target"]; };
-            if (isNull _target) then { _cres set ["error", "no_route"]; }
-            else {
+            // Reject ghost IPs (#6): the route must resolve AND the resolved device must actually own
+            // the requested address. A non-loopback send also requires a real (non-loopback) own IP.
+            private _valid = !isNull _target
+                && {_isLoopback || {(_target getVariable ["AE3_network_address", []]) isEqualTo _targetIp}}
+                && {_isLoopback || {_ownIp isNotEqualTo [127, 0, 0, 1]}};
+            if (_valid) then {
                 private _senderIp = [_ownIp] call AE3_network_fnc_ip2str;
-                ["ae3_network_imSend", [netId _target, _senderIp, _data getOrDefault ["text", ""]]] call CBA_fnc_serverEvent;
+                private _dstIp = [_targetIp] call AE3_network_fnc_ip2str;
+                ["ae3_network_imSend", [netId _target, netId _computer, _senderIp, _dstIp, _data getOrDefault ["text", ""]]] call CBA_fnc_serverEvent;
                 _cres set ["ok", true];
-            };
+            } else { _cres set ["error", "no_route"]; };
         };
         [_cres] call _reply;
+    };
+
+    // Router admin web page (#1/#3): view/edit the connected router's name/range/password.
+    case "router_page": { [[_computer, "get", _data] call FUNC(routerHandle)] call _reply; };
+    case "router_set":  { [[_computer, "set", _data] call FUNC(routerHandle)] call _reply; };
+
+    // SSH access toggle for THIS device (#19), set from Settings.
+    case "ssh_config": {
+        private _sres = createHashMapFromArray [["error", ""]];
+        if (isNull _computer) then { _sres set ["error", "no_device"]; }
+        else {
+            [_computer, ["AE3_ssh_enabled", _data getOrDefault ["enabled", false], true]] remoteExecCall ["setVariable", 2];
+            _sres set ["ok", true];
+        };
+        [_sres] call _reply;
+    };
+
+    // SSH client ops (#19): connect + remote filesystem browse/copy. Resolve the target IP, then run
+    // server-side (auth against the remote user list); the server replies async via ae3_desktop_sshReply.
+    case "ssh_connect";
+    case "ssh_ls";
+    case "ssh_read";
+    case "ssh_pull";
+    case "ssh_push": {
+        private _op = _command select [4]; // strip "ssh_"
+        private _targetIp = ((_data getOrDefault ["to", ""]) splitString ".") apply { parseNumber _x };
+        private _sres = createHashMapFromArray [["error", ""]];
+        if (isNull _computer || {count _targetIp != 4}) exitWith { _sres set ["error", "bad_addr"]; [_sres] call _reply; };
+        private _ownIp = _computer getVariable ["AE3_network_address", [127, 0, 0, 1]];
+        private _isLoopback = (_targetIp isEqualTo _ownIp) || {_targetIp isEqualTo [127, 0, 0, 1]};
+        private _target = _computer;
+        if (!_isLoopback) then { ([_computer, _targetIp] call AE3_network_fnc_ping) params ["_target"]; };
+        if (isNull _target || {!_isLoopback && {(_target getVariable ["AE3_network_address", []]) isNotEqualTo _targetIp}}) exitWith {
+            _sres set ["error", "no_route"]; ["ssh_" + _op, _sres] call _reply;
+        };
+        ["ae3_desktop_sshOp", [clientOwner, _rid, netId _computer, netId _target,
+            _data getOrDefault ["user", ""], _data getOrDefault ["pass", ""], _op, _data]] call CBA_fnc_serverEvent;
     };
 
     case "net_connect": {
@@ -224,10 +295,29 @@ switch (_command) do {
         };
     };
 
+    // Open-window layout persistence (#17): store the desktop's window snapshot on the laptop so a
+    // reopen (by anyone) resumes exactly where it was left. Broadcast so it survives JIP/relocality.
+    case "ui_save": {
+        if (!isNull _computer) then {
+            _computer setVariable [QGVAR(uiState), _data getOrDefault ["state", []], true];
+        };
+    };
+    case "ui_get": {
+        private _state = [];
+        if (!isNull _computer) then { _state = _computer getVariable [QGVAR(uiState), []]; };
+        [createHashMapFromArray [["state", _state]]] call _reply;
+    };
+
     // Sign out (#8): drop the session user; the JS side re-shows the login overlay. The display
     // (and the laptop claim/mutex) stay - this is a user switch, not a shutdown.
     case "signout": {
         _display setVariable [QGVAR(user), ""];
+        // Clear the persisted session + window layout (#17): only an explicit Sign Out locks the
+        // laptop again and starts the next login with a clean desktop.
+        if (!isNull _computer) then {
+            _computer setVariable [QGVAR(sessionUser), "", true];
+            _computer setVariable [QGVAR(uiState), [], true];
+        };
     };
 
     // Shut down (#8): close the desktop (the AE3_Desktop_BrowserDisplay onUnload restores the idle

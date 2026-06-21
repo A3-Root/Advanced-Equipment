@@ -46,6 +46,7 @@
     document.addEventListener("mouseup", function () {
       if (!dragging) return;
       dragging = false; handle.classList.remove("dragging"); clamp(win);
+      WM.onStateChange();
     });
   }
 
@@ -70,17 +71,17 @@
       '</div>' +
       '<div class="window-body"></div>';
 
-    var win = { id: id, el: el, app: app, maximized: false, prev: null };
+    var win = { id: id, el: el, app: app, args: args, maximized: false, prev: null };
     var tb = el.querySelector(".titlebar");
     var body = el.querySelector(".window-body");
 
     el.addEventListener("mousedown", function () { focus(win); });
     tb.querySelector(".close").addEventListener("click", function () { WM.close(win); });
     tb.querySelector(".min").addEventListener("click", function (e) {
-      e.stopPropagation(); el.classList.add("minimized"); WM.onTaskbarChange();
+      e.stopPropagation(); el.classList.add("minimized"); WM.onTaskbarChange(); WM.onStateChange();
     });
     tb.querySelector(".max").addEventListener("click", function (e) {
-      e.stopPropagation(); toggleMax(win);
+      e.stopPropagation(); toggleMax(win); WM.onStateChange();
     });
 
     initDrag(win, tb);
@@ -91,6 +92,7 @@
     if (typeof app.render === "function") app.render(body, win, args);
     focus(win);
     WM.onTaskbarChange();
+    WM.onStateChange();
     return win;
   }
 
@@ -121,6 +123,7 @@
       if (win.app && typeof win.app.onClose === "function") win.app.onClose(win);
       win.el.remove();
       WM.onTaskbarChange();
+      WM.onStateChange();
     },
     closeAll: function () {
       openWindows.slice().forEach(function (w) { WM.close(w); });
@@ -153,7 +156,34 @@
       if (w.el.classList.contains("active")) { w.el.classList.add("minimized"); WM.onTaskbarChange(); return; }
       focus(w);
     },
-    onTaskbarChange: function () {}   // wired by desktop.js
+    onTaskbarChange: function () {},  // wired by desktop.js
+    onStateChange: function () {},    // wired by desktop.js (persists the open-window layout, #17)
+
+    // Serialize the open windows so the desktop can be restored exactly as left on reopen (#17).
+    snapshot: function () {
+      return openWindows.map(function (w) {
+        return {
+          app: w.app.id, args: (w.args == null ? null : w.args),
+          x: w.el.offsetLeft, y: w.el.offsetTop, w: w.el.offsetWidth, h: w.el.offsetHeight,
+          min: w.el.classList.contains("minimized")
+        };
+      });
+    },
+    // Reopen windows from a snapshot, restoring geometry and minimized state.
+    restoreState: function (list) {
+      if (!list || !list.length || !window.Apps) return;
+      list.forEach(function (s) {
+        var app = Apps.get(s.app); if (!app) return;
+        var win = WM.open(app, s.args || undefined);
+        if (!win) return;
+        if (s.x != null) {
+          win.el.style.left = s.x + "px"; win.el.style.top = s.y + "px";
+          win.el.style.width = s.w + "px"; win.el.style.height = s.h + "px";
+        }
+        if (s.min) { win.el.classList.add("minimized"); }
+      });
+      WM.onTaskbarChange();
+    }
   };
 
   window.addEventListener("resize", function () { openWindows.forEach(clamp); });

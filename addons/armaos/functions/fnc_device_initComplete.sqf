@@ -27,6 +27,12 @@ private _wasRestored = !isNil "_filesystem" && {_filesystem isEqualType []};
 if (!_wasRestored) then {
 	// Fresh device - initialize filesystem first
 	[_entity, _config] call AE3_filesystem_fnc_initFilesystem;
+	// Seed the app-launcher catalog + root's ~/Desktop (#9); a laptop always has a root user.
+	private _fs = _entity getVariable ["AE3_filesystem", []];
+	if (_fs isNotEqualTo []) then {
+		[_fs, "/root", "root"] call AE3_filesystem_fnc_seedDesktop;
+		_entity setVariable ["AE3_filesystem", _fs];
+	};
 };
 
 // (Re-)initialize OS command links (CODE references must be regenerated after item restore)

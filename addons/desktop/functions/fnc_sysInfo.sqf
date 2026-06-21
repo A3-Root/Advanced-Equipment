@@ -7,17 +7,21 @@
  *
  * Arguments:
  * 0: _computer <OBJECT> - The bound laptop
+ * 1: _user <STRING> (Optional, default: "") - The logged-in session user (for the home path)
  *
  * Return Value:
- * Info <HASHMAP> - keys: hostname, ip, gateway, power, battery, uptime
+ * Info <HASHMAP> - keys: hostname, ip, gateway, power, battery, uptime, wallpaper, home
  *
  * Public: No
  */
 
-params [["_computer", objNull, [objNull]]];
+params [["_computer", objNull, [objNull]], ["_user", "", [""]]];
 
+// Per-user home + Desktop (#9): root lives in /root, every other user in /home/<user>.
+private _home = ["/home/" + _user, "/root"] select (_user isEqualTo "root" || _user isEqualTo "");
 private _info = createHashMapFromArray [
-    ["hostname", "ae3-os"], ["ip", "-"], ["gateway", "-"], ["power", "-"], ["battery", -1], ["uptime", "-"]
+    ["hostname", "ae3-os"], ["ip", "-"], ["gateway", "-"], ["power", "-"], ["battery", -1], ["uptime", "-"],
+    ["home", _home], ["user", _user]
 ];
 if (isNull _computer) exitWith { _info };
 
@@ -42,5 +46,7 @@ _info set ["hostname", _computer getVariable ["ace_cargo_customName", "armaOS"]]
 _info set ["uptime", ([CBA_missionTime, "HH:MM:SS"] call BIS_fnc_secondsToString)];
 // Per-laptop wallpaper (#15): a CSS background string or image path ("" = the theme default).
 _info set ["wallpaper", _computer getVariable ["AE3_desktop_wallpaper", ""]];
+// SSH access toggle (#19): whether this device accepts incoming SSH connections.
+_info set ["sshEnabled", _computer getVariable ["AE3_ssh_enabled", false]];
 
 _info

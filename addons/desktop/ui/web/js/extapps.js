@@ -35,37 +35,135 @@
       menu: extra.menu || "Tools",
       render: function (body, win) {
         body.innerHTML =
-          '<div class="toolbar"><span class="muted" style="flex:1">' + esc(desc.title) + '</span><button class="btn refresh">&#8635;</button></div>' +
+          '<div class="toolbar"><span class="muted" style="flex:1">' + esc(desc.title) + '</span>' +
+            (extra.globalActions ? '<span class="globals"></span>' : '') +
+            '<button class="btn refresh">&#8635;</button></div>' +
           '<ul class="list devs"><li class="muted pad">Loading…</li></ul>' +
-          '<div class="toolbar status muted" style="min-height:18px"></div>';
+          '<div class="dev-status" style="min-height:22px;padding:8px 12px;font-weight:600"></div>';
         var devs = body.querySelector(".devs");
-        var status = body.querySelector(".status");
+        var status = body.querySelector(".dev-status");
+
+        // Prominent, clearly-coloured result feedback (Root_CW general #2): success green, failure
+        // orange-red, so low-battery / overload / not-allowed messages can't be missed.
+        function setStatus(msg, ok) {
+          status.textContent = msg || "";
+          status.style.color = (ok === false) ? "#ff7a4d" : (ok === true ? "var(--good)" : "var(--muted)");
+        }
+
+        // Whole-app global actions (e.g. Lights: All On / All Off, Root_CW Lights #1).
+        var glWrap = body.querySelector(".globals");
+        if (glWrap && extra.globalActions) {
+          extra.globalActions.forEach(function (a) {
+            var b = document.createElement("button"); b.className = "btn"; b.textContent = a.label; b.style.marginLeft = "6px";
+            b.addEventListener("click", function () {
+              A3.send("dev_action", { app: desc.id, type: extra.type, id: "", action: a.id, path: "" });
+              setStatus(a.label + "…");
+            });
+            glWrap.appendChild(b);
+          });
+        }
+
+        function actionButton(d, a, sub) {
+          var b = document.createElement("button");
+          b.className = "btn" + (a.danger ? " accent" : ""); b.textContent = a.label; b.style.marginLeft = "6px";
+          b.addEventListener("click", function () {
+            // Optional confirmation (e.g. doors warn about battery power before locking, Doors #3).
+            if (a.confirm && a.confirm !== "" && typeof Modal !== "undefined") {
+              Modal.confirm(a.label, a.confirm).then(function (ok) {
+                if (ok) A3.send("dev_action", { app: desc.id, type: extra.type, id: d.id, action: a.id, sub: sub || "", path: d.path || "" });
+                if (ok) setStatus(a.label + "…");
+              });
+              return;
+            }
+            // Download flow (Databases #5): pick a save location, run a progress bar for the configured
+            // download time, then perform the action with the chosen path.
+            if (a.flow === "download" && typeof window.AE3_pickFile === "function") {
+              window.AE3_pickFile("save", { title: "Save downloaded file", start: (window.AE3_HOME || "/root"), filename: (d.label || "download") }).then(function (savePath) {
+                if (!savePath) return;
+                runProgress(d.downloadTime || 0, function () {
+                  A3.send("dev_action", { app: desc.id, type: extra.type, id: d.id, action: a.id, sub: sub || "", path: d.path || "", savePath: savePath });
+                });
+              });
+              return;
+            }
+            A3.send("dev_action", { app: desc.id, type: extra.type, id: d.id, action: a.id, sub: sub || "", path: d.path || "" });
+            setStatus(a.label + "…");
+          });
+          return b;
+        }
+
+        // Animated progress bar in the status area over the given number of seconds (#5).
+        function runProgress(seconds, done) {
+          var secs = Number(seconds) || 0;
+          if (secs <= 0) { setStatus("Downloading…"); done(); return; }
+          var start = Date.now(); var total = secs * 1000;
+          status.innerHTML = '<div style="background:#2b2b2b;border-radius:6px;overflow:hidden;height:14px;width:200px;display:inline-block;vertical-align:middle"><div class="dlbar" style="height:100%;width:0;background:var(--accent)"></div></div> <span class="dlpct">0%</span>';
+          var bar = status.querySelector(".dlbar"); var pct = status.querySelector(".dlpct");
+          var iv = setInterval(function () {
+            var p = Math.min(1, (Date.now() - start) / total);
+            if (bar) bar.style.width = Math.round(p * 100) + "%";
+            if (pct) pct.textContent = Math.round(p * 100) + "%";
+            if (p >= 1) { clearInterval(iv); done(); }
+          }, 100);
+        }
 
         function render(items) {
           devs.innerHTML = "";
           if (!items.length) { devs.innerHTML = '<li class="muted pad">No devices</li>'; return; }
           items.forEach(function (d) {
             var li = document.createElement("li");
-            // Show the device's current state next to its name when the backend provides one (door
-            // lock count, power-grid ON/OFF, drone side, vehicle locked/unlocked, ... Root_CW #2-#9).
+            li.style.flexDirection = "column"; li.style.alignItems = "stretch";
             var statusHtml = (d.status != null && d.status !== "") ? ' <span class="muted">[' + esc(d.status) + ']</span>' : "";
-            li.innerHTML = '<span class="ico">' + glyph + '</span><span style="flex:1">' + esc(d.label || d.name || ("#" + d.id)) + statusHtml + "</span>";
-            actions.forEach(function (a) {
-              var b = document.createElement("button");
-              b.className = "btn"; b.textContent = a.label;
-              b.style.marginLeft = "6px";
-              b.addEventListener("click", function () {
-                A3.send("dev_action", { app: desc.id, type: extra.type, id: d.id, action: a.id, path: d.path || "" });
-                status.textContent = a.label + "…";
+            // Grid + clickable map link (Root_CW shared #0f), shown only when the backend provides a
+            // position (gated server-side by "Allow Location View"; GPS only when tracked).
+            var gridHtml = (d.grid != null && d.grid !== "") ? ' <span class="muted" style="font-size:12px">&#128205; ' + esc(d.grid) + '</span>' : "";
+            var top = document.createElement("div");
+            top.style.display = "flex"; top.style.alignItems = "center"; top.style.width = "100%";
+            top.innerHTML = '<span class="ico">' + glyph + '</span><span style="flex:1">' + esc(d.label || d.name || ("#" + d.id)) + statusHtml + gridHtml + "</span>";
+            if (d.pos && d.pos.length >= 2) {
+              var mb = document.createElement("button"); mb.className = "btn"; mb.textContent = "Map"; mb.style.marginLeft = "6px";
+              mb.addEventListener("click", function () { window.AE3_openMap(d.pos, d.label || ("#" + d.id)); });
+              top.appendChild(mb);
+            }
+            // Per-device action buttons (use d.actions override when non-empty, else the app default).
+            ((d.actions && d.actions.length) ? d.actions : actions).forEach(function (a) { top.appendChild(actionButton(d, a)); });
+            li.appendChild(top);
+
+            // Optional key/value details (vehicle fuel/battery/engine/alarm/brake, Root_CW Vehicles #1).
+            if (d.details && d.details.length) {
+              var det = document.createElement("div");
+              det.className = "muted"; det.style.cssText = "font-size:12px;margin:4px 0 2px 26px;display:flex;flex-wrap:wrap;gap:10px";
+              d.details.forEach(function (kv) { det.innerHTML += '<span>' + esc(kv[0]) + ": <b style='color:var(--text)'>" + esc(String(kv[1])) + "</b></span>"; });
+              li.appendChild(det);
+            }
+            // Optional sub-items with their own actions (per-door lock/unlock, Root_CW Doors #2).
+            if (d.children && d.children.length) {
+              var wrap = document.createElement("div");
+              wrap.style.cssText = "margin:4px 0 2px 26px;display:none;flex-direction:column;gap:4px";
+              d.children.forEach(function (c) {
+                var row = document.createElement("div"); row.style.cssText = "display:flex;align-items:center;font-size:12px";
+                row.innerHTML = '<span style="flex:1">' + esc(c.label) + (c.status ? ' <span class="muted">[' + esc(c.status) + ']</span>' : "") + "</span>";
+                (c.actions || []).forEach(function (a) { row.appendChild(actionButton(d, a, c.id)); });
+                wrap.appendChild(row);
               });
-              li.appendChild(b);
-            });
+              var toggle = document.createElement("button");
+              toggle.className = "btn"; toggle.textContent = "Doors (" + d.children.length + ")"; toggle.style.cssText = "margin:4px 0 0 26px;align-self:flex-start";
+              toggle.addEventListener("click", function () { wrap.style.display = wrap.style.display === "none" ? "flex" : "none"; });
+              li.appendChild(toggle); li.appendChild(wrap);
+            }
             devs.appendChild(li);
           });
         }
         listSubs[extra.type] = render;
         resultSubs[extra.type] = function (r) {
-          status.textContent = r.msg || (r.ok ? "OK" : "Failed");
+          setStatus(r.msg || (r.ok ? "OK" : "Failed"), r.ok);
+          // Downloaded file: offer to open/read it straight from the app (Databases #5).
+          if (r.ok && r.path && r.path !== "") {
+            var ob = document.createElement("button");
+            ob.className = "btn"; ob.textContent = "Open downloaded file"; ob.style.marginLeft = "10px";
+            ob.addEventListener("click", function () { Apps.launch("notepad", { path: r.path }); });
+            status.appendChild(ob);
+          }
           if (r.ok) setTimeout(request, 300);
         };
         function request() { devs.innerHTML = '<li class="muted pad">Loading…</li>'; A3.send("dev_request", { type: extra.type }); }
