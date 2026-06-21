@@ -1048,7 +1048,7 @@ class AE3_UserInterface_Zeus_Module_AddCalendarEvent
         class RscEdit_1401: RscEdit
         {
             idc = 1401;
-            text = "2035-06-19";
+            text = "2026-06-19";
             x = 8 * GUI_GRID_W + GUI_GRID_X;
             y = 9 * GUI_GRID_H + GUI_GRID_Y;
             w = 31.5 * GUI_GRID_W;

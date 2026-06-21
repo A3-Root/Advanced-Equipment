@@ -1,7 +1,7 @@
-class CfgVehicles 
+class CfgVehicles
 {
 	/* ================================================================================ */
-	
+
 	// LAPTOP BLACK
 	class Land_Laptop_03_black_F;
 	class Land_Laptop_03_black_F_AE3: Land_Laptop_03_black_F
@@ -76,7 +76,7 @@ class CfgVehicles
 			openActionCondition = "isNull (_this getVariable ['AE3_computer_mutex', objNull])";
 			closeAction = "call AE3_interaction_fnc_laptop_close;";
 			closeActionCondition = "isNull (_this getVariable ['AE3_computer_mutex', objNull])";
-      
+
 			class AE3_ace3Interactions
 			{
 					class AE3_aceCarrying
@@ -233,7 +233,7 @@ class CfgVehicles
 			openActionCondition = "isNull (_this getVariable ['AE3_computer_mutex', objNull])";
 			closeAction = "call AE3_interaction_fnc_laptop_close;";
 			closeActionCondition = "isNull (_this getVariable ['AE3_computer_mutex', objNull])";
-      
+
       		class AE3_ace3Interactions
 			{
 				class AE3_aceCarrying
@@ -315,7 +315,7 @@ class CfgVehicles
 	};
 
 	/* ================================================================================ */
-	
+
 	// LAPTOP SAND
 	class Land_Laptop_03_sand_F;
 	class Land_Laptop_03_sand_F_AE3: Land_Laptop_03_sand_F
@@ -327,7 +327,7 @@ class CfgVehicles
 		editorCategory = "AE3_Assets";
 
 		curatorInfoTypeEmpty = "AE3_UserInterface_Zeus_Asset_Details";
-  	
+
 		// Eden Editor Attributes
 		class Attributes
 		{
@@ -588,9 +588,9 @@ class CfgVehicles
 			{
 				property = "AE3_ModuleCalendar_Date";
 				displayName = "Date (YYYY-MM-DD)";
-				tooltip = "ISO date the event is shown on, e.g. 2035-06-19";
+				tooltip = "ISO date the event is shown on, e.g. 2026-06-24";
 				typeName = "STRING";
-				defaultValue = """2035-06-19""";
+				defaultValue = """2026-06-24""";
 			};
 			class AE3_ModuleCalendar_Title: Edit
 			{

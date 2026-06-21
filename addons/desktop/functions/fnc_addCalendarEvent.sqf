@@ -7,7 +7,7 @@
  *
  * Arguments:
  * 0: _target <OBJECT|STRING> - Target laptop, its netId, or "all"
- * 1: _date <STRING> - Date text, e.g. "2035-06-24 04:00"
+ * 1: _date <STRING> - Date text, e.g. "2026-06-24 04:00"
  * 2: _title <STRING> - Event title
  * 3: _details <STRING> (Optional, default: "") - Event details
  *
@@ -15,7 +15,7 @@
  * None
  *
  * Example:
- * [_laptop, "2035-06-24 04:00", "Convoy departs", "Route Red, 3 trucks"] call AE3_desktop_fnc_addCalendarEvent;
+ * [_laptop, "2026-06-24 04:00", "Convoy departs", "Route Red, 3 trucks"] call AE3_desktop_fnc_addCalendarEvent;
  *
  * Public: Yes
  */

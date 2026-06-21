@@ -216,7 +216,7 @@ The Zeus **Interface & Access** module is just a front-end that builds these con
 [_laptop, "intel.root/convoys", "02:47"] call AE3_desktop_fnc_addHistoryEntry;
 
 // calendar entry (Calendar app)
-[_laptop, "2035-06-24 04:00", "Convoy departs", "Route Red, 3 trucks"] call AE3_desktop_fnc_addCalendarEvent;
+[_laptop, "2026-06-24 04:00", "Convoy departs", "Route Red, 3 trucks"] call AE3_desktop_fnc_addCalendarEvent;
 
 // media: image / video / audio (Files, Music apps; images double as wallpapers)
 ["\myMod\img\map_photo.paa", "image", "/home/user/photo.paa", [_laptop]] call AE3_desktop_fnc_registerMedia;

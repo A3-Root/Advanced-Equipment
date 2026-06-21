@@ -129,7 +129,7 @@ Example mission setup:
 ["intel.root/convoys", "Convoy Schedule", ["0400 - Route Red", "0600 - Route Blue"]] call AE3_desktop_fnc_registerWebpage;
 [_laptop, "intel.root/convoys", "02:47"] call AE3_desktop_fnc_addHistoryEntry;   // "they looked this up"
 [_laptop, "informant", "Meeting", "Safehouse, sector C4, 0300."] call AE3_desktop_fnc_addEmail;
-[_laptop, "2035-06-24 04:00", "Convoy departs", "Route Red, 3 trucks"] call AE3_desktop_fnc_addCalendarEvent;
+[_laptop, "2026-06-24 04:00", "Convoy departs", "Route Red, 3 trucks"] call AE3_desktop_fnc_addCalendarEvent;
 ["\myMod\img\map_photo.paa", "image", "/home/user/photo.paa", [_laptop]] call AE3_desktop_fnc_registerMedia;
 ```
 

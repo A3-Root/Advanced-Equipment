@@ -510,7 +510,7 @@ AE3_TerminalBiosVersion = "MilTech BIOS v2.4.1";
 
 **Example:**
 ```sqf
-AE3_TerminalCopyright = "© 2035 Special Operations Command";
+AE3_TerminalCopyright = "© 2026 Special Operations Command";
 ```
 
 ---
@@ -669,7 +669,7 @@ AE3_KeyboardLayout = 8;
 // Customization (optional)
 AE3_TerminalDialogTitle = "Military Terminal v2.0";
 AE3_TerminalBiosVersion = "SecureBIOS v3.1.4";
-AE3_TerminalCopyright = "© 2035 Special Operations Division";
+AE3_TerminalCopyright = "© 2026 Special Operations Division";
 AE3_TerminalBootMessage = "Secure kernel loading...";
 AE3_TerminalTipMessage = "> Tip: All sessions are monitored.";
 AE3_TerminalTagline = "Classified Access Only.";
