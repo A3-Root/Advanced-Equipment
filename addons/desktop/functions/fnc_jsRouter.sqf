@@ -83,9 +83,14 @@ switch (_command) do {
     // --- Filesystem (Files + Notepad), permission-scoped per logged-in user (#9). ---
     case "fs_list";
     case "fs_read";
+    case "fs_unlock";
     case "fs_save";
     case "fs_mkdir";
-    case "fs_delete": {
+    case "fs_delete";
+    case "fs_move";
+    case "fs_copy";
+    case "fs_restore";
+    case "fs_empty_trash": {
         private _user = _display getVariable [QGVAR(user), ""];
         private _op = _command select [3]; // strip "fs_"
         [[_computer, _user, _op, _data] call FUNC(fsHandle)] call _reply;
@@ -133,18 +138,41 @@ switch (_command) do {
     // In-window minimap data (#13/#20).
     case "map_data": { [[_computer, _data] call FUNC(mapData)] call _reply; };
 
+    // Cryptography apps (#9): caesar/columnar crypto + cryptanalysis, GUI-side of the CLI tools.
+    case "crypto_run": { [[_data] call FUNC(cryptoRun)] call _reply; };
+    case "crack_run":  { [[_data] call FUNC(crackRun)] call _reply; };
+
+    // Native real-world map overlay (#5): CEF cannot host the map control, so open it as a dialog.
+    case "map_open": { [_computer] call FUNC(mapOpen); };
+
+    // Settings (#15): change system name / wallpaper, applied server-side and broadcast.
+    case "sys_set": {
+        private _sres = createHashMapFromArray [["error", ""]];
+        if (isNull _computer) then { _sres set ["error", "no_device"]; }
+        else {
+            [_computer, _data getOrDefault ["hostname", ""], _data getOrDefault ["wallpaper", ""]] remoteExec ["AE3_desktop_fnc_setSystemConfig", 2];
+            _sres set ["ok", true];
+        };
+        [_sres] call _reply;
+    };
+
     // Mail (#18).
     case "mail_list": { [[_computer, "list", _data] call FUNC(mailHandle)] call _reply; };
     case "mail_read": { [[_computer, "read", _data] call FUNC(mailHandle)] call _reply; };
     case "mail_send": {
         private _mres = createHashMapFromArray [["error", ""]];
         private _targetIp = ((_data getOrDefault ["to", ""]) splitString ".") apply { parseNumber _x };
+        private _ownIp = _computer getVariable ["AE3_network_address", [127, 0, 0, 1]];
         if (isNull _computer || {count _targetIp != 4}) then { _mres set ["error", "bad_addr"]; }
         else {
-            ([_computer, _targetIp] call AE3_network_fnc_ping) params ["_target"];
-            if (isNull _target || {_target isEqualTo _computer}) then { _mres set ["error", "no_route"]; }
+            // Loopback: sending to your own address (or 127.0.0.1) delivers to this same laptop -
+            // ping returns null for self, so resolve it directly instead of failing with no_route (#2).
+            private _isLoopback = (_targetIp isEqualTo _ownIp) || {_targetIp isEqualTo [127, 0, 0, 1]};
+            private _target = _computer;
+            if (!_isLoopback) then { ([_computer, _targetIp] call AE3_network_fnc_ping) params ["_target"]; };
+            if (isNull _target) then { _mres set ["error", "no_route"]; }
             else {
-                private _senderIp = [_computer getVariable ["AE3_network_address", [127, 0, 0, 1]]] call AE3_network_fnc_ip2str;
+                private _senderIp = [_ownIp] call AE3_network_fnc_ip2str;
                 ["ae3_desktop_addEmail", [netId _target, _senderIp, _data getOrDefault ["subject", ""], _data getOrDefault ["body", ""]]] call CBA_fnc_serverEvent;
                 _mres set ["ok", true];
             };
@@ -161,12 +189,16 @@ switch (_command) do {
     case "chat_send": {
         private _cres = createHashMapFromArray [["error", ""]];
         private _targetIp = ((_data getOrDefault ["to", ""]) splitString ".") apply { parseNumber _x };
+        private _ownIp = _computer getVariable ["AE3_network_address", [127, 0, 0, 1]];
         if (isNull _computer || {count _targetIp != 4}) then { _cres set ["error", "bad_addr"]; }
         else {
-            ([_computer, _targetIp] call AE3_network_fnc_ping) params ["_target"];
-            if (isNull _target || {_target isEqualTo _computer}) then { _cres set ["error", "no_route"]; }
+            // Loopback: messaging your own address (or 127.0.0.1) delivers to this same laptop (#6).
+            private _isLoopback = (_targetIp isEqualTo _ownIp) || {_targetIp isEqualTo [127, 0, 0, 1]};
+            private _target = _computer;
+            if (!_isLoopback) then { ([_computer, _targetIp] call AE3_network_fnc_ping) params ["_target"]; };
+            if (isNull _target) then { _cres set ["error", "no_route"]; }
             else {
-                private _senderIp = [_computer getVariable ["AE3_network_address", [127, 0, 0, 1]]] call AE3_network_fnc_ip2str;
+                private _senderIp = [_ownIp] call AE3_network_fnc_ip2str;
                 ["ae3_network_imSend", [netId _target, _senderIp, _data getOrDefault ["text", ""]]] call CBA_fnc_serverEvent;
                 _cres set ["ok", true];
             };
@@ -179,7 +211,9 @@ switch (_command) do {
         if (_netId isNotEqualTo "" && {!isNull _computer}) then {
             private _router = objectFromNetId _netId;
             if (!isNull _router) then {
-                [_computer, _router] remoteExec ["AE3_desktop_fnc_netConnectServer", 2];
+                // Pass the supplied wireless password + this client so the server can validate and
+                // report success/failure back to the Network app (#14).
+                [_computer, _router, _data getOrDefault ["password", ""], clientOwner] remoteExec ["AE3_desktop_fnc_netConnectServer", 2];
             };
         };
     };

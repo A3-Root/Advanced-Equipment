@@ -38,7 +38,11 @@
     drone:    svg('<circle cx="6" cy="6" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/><rect x="9.5" y="9.5" width="5" height="5" rx="1"/><path d="M7.5 7.5 10 10M16.5 7.5 14 10M7.5 16.5 10 14M16.5 16.5 14 14"/>'),
     vehicle:  svg('<path d="M3 13l2-5h11l3 5M3 13h17v4H3z"/><circle cx="7" cy="17" r="1.6"/><circle cx="16" cy="17" r="1.6"/>'),
     gps:      svg('<path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/>'),
-    database: svg('<ellipse cx="12" cy="5.5" rx="7" ry="2.5"/><path d="M5 5.5v6c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5v-6M5 11.5v6c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5v-6"/>')
+    database: svg('<ellipse cx="12" cy="5.5" rx="7" ry="2.5"/><path d="M5 5.5v6c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5v-6M5 11.5v6c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5v-6"/>'),
+    trash:    svg('<path d="M4 7h16M9 7V4h6v3M6 7l1 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-13M10 11v6M14 11v6"/>'),
+    crack:    svg('<path d="M7 11V8a5 5 0 0 1 9.5-2"/><rect x="4.5" y="11" width="15" height="9" rx="2"/><path d="m11 14-2 4h3l-1 2"/>'),
+    crypto:   svg('<rect x="4.5" y="11" width="15" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15.5" r="1.4" fill="currentColor" stroke="none"/>'),
+    snake:    svg('<path d="M5 5h8a3 3 0 0 1 0 6H8a3 3 0 0 0 0 6h6"/><circle cx="17" cy="17" r="1" fill="currentColor" stroke="none"/>')
   };
 
   // Convenience: return a named icon, or a fallback dot, never undefined.

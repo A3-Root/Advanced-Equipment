@@ -9,7 +9,7 @@
  * 0: _computer <OBJECT> - The bound laptop
  *
  * Return Value:
- * Networks <ARRAY> of <HASHMAP> - keys: ssid, ip, netId, current
+ * Networks <ARRAY> of <HASHMAP> - keys: ssid, ip, netId, current, locked
  *
  * Public: No
  */
@@ -18,11 +18,15 @@ params [["_computer", objNull, [objNull]]];
 
 if (isNull _computer) exitWith { [] };
 
-private _range = missionNamespace getVariable [QGVAR(wirelessRange), 15];
+// Each router advertises its OWN wireless range (#14): a laptop sees a network only when it sits
+// within that router's range, not a single global radius. Scan out to the configured maximum, then
+// keep routers whose individual range reaches this laptop.
+private _scanCap = missionNamespace getVariable [QGVAR(wirelessRangeMax), 500];
 private _parent = _computer getVariable ["AE3_network_parent", objNull];
 
-private _routers = (nearestObjects [_computer, [], _range]) select {
-    (_x != _computer) && {alive _x} && {_x getVariable ["AE3_cap_isRouter", false]}
+private _routers = (nearestObjects [_computer, [], _scanCap]) select {
+    (_x != _computer) && {alive _x} && {_x getVariable ["AE3_cap_isRouter", false]} &&
+    {(_computer distance _x) <= (_x getVariable ["AE3_network_wirelessRange", 50])}
 };
 
 private _list = [];
@@ -34,7 +38,8 @@ private _list = [];
         ["ssid", _ssid],
         ["ip", ([_x getVariable ["AE3_network_address", [127, 0, 0, 1]]] call AE3_network_fnc_ip2str)],
         ["netId", netId _x],
-        ["current", _x isEqualTo _parent]
+        ["current", _x isEqualTo _parent],
+        ["locked", (_x getVariable ["AE3_network_password", ""]) isNotEqualTo ""]
     ];
 } forEach _routers;
 

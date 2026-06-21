@@ -29,7 +29,10 @@
     return {
       id: desc.id, title: desc.title, glyph: glyph,
       kind: "deviceList", width: 620, height: 440,
-      showOnDesktop: true, showInDock: true, singleton: true,
+      // Ext apps live in the Applications menu (extra.menu, e.g. "Tools/Hack"), NOT the desktop or
+      // dock (Root Cyberwarfare #1/#10). The desktop is fixed to My Computer / Recycle Bin / Files.
+      showOnDesktop: false, showInDock: false, singleton: true,
+      menu: extra.menu || "Tools",
       render: function (body, win) {
         body.innerHTML =
           '<div class="toolbar"><span class="muted" style="flex:1">' + esc(desc.title) + '</span><button class="btn refresh">&#8635;</button></div>' +
@@ -43,7 +46,10 @@
           if (!items.length) { devs.innerHTML = '<li class="muted pad">No devices</li>'; return; }
           items.forEach(function (d) {
             var li = document.createElement("li");
-            li.innerHTML = '<span class="ico">' + glyph + '</span><span style="flex:1">' + esc(d.label || d.name || ("#" + d.id)) + "</span>";
+            // Show the device's current state next to its name when the backend provides one (door
+            // lock count, power-grid ON/OFF, drone side, vehicle locked/unlocked, ... Root_CW #2-#9).
+            var statusHtml = (d.status != null && d.status !== "") ? ' <span class="muted">[' + esc(d.status) + ']</span>' : "";
+            li.innerHTML = '<span class="ico">' + glyph + '</span><span style="flex:1">' + esc(d.label || d.name || ("#" + d.id)) + statusHtml + "</span>";
             actions.forEach(function (a) {
               var b = document.createElement("button");
               b.className = "btn"; b.textContent = a.label;

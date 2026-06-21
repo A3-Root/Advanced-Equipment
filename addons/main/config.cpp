@@ -7,7 +7,8 @@ class CfgPatches
         name = QUOTE(COMPONENT);
         units[] =
         {
-                "AE3_AddConnection"
+                "AE3_AddConnection",
+                "AE3_ConfigureRouter"
         };
         weapons[] = {};
         requiredVersion = REQUIRED_VERSION;

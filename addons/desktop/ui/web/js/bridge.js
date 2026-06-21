@@ -28,6 +28,20 @@
     });
   }
 
+  // Collapse "." and ".." segments out of a backslash path. A3API.RequestFile rejects any path
+  // containing ".." ("only relative paths supported"), so links like portal -> "..\wiki\index.html"
+  // must be flattened to "\z\ae3\...\wiki\index.html" before the request. Preserves a leading "\".
+  function normalizePath(p) {
+    var lead = (p.charAt(0) === "\\") ? "\\" : "";
+    var out = [];
+    p.split("\\").forEach(function (seg) {
+      if (seg === "" || seg === ".") return;
+      if (seg === "..") { if (out.length) out.pop(); return; }
+      out.push(seg);
+    });
+    return lead + out.join("\\");
+  }
+
   var A3 = {
     // Fire-and-forget command to SQF.
     send: function (command, data) {
@@ -66,6 +80,7 @@
         return fetch(rel.replace(/\\/g, "/")).then(function (r) { return r.text(); });
       }
       function requestOne(full) {
+        full = normalizePath(full);
         return Promise.resolve(A3API.RequestFile(full)).then(function (t) {
           if (t == null || t === "") throw new Error("empty/missing: " + full);
           return t;

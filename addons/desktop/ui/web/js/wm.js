@@ -131,6 +131,28 @@
       return false;
     },
     running: function () { return openWindows.map(function (w) { return w.app.id; }); },
+
+    // Per-window descriptors for the taskbar (#11). Title is read live from the titlebar so apps
+    // that rename their window (browser, notepad) show the current document.
+    list: function () {
+      return openWindows.map(function (w) {
+        var t = w.el.querySelector(".title");
+        return {
+          id: w.id, appId: w.app.id, glyph: w.app.glyph || "",
+          title: (t && t.textContent) || w.app.title || "App",
+          minimized: w.el.classList.contains("minimized"),
+          active: w.el.classList.contains("active") && !w.el.classList.contains("minimized")
+        };
+      });
+    },
+    byId: function (id) { return openWindows.filter(function (w) { return w.id === id; })[0]; },
+    // Taskbar click: restore+focus if minimized, minimize if already active, else just focus.
+    toggle: function (id) {
+      var w = WM.byId(id); if (!w) return;
+      if (w.el.classList.contains("minimized")) { w.el.classList.remove("minimized"); focus(w); return; }
+      if (w.el.classList.contains("active")) { w.el.classList.add("minimized"); WM.onTaskbarChange(); return; }
+      focus(w);
+    },
     onTaskbarChange: function () {}   // wired by desktop.js
   };
 

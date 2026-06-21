@@ -28,4 +28,6 @@ if (_index < 0 || {_index >= count _events}) exitWith { false };
 _events deleteAt _index;
 _computer setVariable ["AE3_calendar_events", _events, true];
 
+["ae3_desktop_calChanged", []] call CBA_fnc_globalEvent;
+
 true

@@ -36,4 +36,7 @@ private _events = +(_computer getVariable ["AE3_calendar_events", []]);
 _events pushBack [_date, _title, _location, _body];
 _computer setVariable ["AE3_calendar_events", _events, true];
 
+// Nudge any open web Calendar to re-pull the (now broadcast) store so the event shows immediately (#4).
+["ae3_desktop_calChanged", []] call CBA_fnc_globalEvent;
+
 true

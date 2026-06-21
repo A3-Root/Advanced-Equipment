@@ -11,6 +11,8 @@
     Desktop.init();
     var host = (session && session.hostname) || seededHost;
     if (host) Desktop.setHostname(host);
+    // Apply the per-laptop wallpaper (#15) once the desktop is up.
+    A3.request("sysinfo", {}).then(function (s) { if (s && s.wallpaper) Desktop.setWallpaper(s.wallpaper); }).catch(function () {});
   }
 
   function showLogin() {

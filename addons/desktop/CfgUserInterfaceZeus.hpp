@@ -1,8 +1,7 @@
-// RscText is already declared in ui\RscAE3Desktop.hpp (included earlier in config.cpp)
+// RscText and RscButton are already declared in ui\RscAE3Desktop.hpp (included earlier in config.cpp)
 class RscEdit;
 class RscCombo;
 class RscListBox;
-class RscButton;
 class RscButtonMenuOK;
 class RscButtonMenuCancel;
 

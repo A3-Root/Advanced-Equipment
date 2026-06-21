@@ -1,0 +1,66 @@
+#include "..\script_component.hpp"
+/*
+ * Author: Root
+ * Description: Opens the native real-world map overlay (AE3_Desktop_MapOverlay) over the web desktop
+ * (#5). CEF cannot render Arma's map control, so the Map app calls this to show the genuine
+ * RscMapControl centred on the laptop, with local markers for the player and nearby AE3
+ * devices/routers. The markers are tracked in uiNamespace and removed by the display's onUnload.
+ * Client-only.
+ *
+ * Arguments:
+ * 0: _computer <OBJECT> (Optional, default: objNull) - The laptop this session is bound to
+ *
+ * Return Value:
+ * The created display <DISPLAY>
+ *
+ * Public: No
+ */
+
+params [["_computer", objNull, [objNull]]];
+
+if (!hasInterface) exitWith { displayNull };
+
+// Parent to the open browser display so the overlay sits on top of the CEF desktop.
+private _parent = findDisplay 17010;
+if (isNull _parent) then { _parent = findDisplay 46; };
+
+private _display = _parent createDisplay "AE3_Desktop_MapOverlay";
+if (isNull _display) exitWith { displayNull };
+
+private _map = _display displayCtrl 17021;
+
+private _center = getPosWorld player;
+if (!isNull _computer) then { _center = getPosWorld _computer; };
+
+// Centre + zoom the map on the laptop/player.
+_map ctrlMapAnimAdd [0, 0.08, _center];
+ctrlMapAnimCommit _map;
+
+// Local markers: player + nearby AE3 devices and routers (within 2 km of the centre).
+private _markers = [];
+private _stamp = round (diag_tickTime * 1000);
+
+private _self = createMarkerLocal [format ["AE3_mapSelf_%1", _stamp], player];
+_self setMarkerTypeLocal "mil_dot";
+_self setMarkerColorLocal "ColorRed";
+_self setMarkerTextLocal "You";
+_markers pushBack _self;
+
+{
+    private _obj = _x;
+    if (_obj isEqualTo player) then { continue };
+    private _cfg = configOf _obj;
+    private _isRouter = isClass (_cfg >> "AE3_Router");
+    private _isDevice = isClass (_cfg >> "AE3_Device");
+    if (_isRouter || _isDevice) then {
+        private _mk = createMarkerLocal [format ["AE3_mapDev_%1_%2", _stamp, _forEachIndex], getPosWorld _obj];
+        _mk setMarkerTypeLocal "mil_box";
+        _mk setMarkerColorLocal (["ColorGreen", "ColorBlue"] select _isRouter);
+        _mk setMarkerSizeLocal [0.7, 0.7];
+        _markers pushBack _mk;
+    };
+} forEach (nearestObjects [_center, [], 2000]);
+
+uiNamespace setVariable ["AE3_mapOverlayMarkers", _markers];
+
+_display

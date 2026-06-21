@@ -68,8 +68,34 @@ switch (_op) do {
     case "read": {
         try {
             private _content = [[], _fs, _path, _fsUser, 0] call AE3_filesystem_fnc_getFile;
-            if (_content isEqualType "") then { _res set ["content", _content]; }
+            if (_content isEqualType "") then {
+                // Password-protected file: report it as locked WITHOUT shipping the password or payload
+                // to the browser. The app prompts for the password and verifies via "unlock" (#7). The
+                // raw "AE3_LOCKED|len|.." string must never reach the UI (the old leak).
+                ([_content] call AE3_armaos_fnc_shell_parseLockedFile) params ["_locked", "", "_payload"];
+                if (_locked) then { _res set ["locked", true]; }
+                else { _res set ["content", _content]; };
+            }
             else { _res set ["error", "not_text"]; };
+        } catch {
+            _res set ["error", "denied"];
+        };
+    };
+
+    // Verify the password for a locked file server-trusted and return the payload only on a match.
+    // Wrong attempts are logged to /var/log/auth.log on the server (mirrors fnc_os_unlock). (#7)
+    case "unlock": {
+        private _pass = _data getOrDefault ["pass", ""];
+        try {
+            private _content = [[], _fs, _path, _fsUser, 0] call AE3_filesystem_fnc_getFile;
+            ([_content] call AE3_armaos_fnc_shell_parseLockedFile) params ["_locked", "_correct", "_payload"];
+            if (_locked) then {
+                if (_pass isEqualTo _correct) then { _res set ["content", _payload]; }
+                else {
+                    _res set ["error", "bad_pass"];
+                    [_computer, "System", format ["unlock: wrong password for '%1' (desktop)", _path], "/var/log/auth.log"] remoteExec ["AE3_armaos_fnc_shell_writeToLogfile", 2];
+                };
+            } else { _res set ["content", _content]; };
         } catch {
             _res set ["error", "denied"];
         };
@@ -97,9 +123,60 @@ switch (_op) do {
         };
     };
 
+    // Delete now moves to the Recycle Bin (/.trash) instead of destroying the object (#17). A name
+    // clash in the bin is resolved with a numeric suffix so repeated deletes never overwrite.
     case "delete": {
         try {
-            [[], _fs, _path, _fsUser] call AE3_filesystem_fnc_delObj;
+            [[], _fs, "/.trash", _fsUser, _fsUser] call AE3_filesystem_fnc_ensureDir;
+            private _parts = _path splitString "/";
+            private _name = _parts param [(count _parts) - 1, ""];
+            private _target = "/.trash/" + _name;
+            private _i = 1;
+            while { [[], _fs, _target, _fsUser] call AE3_filesystem_fnc_fsObjExists } do {
+                _target = format ["/.trash/%1.%2", _name, _i]; _i = _i + 1;
+            };
+            [[], _fs, _path, _target, _fsUser, false] call AE3_filesystem_fnc_mvObj;
+            _computer setVariable ["AE3_filesystem", _fs, 2];
+            _res set ["ok", true];
+        } catch {
+            _res set ["error", "denied"];
+        };
+    };
+
+    // Cut/paste (move) and copy/paste for the right-click context menu (#16). _data: path=source, dest=target.
+    case "move";
+    case "copy": {
+        private _dest = _data getOrDefault ["dest", ""];
+        if (_dest isEqualTo "") exitWith { _res set ["error", "bad_input"]; };
+        try {
+            [[], _fs, _path, _dest, _fsUser, (_op isEqualTo "copy")] call AE3_filesystem_fnc_mvObj;
+            _computer setVariable ["AE3_filesystem", _fs, 2];
+            _res set ["ok", true];
+        } catch {
+            _res set ["error", "denied"];
+        };
+    };
+
+    // Recycle Bin restore: move an item out of /.trash back into the user's home (#17). _data: name.
+    case "restore": {
+        private _name = _data getOrDefault ["name", ""];
+        if (_name isEqualTo "") exitWith { _res set ["error", "bad_input"]; };
+        private _home = [format ["/home/%1", _user], "/root"] select (_fsUser isEqualTo "root");
+        try {
+            [[], _fs, "/.trash/" + _name, _home + "/", _fsUser, false] call AE3_filesystem_fnc_mvObj;
+            _computer setVariable ["AE3_filesystem", _fs, 2];
+            _res set ["ok", true];
+        } catch {
+            _res set ["error", "denied"];
+        };
+    };
+
+    // Empty the Recycle Bin: permanently drop /.trash and recreate it empty (#17).
+    case "empty_trash": {
+        try {
+            if ([[], _fs, "/.trash", _fsUser] call AE3_filesystem_fnc_fsObjExists) then {
+                [[], _fs, "/.trash", _fsUser] call AE3_filesystem_fnc_delObj;
+            };
             _computer setVariable ["AE3_filesystem", _fs, 2];
             _res set ["ok", true];
         } catch {

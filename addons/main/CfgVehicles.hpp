@@ -1,13 +1,63 @@
-class CfgVehicles 
+class CfgVehicles
 {
 	/* ================================================================================ */
 
 	class Logic;
 	class Module_F: Logic
 	{
-		class AttributesBase {};
+		class AttributesBase
+		{
+			class Edit;
+		};
 		// Description base classes, for more information see below
 		class ModuleDescription {};
+	};
+
+	/* ================================================================================ */
+
+	// MODULE CONFIGURE ROUTER (#14): sets the wireless range + password of every synced router.
+	// Uses the standard module Attributes UI (no custom dialog); the enforcement lives in
+	// AE3_network_fnc_netScan / fnc_netConnectServer.
+	class AE3_ConfigureRouter: Module_F
+	{
+		scope = 2;
+		scopeCurator = 2;
+		displayName = "Configure Router (Wireless)";
+		category = "AE3_mainModules";
+
+		function = "AE3_main_fnc_module_configureRouter";
+		functionPriority = 1;
+		isGlobal = 1;
+		isTriggerActivated = 1;
+		isDisposable = 0;
+		is3DEN = 0;
+
+		class Attributes: AttributesBase
+		{
+			class AE3_ModuleRouter_Range: Edit
+			{
+				property = "AE3_ModuleRouter_Range";
+				displayName = "Wireless Range (m)";
+				tooltip = "Maximum distance (m) at which laptops can connect to the synced router(s).";
+				typeName = "NUMBER";
+				defaultValue = "50";
+			};
+			class AE3_ModuleRouter_Password: Edit
+			{
+				property = "AE3_ModuleRouter_Password";
+				displayName = "Network Password";
+				tooltip = "Password required to connect. Leave blank for an open network.";
+				typeName = "STRING";
+				defaultValue = """""";
+			};
+			class ModuleDescription: ModuleDescription {};
+		};
+
+		class ModuleDescription: ModuleDescription
+		{
+			description = "Sets wireless range and password on synced routers.";
+			sync[] = { "Land_Router_01_sand_F_AE3" };
+		};
 	};
 
     /* ================================================================================ */

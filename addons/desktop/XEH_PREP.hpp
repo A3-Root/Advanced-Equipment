@@ -21,6 +21,10 @@ PREP(netDisconnectServer);
 PREP(mapData);
 PREP(mailHandle);
 PREP(chatPullServer);
+PREP(cryptoRun);
+PREP(crackRun);
+PREP(mapOpen);
+PREP(setSystemConfig);
 
 PREP(setInterfaceMode);
 PREP(setInterfaceAccess);

@@ -95,6 +95,20 @@ if (!isDedicated && !_internal) then
  {
 	 _entity setVariable ["AE3_cap_isRouter", true, true];
 
+	 // Wireless reach + access control (#14). Defaults come from the CBA setting; a value pre-set by
+	 // Eden/Zeus (AE3_network_wirelessRange / AE3_network_password) is preserved. A blank password
+	 // means an open network.
+	 if (isNil {_entity getVariable "AE3_network_wirelessRange"}) then {
+		_entity setVariable ["AE3_network_wirelessRange", missionNamespace getVariable ["AE3_network_defaultWirelessRange", 50], true];
+	 } else {
+		_entity setVariable ["AE3_network_wirelessRange", _entity getVariable "AE3_network_wirelessRange", true];
+	 };
+	 if (isNil {_entity getVariable "AE3_network_password"}) then {
+		_entity setVariable ["AE3_network_password", "", true];
+	 } else {
+		_entity setVariable ["AE3_network_password", _entity getVariable "AE3_network_password", true];
+	 };
+
 	 _entity setVariable ["AE3_network_address", _address, true];
 
 	 _entity setVariable ["AE3_network_parent", _parent, true];

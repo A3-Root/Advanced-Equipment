@@ -35,10 +35,14 @@ if (!_ready) exitWith
 	["ae3_main_zeusOpFeedback", [false, _op, _args], _curatorOwner] call CBA_fnc_ownerEvent;
 };
 
+// Honor each op's own success/failure so the curator gets accurate feedback. addCalendarEvent, for
+// example, returns false on a non-ISO date - previously this always reported success, so a rejected
+// event looked like it had been added (#4). Ops that do not return a bool are treated as success.
+private _result = true;
 switch (_op) do
 {
 	case "addUser":              { ([_computer] + _args) call AE3_armaos_fnc_computer_addUser; };
-	case "addCalendarEvent":     { ([_computer] + _args) call AE3_armaos_fnc_computer_addCalendarEvent; };
+	case "addCalendarEvent":     { _result = ([_computer] + _args) call AE3_armaos_fnc_computer_addCalendarEvent; };
 	case "addSecurityCommands":  { ([_computer] + _args) call AE3_armaos_fnc_computer_addSecurityCommands; };
 	case "addGames":             { ([_computer] + _args) call AE3_armaos_fnc_computer_addGames; };
 	case "addFile":              { ([_computer] + _args) call AE3_filesystem_fnc_device_addFile; };
@@ -48,5 +52,6 @@ switch (_op) do
 		WARNING_1("Unknown Zeus device op '%1'",_op);
 	};
 };
+if !(_result isEqualType true) then { _result = true; };
 
-["ae3_main_zeusOpFeedback", [true, _op, _args], _curatorOwner] call CBA_fnc_ownerEvent;
+["ae3_main_zeusOpFeedback", [_result, _op, _args], _curatorOwner] call CBA_fnc_ownerEvent;

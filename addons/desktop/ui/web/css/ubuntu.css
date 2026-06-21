@@ -42,11 +42,78 @@ html, body {
   background: var(--panel); display: flex; align-items: center;
   padding: 0 12px; font-size: 13px; box-shadow: 0 1px 0 rgba(0,0,0,0.6);
 }
-#topbar .activities { font-weight: 600; cursor: pointer; padding: 2px 8px; border-radius: 4px; }
-#topbar .activities:hover { background: rgba(255,255,255,0.12); }
+#topbar .appsbtn { font-weight: 600; cursor: pointer; padding: 2px 10px; border-radius: 4px; }
+#topbar .appsbtn:hover, #topbar .appsbtn.active { background: rgba(255,255,255,0.14); }
+#topbar #hostname { margin-left: 10px; }
 #topbar .spacer { flex: 1; }
-#topbar #clock { font-weight: 600; }
-#topbar .tray { margin-left: 14px; color: var(--muted); }
+#topbar #clock {
+  position: absolute; left: 50%; transform: translateX(-50%);
+  font-weight: 600; cursor: pointer; padding: 2px 10px; border-radius: 4px; white-space: nowrap;
+}
+#topbar #clock:hover { background: rgba(255,255,255,0.10); }
+
+/* ---------- taskbar (#11) ---------- */
+#tasks { display: flex; align-items: center; gap: 4px; margin-left: 16px; overflow: hidden; }
+.task {
+  display: flex; align-items: center; gap: 6px; max-width: 180px; height: 20px;
+  padding: 0 8px; border-radius: 4px; cursor: pointer; font-size: 12px;
+  background: rgba(255,255,255,0.06); color: var(--muted);
+}
+.task:hover { background: rgba(255,255,255,0.14); color: var(--text); }
+.task.active { background: rgba(233,84,32,0.30); color: var(--text); }
+.task.min { opacity: 0.6; font-style: italic; }
+.task .task-ico { display: inline-flex; font-size: 14px; }
+.task .task-ico svg { width: 14px; height: 14px; }
+.task .task-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* ---------- tray (#12/#13) ---------- */
+#topbar .tray { margin-left: 14px; color: var(--muted); display: flex; align-items: center; gap: 10px; }
+#topbar .tray .tray-ico { display: inline-flex; align-items: center; gap: 5px; cursor: pointer; font-size: 13px; padding: 2px 4px; border-radius: 4px; }
+#topbar .tray .tray-ico:hover { background: rgba(255,255,255,0.12); color: var(--text); }
+#topbar .tray .tray-ico svg { width: 16px; height: 16px; }
+#topbar .tray .batpct { font-size: 12px; font-weight: 600; }
+
+/* ---------- Applications menu (#8) ---------- */
+#appsmenu {
+  position: fixed; top: var(--topbar-h); left: 6px; z-index: 1500; display: none;
+  min-width: 210px; background: var(--panel); border: 1px solid var(--line);
+  border-radius: 0 0 8px 8px; box-shadow: var(--shadow); padding: 4px 0;
+}
+#appsmenu.show { display: block; }
+.am-item { position: relative; display: flex; align-items: center; gap: 10px; padding: 8px 14px; cursor: pointer; font-size: 13px; color: var(--text); }
+.am-item:hover { background: var(--accent); }
+.am-item .am-ico { display: inline-flex; align-items: center; width: 18px; font-size: 16px; }
+.am-item .am-ico svg { width: 16px; height: 16px; }
+.am-item .am-arrow { font-size: 10px; color: var(--muted); }
+.am-item:hover .am-arrow { color: #fff; }
+.am-fly {
+  display: none; position: absolute; top: -4px; left: 100%;
+  min-width: 190px; background: var(--panel); border: 1px solid var(--line);
+  border-radius: 8px; box-shadow: var(--shadow); padding: 4px 0; z-index: 1600;
+}
+.am-cat:hover > .am-fly { display: block; }
+
+/* ---------- tray popovers ---------- */
+.tray-pop {
+  position: fixed; top: var(--topbar-h); z-index: 1600; min-width: 150px;
+  background: var(--panel); border: 1px solid var(--line); border-radius: 0 0 8px 8px;
+  box-shadow: var(--shadow); overflow: hidden;
+}
+.tray-pop .tp-h { padding: 8px 14px; font-weight: 600; border-bottom: 1px solid var(--line); }
+.tray-pop .tp-r { padding: 6px 14px; font-size: 13px; color: var(--muted); }
+.tray-pop .tp-r b { color: var(--text); }
+.tray-pop .pm-item { padding: 8px 14px; cursor: pointer; color: var(--text); }
+.tray-pop .pm-item:hover { background: var(--accent); }
+
+/* ---------- desktop context menu (#16) ---------- */
+.ctx-menu {
+  position: fixed; z-index: 1700; min-width: 170px; background: var(--panel);
+  border: 1px solid var(--line); border-radius: 8px; box-shadow: var(--shadow); padding: 4px 0;
+}
+.ctx-menu .ctx-item { padding: 7px 16px; cursor: pointer; font-size: 13px; color: var(--text); }
+.ctx-menu .ctx-item:hover { background: var(--accent); }
+.ctx-menu .ctx-item.disabled { color: var(--muted); pointer-events: none; opacity: 0.5; }
+.ctx-menu .ctx-sep { height: 1px; background: var(--line); margin: 4px 0; }
 
 /* ---------- dock ---------- */
 #dock {

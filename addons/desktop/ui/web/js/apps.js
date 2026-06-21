@@ -56,6 +56,12 @@
               if (it.dir) { cwd = joinPath(cwd, it.name); load(); }
               else { openFile(joinPath(cwd, it.name)); }
             });
+            li.addEventListener("contextmenu", function (e) {
+              e.preventDefault(); e.stopPropagation();
+              entries.querySelectorAll("li").forEach(function (n) { n.classList.remove("sel"); });
+              li.classList.add("sel"); sel = it;
+              fileMenu(e.clientX, e.clientY, it);
+            });
             entries.appendChild(li);
           });
         }).catch(function () { entries.innerHTML = '<li class="muted pad">Filesystem unavailable</li>'; });
@@ -64,9 +70,83 @@
       function openFile(path) {
         A3.request("fs_read", { path: path }).then(function (res) {
           if (res.error && res.error !== "") { Modal.alert("Open", res.error === "not_text" ? "Not a text file." : "Cannot open file."); return; }
+          // Password-protected file (#7): the backend reports only "locked" (never the password or
+          // payload). Prompt, verify server-side via fs_unlock, then open the decrypted content.
+          if (res.locked) { unlockAndOpen(path); return; }
           Apps.launch("notepad", { path: path, content: res.content || "" });
         });
       }
+
+      function unlockAndOpen(path) {
+        Modal.prompt("This file is password protected. Enter password:", "").then(function (pass) {
+          if (pass == null) return;
+          A3.request("fs_unlock", { path: path, pass: pass }).then(function (res) {
+            if (res.error === "bad_pass") { Modal.alert("Locked", "Wrong password."); return; }
+            if (res.error && res.error !== "") { Modal.alert("Open", "Cannot open file."); return; }
+            Apps.launch("notepad", { path: path, content: res.content || "" });
+          });
+        });
+      }
+
+      // Right-click context menu (#16): per-item (open/cut/copy/delete/rename) and empty-area
+      // (new folder/file, paste, refresh). Cut/copy stash to window.AE3_clipboard; paste moves/copies
+      // via the fs_move / fs_copy backend ops.
+      function paste() {
+        var cb = window.AE3_clipboard; if (!cb) return;
+        var dest = joinPath(cwd, cb.name);
+        A3.request(cb.op === "cut" ? "fs_move" : "fs_copy", { path: cb.path, dest: dest }).then(function (r) {
+          if (r.error && r.error !== "") { Modal.alert("Paste", "Could not paste here."); return; }
+          if (cb.op === "cut") window.AE3_clipboard = null;
+          load();
+        });
+      }
+      function fileMenu(x, y, it) {
+        var full = joinPath(cwd, it.name);
+        window.AE3_ctxMenu(x, y, [
+          { label: it.dir ? "Open" : "Open", action: function () { if (it.dir) { cwd = full; load(); } else openFile(full); } },
+          { sep: true },
+          { label: "Cut", action: function () { window.AE3_clipboard = { path: full, name: it.name, op: "cut" }; } },
+          { label: "Copy", action: function () { window.AE3_clipboard = { path: full, name: it.name, op: "copy" }; } },
+          { label: "Paste", disabled: !window.AE3_clipboard, action: paste },
+          { sep: true },
+          { label: "Rename", action: function () {
+            Modal.prompt("Rename to", it.name).then(function (nn) {
+              if (!nn || nn === it.name) return;
+              A3.request("fs_move", { path: full, dest: joinPath(cwd, nn) }).then(function (r) {
+                if (r.error && r.error !== "") Modal.alert("Rename", "Could not rename."); else load();
+              });
+            });
+          } },
+          { label: "Delete", action: function () {
+            A3.request("fs_delete", { path: full }).then(function (r) {
+              if (r.error && r.error !== "") Modal.alert("Delete", "Permission denied."); else load();
+            });
+          } }
+        ]);
+      }
+      function emptyMenu(x, y) {
+        window.AE3_ctxMenu(x, y, [
+          { label: "New Folder…", action: function () {
+            Modal.prompt("New folder name", "untitled").then(function (name) {
+              if (!name) return;
+              A3.request("fs_mkdir", { path: joinPath(cwd, name) }).then(function (r) { if (r.error && r.error !== "") Modal.alert("New Folder", "Permission denied."); else load(); });
+            });
+          } },
+          { label: "New File…", action: function () {
+            Modal.prompt("New file name", "untitled.txt").then(function (name) {
+              if (!name) return;
+              A3.request("fs_save", { path: joinPath(cwd, name), content: "" }).then(function (r) { if (r.error && r.error !== "") Modal.alert("New File", "Permission denied."); else load(); });
+            });
+          } },
+          { label: "Paste", disabled: !window.AE3_clipboard, action: paste },
+          { sep: true },
+          { label: "Refresh", action: load }
+        ]);
+      }
+      entries.addEventListener("contextmenu", function (e) {
+        if (e.target !== entries) return; // item menus handle their own; this is the empty area
+        e.preventDefault(); emptyMenu(e.clientX, e.clientY);
+      });
 
       body.querySelector(".up").addEventListener("click", function () {
         if (cwd !== "/") { cwd = cwd.replace(/\/+$/, "").split("/").slice(0, -1).join("/") || "/"; load(); }
@@ -124,9 +204,21 @@
       body.querySelector(".o").addEventListener("click", function () {
         Modal.prompt("Open file (full path)", path || "/home/").then(function (p) {
           if (!p) return;
+          function openInto(res) { ta.value = res.content || ""; path = p; setName(); }
           A3.request("fs_read", { path: p }).then(function (res) {
             if (res.error && res.error !== "") { Modal.alert("Open", "Cannot open file."); return; }
-            ta.value = res.content || ""; path = p; setName();
+            if (res.locked) { // password-protected (#7): verify before showing content
+              Modal.prompt("This file is password protected. Enter password:", "").then(function (pass) {
+                if (pass == null) return;
+                A3.request("fs_unlock", { path: p, pass: pass }).then(function (r2) {
+                  if (r2.error === "bad_pass") { Modal.alert("Locked", "Wrong password."); return; }
+                  if (r2.error && r2.error !== "") { Modal.alert("Open", "Cannot open file."); return; }
+                  openInto(r2);
+                });
+              });
+              return;
+            }
+            openInto(res);
           });
         });
       });
@@ -144,8 +236,21 @@
     id: "settings", title: "Settings", glyph: Icons.settings, width: 560, height: 400,
     showOnDesktop: true, showInDock: true, singleton: true,
     render: function (body) {
-      body.innerHTML = '<div class="pad"><h3>System</h3><div id="sysinfo" class="muted">Reading&hellip;</div></div>';
+      body.innerHTML =
+        '<div class="pad">' +
+          '<h3>System</h3><div id="sysinfo" class="muted">Reading&hellip;</div>' +
+          '<h3 style="margin-top:14px">Personalisation</h3>' +
+          '<div style="display:flex;flex-direction:column;gap:8px;max-width:420px">' +
+            '<label class="muted">System name (hostname)</label>' +
+            '<input class="input shost" placeholder="ae3-os">' +
+            '<label class="muted">Wallpaper (CSS colour/gradient or image path, blank = default)</label>' +
+            '<input class="input swall" placeholder="#1d1d1d or linear-gradient(...) or \\\\z\\\\...\\\\bg.jpg">' +
+            '<div><button class="btn accent ssave">Apply</button> <span class="muted sst"></span></div>' +
+          '</div>' +
+        '</div>';
       var box = body.querySelector("#sysinfo");
+      var hostEl = body.querySelector(".shost");
+      var wallEl = body.querySelector(".swall");
       A3.request("sysinfo", {}).then(function (s) {
         s = s || {};
         box.innerHTML =
@@ -153,7 +258,20 @@
           "IP: " + esc(s.ip || "?") + " &nbsp; Gateway: " + esc(s.gateway || "?") + "<br>" +
           "Power: " + esc(s.power || "?") + " &nbsp; Battery: " + (s.battery != null ? s.battery + "%" : "?") + "<br>" +
           "Uptime: " + esc(s.uptime || "?");
+        if (hostEl) hostEl.value = s.hostname || "";
+        if (wallEl) wallEl.value = s.wallpaper || "";
       }).catch(function () { box.textContent = "Unavailable"; });
+
+      body.querySelector(".ssave").addEventListener("click", function () {
+        var host = hostEl.value.trim(), wall = wallEl.value.trim();
+        var st = body.querySelector(".sst");
+        A3.request("sys_set", { hostname: host, wallpaper: wall }).then(function (r) {
+          if (r && r.error && r.error !== "") { st.textContent = "Failed."; return; }
+          st.textContent = "Applied.";
+          if (host) Desktop.setHostname(host);          // reflect immediately on this client (#15)
+          Desktop.setWallpaper(wall);
+        });
+      });
     }
   });
 
@@ -162,35 +280,51 @@
     id: "network", title: "Network", glyph: Icons.network, width: 560, height: 380,
     showInDock: true,
     render: function (body) {
-      body.innerHTML = '<div class="pad"><div style="display:flex;align-items:center"><h3 style="flex:1">Wireless networks</h3><button class="btn rescan">Rescan</button></div><ul class="list nets"><li class="muted">Scanning&hellip;</li></ul></div>';
+      body.innerHTML = '<div class="pad"><div style="display:flex;align-items:center"><h3 style="flex:1">Wireless networks</h3><span class="muted nstat" style="margin-right:8px"></span><button class="btn rescan">Rescan</button></div><ul class="list nets"><li class="muted">Scanning&hellip;</li></ul></div>';
       var nets = body.querySelector(".nets");
+      var statEl = body.querySelector(".nstat");
+      // Password-protected routers (#14): prompt before connecting, then send the password.
+      function connect(n) {
+        if (n.locked) {
+          Modal.prompt("Network '" + n.ssid + "' is password protected:", "").then(function (pw) {
+            if (pw == null) return;
+            A3.send("net_connect", { netId: n.netId, password: pw });
+            setTimeout(scan, 900);
+          });
+        } else {
+          A3.send("net_connect", { netId: n.netId });
+          setTimeout(scan, 900);
+        }
+      }
       function scan() {
         nets.innerHTML = '<li class="muted">Scanning&hellip;</li>';
         A3.request("net_scan", {}).then(function (list) {
           nets.innerHTML = "";
           (list || []).forEach(function (n) {
-            var li = h('<li><span class="ico">' + Icons.wifi + '</span><span>' + esc(n.ssid) + (n.current ? " <span class=\"muted\">(connected)</span>" : "") +
+            var lock = n.locked ? ' <span class="muted" title="Password protected">&#128274;</span>' : "";
+            var li = h('<li><span class="ico">' + Icons.wifi + '</span><span>' + esc(n.ssid) + lock + (n.current ? " <span class=\"muted\">(connected)</span>" : "") +
               "</span><span class=\"muted\" style=\"margin-left:auto\">" + esc(n.ip || "") + "</span></li>");
-            // Per-row action: Disconnect on the connected network, otherwise Connect. (Double-click
-            // the row still connects, as before.)
             var btn = document.createElement("button");
             btn.className = "btn"; btn.style.marginLeft = "6px";
             btn.textContent = n.current ? "Disconnect" : "Connect";
             btn.addEventListener("click", function (e) {
               e.stopPropagation();
-              A3.send(n.current ? "net_disconnect" : "net_connect", { netId: n.netId });
-              setTimeout(scan, 800);
+              if (n.current) { A3.send("net_disconnect", {}); setTimeout(scan, 800); } else connect(n);
             });
             li.appendChild(btn);
-            li.addEventListener("dblclick", function () {
-              A3.send("net_connect", { netId: n.netId });
-              setTimeout(scan, 800);
-            });
+            li.addEventListener("dblclick", function () { if (!n.current) connect(n); });
             nets.appendChild(li);
           });
           if (!list || !list.length) nets.innerHTML = '<li class="muted">No networks in range</li>';
         }).catch(function () { nets.innerHTML = '<li class="muted">Network stack unavailable</li>'; });
       }
+      // Server connect verdict (range/password) (#14).
+      A3.on("net_result", function (r) {
+        if (!statEl) return;
+        statEl.textContent = (r && r.msg) || "";
+        statEl.style.color = (r && r.ok) ? "var(--good)" : "#ff8a6a";
+        setTimeout(scan, 300);
+      });
       body.querySelector(".rescan").addEventListener("click", scan);
       scan();
     }
@@ -208,6 +342,9 @@
       var view = new Date(); view.setDate(1);
       var events = {};       // iso -> [{date,title,location,body,index}]
       var selIso = null;
+      // Full-height layout (#3): toolbars + grid keep their size, the day/event panel grows to fill
+      // the rest of the window instead of being capped to a small inner-scroll box.
+      body.style.display = "flex"; body.style.flexDirection = "column";
       body.innerHTML =
         '<div class="toolbar">' +
           '<button class="btn py" title="Previous year">&#171;</button>' +
@@ -218,7 +355,7 @@
         '</div>' +
         '<div class="toolbar"><input class="input goto" type="date" style="flex:1"><button class="btn accent go">Go</button><button class="btn today">Today</button><button class="btn refresh" title="Refresh">&#8635;</button></div>' +
         '<div class="grid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;padding:8px"></div>' +
-        '<div class="detail pad" style="border-top:1px solid var(--line);max-height:200px;overflow:auto"><p class="muted">Select a day to view or add events.</p></div>';
+        '<div class="detail pad" style="border-top:1px solid var(--line);flex:1;min-height:0;overflow:auto"><p class="muted">Select a day to view or add events.</p></div>';
       var hdr = body.querySelector(".hdr");
       var grid = body.querySelector(".grid");
       var detail = body.querySelector(".detail");
@@ -295,6 +432,8 @@
       body.querySelector(".ny").addEventListener("click", function () { view.setFullYear(view.getFullYear() + 1); draw(); });
       body.querySelector(".today").addEventListener("click", function () { view = new Date(); view.setDate(1); draw(); });
       body.querySelector(".refresh").addEventListener("click", function () { fetchAll(selIso); });
+      // Live update when the store changes server-side (Zeus/Eden module add, #4).
+      A3.on("cal_changed", function () { fetchAll(selIso); });
       body.querySelector(".go").addEventListener("click", function () {
         var v = body.querySelector(".goto").value; if (!v) return;
         var p = v.split("-"); view = new Date(+p[0], +p[1] - 1, 1); draw(); showDay(v);
@@ -366,8 +505,18 @@
       var frame = body.querySelector(".page");
       var addrEl = body.querySelector(".addr");
       var history = [], hi = -1;
+      var curDir = ""; // directory of the page currently shown, so relative in-page links resolve
 
       function setDoc(htmlText) { frame.srcdoc = htmlText + HOOK; }
+
+      // Directory portion of a path ("sites/portal/index.html" -> "sites/portal/"). "" for bare names.
+      function dirOf(p) {
+        var s = String(p).replace(/\\/g, "/");
+        var i = s.lastIndexOf("/");
+        return i < 0 ? "" : s.slice(0, i + 1);
+      }
+      // True for an absolute VFS path (\z\mod\...) or a drive path - these are NOT page-relative.
+      function isAbsolute(addr) { return addr.charAt(0) === "\\" || addr.charAt(0) === "/" || /^[a-z]:/i.test(addr); }
 
       function resolve(addrRaw) {
         var addr = String(addrRaw == null ? "home" : addrRaw).trim();
@@ -379,8 +528,13 @@
           if (mdName && !hasPath) return { type: "md", path: "wiki/" + mdName[1], label: mdName[1] };
           return { type: "md", path: addr, label: addr };
         }
-        // Explicit .html / any pathed address: load through the root search (mod or mission).
-        if (/\.html?($|[#?])/i.test(addr) || hasPath) return { type: "html", path: addr, label: addr };
+        // Explicit .html / any pathed address: load through the root search (mod or mission). A
+        // page-relative href (e.g. portal's "../wiki/index.html") is joined to the current page's
+        // directory; bridge.loadFile then collapses the ".." so A3API gets a clean path (#1).
+        if (/\.html?($|[#?])/i.test(addr) || hasPath) {
+          var p = (hasPath && !isAbsolute(addr)) ? (curDir + addr) : addr;
+          return { type: "html", path: p, label: addr };
+        }
 
         var lower = addr.toLowerCase().replace(/^https?:\/\//, "").replace(/\/+$/, "");
         if (sites[lower]) return sites[lower];
@@ -390,6 +544,7 @@
 
       function load(t) {
         addrEl.value = t.label;
+        curDir = dirOf(t.path); // base for any relative links on the page we are about to show
         if (t.type === "md") {
           A3.loadFile(t.path).then(function (mdText) {
             setDoc(wikiDoc(MD.render(mdText || "")));
@@ -432,6 +587,7 @@
     render: function (body, win) {
       body.innerHTML =
         '<div class="toolbar"><span class="muted world" style="flex:1"></span>' +
+          '<button class="btn fullmap accent" title="Open the real in-game map">Full Map</button>' +
           '<button class="btn zin" title="Zoom in">+</button><button class="btn zout" title="Zoom out">&#8211;</button></div>' +
         '<div class="mapwrap" style="position:relative;height:calc(100% - 50px)">' +
           '<canvas class="map" style="display:block;width:100%;height:100%;background:#1b2a1b"></canvas>' +
@@ -504,11 +660,160 @@
       }
 
       function refresh() { A3.request("map_data", { range: range }).then(draw).catch(function (e) { console.error("[AE3] map_data failed:", e); draw(null); }); }
+      body.querySelector(".fullmap").addEventListener("click", function () { A3.send("map_open", {}); });
       body.querySelector(".zin").addEventListener("click", function () { range = Math.max(50, range / 1.5); refresh(); });
       body.querySelector(".zout").addEventListener("click", function () { range = Math.min(2000, range * 1.5); refresh(); });
       win.timer = setInterval(refresh, 2000);
       win.app.onClose = function (w) { if (w.timer) clearInterval(w.timer); };
       refresh();
+    }
+  });
+
+  // ---------------- Cryptography: Crypto (#9) ----------------
+  Apps.register({
+    id: "crypto", title: "Crypto", glyph: Icons.crypto, width: 520, height: 440, showInDock: false,
+    render: function (body) {
+      body.innerHTML =
+        '<div class="pad" style="display:flex;flex-direction:column;gap:8px;height:100%">' +
+          '<div style="display:flex;gap:8px">' +
+            '<select class="input cmode" style="flex:1"><option value="encrypt">Encrypt</option><option value="decrypt">Decrypt</option></select>' +
+            '<select class="input calgo" style="flex:1"><option value="caesar">Caesar</option><option value="columnar">Columnar</option></select>' +
+          '</div>' +
+          '<input class="input ckey" placeholder="Key (caesar: number, columnar: word)">' +
+          '<textarea class="input ctext" rows="4" placeholder="Text to process"></textarea>' +
+          '<div><button class="btn accent crun">Run</button></div>' +
+          '<textarea class="input cout" rows="4" readonly placeholder="Result"></textarea>' +
+        '</div>';
+      function err(e) { return ({ no_input: "Enter some text.", bad_key: "Invalid key.", bad_mode: "Pick a mode.", len_mismatch: "Key/message length mismatch.", bad_algo: "Bad algorithm." })[e] || e; }
+      body.querySelector(".crun").addEventListener("click", function () {
+        A3.request("crypto_run", {
+          mode: body.querySelector(".cmode").value, algorithm: body.querySelector(".calgo").value,
+          key: body.querySelector(".ckey").value, text: body.querySelector(".ctext").value
+        }).then(function (r) {
+          body.querySelector(".cout").value = (r && r.error && r.error !== "") ? ("Error: " + err(r.error)) : ((r && r.result) || "");
+        });
+      });
+    }
+  });
+
+  // ---------------- Cryptography: Crack (#9) ----------------
+  Apps.register({
+    id: "crack", title: "Crack", glyph: Icons.crack, width: 560, height: 480, showInDock: false,
+    render: function (body) {
+      body.innerHTML =
+        '<div class="pad" style="display:flex;flex-direction:column;gap:8px;height:100%">' +
+          '<div style="display:flex;gap:8px">' +
+            '<select class="input kmode" style="flex:1"><option value="bruteforce">Bruteforce</option><option value="statistics">Statistics</option><option value="key">Key length</option></select>' +
+            '<select class="input kalgo" style="flex:1"><option value="caesar">Caesar</option><option value="columnar">Columnar</option></select>' +
+          '</div>' +
+          '<textarea class="input ktext" rows="3" placeholder="Ciphertext"></textarea>' +
+          '<div><button class="btn accent krun">Analyse</button></div>' +
+          '<pre class="kout" style="flex:1;overflow:auto;background:#1e1e1e;padding:10px;border-radius:6px;margin:0;white-space:pre-wrap;font-family:monospace;font-size:12px"></pre>' +
+        '</div>';
+      function err(e) { return ({ no_input: "Enter ciphertext.", unsupported: "Not available for this cipher.", prime_length: "Message length is prime - no columns.", bad_algo: "Bad algorithm." })[e] || e; }
+      body.querySelector(".krun").addEventListener("click", function () {
+        A3.request("crack_run", {
+          mode: body.querySelector(".kmode").value, algorithm: body.querySelector(".kalgo").value,
+          text: body.querySelector(".ktext").value
+        }).then(function (r) {
+          var out = body.querySelector(".kout");
+          if (r && r.error && r.error !== "") { out.textContent = "Error: " + err(r.error); return; }
+          out.textContent = ((r && r.lines) || []).join("\n");
+        });
+      });
+    }
+  });
+
+  // ---------------- Games: Snake (#9) ----------------
+  Apps.register({
+    id: "snake", title: "Snake", glyph: Icons.snake, width: 420, height: 460, showInDock: false,
+    render: function (body, win) {
+      body.innerHTML =
+        '<div class="pad" style="display:flex;flex-direction:column;gap:8px;height:100%;align-items:center">' +
+          '<div class="muted sstat">Score: 0 — arrow keys / WASD</div>' +
+          '<canvas class="sgame" width="360" height="360" style="background:#10160f;border-radius:6px"></canvas>' +
+          '<div><button class="btn accent sgo">New game</button></div>' +
+        '</div>';
+      var cv = body.querySelector(".sgame"), ctx = cv.getContext("2d");
+      var stat = body.querySelector(".sstat");
+      var N = 18, cell = cv.width / N;
+      var snake, dir, food, score, over, timer = null;
+      function place() { food = { x: Math.floor(Math.random() * N), y: Math.floor(Math.random() * N) }; }
+      function reset() {
+        snake = [{ x: 9, y: 9 }]; dir = { x: 1, y: 0 }; score = 0; over = false; place();
+        stat.textContent = "Score: 0";
+        if (timer) clearInterval(timer); timer = setInterval(step, 130);
+      }
+      function step() {
+        if (over) return;
+        var head = { x: (snake[0].x + dir.x + N) % N, y: (snake[0].y + dir.y + N) % N };
+        if (snake.some(function (s) { return s.x === head.x && s.y === head.y; })) { over = true; stat.textContent = "Game over — score " + score; return; }
+        snake.unshift(head);
+        if (head.x === food.x && head.y === food.y) { score++; stat.textContent = "Score: " + score; place(); } else { snake.pop(); }
+        draw();
+      }
+      function draw() {
+        ctx.fillStyle = "#10160f"; ctx.fillRect(0, 0, cv.width, cv.height);
+        ctx.fillStyle = "#e95420"; ctx.fillRect(food.x * cell, food.y * cell, cell - 1, cell - 1);
+        ctx.fillStyle = "#8ce10b";
+        snake.forEach(function (s) { ctx.fillRect(s.x * cell, s.y * cell, cell - 1, cell - 1); });
+      }
+      function key(e) {
+        var k = e.key.toLowerCase();
+        if ((k === "arrowup" || k === "w") && dir.y === 0) dir = { x: 0, y: -1 };
+        else if ((k === "arrowdown" || k === "s") && dir.y === 0) dir = { x: 0, y: 1 };
+        else if ((k === "arrowleft" || k === "a") && dir.x === 0) dir = { x: -1, y: 0 };
+        else if ((k === "arrowright" || k === "d") && dir.x === 0) dir = { x: 1, y: 0 };
+        else return;
+        e.preventDefault();
+      }
+      document.addEventListener("keydown", key);
+      body.querySelector(".sgo").addEventListener("click", reset);
+      win.app.onClose = function () { if (timer) clearInterval(timer); document.removeEventListener("keydown", key); };
+      reset();
+    }
+  });
+
+  // ---------------- Recycle Bin (#17) ----------------
+  Apps.register({
+    id: "recyclebin", title: "Recycle Bin", glyph: Icons.trash, width: 560, height: 420, showInDock: false, singleton: true,
+    render: function (body) {
+      body.innerHTML =
+        '<div class="toolbar"><button class="btn refresh">&#8635;</button><button class="btn restore">Restore</button><button class="btn empty">Empty Bin</button></div>' +
+        '<ul class="list trash"><li class="muted pad">Loading…</li></ul>';
+      var listEl = body.querySelector(".trash");
+      var sel = null;
+      function load() {
+        sel = null;
+        A3.request("fs_list", { path: "/.trash" }).then(function (res) {
+          listEl.innerHTML = "";
+          if (res.error && res.error !== "") { listEl.innerHTML = '<li class="muted pad">Recycle Bin is empty.</li>'; return; }
+          var items = res.entries || [];
+          if (!items.length) { listEl.innerHTML = '<li class="muted pad">Recycle Bin is empty.</li>'; return; }
+          items.forEach(function (it) {
+            var li = h('<li><span class="ico">' + (it.dir ? Icons.folder : Icons.file) + '</span><span>' + esc(it.name) + "</span></li>");
+            li.addEventListener("click", function () {
+              listEl.querySelectorAll("li").forEach(function (n) { n.classList.remove("sel"); });
+              li.classList.add("sel"); sel = it.name;
+            });
+            listEl.appendChild(li);
+          });
+        }).catch(function () { listEl.innerHTML = '<li class="muted pad">Recycle Bin is empty.</li>'; });
+      }
+      body.querySelector(".refresh").addEventListener("click", load);
+      body.querySelector(".restore").addEventListener("click", function () {
+        if (!sel) return;
+        A3.request("fs_restore", { name: sel }).then(function (r) {
+          if (r.error && r.error !== "") Modal.alert("Restore", "Could not restore."); else load();
+        });
+      });
+      body.querySelector(".empty").addEventListener("click", function () {
+        Modal.confirm("Empty Bin", "Permanently delete all items?").then(function (ok) {
+          if (!ok) return;
+          A3.request("fs_empty_trash", {}).then(load);
+        });
+      });
+      load();
     }
   });
 
@@ -617,13 +922,13 @@
 
   // ---------------- About ----------------
   Apps.register({
-    id: "about", title: "About AE3 OS", glyph: Icons.about, width: 420, height: 260, singleton: true,
+    id: "about", title: "About OS", glyph: Icons.about, width: 420, height: 260, singleton: true,
     render: function (body) {
       body.innerHTML =
         '<div class="pad" style="text-align:center">' +
-          '<div style="font-size:48px;color:var(--accent)">' + Icons.terminal + '</div><h2>AE3 OS</h2>' +
-          '<p class="muted">Advanced Equipment Revamped - Ubuntu edition</p>' +
-          '<p class="muted">Web desktop on Arma 3 CEF</p></div>';
+          '<div style="font-size:48px;color:var(--accent)">' + Icons.terminal + '</div><h2>armaOS</h2>' +
+          '<p class="muted">Advanced Equipment Revamped</p>' +
+          '<p class="muted">Powered by SHITE Technologies</p></div>';
     }
   });
 })();

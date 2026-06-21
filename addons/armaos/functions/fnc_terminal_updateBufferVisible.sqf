@@ -18,8 +18,14 @@ params ["_computer"];
 
 private _terminal = _computer getVariable "AE3_terminal";
 
+// Defensive: a laptop that never opened a CLI shell has no initialized terminal/buffer. Bail rather
+// than crash on "count <Number>" at the buffer math below (Root_CW GUI door action, issue #2).
+if (isNil "_terminal" || {!(_terminal isEqualType createHashMap)}) exitWith {};
+
 private _terminalBuffer = _terminal get "AE3_terminalBuffer";
 private _terminalRenderedBuffer = _terminal get "AE3_terminalRenderedBuffer";
+
+if (!(_terminalBuffer isEqualType []) || {!(_terminalRenderedBuffer isEqualType [])}) exitWith {};
 
 private _size = _terminal get "AE3_terminalSize";
 private _terminalMaxRows = (_terminal get "AE3_terminalMaxRows") * 0.75 / _size;
