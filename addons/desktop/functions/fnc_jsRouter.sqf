@@ -57,7 +57,7 @@ switch (_command) do {
     // "login"). Auto-login, when wanted, is a separate explicit "boot" push.
     case "ready": {
         if (!isNull _computer) then {
-            private _host = _computer getVariable ["ace_cargo_customName", "ae3-os"];
+            private _host = _computer getVariable ["ace_cargo_customName", "armaOS"];
             ["hostname", createHashMapFromArray [["hostname", _host]]] call FUNC(jsSend);
         };
         // Push apps registered by other addons (e.g. Root Cyberwarfare) into the launcher.
@@ -70,7 +70,7 @@ switch (_command) do {
             private _session = _computer getVariable [QGVAR(sessionUser), ""];
             if (_session isNotEqualTo "") then {
                 _display setVariable [QGVAR(user), _session];
-                private _host = _computer getVariable ["ace_cargo_customName", "ae3-os"];
+                private _host = _computer getVariable ["ace_cargo_customName", "armaOS"];
                 ["boot", createHashMapFromArray [["user", _session], ["hostname", _host]]] call FUNC(jsSend);
             };
         };

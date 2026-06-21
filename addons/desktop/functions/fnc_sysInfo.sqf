@@ -20,7 +20,7 @@ params [["_computer", objNull, [objNull]], ["_user", "", [""]]];
 // Per-user home + Desktop (#9): root lives in /root, every other user in /home/<user>.
 private _home = ["/home/" + _user, "/root"] select (_user isEqualTo "root" || _user isEqualTo "");
 private _info = createHashMapFromArray [
-    ["hostname", "ae3-os"], ["ip", "-"], ["gateway", "-"], ["power", "-"], ["battery", -1], ["uptime", "-"],
+    ["hostname", "armaOS"], ["ip", "-"], ["gateway", "-"], ["power", "-"], ["battery", -1], ["uptime", "-"],
     ["home", _home], ["user", _user]
 ];
 if (isNull _computer) exitWith { _info };

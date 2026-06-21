@@ -51,7 +51,7 @@
       }).catch(function (e) {
         // No A3API => plain-browser preview: allow straight in so the shell can be inspected.
         // In-game (A3API present) a timeout is a real failure - surface it instead of faking a login.
-        if (typeof A3API === "undefined") { startDesktop({ hostname: "ae3-os", user: user.value || "user" }); return; }
+        if (typeof A3API === "undefined") { startDesktop({ hostname: "armaOS", user: user.value || "user" }); return; }
         console.error("[AE3] login request failed:", e);
         err.textContent = "Login timed out - check the server connection."; pass.value = "";
       });

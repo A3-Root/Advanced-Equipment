@@ -346,7 +346,7 @@
           '<h3 style="margin-top:14px">Personalisation</h3>' +
           '<div style="display:flex;flex-direction:column;gap:8px;max-width:420px">' +
             '<label class="muted">System name (hostname)</label>' +
-            '<input class="input shost" placeholder="ae3-os">' +
+            '<input class="input shost" placeholder="armaOS">' +
             '<label class="muted">Wallpaper (CSS colour/gradient or image path, blank = default)</label>' +
             '<input class="input swall" placeholder="#1d1d1d or linear-gradient(...) or \\\\z\\\\...\\\\bg.jpg">' +
             '<div><button class="btn accent ssave">Apply</button> <span class="muted sst"></span></div>' +

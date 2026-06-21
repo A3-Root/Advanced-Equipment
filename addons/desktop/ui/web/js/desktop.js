@@ -441,7 +441,7 @@
     },
     setHostname: function (name) {
       var h = document.getElementById("hostname");
-      if (h) h.textContent = name || "ae3-os";
+      if (h) h.textContent = name || "armaOS";
     },
     // Wallpaper (#15): CSS background applied to #wallpaper (url or gradient/colour string).
     setWallpaper: function (val) {
