@@ -205,7 +205,9 @@ html, body {
 .window.minimized { display: none; }
 
 /* generic widgets used by apps */
-.toolbar { display: flex; align-items: center; gap: 6px; padding: 8px; background: #2b2b2b; border-bottom: 1px solid var(--line); }
+.toolbar { display: flex; align-items: center; gap: 6px; padding: 8px; background: #2b2b2b; border-bottom: 1px solid var(--line); flex: 0 0 auto; }
+/* Let toolbar inputs shrink instead of pushing buttons (New Folder/Delete) off the edge (#9/#11). */
+.toolbar .input { min-width: 0; }
 .btn { background: var(--surface-2); color: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 6px 12px; cursor: pointer; font-size: 13px; }
 .btn:hover { background: #4a4a4a; }
 .btn.accent { background: var(--accent); border-color: transparent; }
@@ -215,6 +217,12 @@ html, body {
 .list li { padding: 7px 12px; cursor: pointer; display: flex; align-items: center; gap: 8px; }
 .list li:hover { background: rgba(255,255,255,0.07); }
 .list li.sel { background: rgba(233,84,32,0.25); }
+/* file browser list fills its pane so empty space is right-clickable and long lists scroll (#4/#8). */
+.list.entries { flex: 1 1 auto; min-height: 0; overflow: auto; }
+/* folders vs files: distinct icon tint + label colour, Ubuntu/Debian-like (#7). */
+.list li.isdir .ico { color: #e9b96e; }
+.list li.isdir .ico svg { color: #e9b96e; }
+.list li.isdir > span:last-child { color: #f0d9b0; font-weight: 600; }
 .muted { color: var(--muted); }
 .pad { padding: 14px; }
 
@@ -250,6 +258,23 @@ svg { vertical-align: middle; }
 .pk-body { flex: 1; min-height: 0; display: flex; flex-direction: column; }
 .pk-foot { display: flex; align-items: center; gap: 8px; padding: 10px; border-top: 1px solid var(--line); }
 .pk-foot .pk-name { flex: 0 0 240px; }
+
+/* ---------- toast notifications (Root_CW general #1) ---------- */
+#toasts {
+  position: fixed; top: calc(var(--topbar-h) + 12px); left: 50%; transform: translateX(-50%);
+  z-index: 2200; display: flex; flex-direction: column; align-items: center; gap: 8px; pointer-events: none;
+}
+.toast {
+  display: flex; align-items: center; gap: 10px; max-width: 70vw;
+  padding: 11px 18px; border-radius: 8px; font-size: 14px; font-weight: 600; color: #fff;
+  background: #333; border: 1px solid var(--line); box-shadow: var(--shadow);
+  opacity: 0; transform: translateY(-10px); transition: opacity 0.2s, transform 0.2s;
+}
+.toast.show { opacity: 1; transform: translateY(0); }
+.toast .t-ic { font-size: 16px; display: inline-flex; }
+.toast.ok { background: #1f7a52; border-color: #26a269; }
+.toast.error { background: #a33016; border-color: #e9542d; }
+.toast.warn { background: #8a5a13; border-color: #e0a020; }
 
 /* ---------- My Computer volumes (#11) ---------- */
 .mc-vols { display: flex; flex-wrap: wrap; gap: 10px; padding: 12px; }

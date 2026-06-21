@@ -188,4 +188,23 @@ if (isNull _entity) exitWith {};
     };
 
     /* ======================================== */
+
+    // Router-only wireless config (#1/#10): show + populate the Wireless Range and Gateway fields when
+    // the selected asset is a router; they stay hidden for every other device.
+    if (_entity getVariable ["AE3_cap_isRouter", false]) then
+    {
+        private _rangeLabelCtrl = _display displayCtrl 1003;
+        private _rangeEditCtrl = _display displayCtrl 1910;
+        private _gatewayLabelCtrl = _display displayCtrl 1004;
+        private _gatewayEditCtrl = _display displayCtrl 1911;
+
+        { _x ctrlShow true } forEach [_rangeLabelCtrl, _rangeEditCtrl, _gatewayLabelCtrl, _gatewayEditCtrl];
+        _rangeEditCtrl ctrlEnable true;
+        _gatewayEditCtrl ctrlEnable true;
+
+        _rangeEditCtrl ctrlSetText str (_entity getVariable ["AE3_network_wirelessRange", 50]);
+        _gatewayEditCtrl ctrlSetText ([_entity getVariable ["AE3_network_address", [192, 168, 0, 1]]] call AE3_network_fnc_ip2str);
+    };
+
+    /* ======================================== */
 };

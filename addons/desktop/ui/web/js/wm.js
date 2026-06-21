@@ -8,7 +8,16 @@
   var Z = 200;
   var openWindows = [];   // {id, el, app}
   var seq = 1;
-  var TOPBAR = 28, DOCK = 64;
+  // Must match CSS --topbar-h / --dock-w (css/ubuntu.css). Read them from the CSS custom properties so
+  // there is a single source of truth; fall back to the known defaults. Previously TOPBAR was 28 while
+  // the CSS bar is 40px tall, so maximized windows were clipped under the top bar (#3).
+  function cssPx(name, dflt) {
+    try {
+      var v = parseInt(getComputedStyle(document.documentElement).getPropertyValue(name), 10);
+      return (isFinite(v) && v > 0) ? v : dflt;
+    } catch (e) { return dflt; }
+  }
+  var TOPBAR = cssPx("--topbar-h", 40), DOCK = cssPx("--dock-w", 64);
 
   function clamp(win) {
     var maxX = window.innerWidth - 80;
@@ -54,7 +63,10 @@
     var id = "win" + (seq++);
     var el = document.createElement("div");
     el.className = "window";
-    var w = app.width || 560, h = app.height || 380;
+    // Never open larger than the viewport, so apps with generous defaults (My Computer #9, SSH #11)
+    // can't spill past the screen edge and clip their toolbars.
+    var w = Math.min(app.width || 560, window.innerWidth - DOCK - 8);
+    var h = Math.min(app.height || 380, window.innerHeight - TOPBAR - 8);
     el.style.width = w + "px"; el.style.height = h + "px";
     el.style.left = Math.max(DOCK + 20, (window.innerWidth - w) / 2 + (openWindows.length * 26) % 160) + "px";
     el.style.top = Math.max(TOPBAR + 20, (window.innerHeight - h) / 3 + (openWindows.length * 26) % 120) + "px";

@@ -49,6 +49,36 @@
         }, resolve);
       });
     },
+    // Slider input (Root_CW Vehicles #1): pick a numeric value within [min,max]. Resolves the chosen
+    // number, or null on cancel. unit is an optional suffix shown next to the value (e.g. "%", "km/h").
+    slider: function (title, min, max, value, step, unit) {
+      min = Number(min); max = Number(max); step = Number(step) || 1;
+      if (!isFinite(value)) value = min;
+      value = Math.min(max, Math.max(min, Number(value)));
+      unit = unit || "";
+      return new Promise(function (resolve) {
+        overlay(function (box, close) {
+          box.innerHTML =
+            '<div class="titlebar"><span class="title">' + title + '</span></div>' +
+            '<div class="pad">' +
+              '<div style="display:flex;align-items:center;gap:10px">' +
+                '<input class="srange" type="range" style="flex:1" min="' + min + '" max="' + max + '" step="' + step + '" value="' + value + '">' +
+                '<input class="input snum" type="number" style="width:90px" min="' + min + '" max="' + max + '" step="' + step + '" value="' + value + '">' +
+                '<span class="muted sunit">' + unit + '</span>' +
+              '</div>' +
+              '<div class="muted" style="font-size:12px;margin-top:6px">Range: ' + min + ' – ' + max + ' ' + unit + '</div>' +
+              '<div style="margin-top:12px;text-align:right;display:flex;gap:8px;justify-content:flex-end">' +
+              '<button class="btn cancel">Cancel</button><button class="btn accent ok">Apply</button></div></div>';
+          var range = box.querySelector(".srange");
+          var num = box.querySelector(".snum");
+          function clamp(v) { v = Number(v); if (!isFinite(v)) v = min; return Math.min(max, Math.max(min, v)); }
+          range.addEventListener("input", function () { num.value = range.value; });
+          num.addEventListener("input", function () { range.value = clamp(num.value); });
+          box.querySelector(".ok").addEventListener("click", function () { close(clamp(num.value)); });
+          box.querySelector(".cancel").addEventListener("click", function () { close(null); });
+        }, resolve);
+      });
+    },
     alert: function (title, message) {
       return new Promise(function (resolve) {
         overlay(function (box, close) {

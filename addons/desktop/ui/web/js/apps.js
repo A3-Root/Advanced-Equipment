@@ -14,6 +14,10 @@
   // Exposed on window.AE3_FileBrowser so other apps reuse the exact same browser (#11/#13).
   window.AE3_FileBrowser = function (body, win, args, opts) {
     opts = opts || {};
+    // Make the host a flex column so the list fills the pane (#4/#8): the entries <ul> then spans the
+    // whole empty area, so right-clicking blank space hits it (empty-area menu) and a long list scrolls
+    // instead of overflowing behind a dialog footer.
+    body.style.display = "flex"; body.style.flexDirection = "column"; body.style.minHeight = "0";
     body.innerHTML =
       '<div class="toolbar">' +
         '<button class="btn up" title="Up">&#8593;</button>' +
@@ -49,7 +53,12 @@
           entries.innerHTML = '<li class="muted pad">' + (res.error === "denied" ? "Permission denied" : "Unavailable") + "</li>";
           return;
         }
-        var items = res.entries || [];
+        var items = (res.entries || []).slice();
+        // Folders first, then files; each group A->Z by name, case-insensitive (#7).
+        items.sort(function (a, b) {
+          if (!!a.dir !== !!b.dir) return a.dir ? -1 : 1;
+          return String(a.name).toLowerCase().localeCompare(String(b.name).toLowerCase());
+        });
         if (!items.length) { entries.innerHTML = '<li class="muted pad">Empty</li>'; return; }
         items.forEach(function (it) { entries.appendChild(rowFor(it, joinPath(cwd, it.name))); });
       }).catch(function () { entries.innerHTML = '<li class="muted pad">Filesystem unavailable</li>'; });
@@ -57,7 +66,8 @@
 
     function rowFor(it, full) {
       var link = it.link ? ' <span class="muted" title="Link &#8594; ' + esc(it.link) + '">&#8631;</span>' : "";
-      var li = h('<li><span class="ico">' + (it.dir ? Icons.folder : Icons.file) + '</span><span>' + esc(it.name) + link + "</span></li>");
+      // Folders get a distinct row class so CSS can tint them (Ubuntu/Debian-like, #7).
+      var li = h('<li class="' + (it.dir ? "isdir" : "isfile") + '"><span class="ico">' + (it.dir ? Icons.folder : Icons.file) + '</span><span>' + esc(it.name) + link + "</span></li>");
       li.addEventListener("click", function () {
         entries.querySelectorAll("li").forEach(function (n) { n.classList.remove("sel"); });
         li.classList.add("sel"); sel = { name: it.name, dir: it.dir, link: it.link, path: full };
@@ -176,6 +186,13 @@
       e.preventDefault(); e.stopPropagation();
       emptyMenu(e.clientX, e.clientY);
     });
+    // Fallback: right-click anywhere in this browser's host that isn't a list row or the toolbar also
+    // opens the empty-area menu, in case the list doesn't fully cover the pane (#4).
+    body.addEventListener("contextmenu", function (e) {
+      if (e.target.closest("li") || e.target.closest(".toolbar")) return;
+      e.preventDefault(); e.stopPropagation();
+      emptyMenu(e.clientX, e.clientY);
+    });
 
     // Ctrl+C / Ctrl+X / Ctrl+V on the focused list (#12).
     entries.addEventListener("keydown", function (e) {
@@ -254,6 +271,27 @@
       document.body.appendChild(ov);
       var bodyEl = ov.querySelector(".pk-body");
       var nameEl = ov.querySelector(".pk-name");
+      // The dialog can be dragged by its title bar so it never traps the file list behind the footer
+      // off-screen (#8). Switch from flex-centred to absolute positioning on first grab.
+      (function () {
+        var dlg = ov.querySelector(".pk-dialog"), title = ov.querySelector(".pk-title");
+        var dragging = false, sx = 0, sy = 0, ox = 0, oy = 0;
+        title.style.cursor = "grab";
+        title.addEventListener("mousedown", function (e) {
+          var r = dlg.getBoundingClientRect();
+          ov.style.display = "block"; dlg.style.position = "absolute";
+          dlg.style.left = r.left + "px"; dlg.style.top = r.top + "px"; dlg.style.margin = "0";
+          dragging = true; sx = e.clientX; sy = e.clientY; ox = r.left; oy = r.top;
+          title.style.cursor = "grabbing"; e.preventDefault();
+        });
+        document.addEventListener("mousemove", function (e) {
+          if (!dragging) return;
+          var nx = Math.max(0, Math.min(window.innerWidth - 60, ox + (e.clientX - sx)));
+          var ny = Math.max(0, Math.min(window.innerHeight - 30, oy + (e.clientY - sy)));
+          dlg.style.left = nx + "px"; dlg.style.top = ny + "px";
+        });
+        document.addEventListener("mouseup", function () { dragging = false; title.style.cursor = "grab"; });
+      })();
       if (nameEl && opts.filename) nameEl.value = opts.filename;
       var apiRef = null, lastFile = null;
       function close(val) { ov.remove(); resolve(val); }
@@ -297,6 +335,27 @@
       if (args && args.content != null) ta.value = args.content;
       function setName() { fname.textContent = path || "(unsaved)"; win.el.querySelector(".title").textContent = "Text Editor - " + (path ? path.split("/").pop() : "Untitled"); }
       setName();
+
+      // Launched with a path but no inline content (e.g. Databases' "Open downloaded file", #5, or any
+      // Apps.launch("notepad", { path })): fetch the file so the editor isn't blank. Handles
+      // password-protected files the same way the Open flow does.
+      if (path && (!args || args.content == null)) {
+        A3.request("fs_read", { path: path }).then(function (res) {
+          if (res.error && res.error !== "") { Modal.alert("Open", res.error === "not_text" ? "Not a text file." : "Cannot open file."); return; }
+          if (res.locked) {
+            Modal.prompt("This file is password protected. Enter password:", "").then(function (pass) {
+              if (pass == null) return;
+              A3.request("fs_unlock", { path: path, pass: pass }).then(function (r2) {
+                if (r2.error === "bad_pass") { Modal.alert("Locked", "Wrong password."); return; }
+                if (r2.error && r2.error !== "") { Modal.alert("Open", "Cannot open file."); return; }
+                ta.value = r2.content || ""; setName();
+              });
+            });
+            return;
+          }
+          ta.value = res.content || ""; setName();
+        }).catch(function () {});
+      }
 
       function save(toPath) {
         A3.request("fs_save", { path: toPath, content: ta.value }).then(function (r) {
@@ -628,6 +687,12 @@
       }
       // True for an absolute VFS path (\z\mod\...) or a drive path - these are NOT page-relative.
       function isAbsolute(addr) { return addr.charAt(0) === "\\" || addr.charAt(0) === "/" || /^[a-z]:/i.test(addr); }
+      // A link is page-relative (resolved against the current page's directory) when it starts with
+      // ./ or ../ OR is a bare filename with no slash (e.g. "getting-started.html"). An address that
+      // contains a slash but no ./.. prefix (e.g. "sites/intel/report.md" typed in the bar) is treated
+      // as root-relative. This fixes wiki links like "getting-started.html" and "../wiki/index.html"
+      // that previously loaded bare and 404'd, losing the page's directory (#5).
+      function isPageRelative(addr) { return /^\.\.?\//.test(addr) || addr.indexOf("/") < 0; }
 
       function resolve(addrRaw) {
         var addr = String(addrRaw == null ? "home" : addrRaw).trim();
@@ -644,7 +709,7 @@
         // page-relative href (e.g. portal's "../wiki/index.html") is joined to the current page's
         // directory; bridge.loadFile then collapses the ".." so A3API gets a clean path (#1).
         if (/\.html?($|[#?])/i.test(addr) || hasPath) {
-          var p = (hasPath && !isAbsolute(addr)) ? (curDir + addr) : addr;
+          var p = (!isAbsolute(addr) && isPageRelative(addr)) ? (curDir + addr) : addr;
           return { type: "html", path: p, label: addr };
         }
 
@@ -675,10 +740,11 @@
             '<h1>Router Settings</h1><p class="sub">Gateway ' + (r.gateway || "") + '</p>' +
             '<label>Network name (SSID)</label><input id="rn" value="' + esc(r.name || "") + '">' +
             '<label>Wireless range (m)</label><input id="rr" type="number" value="' + esc(String(r.range || 50)) + '">' +
+            '<label>Default gateway (a.b.c.d)</label><input id="rg" value="' + esc(String(r.gateway || "")) + '">' +
             '<label>Password (blank = open network)</label><input id="rp" value="' + esc(r.password || "") + '">' +
             '<div><button id="rs">Apply</button><span class="ok" id="rstat"></span></div></div>' +
             '<script>document.getElementById("rs").addEventListener("click",function(){' +
-            'parent.postMessage({__ae3router:{name:document.getElementById("rn").value,range:document.getElementById("rr").value,password:document.getElementById("rp").value}},"*");' +
+            'parent.postMessage({__ae3router:{name:document.getElementById("rn").value,range:document.getElementById("rr").value,password:document.getElementById("rp").value,gateway:document.getElementById("rg").value}},"*");' +
             'document.getElementById("rstat").textContent="Applied.";});<\/script></body></html>';
           setDoc(doc);
         });
@@ -1190,8 +1256,8 @@
   // Central computer view: removable volumes (auto-mounted USB), mount/unmount, shortcuts to Network
   // & System properties, plus an embedded file browser - like a real Debian/Ubuntu "Computer".
   Apps.register({
-    id: "mycomputer", title: "My Computer", glyph: (Icons.computer || Icons.files), width: 720, height: 520,
-    showInDock: true, singleton: true,
+    id: "mycomputer", title: "My Computer", glyph: (Icons.computer || Icons.files), width: 780, height: 560,
+    showInDock: true, singleton: true, showInMenu: false,
     render: function (body, win) {
       body.innerHTML =
         '<div style="display:flex;height:100%">' +

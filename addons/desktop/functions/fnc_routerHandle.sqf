@@ -40,8 +40,9 @@ switch (_op) do {
         private _range = _data getOrDefault ["range", 0];
         if !(_range isEqualType 0) then { _range = parseNumber (str _range); };
         private _password = _data getOrDefault ["password", ""];
+        private _gateway = _data getOrDefault ["gateway", ""]; // "a.b.c.d", blank = unchanged (#10)
         // Apply on the server (router is server-owned) and broadcast so scans/connects see it.
-        [_router, _name, _range, _password] remoteExecCall ["AE3_network_fnc_applyRouterConfig", 2];
+        [_router, _name, _range, _password, _gateway] remoteExecCall ["AE3_network_fnc_applyRouterConfig", 2];
         _res set ["ok", true];
     };
 

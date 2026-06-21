@@ -20,16 +20,18 @@
   // app.menu (a "Parent/Child" path under "Tools"). "/" nests submenus. Apps absent here fall back to
   // "Other". CATEGORY_ORDER fixes the category sequence; APP_ORDER fixes the within-category order.
   var CATEGORY = {
-    settings: "System & Core Utilities", network: "System & Core Utilities", about: "System & Core Utilities",
-    mycomputer: "System & Core Utilities", ssh: "System & Core Utilities",
+    settings: "System & Core Utilities", network: "System & Core Utilities",
+    ssh: "System & Core Utilities", about: "System & Core Utilities",
     notepad: "Productivity & Files", calculator: "Productivity & Files", calendar: "Productivity & Files",
     files: "Productivity & Files", recyclebin: "Productivity & Files",
     browser: "Communication & Web", mail: "Communication & Web", messenger: "Communication & Web", map: "Communication & Web",
     snake: "Games & Entertainment",
-    crypto: "Security", crack: "Security"
+    crypto: "Cryptography", crack: "Cryptography"
   };
-  var CATEGORY_ORDER = ["System & Core Utilities", "Productivity & Files", "Communication & Web", "Games & Entertainment", "Security", "Tools"];
-  var APP_ORDER = ["settings", "network", "about", "mycomputer", "ssh",
+  // Root Cyberwarfare apps carry app.menu = "Hacking Tools" (set in fn_gui_registerApps.sqf), which is
+  // the last category here. My Computer is intentionally not menu-listed (it lives on the desktop/dock).
+  var CATEGORY_ORDER = ["System & Core Utilities", "Productivity & Files", "Communication & Web", "Games & Entertainment", "Cryptography", "Hacking Tools"];
+  var APP_ORDER = ["settings", "network", "ssh", "about",
     "notepad", "calculator", "calendar", "files", "recyclebin",
     "browser", "mail", "messenger", "map", "snake", "crypto", "crack"];
   function appRank(app) { var i = APP_ORDER.indexOf(app.id); return i < 0 ? 999 : i; }
@@ -78,6 +80,23 @@
     }, 0);
   };
 
+  // ---------------- Toast notifications (Root_CW general #1) ----------------
+  // Prominent, top-centre, colour-coded transient messages so action feedback (blocked by low
+  // battery, overload not allowed, success, ...) can't be missed in a small inline status line.
+  // kind: "ok" | "warn" | "error" (anything else = neutral). Auto-dismisses; toasts stack.
+  window.AE3_toast = function (msg, kind) {
+    if (!msg) return;
+    var host = document.getElementById("toasts");
+    if (!host) { host = el("div"); host.id = "toasts"; document.body.appendChild(host); }
+    var t = el("div", "toast " + (kind || "info"));
+    var ic = (kind === "ok") ? "&#10003;" : (kind === "error") ? "&#10005;" : (kind === "warn") ? "&#9888;" : "&#8505;";
+    t.innerHTML = '<span class="t-ic">' + ic + '</span><span class="t-msg"></span>';
+    t.querySelector(".t-msg").textContent = msg; // textContent: never inject markup
+    host.appendChild(t);
+    requestAnimationFrame(function () { t.classList.add("show"); });
+    setTimeout(function () { t.classList.remove("show"); setTimeout(function () { t.remove(); }, 250); }, 4200);
+  };
+
   // ---------------- Left dock (quick launch) ----------------
   function buildDock() {
     var dock = document.getElementById("dock");
@@ -113,8 +132,19 @@
       if (!res || (res.error && res.error !== "")) return;
       (res.entries || []).forEach(function (it) {
         var full = (path + "/" + it.name).replace(/\/+/g, "/");
-        var glyph = it.dir ? Icons.folder : (/\.app$/i.test(it.name) ? (Icons.app || Icons.terminal) : Icons.file);
-        makeIcon(desk, it.name.replace(/\.app$/i, ""), glyph, function () { openDesktopEntry(it, full); });
+        var isApp = /\.app$/i.test(it.name);
+        var glyph = it.dir ? Icons.folder : (isApp ? Icons.app : Icons.file);
+        var icon = makeIcon(desk, it.name.replace(/\.app$/i, ""), glyph, function () { openDesktopEntry(it, full); });
+        // A .app launcher holds "app=<id>"; show the *target* app's real glyph (Mail/Browser/Files/
+        // Calculator etc.) instead of a generic/terminal icon (#2).
+        if (isApp) {
+          A3.request("fs_read", { path: (it.link && it.link !== "") ? it.link : full }).then(function (res2) {
+            var m = String((res2 && res2.content) || "").match(/app\s*=\s*([\w-]+)/i);
+            var target = m && Apps.get(m[1]);
+            var g = icon.querySelector(".glyph");
+            if (target && target.glyph && g) g.innerHTML = target.glyph;
+          }).catch(function () {});
+        }
       });
     }).catch(function () {});
   }

@@ -42,7 +42,11 @@
     trash:    svg('<path d="M4 7h16M9 7V4h6v3M6 7l1 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-13M10 11v6M14 11v6"/>'),
     crack:    svg('<path d="M7 11V8a5 5 0 0 1 9.5-2"/><rect x="4.5" y="11" width="15" height="9" rx="2"/><path d="m11 14-2 4h3l-1 2"/>'),
     crypto:   svg('<rect x="4.5" y="11" width="15" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15.5" r="1.4" fill="currentColor" stroke="none"/>'),
-    snake:    svg('<path d="M5 5h8a3 3 0 0 1 0 6H8a3 3 0 0 0 0 6h6"/><circle cx="17" cy="17" r="1" fill="currentColor" stroke="none"/>')
+    snake:    svg('<path d="M5 5h8a3 3 0 0 1 0 6H8a3 3 0 0 0 0 6h6"/><circle cx="17" cy="17" r="1" fill="currentColor" stroke="none"/>'),
+    calculator: svg('<rect x="5" y="3" width="14" height="18" rx="2"/><rect x="7.5" y="5.5" width="9" height="3" rx="0.5"/><path d="M8 12h.01M12 12h.01M16 12h.01M8 15.5h.01M12 15.5h.01M16 15.5h.01M8 19h.01M12 19h.01M16 19h.01"/>'),
+    computer: svg('<rect x="3" y="4.5" width="18" height="12" rx="2"/><path d="M8 20h8M12 16.5V20"/>'),
+    // Generic "application" glyph used for .app launchers that don't map to a known app.
+    app:      svg('<rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/>')
   };
 
   // Convenience: return a named icon, or a fallback dot, never undefined.

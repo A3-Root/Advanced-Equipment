@@ -24,7 +24,8 @@ if (isNull _router) exitWith { _dlg closeDisplay 0; };
 private _name = ctrlText (_dlg displayCtrl 17031);
 private _range = parseNumber (ctrlText (_dlg displayCtrl 17032));
 private _pass = ctrlText (_dlg displayCtrl 17033);
+private _gateway = ctrlText (_dlg displayCtrl 17034);
 
-[_router, _name, _range, _pass] remoteExecCall ["AE3_network_fnc_applyRouterConfig", 2];
+[_router, _name, _range, _pass, _gateway] remoteExecCall ["AE3_network_fnc_applyRouterConfig", 2];
 
 _dlg closeDisplay 1;

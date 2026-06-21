@@ -26,11 +26,19 @@ private _range = _module getVariable ["AE3_ModuleRouter_Range", 50];
 if !(_range isEqualType 0) then { _range = parseNumber (str _range); };
 if (_range <= 0) then { _range = 50; };
 private _password = _module getVariable ["AE3_ModuleRouter_Password", ""];
+private _gateway = _module getVariable ["AE3_ModuleRouter_Gateway", ""]; // "a.b.c.d", blank = unchanged (#10)
+
+// Routers to configure: the synced ones, or - when nothing was synced (common in Zeus, where syncing
+// is fiddly) - every router within the module's wireless range, so the module still does something.
+private _targets = _syncedUnits select { _x getVariable ["AE3_cap_isRouter", false] };
+if (_targets isEqualTo []) then {
+    _targets = (nearestObjects [getPosWorld _module, [], _range max 50]) select { _x getVariable ["AE3_cap_isRouter", false] };
+};
+
+diag_log format ["[AE3] ConfigureRouter module: range=%1 password='%2' gateway='%3' targets=%4 (synced=%5)", _range, _password, _gateway, count _targets, count _syncedUnits];
 
 {
-    if (_x getVariable ["AE3_cap_isRouter", false]) then {
-        [_x, "", _range, _password] call AE3_network_fnc_applyRouterConfig;
-    };
-} forEach _syncedUnits;
+    [_x, "", _range, _password, _gateway] call AE3_network_fnc_applyRouterConfig;
+} forEach _targets;
 
 true

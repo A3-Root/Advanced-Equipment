@@ -75,6 +75,16 @@
               });
               return;
             }
+            // Slider flow (Root_CW Vehicles #1): open a bounded slider, then send the action with the
+            // chosen numeric value (fuel %, speed km/h, alarm seconds).
+            if (a.slider && typeof Modal !== "undefined" && typeof Modal.slider === "function") {
+              Modal.slider(a.label + (d.label ? (" - " + d.label) : ""), a.min, a.max, a.value, a.step, a.unit).then(function (v) {
+                if (v == null) return;
+                A3.send("dev_action", { app: desc.id, type: extra.type, id: d.id, action: a.id, sub: sub || "", path: d.path || "", value: v });
+                setStatus(a.label + " → " + v + (a.unit || "") + "…");
+              });
+              return;
+            }
             // Download flow (Databases #5): pick a save location, run a progress bar for the configured
             // download time, then perform the action with the chosen path.
             if (a.flow === "download" && typeof window.AE3_pickFile === "function") {
@@ -157,6 +167,11 @@
         listSubs[extra.type] = render;
         resultSubs[extra.type] = function (r) {
           setStatus(r.msg || (r.ok ? "OK" : "Failed"), r.ok);
+          // Also raise a prominent toast so blocked/failed actions (low battery, overload not allowed,
+          // ...) can't be missed in the small inline status line (Root_CW general #1).
+          if (typeof window.AE3_toast === "function") {
+            window.AE3_toast(r.msg || (r.ok ? "Done" : "Action failed"), r.ok ? "ok" : "error");
+          }
           // Downloaded file: offer to open/read it straight from the app (Databases #5).
           if (r.ok && r.path && r.path !== "") {
             var ob = document.createElement("button");

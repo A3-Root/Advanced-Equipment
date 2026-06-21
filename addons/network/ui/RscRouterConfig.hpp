@@ -77,11 +77,25 @@ class AE3_RouterConfigDialog
 			colorBackground[] = {0, 0, 0, 0.5};
 		};
 
+		class AE3_RC_LblGateway : RscText
+		{
+			idc = -1; text = "Default gateway (a.b.c.d)";
+			x = "0.31 * safezoneW + safezoneX"; y = "0.55 * safezoneH + safezoneY";
+			w = "0.16 * safezoneW"; h = "0.035 * safezoneH";
+		};
+		class AE3_RC_Gateway : RscEdit
+		{
+			idc = 17034;
+			x = "0.47 * safezoneW + safezoneX"; y = "0.55 * safezoneH + safezoneY";
+			w = "0.21 * safezoneW"; h = "0.035 * safezoneH";
+			colorBackground[] = {0, 0, 0, 0.5};
+		};
+
 		class AE3_RC_Apply : RscButton
 		{
 			idc = -1;
 			text = "Apply";
-			x = "0.47 * safezoneW + safezoneX"; y = "0.58 * safezoneH + safezoneY";
+			x = "0.47 * safezoneW + safezoneX"; y = "0.61 * safezoneH + safezoneY";
 			w = "0.10 * safezoneW"; h = "0.04 * safezoneH";
 			colorBackground[] = {0.91, 0.33, 0.13, 1};
 			onButtonClick = "call AE3_network_fnc_router_applyConfigDialog;";
@@ -90,7 +104,7 @@ class AE3_RouterConfigDialog
 		{
 			idc = -1;
 			text = "Cancel";
-			x = "0.58 * safezoneW + safezoneX"; y = "0.58 * safezoneH + safezoneY";
+			x = "0.58 * safezoneW + safezoneX"; y = "0.61 * safezoneH + safezoneY";
 			w = "0.10 * safezoneW"; h = "0.04 * safezoneH";
 			onButtonClick = "(ctrlParent (_this select 0)) closeDisplay 0;";
 		};

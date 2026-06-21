@@ -50,6 +50,14 @@ class CfgVehicles
 				typeName = "STRING";
 				defaultValue = """""";
 			};
+			class AE3_ModuleRouter_Gateway: Edit
+			{
+				property = "AE3_ModuleRouter_Gateway";
+				displayName = "Default Gateway";
+				tooltip = "Default gateway as a.b.c.d (e.g. 10.0.0.1). Leave blank to keep the current gateway.";
+				typeName = "STRING";
+				defaultValue = """""";
+			};
 			class ModuleDescription: ModuleDescription {};
 		};
 
