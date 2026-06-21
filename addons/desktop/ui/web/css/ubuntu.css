@@ -46,7 +46,7 @@ html, body {
 #topbar .appsbtn:hover, #topbar .appsbtn.active { background: rgba(255,255,255,0.14); }
 #topbar #hostname { margin-left: 12px; font-size: 14px; }
 
-/* ---------- global search (#14) ---------- */
+/* ---------- global search ---------- */
 .gsearch-wrap { position: relative; margin-left: 12px; }
 #topbar .gsearch {
   width: 200px; height: 26px; border-radius: 13px; border: 1px solid var(--line);
@@ -74,7 +74,7 @@ html, body {
 }
 #topbar #clock:hover { background: rgba(255,255,255,0.10); }
 
-/* ---------- taskbar (#11) ---------- */
+/* ---------- taskbar ---------- */
 #tasks { display: flex; align-items: center; gap: 4px; margin-left: 16px; overflow: hidden; }
 .task {
   display: flex; align-items: center; gap: 6px; max-width: 180px; height: 20px;
@@ -96,7 +96,7 @@ html, body {
 #topbar .tray .batpct { font-size: 14px; font-weight: 600; }
 #topbar #clock { font-size: 14px; }
 
-/* ---------- Applications menu (#8) ---------- */
+/* ---------- Applications menu ---------- */
 #appsmenu {
   position: fixed; top: var(--topbar-h); left: 6px; z-index: 1500; display: none;
   min-width: 210px; background: var(--panel); border: 1px solid var(--line);
@@ -128,7 +128,7 @@ html, body {
 .tray-pop .pm-item { padding: 8px 14px; cursor: pointer; color: var(--text); }
 .tray-pop .pm-item:hover { background: var(--accent); }
 
-/* ---------- desktop context menu (#16) ---------- */
+/* ---------- desktop context menu ---------- */
 .ctx-menu {
   position: fixed; z-index: 1700; min-width: 170px; background: var(--panel);
   border: 1px solid var(--line); border-radius: 8px; box-shadow: var(--shadow); padding: 4px 0;
@@ -219,10 +219,14 @@ html, body {
 .list li.sel { background: rgba(233,84,32,0.25); }
 /* file browser list fills its pane so empty space is right-clickable and long lists scroll (#4/#8). */
 .list.entries { flex: 1 1 auto; min-height: 0; overflow: auto; }
-/* folders vs files: distinct icon tint + label colour, Ubuntu/Debian-like (#7). */
+/* type tint by row class: folders gold, .app programs blue, plain files white. */
 .list li.isdir .ico { color: #e9b96e; }
 .list li.isdir .ico svg { color: #e9b96e; }
 .list li.isdir > span:last-child { color: #f0d9b0; font-weight: 600; }
+.list li.isapp .ico { color: #5da8e8; }
+.list li.isapp .ico svg { color: #5da8e8; }
+.list li.isapp > span:last-child { color: #a0c4ff; font-weight: 600; }
+.list li.isfile > span:last-child { color: #ffffff; }
 .muted { color: var(--muted); }
 .pad { padding: 14px; }
 
@@ -244,7 +248,7 @@ svg { vertical-align: middle; }
 #login .row { display: flex; flex-direction: column; gap: 8px; width: 280px; }
 #login .err { color: #ff8a6a; font-size: 13px; height: 16px; }
 
-/* ---------- file picker (#5) ---------- */
+/* ---------- file picker ---------- */
 .pk-overlay {
   position: fixed; inset: 0; z-index: 2100; background: rgba(0,0,0,0.5);
   display: flex; align-items: center; justify-content: center;
@@ -276,7 +280,7 @@ svg { vertical-align: middle; }
 .toast.error { background: #a33016; border-color: #e9542d; }
 .toast.warn { background: #8a5a13; border-color: #e0a020; }
 
-/* ---------- My Computer volumes (#11) ---------- */
+/* ---------- My Computer volumes ---------- */
 .mc-vols { display: flex; flex-wrap: wrap; gap: 10px; padding: 12px; }
 .mc-vol {
   width: 150px; padding: 12px; border: 1px solid var(--line); border-radius: 8px;

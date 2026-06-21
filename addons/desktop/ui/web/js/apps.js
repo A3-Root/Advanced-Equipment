@@ -1,7 +1,7 @@
 /*
  * AE3 built-in apps on the Ubuntu shell. Each app registers a descriptor whose render(body, win,
  * args) populates the window. Filesystem apps talk to the SQF backend (AE3_desktop_fnc_fsHandle)
- * via A3.request; permissions and per-user scoping (#9) are enforced server-side in SQF.
+ * via A3.request; permissions and per-user scoping are enforced server-side in SQF.
  */
 (function () {
   function h(html) { var d = document.createElement("div"); d.innerHTML = html.trim(); return d.firstElementChild; }
@@ -54,7 +54,7 @@
           return;
         }
         var items = (res.entries || []).slice();
-        // Folders first, then files; each group A->Z by name, case-insensitive (#7).
+        // Folders first, then files; each group A->Z by name, case-insensitive.
         items.sort(function (a, b) {
           if (!!a.dir !== !!b.dir) return a.dir ? -1 : 1;
           return String(a.name).toLowerCase().localeCompare(String(b.name).toLowerCase());
@@ -66,8 +66,11 @@
 
     function rowFor(it, full) {
       var link = it.link ? ' <span class="muted" title="Link &#8594; ' + esc(it.link) + '">&#8631;</span>' : "";
-      // Folders get a distinct row class so CSS can tint them (Ubuntu/Debian-like, #7).
-      var li = h('<li class="' + (it.dir ? "isdir" : "isfile") + '"><span class="ico">' + (it.dir ? Icons.folder : Icons.file) + '</span><span>' + esc(it.name) + link + "</span></li>");
+      // Row class drives the CSS tint by type: folders, .app programs/executables, plain files.
+      var isApp = /\.app$/i.test(it.name);
+      var cls = it.dir ? "isdir" : (isApp ? "isapp" : "isfile");
+      var glyph = it.dir ? Icons.folder : (isApp ? Icons.app : Icons.file);
+      var li = h('<li class="' + cls + '"><span class="ico">' + glyph + '</span><span>' + esc(it.name) + link + "</span></li>");
       li.addEventListener("click", function () {
         entries.querySelectorAll("li").forEach(function (n) { n.classList.remove("sel"); });
         li.classList.add("sel"); sel = { name: it.name, dir: it.dir, link: it.link, path: full };
@@ -83,7 +86,7 @@
     }
 
     // Open behaviour. An app-launcher (a .app symlink/file holding "app=<id>") launches the app;
-    // a directory (or link to one) navigates; anything else opens in the default viewer. (#9)
+    // a directory (or link to one) navigates; anything else opens in the default viewer.
     function activate(it, full) {
       if (it.dir) {
         // A link to a directory: navigate to the link target so the browser shows the real path.
@@ -104,23 +107,9 @@
       });
     }
 
-    function openFile(path) {
-      A3.request("fs_read", { path: path }).then(function (res) {
-        if (res.error && res.error !== "") { Modal.alert("Open", res.error === "not_text" ? "Not a text file." : "Cannot open file."); return; }
-        if (res.locked) { unlockAndOpen(path); return; }
-        Apps.launch("notepad", { path: path, content: res.content || "" });
-      });
-    }
-    function unlockAndOpen(path) {
-      Modal.prompt("This file is password protected. Enter password:", "").then(function (pass) {
-        if (pass == null) return;
-        A3.request("fs_unlock", { path: path, pass: pass }).then(function (res) {
-          if (res.error === "bad_pass") { Modal.alert("Locked", "Wrong password."); return; }
-          if (res.error && res.error !== "") { Modal.alert("Open", "Cannot open file."); return; }
-          Apps.launch("notepad", { path: path, content: res.content || "" });
-        });
-      });
-    }
+    // Delegates to the shared opener (desktop.js) so the locked-file/password flow stays identical
+    // between the Files app and the desktop surface.
+    function openFile(path) { window.AE3_openFile(path); }
 
     function paste(destDir) {
       var cb = window.AE3_clipboard; if (!cb) return;
@@ -178,7 +167,7 @@
         { label: "Refresh", action: load }
       ]);
     }
-    // Empty-area right-click (#2). Bind on the <ul> AND its wrapper; the previous strict
+    // Empty-area right-click. Bind on the <ul> AND its wrapper; the previous strict
     // "e.target === entries" check failed whenever the list was empty/short or the click landed on
     // padding, so the menu never appeared. Treat any click not on an <li> as the empty area.
     entries.addEventListener("contextmenu", function (e) {
@@ -187,14 +176,14 @@
       emptyMenu(e.clientX, e.clientY);
     });
     // Fallback: right-click anywhere in this browser's host that isn't a list row or the toolbar also
-    // opens the empty-area menu, in case the list doesn't fully cover the pane (#4).
+    // opens the empty-area menu, in case the list doesn't fully cover the pane.
     body.addEventListener("contextmenu", function (e) {
       if (e.target.closest("li") || e.target.closest(".toolbar")) return;
       e.preventDefault(); e.stopPropagation();
       emptyMenu(e.clientX, e.clientY);
     });
 
-    // Ctrl+C / Ctrl+X / Ctrl+V on the focused list (#12).
+    // Ctrl+C / Ctrl+X / Ctrl+V on the focused list.
     entries.addEventListener("keydown", function (e) {
       if (!(e.ctrlKey || e.metaKey)) return;
       var k = e.key.toLowerCase();
@@ -252,7 +241,7 @@
     render: function (body, win, args) { window.AE3_FileBrowser(body, win, args, {}); }
   });
 
-  // ---------------- File picker (#5) ----------------
+  // ---------------- File picker ----------------
   // window.AE3_pickFile("open"|"save", { start, filename, title }) -> Promise<path|null>.
   // "open": double-click a file (or select + Choose) resolves its path. "save": browse to a folder,
   // type a filename, Save resolves "<folder>/<filename>". Reuses the exact Files browser core.
@@ -272,7 +261,7 @@
       var bodyEl = ov.querySelector(".pk-body");
       var nameEl = ov.querySelector(".pk-name");
       // The dialog can be dragged by its title bar so it never traps the file list behind the footer
-      // off-screen (#8). Switch from flex-centred to absolute positioning on first grab.
+      // off-screen. Switch from flex-centred to absolute positioning on first grab.
       (function () {
         var dlg = ov.querySelector(".pk-dialog"), title = ov.querySelector(".pk-title");
         var dragging = false, sx = 0, sy = 0, ox = 0, oy = 0;
@@ -370,7 +359,7 @@
           function openInto(res) { ta.value = res.content || ""; path = p; setName(); }
           A3.request("fs_read", { path: p }).then(function (res) {
             if (res.error && res.error !== "") { Modal.alert("Open", "Cannot open file."); return; }
-            if (res.locked) { // password-protected (#7): verify before showing content
+            if (res.locked) { // password-protected: verify before showing content
               Modal.prompt("This file is password protected. Enter password:", "").then(function (pass) {
                 if (pass == null) return;
                 A3.request("fs_unlock", { path: p, pass: pass }).then(function (r2) {
@@ -411,7 +400,7 @@
             '<div><button class="btn accent ssave">Apply</button> <span class="muted sst"></span></div>' +
           '</div>' +
           '<h3 style="margin-top:14px">Access</h3>' +
-          '<label class="muted" style="display:flex;align-items:center;gap:8px"><input type="checkbox" class="ssh"> Allow SSH access to this device (#19)</label>' +
+          '<label class="muted" style="display:flex;align-items:center;gap:8px"><input type="checkbox" class="ssh"> Allow SSH access to this device</label>' +
         '</div>';
       var box = body.querySelector("#sysinfo");
       var hostEl = body.querySelector(".shost");
@@ -438,14 +427,14 @@
         A3.request("sys_set", { hostname: host, wallpaper: wall }).then(function (r) {
           if (r && r.error && r.error !== "") { st.textContent = "Failed."; return; }
           st.textContent = "Applied.";
-          if (host) Desktop.setHostname(host);          // reflect immediately on this client (#15)
+          if (host) Desktop.setHostname(host);          // reflect immediately on this client
           Desktop.setWallpaper(wall);
         });
       });
     }
   });
 
-  // ---------------- Network (#11) ----------------
+  // ---------------- Network ----------------
   Apps.register({
     id: "network", title: "Network", glyph: Icons.network, width: 560, height: 380,
     showInDock: true,
@@ -453,7 +442,7 @@
       body.innerHTML = '<div class="pad"><div style="display:flex;align-items:center"><h3 style="flex:1">Wireless networks</h3><span class="muted nstat" style="margin-right:8px"></span><button class="btn rescan">Rescan</button></div><ul class="list nets"><li class="muted">Scanning&hellip;</li></ul></div>';
       var nets = body.querySelector(".nets");
       var statEl = body.querySelector(".nstat");
-      // Password-protected routers (#14): prompt before connecting, then send the password.
+      // Password-protected routers: prompt before connecting, then send the password.
       function connect(n) {
         if (n.locked) {
           Modal.prompt("Network '" + n.ssid + "' is password protected:", "").then(function (pw) {
@@ -488,7 +477,7 @@
           if (!list || !list.length) nets.innerHTML = '<li class="muted">No networks in range</li>';
         }).catch(function () { nets.innerHTML = '<li class="muted">Network stack unavailable</li>'; });
       }
-      // Server connect verdict (range/password) (#14).
+      // Server connect verdict (range/password).
       A3.on("net_result", function (r) {
         if (!statEl) return;
         statEl.textContent = (r && r.msg) || "";
@@ -512,7 +501,7 @@
       var view = new Date(); view.setDate(1);
       var events = {};       // iso -> [{date,title,location,body,index}]
       var selIso = null;
-      // Full-height layout (#3): toolbars + grid keep their size, the day/event panel grows to fill
+      // Full-height layout: toolbars + grid keep their size, the day/event panel grows to fill
       // the rest of the window instead of being capped to a small inner-scroll box.
       body.style.display = "flex"; body.style.flexDirection = "column";
       body.innerHTML =
@@ -691,7 +680,7 @@
       // ./ or ../ OR is a bare filename with no slash (e.g. "getting-started.html"). An address that
       // contains a slash but no ./.. prefix (e.g. "sites/intel/report.md" typed in the bar) is treated
       // as root-relative. This fixes wiki links like "getting-started.html" and "../wiki/index.html"
-      // that previously loaded bare and 404'd, losing the page's directory (#5).
+      // that previously loaded bare and 404'd, losing the page's directory.
       function isPageRelative(addr) { return /^\.\.?\//.test(addr) || addr.indexOf("/") < 0; }
 
       function resolve(addrRaw) {
@@ -707,7 +696,7 @@
         }
         // Explicit .html / any pathed address: load through the root search (mod or mission). A
         // page-relative href (e.g. portal's "../wiki/index.html") is joined to the current page's
-        // directory; bridge.loadFile then collapses the ".." so A3API gets a clean path (#1).
+        // directory; bridge.loadFile then collapses the ".." so A3API gets a clean path.
         if (/\.html?($|[#?])/i.test(addr) || hasPath) {
           var p = (!isAbsolute(addr) && isPageRelative(addr)) ? (curDir + addr) : addr;
           return { type: "html", path: p, label: addr };
@@ -891,7 +880,7 @@
     }
   });
 
-  // ---------------- Cryptography: Crypto (#9) ----------------
+  // ---------------- Cryptography: Crypto ----------------
   Apps.register({
     id: "crypto", title: "Crypto", glyph: Icons.crypto, width: 520, height: 440, showInDock: false,
     render: function (body) {
@@ -918,7 +907,7 @@
     }
   });
 
-  // ---------------- Cryptography: Crack (#9) ----------------
+  // ---------------- Cryptography: Crack ----------------
   Apps.register({
     id: "crack", title: "Crack", glyph: Icons.crack, width: 560, height: 480, showInDock: false,
     render: function (body) {
@@ -946,7 +935,7 @@
     }
   });
 
-  // ---------------- Games: Snake (#9) ----------------
+  // ---------------- Games: Snake ----------------
   Apps.register({
     id: "snake", title: "Snake", glyph: Icons.snake, width: 420, height: 460, showInDock: false,
     render: function (body, win) {
@@ -996,7 +985,7 @@
     }
   });
 
-  // ---------------- Recycle Bin (#17) ----------------
+  // ---------------- Recycle Bin ----------------
   Apps.register({
     id: "recyclebin", title: "Recycle Bin", glyph: Icons.trash, width: 560, height: 420, showInDock: false, singleton: true,
     render: function (body) {
@@ -1005,7 +994,7 @@
         '<ul class="list trash"><li class="muted pad">Loading</li></ul>';
       var listEl = body.querySelector(".trash");
       var sel = null;
-      // Restore to the item's original location; if something is already there, confirm overwrite (#4).
+      // Restore to the item's original location; if something is already there, confirm overwrite.
       function restore(name) {
         A3.request("fs_restore", { name: name }).then(function (r) {
           if (r.needsConfirm) {
@@ -1068,7 +1057,7 @@
     }
   });
 
-  // ---------------- Mail (#18) ----------------
+  // ---------------- Mail ----------------
   Apps.register({
     id: "mail", title: "Email", glyph: Icons.mail, width: 760, height: 480,
     showOnDesktop: true, showInDock: true,
@@ -1252,7 +1241,7 @@
     }
   });
 
-  // ---------------- My Computer (#11) ----------------
+  // ---------------- My Computer ----------------
   // Central computer view: removable volumes (auto-mounted USB), mount/unmount, shortcuts to Network
   // & System properties, plus an embedded file browser - like a real Debian/Ubuntu "Computer".
   Apps.register({
@@ -1310,7 +1299,7 @@
     }
   });
 
-  // ---------------- Calculator (#18) ----------------
+  // ---------------- Calculator ----------------
   Apps.register({
     id: "calculator", title: "Calculator", glyph: (Icons.calculator || Icons.about), width: 280, height: 380,
     showInDock: false, singleton: true,
@@ -1356,7 +1345,7 @@
     }
   });
 
-  // ---------------- SSH (#19) ----------------
+  // ---------------- SSH ----------------
   // Connect to another SSH-enabled device on the network, then browse/copy files between the local
   // laptop (left pane) and the remote device (right pane).
   Apps.register({

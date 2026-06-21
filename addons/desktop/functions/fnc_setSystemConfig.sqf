@@ -2,7 +2,7 @@
 /*
  * Author: Root
  * Description: Server-side setter for the per-laptop system name (hostname) and desktop wallpaper,
- * driven by the web Settings app or a Zeus module (#15). Both values are broadcast so the terminal
+ * driven by the web Settings app or a Zeus module. Both values are broadcast so the terminal
  * prompt, the web Settings/System panel and every client's desktop stay in sync. Empty values are
  * left unchanged so callers can set just one. Must run on the server.
  *

@@ -2,7 +2,7 @@
 /*
  * Author: Root
  * Description: Opens the native real-world map overlay (AE3_Desktop_MapOverlay) over the web desktop
- * (#5). CEF cannot render Arma's map control, so the Map app calls this to show the genuine
+ *. CEF cannot render Arma's map control, so the Map app calls this to show the genuine
  * RscMapControl centred on the laptop, with local markers for the player and nearby AE3
  * devices/routers. The markers are tracked in uiNamespace and removed by the display's onUnload.
  * Client-only.

@@ -1,7 +1,7 @@
 #include "..\script_component.hpp"
 /*
  * Author: Root
- * Description: Server-side SSH backend for the web SSH app (#19). Handles connect (auth against the
+ * Description: Server-side SSH backend for the web SSH app. Handles connect (auth against the
  * REMOTE device's user list + its SSH-enabled flag) and remote filesystem ops (list/read) plus
  * cross-device copy (pull remote->local, push local->remote). Every op replies to the requesting
  * client via "ae3_desktop_sshReply", echoing the rid so the JS A3.request promise resolves.
@@ -37,7 +37,7 @@ private _res = createHashMapFromArray [["error", ""]];
 
 if (isNull _target) exitWith { _res set ["error", "no_route"]; ["ssh_" + _op, _res] call _reply; };
 
-// SSH must be enabled on the remote device (#19).
+// SSH must be enabled on the remote device.
 if !(_target getVariable ["AE3_ssh_enabled", false]) exitWith {
     _res set ["error", "ssh_disabled"]; ["ssh_" + _op, _res] call _reply;
 };

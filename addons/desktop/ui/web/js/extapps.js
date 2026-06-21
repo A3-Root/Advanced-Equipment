@@ -63,46 +63,61 @@
           });
         }
 
+        // Perform a single action (confirm / slider / download / plain send). Shared by top-level
+        // buttons and submenu children so every flow behaves identically (Drones/Vehicles #1).
+        function runAction(d, a, sub) {
+          // Optional confirmation (e.g. doors warn about battery power before locking, Doors #3).
+          if (a.confirm && a.confirm !== "" && typeof Modal !== "undefined") {
+            Modal.confirm(a.label, a.confirm).then(function (ok) {
+              if (ok) A3.send("dev_action", { app: desc.id, type: extra.type, id: d.id, action: a.id, sub: sub || "", path: d.path || "" });
+              if (ok) setStatus(a.label + "...");
+            });
+            return;
+          }
+          // Slider flow (Root_CW Vehicles #1): open a bounded slider, then send the action with the
+          // chosen numeric value (fuel %, speed km/h, alarm seconds).
+          if (a.slider && typeof Modal !== "undefined" && typeof Modal.slider === "function") {
+            Modal.slider(a.label + (d.label ? (" - " + d.label) : ""), a.min, a.max, a.value, a.step, a.unit).then(function (v) {
+              if (v == null) return;
+              A3.send("dev_action", { app: desc.id, type: extra.type, id: d.id, action: a.id, sub: sub || "", path: d.path || "", value: v });
+              setStatus(a.label + " → " + v + (a.unit || "") + "...");
+            });
+            return;
+          }
+          // Download flow (Databases #5): pick a save location, run a progress bar for the configured
+          // download time, then perform the action with the chosen path.
+          if (a.flow === "download" && typeof window.AE3_pickFile === "function") {
+            window.AE3_pickFile("save", { title: "Save downloaded file", start: (window.AE3_HOME || "/root"), filename: (d.label || "download") }).then(function (savePath) {
+              if (!savePath) return;
+              runProgress(d.downloadTime || 0, function () {
+                A3.send("dev_action", { app: desc.id, type: extra.type, id: d.id, action: a.id, sub: sub || "", path: d.path || "", savePath: savePath });
+              });
+            });
+            return;
+          }
+          A3.send("dev_action", { app: desc.id, type: extra.type, id: d.id, action: a.id, sub: sub || "", path: d.path || "" });
+          setStatus(a.label + "...");
+        }
+
         function actionButton(d, a, sub) {
           var b = document.createElement("button");
           b.className = "btn" + (a.danger ? " accent" : ""); b.textContent = a.label; b.style.marginLeft = "6px";
           b.addEventListener("click", function () {
-            // Optional confirmation (e.g. doors warn about battery power before locking, Doors #3).
-            if (a.confirm && a.confirm !== "" && typeof Modal !== "undefined") {
-              Modal.confirm(a.label, a.confirm).then(function (ok) {
-                if (ok) A3.send("dev_action", { app: desc.id, type: extra.type, id: d.id, action: a.id, sub: sub || "", path: d.path || "" });
-                if (ok) setStatus(a.label + "...");
-              });
+            // Submenu (Drones "Change Drone Side", grouped Vehicle controls #1): open a popup of child
+            // actions; each child runs the normal confirm/slider/send flow via runAction.
+            if (a.submenu && a.submenu.length && typeof window.AE3_ctxMenu === "function") {
+              var r = b.getBoundingClientRect();
+              window.AE3_ctxMenu(r.left, r.bottom, a.submenu.map(function (ca) {
+                return { label: ca.label, action: function () { runAction(d, ca, sub); } };
+              }));
               return;
             }
-            // Slider flow (Root_CW Vehicles #1): open a bounded slider, then send the action with the
-            // chosen numeric value (fuel %, speed km/h, alarm seconds).
-            if (a.slider && typeof Modal !== "undefined" && typeof Modal.slider === "function") {
-              Modal.slider(a.label + (d.label ? (" - " + d.label) : ""), a.min, a.max, a.value, a.step, a.unit).then(function (v) {
-                if (v == null) return;
-                A3.send("dev_action", { app: desc.id, type: extra.type, id: d.id, action: a.id, sub: sub || "", path: d.path || "", value: v });
-                setStatus(a.label + " → " + v + (a.unit || "") + "...");
-              });
-              return;
-            }
-            // Download flow (Databases #5): pick a save location, run a progress bar for the configured
-            // download time, then perform the action with the chosen path.
-            if (a.flow === "download" && typeof window.AE3_pickFile === "function") {
-              window.AE3_pickFile("save", { title: "Save downloaded file", start: (window.AE3_HOME || "/root"), filename: (d.label || "download") }).then(function (savePath) {
-                if (!savePath) return;
-                runProgress(d.downloadTime || 0, function () {
-                  A3.send("dev_action", { app: desc.id, type: extra.type, id: d.id, action: a.id, sub: sub || "", path: d.path || "", savePath: savePath });
-                });
-              });
-              return;
-            }
-            A3.send("dev_action", { app: desc.id, type: extra.type, id: d.id, action: a.id, sub: sub || "", path: d.path || "" });
-            setStatus(a.label + "...");
+            runAction(d, a, sub);
           });
           return b;
         }
 
-        // Animated progress bar in the status area over the given number of seconds (#5).
+        // Animated progress bar in the status area over the given number of seconds.
         function runProgress(seconds, done) {
           var secs = Number(seconds) || 0;
           if (secs <= 0) { setStatus("Downloading..."); done(); return; }

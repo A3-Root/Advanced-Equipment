@@ -4,7 +4,7 @@
  * Description: Filesystem operations for the web desktop Files/Notepad apps (WS-C/D). Operates on
  * the laptop's locally-cached AE3_filesystem copy (pulled via getRemoteVar in
  * AE3_desktop_fnc_desktop_openWeb), reusing the standard AE3 filesystem functions so Unix
- * permissions are enforced exactly like the CLI. Per-user scoping (#9): root and admin act as
+ * permissions are enforced exactly like the CLI. Per-user scoping: root and admin act as
  * "root" and bypass permission checks; every other user is bound by ownership/permission bits.
  * Mutating ops (save/mkdir/delete) push the updated filesystem back to the server.
  *
@@ -79,7 +79,7 @@ switch (_op) do {
 
     case "read": {
         try {
-            // Follow symlinks (depth-guarded) so opening a link reads its target (#9).
+            // Follow symlinks (depth-guarded) so opening a link reads its target.
             private _rpath = _path;
             private _content = "";
             for "_i" from 0 to 16 do {
@@ -91,7 +91,7 @@ switch (_op) do {
             };
             if (_content isEqualType "") then {
                 // Password-protected file: report it as locked WITHOUT shipping the password or payload
-                // to the browser. The app prompts for the password and verifies via "unlock" (#7). The
+                // to the browser. The app prompts for the password and verifies via "unlock". The
                 // raw "AE3_LOCKED|len|.." string must never reach the UI (the old leak).
                 ([_content] call AE3_armaos_fnc_shell_parseLockedFile) params ["_locked", "", "_payload"];
                 if (_locked) then { _res set ["locked", true]; }
@@ -104,7 +104,7 @@ switch (_op) do {
     };
 
     // Verify the password for a locked file server-trusted and return the payload only on a match.
-    // Wrong attempts are logged to /var/log/auth.log on the server (mirrors fnc_os_unlock). (#7)
+    // Wrong attempts are logged to /var/log/auth.log on the server (mirrors fnc_os_unlock).
     case "unlock": {
         private _pass = _data getOrDefault ["pass", ""];
         try {
@@ -144,7 +144,7 @@ switch (_op) do {
         };
     };
 
-    // Delete now moves to the Recycle Bin (/.trash) instead of destroying the object (#17). A name
+    // Delete now moves to the Recycle Bin (/.trash) instead of destroying the object. A name
     // clash in the bin is resolved with a numeric suffix so repeated deletes never overwrite.
     case "delete": {
         try {
@@ -159,7 +159,7 @@ switch (_op) do {
                 _target = "/.trash/" + _trashName; _i = _i + 1;
             };
             [[], _fs, _path, _target, _fsUser, false] call AE3_filesystem_fnc_mvObj;
-            // Remember where it came from so Restore can return it to the original location (#4).
+            // Remember where it came from so Restore can return it to the original location.
             private _meta = _computer getVariable ["AE3_trash_meta", createHashMap];
             _meta set [_trashName, _path];
             _computer setVariable ["AE3_trash_meta", _meta, 2];
@@ -170,7 +170,7 @@ switch (_op) do {
         };
     };
 
-    // Cut/paste (move) and copy/paste for the right-click context menu (#16). _data: path=source, dest=target.
+    // Cut/paste (move) and copy/paste for the right-click context menu. _data: path=source, dest=target.
     case "move";
     case "copy": {
         private _dest = _data getOrDefault ["dest", ""];
@@ -184,7 +184,7 @@ switch (_op) do {
         };
     };
 
-    // Recycle Bin restore: move an item out of /.trash back to its ORIGINAL location (#4). If the
+    // Recycle Bin restore: move an item out of /.trash back to its ORIGINAL location. If the
     // original is unknown (deleted before this tracking existed) fall back to the user's home. When a
     // file already exists at the destination, report needsConfirm and wait for an overwrite:true retry.
     case "restore": {
@@ -212,7 +212,7 @@ switch (_op) do {
         };
     };
 
-    // Permanently delete a single Recycle Bin item (#4). _data: name (relative to /.trash).
+    // Permanently delete a single Recycle Bin item. _data: name (relative to /.trash).
     case "purge": {
         private _name = _data getOrDefault ["name", ""];
         if (_name isEqualTo "") exitWith { _res set ["error", "bad_input"]; };
@@ -227,7 +227,7 @@ switch (_op) do {
         };
     };
 
-    // Empty the Recycle Bin: permanently drop /.trash and recreate it empty (#17).
+    // Empty the Recycle Bin: permanently drop /.trash and recreate it empty.
     case "empty_trash": {
         try {
             if ([[], _fs, "/.trash", _fsUser] call AE3_filesystem_fnc_fsObjExists) then {
@@ -240,7 +240,7 @@ switch (_op) do {
         };
     };
 
-    // Create a symbolic link (#9): _data path=link location, target=absolute target path.
+    // Create a symbolic link: _data path=link location, target=absolute target path.
     case "symlink": {
         private _target = _data getOrDefault ["target", ""];
         if (_target isEqualTo "") exitWith { _res set ["error", "bad_input"]; };

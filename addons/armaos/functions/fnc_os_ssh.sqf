@@ -79,6 +79,14 @@ if (!(_target getVariable ["AE3_cap_hasTerminal", false])) exitWith
 	[_computer] call AE3_armaos_fnc_shell_playErrorSound;
 };
 
+// Per-laptop SSH access toggle: refuse when the target has SSH disabled in its attributes.
+// Defaults to enabled so existing setups are unaffected.
+if (!(_target getVariable ["AE3_ssh_enabled", true])) exitWith
+{
+	[_computer, format [localize "STR_AE3_ArmaOS_Ssh_ConnectionRefused", _ipString]] call AE3_armaos_fnc_shell_stdout;
+	[_computer] call AE3_armaos_fnc_shell_playErrorSound;
+};
+
 if ((_target getVariable ["AE3_power_powerState", 0]) != 1) exitWith
 {
 	[_computer, format [localize "STR_AE3_ArmaOS_Ssh_NoRoute", _ipString]] call AE3_armaos_fnc_shell_stdout;

@@ -2,7 +2,7 @@
 /*
  * Author: Root
  * Description: Collects laptop status (power, battery, network, host, uptime) for the web desktop
- * Settings/System panel (#14). Reuses the same object variables the native System Monitor read.
+ * Settings/System panel. Reuses the same object variables the native System Monitor read.
  * Pure read, client-local.
  *
  * Arguments:
@@ -17,7 +17,7 @@
 
 params [["_computer", objNull, [objNull]], ["_user", "", [""]]];
 
-// Per-user home + Desktop (#9): root lives in /root, every other user in /home/<user>.
+// Per-user home + Desktop: root lives in /root, every other user in /home/<user>.
 private _home = ["/home/" + _user, "/root"] select (_user isEqualTo "root" || _user isEqualTo "");
 private _info = createHashMapFromArray [
     ["hostname", "armaOS"], ["ip", "-"], ["gateway", "-"], ["power", "-"], ["battery", -1], ["uptime", "-"],
@@ -44,9 +44,9 @@ if (!isNull _gateway) then {
 
 _info set ["hostname", _computer getVariable ["ace_cargo_customName", "armaOS"]];
 _info set ["uptime", ([CBA_missionTime, "HH:MM:SS"] call BIS_fnc_secondsToString)];
-// Per-laptop wallpaper (#15): a CSS background string or image path ("" = the theme default).
+// Per-laptop wallpaper: a CSS background string or image path ("" = the theme default).
 _info set ["wallpaper", _computer getVariable ["AE3_desktop_wallpaper", ""]];
-// SSH access toggle (#19): whether this device accepts incoming SSH connections.
+// SSH access toggle: whether this device accepts incoming SSH connections.
 _info set ["sshEnabled", _computer getVariable ["AE3_ssh_enabled", false]];
 
 _info

@@ -1,7 +1,7 @@
 #include "..\script_component.hpp"
 /*
  * Author: Root
- * Description: Lists AE3 routers within wireless range of the laptop for the web Network app (#11).
+ * Description: Lists AE3 routers within wireless range of the laptop for the web Network app.
  * Routers are tagged AE3_cap_isRouter by AE3_network_fnc_initRouter. Returns a lightweight list
  * (ssid + ip + netId) the client uses to render and to request a connection. Client-local read.
  *
@@ -18,7 +18,7 @@ params [["_computer", objNull, [objNull]]];
 
 if (isNull _computer) exitWith { [] };
 
-// Each router advertises its OWN wireless range (#14): a laptop sees a network only when it sits
+// Each router advertises its OWN wireless range: a laptop sees a network only when it sits
 // within that router's range, not a single global radius. Scan out to the configured maximum, then
 // keep routers whose individual range reaches this laptop.
 private _scanCap = missionNamespace getVariable [QGVAR(wirelessRangeMax), 500];

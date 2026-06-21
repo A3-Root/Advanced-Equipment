@@ -46,7 +46,7 @@ _display setVariable [QGVAR(computer), _computer];
 // authoritatively for the userlist before replying, and the Files app retries while the filesystem
 // is still syncing. getRemoteVar is a no-op in SP (the server-local copy is already present).
 // AE3_power_*/AE3_network_* are added so the Settings/System panel (fnc_sysInfo) shows real values
-// on clients instead of defaults (#14).
+// on clients instead of defaults.
 if (!isNull _computer) then {
     [_computer] spawn {
         params ["_computer"];

@@ -13,7 +13,7 @@ params ["_entity"];
 
 private _parent = _entity getVariable ["AE3_network_parent", objNull];
 
-if (!alive _entity || _entity getVariable "AE3_power_powerState" == 0) exitWith { [127, 0, 0, 1] };
+if (!alive _entity || {(_entity getVariable ["AE3_power_powerState", 0]) == 0}) exitWith { [127, 0, 0, 1] };
 
 if (isNull _parent) then
 {

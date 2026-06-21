@@ -35,6 +35,9 @@ PREP(zeus_standbyDevice);
 PREP(zeus_openObject);
 PREP(zeus_closeObject);
 
+PREP(zeus_connectToRouter);
+PREP(zeus_disconnectFromRouter);
+
 PREP(zeus_module_addUser);
 PREP(zeus_module_addCalendarEvent);
 PREP(zeus_module_addSecurityCommands);

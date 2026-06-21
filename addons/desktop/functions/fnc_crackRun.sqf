@@ -3,7 +3,7 @@
  * Author: Root
  * Description: Web-desktop backend for the Cryptography > Crack app. Cryptanalysis of caesar/columnar
  * ciphered text (bruteforce / statistics / key-length), mirroring the CLI `crack` command but
- * returning result lines to the browser instead of the terminal (#9). Pure computation.
+ * returning result lines to the browser instead of the terminal. Pure computation.
  *
  * Arguments:
  * 0: _data <HASHMAP> - {mode:"bruteforce"|"statistics"|"key", algorithm:"caesar"|"columnar", text:STRING}

@@ -10,7 +10,7 @@
  * 1: _name <STRING> - New network name (blank = leave unchanged)
  * 2: _range <NUMBER> - Wireless range in metres (<= 0 = leave unchanged)
  * 3: _password <STRING> - Network password ("" = open network)
- * 4: _gateway <STRING|ARRAY> - New default gateway as "a.b.c.d" or [a,b,c,d] (blank/invalid = unchanged) (#10)
+ * 4: _gateway <STRING|ARRAY> - New default gateway as "a.b.c.d" or [a,b,c,d] (blank/invalid = unchanged)
  *
  * Return Value:
  * None
@@ -31,7 +31,7 @@ if (_range > 0) then { _router setVariable ["AE3_network_wirelessRange", _range,
 _router setVariable ["AE3_network_password", _password, true];
 
 // Default gateway = the router's own base address; DHCP (AE3_network_fnc_dhcp_get) hands out client
-// IPs from it. Accept "a.b.c.d" or [a,b,c,d]; ignore anything that isn't 4 octets in 0..255 (#10).
+// IPs from it. Accept "a.b.c.d" or [a,b,c,d]; ignore anything that isn't 4 octets in 0..255.
 private _gw = [];
 if (_gateway isEqualType "") then {
     if (_gateway isNotEqualTo "") then { _gw = (_gateway splitString ".") apply { parseNumber _x }; };

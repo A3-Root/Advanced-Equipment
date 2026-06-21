@@ -1,7 +1,7 @@
 #include "..\script_component.hpp"
 /*
  * Author: Root
- * Description: Volume operations for the web desktop "My Computer" app (#11). Lists the system
+ * Description: Volume operations for the web desktop "My Computer" app. Lists the system
  * volume plus every USB interface (connected drive + mount state), and mounts/unmounts drives via
  * the flashdrive backend (server-side). Mirrors how a real Debian/Ubuntu "Computer" view exposes
  * removable media.

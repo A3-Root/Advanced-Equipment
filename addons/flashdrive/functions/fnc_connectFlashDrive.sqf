@@ -53,7 +53,7 @@ _object setVariable ['AE3_Flashdrive_Interface', _name];
 	true;
 }] call BIS_fnc_addScriptedEventHandler;
 
-// Auto-mount the freshly connected drive so it shows up in My Computer / the file browser (#11),
+// Auto-mount the freshly connected drive so it shows up in My Computer / the file browser,
 // then nudge any open desktop to refresh its volume list.
 [_computer, _name, "root"] remoteExecCall ["AE3_flashdrive_fnc_mount", 2];
 ["ae3_desktop_volChanged", []] call CBA_fnc_globalEvent;

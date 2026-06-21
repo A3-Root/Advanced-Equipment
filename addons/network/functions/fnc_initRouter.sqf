@@ -15,33 +15,33 @@
 params["_entity", ["_parent", objNull], ["_address", [192, 168, 0, 1]], ["_internal", false]];
 
 
-private _childs = 
+private _childs =
 {
-	params ["_target", "_player", "_params"]; 
+	params ["_target", "_player", "_params"];
 
 	private _routers = (nearestObjects [_target, [], 10]) select {!isNil{_x getVariable "AE3_network_children"} && _x != _target};
-	private _actions = []; 
-	{ 
-		private _childStatement = 
-		{ 
-			params ["_target", "_player", "_parent"]; 
+	private _actions = [];
+	{
+		private _childStatement =
+		{
+			params ["_target", "_player", "_parent"];
 			[_target, _parent] call AE3_network_fnc_connect_router2router;
-		}; 
+		};
 
 		private _aceCargoName = [_x, true] call ace_cargo_fnc_getNameItem; // changed from {typeOf _x} to this function
 
-		private _action = [_aceCargoName, _aceCargoName, "", _childStatement, {true}, {}, _x] call ace_interact_menu_fnc_createAction; 
-		_actions pushBack [_action, [], _target]; 
+		private _action = [_aceCargoName, _aceCargoName, "", _childStatement, {true}, {}, _x] call ace_interact_menu_fnc_createAction;
+		_actions pushBack [_action, [], _target];
 	} forEach (_routers);
-	
+
 	_actions
 };
 
 private _connect = ["AE3_Network_ConnectAction", localize "STR_AE3_Network_Interaction_ConnectToRouter", "",
 			{},
 			{
-				params ["_target", "_player", "_params"]; 
-				_params params ["_device"]; 
+				params ["_target", "_player", "_params"];
+				_params params ["_device"];
 				(alive _target) and (isNull (_device getVariable ["AE3_network_parent", objNull]))
 			},
 			_childs,
@@ -50,12 +50,12 @@ private _connect = ["AE3_Network_ConnectAction", localize "STR_AE3_Network_Inter
 
 private _disconnect = ["AE3_Network_DisconnectAction", localize "STR_AE3_Network_Interaction_DisconnectFromRouter", "",
 				{
-					params ["_target", "_player", "_params"]; 
-					_params params ["_device"]; 
+					params ["_target", "_player", "_params"];
+					_params params ["_device"];
 					[_device] call AE3_network_fnc_disconnect;
 				},
 				{
-					params ["_target", "_player", "_params"]; 
+					params ["_target", "_player", "_params"];
 					_params params ["_device"];
 					(alive _target) and (!isNull (_device getVariable ["AE3_network_parent", objNull]))
 				},
@@ -114,7 +114,7 @@ if (!isDedicated && !_internal) then
  {
 	 _entity setVariable ["AE3_cap_isRouter", true, true];
 
-	 // Wireless reach + access control (#14). Defaults come from the CBA setting; a value pre-set by
+	 // Wireless reach + access control. Defaults come from the CBA setting; a value pre-set by
 	 // Eden/Zeus (AE3_network_wirelessRange / AE3_network_password) is preserved. A blank password
 	 // means an open network.
 	 if (isNil {_entity getVariable "AE3_network_wirelessRange"}) then {

@@ -16,7 +16,7 @@
     }
   };
 
-  // Applications-menu category for built-in apps (#8). Ext apps (Root Cyberwarfare) carry their own
+  // Applications-menu category for built-in apps. Ext apps (Root Cyberwarfare) carry their own
   // app.menu (a "Parent/Child" path under "Tools"). "/" nests submenus. Apps absent here fall back to
   // "Other". CATEGORY_ORDER fixes the category sequence; APP_ORDER fixes the within-category order.
   var CATEGORY = {
@@ -37,15 +37,15 @@
   function appRank(app) { var i = APP_ORDER.indexOf(app.id); return i < 0 ? 999 : i; }
 
   // Fixed system icons that always sit on the desktop (like Ubuntu's Home/Trash). "My Computer" is
-  // the computer-management app (#11); "File Explorer" opens the plain Files browser; Recycle Bin
+  // the computer-management app; "File Explorer" opens the plain Files browser; Recycle Bin
   // opens the trash. Everything else on the desktop is loaded dynamically from the user's
-  // ~/Desktop folder (#9) by loadUserDesktop().
+  // ~/Desktop folder by loadUserDesktop().
   var DESKTOP_ICONS = [
     { label: "My Computer", glyph: function () { return Icons.computer || Icons.files; }, app: "mycomputer" },
     { label: "File Explorer", glyph: function () { return Icons.files; }, app: "files", args: { path: "/home" } },
     { label: "Recycle Bin", glyph: function () { return Icons.trash || Icons.files; }, app: "recyclebin" }
   ];
-  // Resolved on login from sysinfo (#9). The desktop surface mirrors this folder.
+  // Resolved on login from sysinfo. The desktop surface mirrors this folder.
   window.AE3_HOME = null;
 
   function el(tag, cls, html) {
@@ -55,7 +55,7 @@
     return e;
   }
 
-  // ---------------- Reusable right-click context menu (#16) ----------------
+  // ---------------- Reusable right-click context menu ----------------
   // items: array of { label, action, disabled } or { sep:true }. Shared by the desktop surface and
   // the Files app. window.AE3_clipboard holds the pending cut/copy ({ path, name, op }).
   window.AE3_clipboard = null;
@@ -123,7 +123,7 @@
 
   // Load and render the logged-in user's ~/Desktop folder. Launchers (.app, holding "app=<id>")
   // launch the app; folders open Files there; files open in the default viewer; symlinks follow
-  // their target. Mirrors a real Ubuntu/Debian desktop (#9).
+  // their target. Mirrors a real Ubuntu/Debian desktop.
   function loadUserDesktop(desk) {
     var home = window.AE3_HOME;
     if (!home) return;
@@ -136,7 +136,7 @@
         var glyph = it.dir ? Icons.folder : (isApp ? Icons.app : Icons.file);
         var icon = makeIcon(desk, it.name.replace(/\.app$/i, ""), glyph, function () { openDesktopEntry(it, full); });
         // A .app launcher holds "app=<id>"; show the *target* app's real glyph (Mail/Browser/Files/
-        // Calculator etc.) instead of a generic/terminal icon (#2).
+        // Calculator etc.) instead of a generic/terminal icon.
         if (isApp) {
           A3.request("fs_read", { path: (it.link && it.link !== "") ? it.link : full }).then(function (res2) {
             var m = String((res2 && res2.content) || "").match(/app\s*=\s*([\w-]+)/i);
@@ -149,6 +149,29 @@
     }).catch(function () {});
   }
 
+  // Shared file-open with password handling. Used by the desktop surface AND the Files app so the
+  // password-protected path can never diverge: a locked file always prompts before opening.
+  window.AE3_openFile = function (path) {
+    A3.request("fs_read", { path: path }).then(function (res) {
+      if (res && res.error && res.error !== "") {
+        Modal.alert("Open", res.error === "not_text" ? "Not a text file." : "Cannot open file.");
+        return;
+      }
+      if (res && res.locked) {
+        Modal.prompt("This file is password protected. Enter password:", "").then(function (pass) {
+          if (pass == null) return;
+          A3.request("fs_unlock", { path: path, pass: pass }).then(function (r2) {
+            if (r2.error === "bad_pass") { Modal.alert("Locked", "Wrong password."); return; }
+            if (r2.error && r2.error !== "") { Modal.alert("Open", "Cannot open file."); return; }
+            Apps.launch("notepad", { path: path, content: r2.content || "" });
+          });
+        });
+        return;
+      }
+      Apps.launch("notepad", { path: path, content: (res && res.content) || "" });
+    });
+  };
+
   function openDesktopEntry(it, full) {
     if (it.dir) { Apps.launch("files", { path: (it.link && it.link !== "") ? it.link : full }); return; }
     if (/\.app$/i.test(it.name)) {
@@ -158,9 +181,7 @@
       });
       return;
     }
-    A3.request("fs_read", { path: (it.link && it.link !== "") ? it.link : full }).then(function (res) {
-      if (res && !res.error) Apps.launch("notepad", { path: full, content: res.content || "" });
-    });
+    window.AE3_openFile((it.link && it.link !== "") ? it.link : full);
   }
 
   function buildDesktopIcons() {
@@ -206,7 +227,7 @@
     }
   }
 
-  // ---------------- Applications menu (#8) ----------------
+  // ---------------- Applications menu ----------------
   function menuTree() {
     // Build {category -> {sub -> [apps]} | [apps]} from the registry. app.menu overrides CATEGORY.
     var tree = {};
@@ -238,7 +259,7 @@
     if (!menu) return;
     menu.innerHTML = "";
     var tree = menuTree();
-    // Fixed category sequence (#8); any unexpected categories follow, alphabetically.
+    // Fixed category sequence; any unexpected categories follow, alphabetically.
     var cats = CATEGORY_ORDER.filter(function (c) { return tree[c]; })
       .concat(Object.keys(tree).filter(function (c) { return CATEGORY_ORDER.indexOf(c) < 0; }).sort());
     cats.forEach(function (cat) {
@@ -262,7 +283,7 @@
     });
   }
 
-  // ---------------- Global search (#14) ----------------
+  // ---------------- Global search ----------------
   // Searches installed apps, files/folders (recursive fs_search from /), the Recycle Bin, and
   // wireless network names. Mail and Messenger are intentionally excluded (they have their own
   // in-app search). Debounced; results render in a dropdown under the search box.
@@ -343,7 +364,7 @@
     });
   }
 
-  // ---------------- Taskbar (#11) ----------------
+  // ---------------- Taskbar ----------------
   function buildTaskbar() {
     var bar = document.getElementById("tasks");
     if (!bar) return;
@@ -366,7 +387,7 @@
 
   function onTaskbarChange() { refreshDockRunning(); buildTaskbar(); }
 
-  // ---------------- Clock (#10): centred, date + time, click opens Calendar ----------------
+  // ---------------- Clock: centred, date + time, click opens Calendar ----------------
   var clockTimer = null, batteryTimer = null;
   function startClock() {
     function tick() {
@@ -382,7 +403,7 @@
     if (c && !c.dataset.bound) { c.dataset.bound = "1"; c.addEventListener("click", function () { Apps.launch("calendar"); }); }
   }
 
-  // ---------------- Tray: battery (#12), wifi (#13), power (#8) ----------------
+  // ---------------- Tray: battery, wifi, power ----------------
   function popover(id, anchorRight, html) {
     var ex = document.getElementById(id);
     if (ex) { ex.remove(); return null; }
@@ -421,7 +442,7 @@
     if (batteryTimer) clearInterval(batteryTimer);
     batteryTimer = setInterval(poll, 5000); poll();
 
-    // Battery popover (#12): charge, power state, capacity.
+    // Battery popover: charge, power state, capacity.
     tray.querySelector(".battery").addEventListener("click", function (e) {
       e.stopPropagation();
       var s = lastSys || {};
@@ -432,10 +453,10 @@
         '<div class="tp-r">Uptime: ' + (s.uptime || "?") + '</div>');
     });
 
-    // Wifi opens the Network app (#13).
+    // Wifi opens the Network app.
     tray.querySelector(".wifi").addEventListener("click", function (e) { e.stopPropagation(); Apps.launch("network"); });
 
-    // Power menu (#8): Sign out / Shut down.
+    // Power menu: Sign out / Shut down.
     tray.querySelector(".powerbtn").addEventListener("click", function (e) {
       e.stopPropagation();
       var m = popover("powermenu", 6,
@@ -446,7 +467,7 @@
     });
   }
 
-  // Open-window layout persistence (#17): debounce-save the WM snapshot to the laptop so reopening
+  // Open-window layout persistence: debounce-save the WM snapshot to the laptop so reopening
   // resumes exactly where it was left. Suppressed while restoring to avoid feedback churn.
   var uiSaveTimer = null, uiRestoring = false;
   function bindUiPersist() {
@@ -473,7 +494,7 @@
       var h = document.getElementById("hostname");
       if (h) h.textContent = name || "armaOS";
     },
-    // Wallpaper (#15): CSS background applied to #wallpaper (url or gradient/colour string).
+    // Wallpaper: CSS background applied to #wallpaper (url or gradient/colour string).
     setWallpaper: function (val) {
       var w = document.getElementById("wallpaper");
       if (!w || !val) return;
@@ -485,7 +506,7 @@
       if (typeof window.AE3_showLogin === "function") window.AE3_showLogin();
     },
     refresh: function () { buildDock(); buildDesktopIcons(); onTaskbarChange(); },
-    // Reopen the windows saved from the previous session (#17).
+    // Reopen the windows saved from the previous session.
     restoreUi: function (list) {
       uiRestoring = true;
       if (window.WM && WM.restoreState) WM.restoreState(list);

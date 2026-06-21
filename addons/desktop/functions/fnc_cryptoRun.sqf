@@ -4,7 +4,7 @@
  * Description: Web-desktop backend for the Cryptography > Crypto app. Encrypts or decrypts text with
  * the same caesar/columnar ciphers as the CLI `crypto` command (AE3_armaos_fnc_encryption_*), but
  * returns the result to the browser instead of writing to a terminal, so the GUI tool produces output
- * identical to the shell (#9). Pure computation - safe to run client-side.
+ * identical to the shell. Pure computation - safe to run client-side.
  *
  * Arguments:
  * 0: _data <HASHMAP> - {mode:"encrypt"|"decrypt", algorithm:"caesar"|"columnar", key:STRING, text:STRING}

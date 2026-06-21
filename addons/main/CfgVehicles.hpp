@@ -15,7 +15,7 @@ class CfgVehicles
 
 	/* ================================================================================ */
 
-	// MODULE CONFIGURE ROUTER (#14): sets the wireless range + password of every synced router.
+	// MODULE CONFIGURE ROUTER: sets the wireless range + password of every synced router.
 	// Uses the standard module Attributes UI (no custom dialog); the enforcement lives in
 	// AE3_network_fnc_netScan / fnc_netConnectServer.
 	class AE3_ConfigureRouter: Module_F

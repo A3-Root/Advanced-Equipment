@@ -10,7 +10,7 @@
   var seq = 1;
   // Must match CSS --topbar-h / --dock-w (css/ubuntu.css). Read them from the CSS custom properties so
   // there is a single source of truth; fall back to the known defaults. Previously TOPBAR was 28 while
-  // the CSS bar is 40px tall, so maximized windows were clipped under the top bar (#3).
+  // the CSS bar is 40px tall, so maximized windows were clipped under the top bar.
   function cssPx(name, dflt) {
     try {
       var v = parseInt(getComputedStyle(document.documentElement).getPropertyValue(name), 10);
@@ -147,7 +147,7 @@
     },
     running: function () { return openWindows.map(function (w) { return w.app.id; }); },
 
-    // Per-window descriptors for the taskbar (#11). Title is read live from the titlebar so apps
+    // Per-window descriptors for the taskbar. Title is read live from the titlebar so apps
     // that rename their window (browser, notepad) show the current document.
     list: function () {
       return openWindows.map(function (w) {
@@ -171,7 +171,7 @@
     onTaskbarChange: function () {},  // wired by desktop.js
     onStateChange: function () {},    // wired by desktop.js (persists the open-window layout, #17)
 
-    // Serialize the open windows so the desktop can be restored exactly as left on reopen (#17).
+    // Serialize the open windows so the desktop can be restored exactly as left on reopen.
     snapshot: function () {
       return openWindows.map(function (w) {
         return {

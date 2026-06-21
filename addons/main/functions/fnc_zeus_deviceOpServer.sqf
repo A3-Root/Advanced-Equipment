@@ -37,7 +37,7 @@ if (!_ready) exitWith
 
 // Honor each op's own success/failure so the curator gets accurate feedback. addCalendarEvent, for
 // example, returns false on a non-ISO date - previously this always reported success, so a rejected
-// event looked like it had been added (#4). Ops that do not return a bool are treated as success.
+// event looked like it had been added. Ops that do not return a bool are treated as success.
 private _result = true;
 switch (_op) do
 {

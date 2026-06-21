@@ -60,7 +60,7 @@ if (_username isNotEqualTo "root") then
         };
     };
 
-    // Seed ~/Desktop with default app launchers + ensure the app catalog (#9).
+    // Seed ~/Desktop with default app launchers + ensure the app catalog
     [_filesystem, "/home/" + _username, _username] call AE3_filesystem_fnc_seedDesktop;
 };
 

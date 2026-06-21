@@ -1,7 +1,7 @@
 #include "..\script_component.hpp"
 /*
  * Author: Root
- * Description: Server-side wireless (re)connect for the web Network app (#11). Disconnects the
+ * Description: Server-side wireless (re)connect for the web Network app. Disconnects the
  * laptop from its current router (if any) then connects it to the requested router, reusing the
  * authoritative AE3 network functions (which broadcast the new parent/address). Server-only.
  *
@@ -27,7 +27,7 @@ private _notify = {
     if (_owner > 0) then { ["ae3_desktop_netResult", [_ok, _msg], _owner] call CBA_fnc_ownerEvent; };
 };
 
-// Range + password gate (#14). The scan already filters by range, but re-check on the server so a
+// Range + password gate. The scan already filters by range, but re-check on the server so a
 // stale/forged request cannot connect out of range or without the right password.
 if ((_device distance _router) > (_router getVariable ["AE3_network_wirelessRange", 50])) exitWith {
     [false, "Out of range"] call _notify;

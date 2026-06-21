@@ -197,13 +197,61 @@ if (isNull _entity) exitWith {};
         private _rangeEditCtrl = _display displayCtrl 1910;
         private _gatewayLabelCtrl = _display displayCtrl 1004;
         private _gatewayEditCtrl = _display displayCtrl 1911;
+        private _ssidLabelCtrl = _display displayCtrl 1005;
+        private _ssidEditCtrl = _display displayCtrl 1912;
 
-        { _x ctrlShow true } forEach [_rangeLabelCtrl, _rangeEditCtrl, _gatewayLabelCtrl, _gatewayEditCtrl];
+        { _x ctrlShow true } forEach [_rangeLabelCtrl, _rangeEditCtrl, _gatewayLabelCtrl, _gatewayEditCtrl, _ssidLabelCtrl, _ssidEditCtrl];
         _rangeEditCtrl ctrlEnable true;
         _gatewayEditCtrl ctrlEnable true;
+        _ssidEditCtrl ctrlEnable true;
 
         _rangeEditCtrl ctrlSetText str (_entity getVariable ["AE3_network_wirelessRange", 50]);
         _gatewayEditCtrl ctrlSetText ([_entity getVariable ["AE3_network_address", [192, 168, 0, 1]]] call AE3_network_fnc_ip2str);
+        _ssidEditCtrl ctrlSetText (_entity getVariable ["ace_cargo_customName", ""]);
+    };
+
+    /* ======================================== */
+
+    // Terminal-only attributes (#3/#4): hostname, SSH toggle and the Wi-Fi router picker. Shown only for
+    // assets with a terminal (laptops/computers); never for routers or other devices.
+    if (_entity getVariable ["AE3_cap_hasTerminal", false]) then
+    {
+        private _hostLabelCtrl = _display displayCtrl 1006;
+        private _hostEditCtrl = _display displayCtrl 1913;
+        private _sshLabelCtrl = _display displayCtrl 1007;
+        private _sshCheckCtrl = _display displayCtrl 1320;
+        private _rtLabelCtrl = _display displayCtrl 1008;
+        private _rtComboCtrl = _display displayCtrl 1600;
+        private _pwLabelCtrl = _display displayCtrl 1009;
+        private _pwEditCtrl = _display displayCtrl 1914;
+        private _connectBtnCtrl = _display displayCtrl 2900;
+        private _disconnectBtnCtrl = _display displayCtrl 2910;
+
+        { _x ctrlShow true } forEach [_hostLabelCtrl, _hostEditCtrl, _sshLabelCtrl, _sshCheckCtrl, _rtLabelCtrl, _rtComboCtrl, _pwLabelCtrl, _pwEditCtrl, _connectBtnCtrl, _disconnectBtnCtrl];
+        _hostEditCtrl ctrlEnable true;
+        _sshCheckCtrl ctrlEnable true;
+        _rtComboCtrl ctrlEnable true;
+        _pwEditCtrl ctrlEnable true;
+
+        _hostEditCtrl ctrlSetText (_entity getVariable ["ace_cargo_customName", "armaOS"]);
+        _sshCheckCtrl cbSetChecked (_entity getVariable ["AE3_ssh_enabled", true]);
+
+        // List routers in reach (within each router's wireless range); preselect the current parent.
+        private _parent = _entity getVariable ["AE3_network_parent", objNull];
+        lbClear _rtComboCtrl;
+        private _routers = (nearestObjects [_entity, [], 300]) select { _x getVariable ["AE3_cap_isRouter", false] };
+        {
+            private _r = _x;
+            private _range = _r getVariable ["AE3_network_wirelessRange", 50];
+            if ((_entity distance _r) <= _range) then
+            {
+                private _name = [_r, true] call ace_cargo_fnc_getNameItem;
+                private _ip = [_r getVariable ["AE3_network_address", [192, 168, 0, 1]]] call AE3_network_fnc_ip2str;
+                private _i = _rtComboCtrl lbAdd format ["%1 (%2)", _name, _ip];
+                _rtComboCtrl lbSetData [_i, netId _r];
+                if (_r isEqualTo _parent) then { _rtComboCtrl lbSetCurSel _i; };
+            };
+        } forEach _routers;
     };
 
     /* ======================================== */

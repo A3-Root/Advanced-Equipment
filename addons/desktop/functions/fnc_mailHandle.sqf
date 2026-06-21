@@ -1,7 +1,7 @@
 #include "..\script_component.hpp"
 /*
  * Author: Root
- * Description: Mail operations for the web desktop Mail app (#18). Reads /var/mail from the
+ * Description: Mail operations for the web desktop Mail app. Reads /var/mail from the
  * laptop's cached filesystem (planted by AE3_desktop_fnc_addEmail / Zeus) and parses the
  * From/Subject/body format. Sending is handled in the router (needs the network ping + server
  * event). Client-local read.
@@ -54,7 +54,7 @@ switch (_op) do {
             reverse _names;
             {
                 private _entry = _content get _x;
-                // Skip the legacy IM inbox if present - chat now lives in /var/chat (#7).
+                // Skip the legacy IM inbox if present - chat now lives in /var/chat.
                 if ((_entry select 0) isEqualType "" && {_x isNotEqualTo "inbox"}) then {
                     private _meta = [_entry select 0, _x] call _parse;
                     _meta set ["body", ""]; // list view: headers only
@@ -78,7 +78,7 @@ switch (_op) do {
         };
     };
 
-    // Delete an email (#6): drop the file from /var/mail and push the updated filesystem.
+    // Delete an email: drop the file from /var/mail and push the updated filesystem.
     case "delete": {
         private _file = _data getOrDefault ["file", ""];
         if (_file isEqualTo "") exitWith { _res set ["error", "bad_input"]; };

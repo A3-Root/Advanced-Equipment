@@ -1,7 +1,7 @@
 #include "..\script_component.hpp"
 /*
  * Author: Root
- * Description: Module function for "Configure Router (Wireless)" (#14). Applies the wireless range
+ * Description: Module function for "Configure Router (Wireless)". Applies the wireless range
  * and password set in the module attributes to every synced router, broadcasting the values so the
  * web Network app's scan/connect (AE3_network_fnc_netScan / AE3_desktop_fnc_netConnectServer) enforce
  * them. Server-only. Works from the Eden editor and Zeus (synced module).
@@ -26,7 +26,7 @@ private _range = _module getVariable ["AE3_ModuleRouter_Range", 50];
 if !(_range isEqualType 0) then { _range = parseNumber (str _range); };
 if (_range <= 0) then { _range = 50; };
 private _password = _module getVariable ["AE3_ModuleRouter_Password", ""];
-private _gateway = _module getVariable ["AE3_ModuleRouter_Gateway", ""]; // "a.b.c.d", blank = unchanged (#10)
+private _gateway = _module getVariable ["AE3_ModuleRouter_Gateway", ""]; // "a.b.c.d", blank = unchanged
 
 // Routers to configure: the synced ones, or - when nothing was synced (common in Zeus, where syncing
 // is fiddly) - every router within the module's wireless range, so the module still does something.

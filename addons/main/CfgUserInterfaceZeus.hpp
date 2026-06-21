@@ -134,7 +134,7 @@ class AE3_UserInterface_Zeus_Asset_Details
             h = 1 * GUI_GRID_H;
             colorBackground[] = {-1,-1,-1,0.5};
 
-            onLoad = "params ['_control']; private _display = ctrlParent _control; _display setVariable ['batteryTextCtrl', _control]; _control ctrlEnable false;"; 
+            onLoad = "params ['_control']; private _display = ctrlParent _control; _display setVariable ['batteryTextCtrl', _control]; _control ctrlEnable false;";
             //onEditChanged = "params ['_control', '_newText']; private _display = ctrlParent _control; private _slider = _display getVariable 'batterySliderCtrl'; private _newValue = (round (_newText call BIS_fnc_parseNumber)); _slider sliderSetPosition _newValue; _control ctrlSetText format ['%1%2', _newValue, '%'];";
             onKillFocus = "params ['_control']; private _newText = ctrlText _control; _newText = [_newText, '0123456789.,'] call BIS_fnc_filterString; private _display = ctrlParent _control; private _slider = _display getVariable 'batterySliderCtrl'; private _newValue = ((round (_newText call BIS_fnc_parseNumber)) min 100); _slider sliderSetPosition _newValue; _control ctrlSetText format ['%1%2', _newValue, '%'];";
         };
@@ -149,7 +149,7 @@ class AE3_UserInterface_Zeus_Asset_Details
             h = 1 * GUI_GRID_H;
             colorBackground[] = {-1,-1,-1,0.5};
 
-            onLoad = "params ['_control']; private _display = ctrlParent _control; _display setVariable ['fuelTextCtrl', _control]; _control ctrlEnable false;"; 
+            onLoad = "params ['_control']; private _display = ctrlParent _control; _display setVariable ['fuelTextCtrl', _control]; _control ctrlEnable false;";
             //onEditChanged = "params ['_control', '_newText']; private _display = ctrlParent _control; private _slider = _display getVariable 'batterySliderCtrl'; private _newValue = (round (_newText call BIS_fnc_parseNumber)); _slider sliderSetPosition _newValue; _control ctrlSetText format ['%1%2', _newValue, '%'];";
             onKillFocus = "params ['_control']; private _newText = ctrlText _control; _newText = [_newText, '0123456789.,'] call BIS_fnc_filterString; private _display = ctrlParent _control; private _slider = _display getVariable 'fuelSliderCtrl'; private _newValue = ((round (_newText call BIS_fnc_parseNumber)) min 100); _slider sliderSetPosition _newValue; _control ctrlSetText format ['%1%2', _newValue, '%'];";
         };
@@ -200,6 +200,144 @@ class AE3_UserInterface_Zeus_Asset_Details
             h = 1 * GUI_GRID_H;
             colorBackground[] = {-1,-1,-1,0.5};
             onLoad = "params ['_control']; _control ctrlShow false; _control ctrlEnable false;";
+        };
+
+        // Router-only network name / SSID: hidden by default, shown + populated for routers.
+        class RscText_1005: RscText
+        {
+            idc = 1005;
+            text = "Network Name";
+            x = 0.5 * GUI_GRID_W + GUI_GRID_X;
+            y = 15 * GUI_GRID_H + GUI_GRID_Y;
+            w = 7 * GUI_GRID_W;
+            h = 1 * GUI_GRID_H;
+            style = ST_RIGHT;
+            onLoad = "params ['_control']; _control ctrlShow false;";
+        };
+        class RscEdit_1912: RscEdit
+        {
+            idc = 1912;
+            text = "";
+            x = 8 * GUI_GRID_W + GUI_GRID_X;
+            y = 15 * GUI_GRID_H + GUI_GRID_Y;
+            w = 14 * GUI_GRID_W;
+            h = 1 * GUI_GRID_H;
+            colorBackground[] = {-1,-1,-1,0.5};
+            onLoad = "params ['_control']; _control ctrlShow false; _control ctrlEnable false;";
+        };
+
+        // Terminal-only hostname: hidden by default, shown + populated for laptops/computers.
+        class RscText_1006: RscText
+        {
+            idc = 1006;
+            text = "Hostname";
+            x = 0.5 * GUI_GRID_W + GUI_GRID_X;
+            y = 12 * GUI_GRID_H + GUI_GRID_Y;
+            w = 7 * GUI_GRID_W;
+            h = 1 * GUI_GRID_H;
+            style = ST_RIGHT;
+            onLoad = "params ['_control']; _control ctrlShow false;";
+        };
+        class RscEdit_1913: RscEdit
+        {
+            idc = 1913;
+            text = "";
+            x = 8 * GUI_GRID_W + GUI_GRID_X;
+            y = 12 * GUI_GRID_H + GUI_GRID_Y;
+            w = 14 * GUI_GRID_W;
+            h = 1 * GUI_GRID_H;
+            colorBackground[] = {-1,-1,-1,0.5};
+            onLoad = "params ['_control']; _control ctrlShow false; _control ctrlEnable false;";
+        };
+
+        // Terminal-only Allow SSH toggle.
+        class RscText_1007: RscText
+        {
+            idc = 1007;
+            text = "Allow SSH";
+            x = 0.5 * GUI_GRID_W + GUI_GRID_X;
+            y = 13.5 * GUI_GRID_H + GUI_GRID_Y;
+            w = 7 * GUI_GRID_W;
+            h = 1 * GUI_GRID_H;
+            style = ST_RIGHT;
+            onLoad = "params ['_control']; _control ctrlShow false;";
+        };
+        class RscCheckBox_1320: RscCheckBox
+        {
+            idc = 1320;
+            x = 8 * GUI_GRID_W + GUI_GRID_X;
+            y = 13.5 * GUI_GRID_H + GUI_GRID_Y;
+            w = 1 * GUI_GRID_W;
+            h = 1 * GUI_GRID_H;
+            colorBackground[] = {-1,-1,-1,0.5};
+            onLoad = "params ['_control']; _control ctrlShow false; _control ctrlEnable false;";
+        };
+
+        // Terminal-only Wi-Fi router picker: list nearby routers, supply password, connect/disconnect.
+        class RscText_1008: RscText
+        {
+            idc = 1008;
+            text = "Wi-Fi Router";
+            x = 0.5 * GUI_GRID_W + GUI_GRID_X;
+            y = 15 * GUI_GRID_H + GUI_GRID_Y;
+            w = 7 * GUI_GRID_W;
+            h = 1 * GUI_GRID_H;
+            style = ST_RIGHT;
+            onLoad = "params ['_control']; _control ctrlShow false;";
+        };
+        class RscCombo_1600: RscCombo
+        {
+            idc = 1600;
+            x = 8 * GUI_GRID_W + GUI_GRID_X;
+            y = 15 * GUI_GRID_H + GUI_GRID_Y;
+            w = 14 * GUI_GRID_W;
+            h = 1 * GUI_GRID_H;
+            colorBackground[] = {-1,-1,-1,0.5};
+            onLoad = "params ['_control']; _control ctrlShow false; _control ctrlEnable false;";
+        };
+        class RscText_1009: RscText
+        {
+            idc = 1009;
+            text = "Password";
+            x = 0.5 * GUI_GRID_W + GUI_GRID_X;
+            y = 16.5 * GUI_GRID_H + GUI_GRID_Y;
+            w = 7 * GUI_GRID_W;
+            h = 1 * GUI_GRID_H;
+            style = ST_RIGHT;
+            onLoad = "params ['_control']; _control ctrlShow false;";
+        };
+        class RscEdit_1914: RscEdit
+        {
+            idc = 1914;
+            text = "";
+            x = 8 * GUI_GRID_W + GUI_GRID_X;
+            y = 16.5 * GUI_GRID_H + GUI_GRID_Y;
+            w = 14 * GUI_GRID_W;
+            h = 1 * GUI_GRID_H;
+            colorBackground[] = {-1,-1,-1,0.5};
+            onLoad = "params ['_control']; _control ctrlShow false; _control ctrlEnable false;";
+        };
+        class RscButton_2900: RscButton
+        {
+            idc = 2900;
+            x = 8 * GUI_GRID_W + GUI_GRID_X;
+            y = 18 * GUI_GRID_H + GUI_GRID_Y;
+            w = 6.5 * GUI_GRID_W;
+            h = 1.5 * GUI_GRID_H;
+            text = "Connect";
+            onLoad = "params ['_control']; _control ctrlShow false;";
+            onButtonClick = "params ['_control']; [ctrlParent _control] call AE3_main_fnc_zeus_connectToRouter;";
+        };
+        class RscButton_2910: RscButton
+        {
+            idc = 2910;
+            x = 15 * GUI_GRID_W + GUI_GRID_X;
+            y = 18 * GUI_GRID_H + GUI_GRID_Y;
+            w = 6.5 * GUI_GRID_W;
+            h = 1.5 * GUI_GRID_H;
+            text = "Disconnect";
+            onLoad = "params ['_control']; _control ctrlShow false;";
+            onButtonClick = "params ['_control']; [ctrlParent _control] call AE3_main_fnc_zeus_disconnectFromRouter;";
         };
 
         class RscButton_2100: RscButton

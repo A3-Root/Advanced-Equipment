@@ -102,7 +102,7 @@ class AE3_Desktop_BrowserDisplay
 	};
 };
 
-// Native real-world map overlay (#5). CEF cannot host Arma's map control, so the Map app opens this
+// Native real-world map overlay. CEF cannot host Arma's map control, so the Map app opens this
 // dialog layered over the web desktop showing the genuine RscMapControl centred on the laptop, with
 // local markers for the player and nearby AE3 devices/routers. Created by AE3_desktop_fnc_mapOpen.
 class AE3_Desktop_MapOverlay
@@ -141,7 +141,7 @@ class AE3_Desktop_MapOverlay
 			text = "Map";
 		};
 
-		// Pan instruction (#10): the RscMapControl only pans while RMB is held.
+		// Pan instruction: the RscMapControl only pans while RMB is held.
 		class AE3_MapHint : RscText
 		{
 			idc = -1;

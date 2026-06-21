@@ -11,13 +11,13 @@
     Desktop.init();
     var host = (session && session.hostname) || seededHost;
     if (host) Desktop.setHostname(host);
-    // Resolve the per-user home (#9) + wallpaper (#15), then refresh so the desktop renders the
+    // Resolve the per-user home + wallpaper, then refresh so the desktop renders the
     // user's ~/Desktop folder contents.
     A3.request("sysinfo", {}).then(function (s) {
       if (s && s.wallpaper) Desktop.setWallpaper(s.wallpaper);
       window.AE3_HOME = (s && s.home) || (session && session.home) || null;
       Desktop.refresh();
-      // Restore the previous session's open windows (#17).
+      // Restore the previous session's open windows.
       A3.request("ui_get", {}).then(function (r) {
         if (r && r.state && r.state.length) Desktop.restoreUi(r.state);
       }).catch(function () {});
