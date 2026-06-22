@@ -11,7 +11,7 @@
  * 0: _clientOwner <NUMBER> - clientOwner that issued the request
  * 1: _rid <STRING> - request id to echo back
  * 2: _localNetId <STRING> - netId of the laptop running the SSH client
- * 3: _targetNetId <STRING> - netId of the remote device
+ * 3: _targetIp <ARRAY> - IP address of the remote device, e.g. [192,168,0,5]
  * 4: _user <STRING> - remote username
  * 5: _pass <STRING> - remote password
  * 6: _op <STRING> - "connect" | "ls" | "read" | "pull" | "push"
@@ -23,7 +23,7 @@
  * Public: No
  */
 
-params ["_clientOwner", "_rid", "_localNetId", "_targetNetId", "_user", "_pass", "_op", ["_data", createHashMap, [createHashMap]]];
+params ["_clientOwner", "_rid", "_localNetId", "_targetIp", "_user", "_pass", "_op", ["_data", createHashMap, [createHashMap]]];
 
 if (!isServer) exitWith {};
 
@@ -32,12 +32,14 @@ private _reply = {
     ["ae3_desktop_sshReply", [_clientOwner, _rid, _cmd, _payload]] call CBA_fnc_ownerEvent;
 };
 
-private _target = objectFromNetId _targetNetId;
+private _target = objNull;
 private _local = objectFromNetId _localNetId;
 private _res = createHashMapFromArray [["error", ""]];
 
-if (isNull _target) exitWith { _res set ["error", "no_route"]; ["ssh_" + _op, _res] call _reply; };
 if (isNull _local) exitWith { _res set ["error", "no_device"]; ["ssh_" + _op, _res] call _reply; };
+private _ownIp = _local getVariable ["AE3_network_address", [127, 0, 0, 1]];
+if (_targetIp isEqualTo [127, 0, 0, 1] || {_targetIp isEqualTo _ownIp}) then { _target = _local; } else { { if ((_x getVariable ["AE3_network_address", []]) isEqualTo _targetIp) exitWith { _target = _x; }; } forEach (missionNamespace getVariable ["ae3_desktop_computers", []]); };
+if (isNull _target) exitWith { _res set ["error", "no_route"]; ["ssh_" + _op, _res] call _reply; };
 
 if !(_target getVariable ["AE3_cap_hasTerminal", false]) exitWith {
     _res set ["error", "no_route"]; ["ssh_" + _op, _res] call _reply;

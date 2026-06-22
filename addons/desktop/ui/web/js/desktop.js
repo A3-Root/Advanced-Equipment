@@ -182,6 +182,10 @@
       { sep: true },
       { label: "Delete", action: function () {
         Modal.confirm("Delete", "Delete '" + opts.name + "'?").then(function (ok) { if (ok) deleteDesktopEntry(opts.path); });
+      } },
+      { sep: true },
+      { label: "Properties", action: function () {
+        if (window.AE3_showProperties) window.AE3_showProperties(opts.path, { name: opts.name, dir: !!opts.dirPath }, function () { Desktop.refresh(); });
       } }
     ]);
   }
@@ -339,8 +343,9 @@
       var node = tree[cat];
       var subNames = Object.keys(node._subs);
       node._apps.sort(function (a, b) { return appRank(a) - appRank(b); });
-      // Leaf category: a single app and no submenus -> show the app directly.
-      if (node._apps.length === 1 && subNames.length === 0) { menu.appendChild(itemRow(node._apps[0])); return; }
+      // Only the uncategorised "Other" bucket is flattened when it holds a single app; named
+      // categories always render as a folder so their apps stay grouped (e.g. Snake under Games).
+      if (cat === "Other" && node._apps.length === 1 && subNames.length === 0) { menu.appendChild(itemRow(node._apps[0])); return; }
       var catRow = el("div", "am-item am-cat", '<span class="am-ico">&#128193;</span><span style="flex:1">' + cat + '</span><span class="am-arrow">&#9656;</span>');
       var fly = el("div", "am-fly");
       subNames.sort().forEach(function (sub) {
@@ -498,7 +503,12 @@
     tray.innerHTML =
       '<span class="tray-ico wifi" title="Network">' + Icons.wifi + '</span>' +
       '<span class="tray-ico battery" title="Battery">' + Icons.battery + ' <span class="batpct">--</span></span>' +
+      '<span class="tray-user" title="Signed in user" style="margin:0 6px;opacity:.85"></span>' +
       '<span class="tray-ico powerbtn" title="Power">' + Icons.power + '</span>';
+
+    // Show the currently logged-in user next to the power button (set as text so it is escaped).
+    var userEl = tray.querySelector(".tray-user");
+    if (userEl) userEl.textContent = window.AE3_USER || "";
 
     var pct = tray.querySelector(".batpct");
     function poll() {
@@ -575,6 +585,7 @@
     },
     signOut: function () {
       if (window.WM && WM.closeAll) WM.closeAll();
+      window.AE3_USER = null;
       A3.send("signout", {});
       if (typeof window.AE3_showLogin === "function") window.AE3_showLogin();
     },

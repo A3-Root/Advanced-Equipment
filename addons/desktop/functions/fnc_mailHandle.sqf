@@ -36,7 +36,9 @@ private _parse = {
         if ((_x select [0, 5]) isEqualTo "From:") then { _from = [_x select [5]] call CBA_fnc_trim; };
         if ((_x select [0, 3]) isEqualTo "To:") then { _to = [_x select [3]] call CBA_fnc_trim; };
         if ((_x select [0, 8]) isEqualTo "Subject:") then { _subject = [_x select [8]] call CBA_fnc_trim; };
-        if (([_x] call CBA_fnc_trim) isEqualTo "" && {_bodyStart == 0}) then { _bodyStart = _forEachIndex + 1; };
+        // Consume the contiguous From/To/Subject header block (and any blank separators) at the top
+        // so the body never repeats the headers shown as styled fields.
+        if (_bodyStart == _forEachIndex && {((_x select [0, 5]) isEqualTo "From:") || {(_x select [0, 3]) isEqualTo "To:"} || {(_x select [0, 8]) isEqualTo "Subject:"} || {([_x] call CBA_fnc_trim) isEqualTo ""}}) then { _bodyStart = _forEachIndex + 1; };
     } forEach _lines;
     createHashMapFromArray [
         ["file", _file], ["from", _from], ["to", _to], ["subject", _subject],

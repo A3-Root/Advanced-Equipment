@@ -19,8 +19,10 @@ if (isServer) then
 		]
 	] call AE3_desktop_fnc_registerWebpage;
 
-	// SSH client ops run on the server (authoritative filesystems + auth).
-	["ae3_desktop_sshOp", { _this call AE3_desktop_fnc_sshOpServer }] call CBA_fnc_addEventHandler;
+	// SSH client ops run on the server (authoritative filesystems + auth). Spawn so the handler runs
+	// in scheduled context, letting getRemoteVar block until the remote filesystem transfer completes
+	// (otherwise the remote browser would read an empty, not-yet-synced filesystem).
+	["ae3_desktop_sshOp", { _this spawn AE3_desktop_fnc_sshOpServer }] call CBA_fnc_addEventHandler;
 };
 
 // Web Messenger: server pushes the laptop's IM inbox text here; forward it to the open browser.

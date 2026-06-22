@@ -8,6 +8,8 @@
 
   function startDesktop(session) {
     document.getElementById("login").classList.remove("show");
+    // Remember the signed-in user so the top bar can show it (set before init so the tray renders it).
+    window.AE3_USER = (session && session.user) || window.AE3_USER || null;
     Desktop.init();
     var host = (session && session.hostname) || seededHost;
     if (host) Desktop.setHostname(host);
@@ -39,7 +41,7 @@
       // Longer timeout: in MP the SQF side may block on an authoritative userlist sync before it
       // can give a verdict (see AE3_desktop_fnc_jsRouter "login").
       A3.request("login", { user: user.value, pass: pass.value }, 15000).then(function (res) {
-        if (res && res.ok) { startDesktop(res); return; }
+        if (res && res.ok) { res.user = user.value; startDesktop(res); return; }
         // The backend now resolves the sync race itself, so "retry" should be rare. Keep a single
         // silent retry purely as a safety net.
         if (res && res.retry && !isRetry) {

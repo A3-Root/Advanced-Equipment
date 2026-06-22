@@ -113,13 +113,14 @@ class AE3_UserInterface_Zeus_Module_AddIntel
 			style = ST_MULTI;
 			lineSpacing = 1;
 		};
+		// Subject is a single line; the body below is the multi-line field.
 		class RscEdit_1403: RscEdit
 		{
 			idc = 1403;
 			x = 0.5 * GUI_GRID_W + GUI_GRID_X;
 			y = 10 * GUI_GRID_H + GUI_GRID_Y;
 			w = 39 * GUI_GRID_W;
-			h = 3 * GUI_GRID_H;
+			h = 1 * GUI_GRID_H;
 		};
 
 		class RscText_1713: RscText
@@ -127,7 +128,7 @@ class AE3_UserInterface_Zeus_Module_AddIntel
 			idc = 1713;
 			text = "";
 			x = 0.5 * GUI_GRID_W + GUI_GRID_X;
-			y = 13.2 * GUI_GRID_H + GUI_GRID_Y;
+			y = 11.2 * GUI_GRID_H + GUI_GRID_Y;
 			w = 39 * GUI_GRID_W;
 			h = 1 * GUI_GRID_H;
 			style = ST_MULTI;
@@ -137,9 +138,11 @@ class AE3_UserInterface_Zeus_Module_AddIntel
 		{
 			idc = 1404;
 			x = 0.5 * GUI_GRID_W + GUI_GRID_X;
-			y = 14.2 * GUI_GRID_H + GUI_GRID_Y;
+			y = 12.2 * GUI_GRID_H + GUI_GRID_Y;
 			w = 39 * GUI_GRID_W;
-			h = 1 * GUI_GRID_H;
+			h = 3 * GUI_GRID_H;
+			style = ST_MULTI;
+			lineSpacing = 1;
 		};
 
 		class RscText_1714: RscText

@@ -8,6 +8,43 @@
   function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
   function joinPath(dir, name) { return (dir.replace(/\/+$/, "") + "/" + name).replace(/\/+/g, "/"); }
 
+  // Shared file Properties dialog (owner + read/write/execute matrix for Owner and Everyone), used by
+  // both the Files browser and the desktop surface so the two stay identical. `it` is { name, dir };
+  // onSaved (optional) is called after a successful permission change so the caller can refresh.
+  window.AE3_showProperties = function (full, it, onSaved) {
+    A3.request("fs_stat", { path: full }).then(function (res) {
+      if (!res || (res.error && res.error !== "")) { Modal.alert("Properties", "Cannot read properties."); return; }
+      var perms = res.permissions || [[false, false, false], [false, false, false]];
+      var ov = h('<div class="pk-overlay"><div class="pk-dialog" style="width:420px;height:auto;min-height:0">' +
+        '<div class="pk-title">Properties</div>' +
+        '<div class="pad" style="display:flex;flex-direction:column;gap:10px">' +
+          '<div><b>' + esc(it.name) + '</b></div>' +
+          '<div class="muted">Owner: ' + esc(res.owner || "") + '</div>' +
+          '<table style="width:100%;border-collapse:collapse"><thead><tr><th></th><th>Read</th><th>Write</th><th>Execute</th></tr></thead>' +
+            '<tbody><tr><td>Owner</td><td><input type="checkbox" class="or"></td><td><input type="checkbox" class="ow"></td><td><input type="checkbox" class="ox"></td></tr>' +
+            '<tr><td>Everyone</td><td><input type="checkbox" class="er"></td><td><input type="checkbox" class="ew"></td><td><input type="checkbox" class="ex"></td></tr></tbody></table>' +
+          '<label style="display:flex;gap:8px;align-items:center"><input type="checkbox" class="rec"> Apply to folder contents</label>' +
+          '<div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn cancel">Cancel</button><button class="btn accent save">Save</button></div>' +
+        '</div></div></div>');
+      document.body.appendChild(ov);
+      [[".or", 0, 0], [".ow", 0, 1], [".ox", 0, 2], [".er", 1, 0], [".ew", 1, 1], [".ex", 1, 2]].forEach(function (m) {
+        ov.querySelector(m[0]).checked = !!(perms[m[1]] && perms[m[1]][m[2]]);
+      });
+      ov.querySelector(".rec").disabled = !it.dir;
+      ov.querySelector(".cancel").addEventListener("click", function () { ov.remove(); });
+      ov.querySelector(".save").addEventListener("click", function () {
+        var next = [
+          [ov.querySelector(".or").checked, ov.querySelector(".ow").checked, ov.querySelector(".ox").checked],
+          [ov.querySelector(".er").checked, ov.querySelector(".ew").checked, ov.querySelector(".ex").checked]
+        ];
+        A3.request("fs_chmod", { path: full, permissions: next, recursive: !!ov.querySelector(".rec").checked }).then(function (r) {
+          if (r.error && r.error !== "") { Modal.alert("Properties", "Permission denied."); return; }
+          ov.remove(); if (onSaved) onSaved();
+        });
+      });
+    });
+  };
+
   // ---------------- Files ----------------
   // Reusable file-browser core (also powers My Computer's embedded pane and the file picker).
   // opts: { extraTools (HTML), onReady(api) }. Returns nothing; drives the given body element.
@@ -143,39 +180,7 @@
         if (r.error && r.error !== "") Modal.alert("Delete", "Permission denied."); else { load(); maybeRefreshDesktop(full); }
       });
     }
-    function showProperties(full, it) {
-      A3.request("fs_stat", { path: full }).then(function (res) {
-        if (!res || (res.error && res.error !== "")) { Modal.alert("Properties", "Cannot read properties."); return; }
-        var perms = res.permissions || [[false, false, false], [false, false, false]];
-        var ov = h('<div class="pk-overlay"><div class="pk-dialog" style="width:420px;height:auto;min-height:0">' +
-          '<div class="pk-title">Properties</div>' +
-          '<div class="pad" style="display:flex;flex-direction:column;gap:10px">' +
-            '<div><b>' + esc(it.name) + '</b></div>' +
-            '<div class="muted">Owner: ' + esc(res.owner || "") + '</div>' +
-            '<table style="width:100%;border-collapse:collapse"><thead><tr><th></th><th>Read</th><th>Write</th><th>Execute</th></tr></thead>' +
-              '<tbody><tr><td>Owner</td><td><input type="checkbox" class="or"></td><td><input type="checkbox" class="ow"></td><td><input type="checkbox" class="ox"></td></tr>' +
-              '<tr><td>Everyone</td><td><input type="checkbox" class="er"></td><td><input type="checkbox" class="ew"></td><td><input type="checkbox" class="ex"></td></tr></tbody></table>' +
-            '<label style="display:flex;gap:8px;align-items:center"><input type="checkbox" class="rec"> Apply to folder contents</label>' +
-            '<div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn cancel">Cancel</button><button class="btn accent save">Save</button></div>' +
-          '</div></div></div>');
-        document.body.appendChild(ov);
-        [[".or", 0, 0], [".ow", 0, 1], [".ox", 0, 2], [".er", 1, 0], [".ew", 1, 1], [".ex", 1, 2]].forEach(function (m) {
-          ov.querySelector(m[0]).checked = !!(perms[m[1]] && perms[m[1]][m[2]]);
-        });
-        ov.querySelector(".rec").disabled = !it.dir;
-        ov.querySelector(".cancel").addEventListener("click", function () { ov.remove(); });
-        ov.querySelector(".save").addEventListener("click", function () {
-          var next = [
-            [ov.querySelector(".or").checked, ov.querySelector(".ow").checked, ov.querySelector(".ox").checked],
-            [ov.querySelector(".er").checked, ov.querySelector(".ew").checked, ov.querySelector(".ex").checked]
-          ];
-          A3.request("fs_chmod", { path: full, permissions: next, recursive: !!ov.querySelector(".rec").checked }).then(function (r) {
-            if (r.error && r.error !== "") { Modal.alert("Properties", "Permission denied."); return; }
-            ov.remove(); load();
-          });
-        });
-      });
-    }
+    function showProperties(full, it) { window.AE3_showProperties(full, it, load); }
     function fileMenu(x, y, it, full) {
       window.AE3_ctxMenu(x, y, [
         { label: "Open", action: function () { activate(it, full); } },
@@ -1130,7 +1135,7 @@
         });
         if (!items.length) { mails.innerHTML = '<li class="muted pad">No mail</li>'; return; }
         items.forEach(function (m) {
-          var toMeta = m.to ? " · To: " + esc(m.to || "") : "";
+          var toMeta = m.to ? " &middot; To: " + esc(m.to || "") : "";
           var li = h('<li style="flex-direction:column;align-items:flex-start"><span>' + esc(m.subject || "(no subject)") +
             '</span><span class="muted" style="font-size:12px">From: ' + esc(m.from || "?") + toMeta + ' &middot; ' + esc(dateOf(m.file)) + "</span></li>");
           li.addEventListener("click", function () { open(m.file); });

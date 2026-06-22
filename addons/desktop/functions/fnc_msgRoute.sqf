@@ -37,8 +37,8 @@ private _isSelf = _target isEqualTo _sender;
 
 private _connected = {
 	params ["_device"];
-	private _parent = _device getVariable ["AE3_network_parent", objNull];
-	!isNull _parent && {(_device getVariable ["AE3_power_powerState", 0]) == 1} && {(_parent getVariable ["AE3_power_powerState", 0]) == 1}
+	// Online-only reachability: the device just needs to be powered on, regardless of topology.
+	(_device getVariable ["AE3_power_powerState", 0]) == 1
 };
 private _senderPowered = (_sender getVariable ["AE3_power_powerState", 0]) == 1;
 if ((!_isSelf && {!([_sender] call _connected) || {!([_target] call _connected)}}) || {_isSelf && {!_senderPowered}}) exitWith {

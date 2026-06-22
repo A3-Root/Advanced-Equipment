@@ -79,7 +79,11 @@ switch (_command) do {
         // opens the laptop continues where it was left.
         if (!isNull _computer) then {
             private _session = _computer getVariable [QGVAR(sessionUser), ""];
-            if (_session isNotEqualTo "") then {
+            // Only auto-resume the stored session for the SAME player who left it signed in. A
+            // different player must authenticate, so they operate as their own user and are bound by
+            // that user's filesystem permissions instead of inheriting the previous user's access.
+            private _sessionOwner = _computer getVariable [QGVAR(sessionOwner), ""];
+            if (_session isNotEqualTo "" && {_sessionOwner isEqualTo (getPlayerUID player)}) then {
                 _display setVariable [QGVAR(user), _session];
                 private _host = _computer getVariable ["ace_cargo_customName", "armaOS"];
                 ["boot", createHashMapFromArray [["user", _session], ["hostname", _host]]] call FUNC(jsSend);
@@ -98,8 +102,12 @@ switch (_command) do {
         private _res = [_computer, _user, _pass] call FUNC(authUser);
         if (_res getOrDefault ["ok", false]) then {
             _display setVariable [QGVAR(user), _user];
-            // Persist the session on the laptop so closing/reopening resumes without re-login.
-            if (!isNull _computer) then { _computer setVariable [QGVAR(sessionUser), _user, true]; };
+            // Persist the session on the laptop so closing/reopening resumes without re-login - but
+            // tag it with this player so only they get the seamless re-entry (see "ready").
+            if (!isNull _computer) then {
+                _computer setVariable [QGVAR(sessionUser), _user, true];
+                _computer setVariable [QGVAR(sessionOwner), getPlayerUID player, true];
+            };
         };
         [_res] call _reply;
     };
@@ -288,14 +296,9 @@ switch (_command) do {
         private _targetIp = ((_data getOrDefault ["to", ""]) splitString ".") apply { parseNumber _x };
         private _sres = createHashMapFromArray [["error", ""]];
         if (isNull _computer || {count _targetIp != 4}) exitWith { _sres set ["error", "bad_addr"]; [_sres] call _reply; };
-        private _ownIp = _computer getVariable ["AE3_network_address", [127, 0, 0, 1]];
-        private _isLoopback = (_targetIp isEqualTo _ownIp) || {_targetIp isEqualTo [127, 0, 0, 1]};
-        private _target = _computer;
-        if (!_isLoopback) then { ([_computer, _targetIp] call AE3_network_fnc_ping) params ["_target"]; };
-        if (isNull _target || {!_isLoopback && {(_target getVariable ["AE3_network_address", []]) isNotEqualTo _targetIp}}) exitWith {
-            _sres set ["error", "no_route"]; ["ssh_" + _op, _sres] call _reply;
-        };
-        ["ae3_desktop_sshOp", [clientOwner, _rid, netId _computer, netId _target,
+        // The server resolves the target device from the IP (topology-agnostic) and replies async
+        // via ae3_desktop_sshReply.
+        ["ae3_desktop_sshOp", [clientOwner, _rid, netId _computer, _targetIp,
             _data getOrDefault ["user", ""], _data getOrDefault ["pass", ""], _op, _data]] call CBA_fnc_serverEvent;
     };
 
@@ -338,6 +341,7 @@ switch (_command) do {
         // laptop again and starts the next login with a clean desktop.
         if (!isNull _computer) then {
             _computer setVariable [QGVAR(sessionUser), "", true];
+            _computer setVariable [QGVAR(sessionOwner), "", true];
             _computer setVariable [QGVAR(uiState), [], true];
         };
     };

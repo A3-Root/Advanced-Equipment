@@ -150,7 +150,7 @@
             top.innerHTML = '<span class="ico">' + glyph + '</span><span style="flex:1">' + esc(d.label || d.name || ("#" + d.id)) + statusHtml + gridHtml + "</span>";
             if (d.pos && d.pos.length >= 2) {
               var mb = document.createElement("button"); mb.className = "btn"; mb.textContent = "Map"; mb.style.marginLeft = "6px";
-              mb.addEventListener("click", function () { window.AE3_openMap(d.pos, d.label || ("#" + d.id)); });
+              mb.addEventListener("click", function () { window.AE3_openMap(d.pos, d.mapLabel !== undefined ? d.mapLabel : (d.label || ("#" + d.id))); });
               top.appendChild(mb);
             }
             // Per-device action buttons (use d.actions override when non-empty, else the app default).

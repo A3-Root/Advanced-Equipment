@@ -70,6 +70,9 @@ if (isServer) then
 
 		ae3_desktop_computers pushBackUnique _computer;
 
+		// Give the laptop a default mail address + Messenger handle so messaging works immediately.
+		[_computer] call AE3_desktop_fnc_provisionIdentity;
+
 		// Apply media registered for "future" laptops
 		{
 			_x params ["_sourcePath", "_type", "_fsDest"];

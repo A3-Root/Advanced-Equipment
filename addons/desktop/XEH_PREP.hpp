@@ -27,6 +27,7 @@ PREP(msgRoute);
 PREP(addrRegister);
 PREP(addrRelease);
 PREP(mailRoute);
+PREP(provisionIdentity);
 PREP(cryptoRun);
 PREP(crackRun);
 PREP(mapOpen);

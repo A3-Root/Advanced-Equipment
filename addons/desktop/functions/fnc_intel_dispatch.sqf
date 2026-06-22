@@ -5,7 +5,7 @@
  * and 3DEN AddIntel module handlers.
  *
  * Types and field meanings:
- *  "email"    - f1: From, f2: To or Subject, f3: Subject or Body, f4: Body
+ *  "email"    - f1: From, f2: To, f3: Subject, f4: Body
  *  "webpage"  - f1: URL,  f2: Title,   f3: Content ("|" separates lines)
  *  "history"  - f1: URL,  f2: Time (optional, "HH:MM")
  *  "calendar" - f1: Date, f2: Title,   f3: Details
@@ -38,11 +38,8 @@ switch (toLower _type) do
 {
 	case "email":
 	{
-		if (_f4 isEqualTo "") then {
-			[_target, _f1, _f2, _f3] call AE3_desktop_fnc_addEmail;
-		} else {
-			[_target, _f1, _f3, _f4, _f2] call AE3_desktop_fnc_addEmail;
-		};
+		// Fields are From (f1), To (f2), Subject (f3), Body (f4); an empty body is allowed.
+		[_target, _f1, _f3, _f4, _f2] call AE3_desktop_fnc_addEmail;
 	};
 	case "webpage":
 	{
