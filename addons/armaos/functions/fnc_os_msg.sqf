@@ -58,6 +58,6 @@ if (isNull _target || {_target isEqualTo _computer}) exitWith
 
 private _senderIp = [_computer getVariable ["AE3_network_address", [127, 0, 0, 1]]] call AE3_network_fnc_ip2str;
 
-["ae3_network_imSend", [netId _target, _senderIp, _text]] call CBA_fnc_serverEvent;
+["ae3_network_imSend", [netId _target, netId _computer, _senderIp, _ipString, _text]] call CBA_fnc_serverEvent;
 
 [_computer, format [localize "STR_AE3_ArmaOS_Msg_Sent", _ipString]] call AE3_armaos_fnc_shell_stdout;

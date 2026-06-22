@@ -21,6 +21,7 @@ params ["_winId", "_ctrlGroup", "_computer", "_args"];
 private _session = uiNamespace getVariable ["AE3_desktop_session", createHashMap];
 private _display = _session getOrDefault ["display", displayNull];
 private _theme = _session getOrDefault ["theme", createHashMap];
+private _currentUser = _session getOrDefault ["user", "root"];
 
 (ctrlPosition _ctrlGroup) params ["", "", "_w", "_h"];
 
@@ -59,7 +60,7 @@ _statusCtrl ctrlCommit 0;
 
 /* ---------------------------------------- */
 
-private _ctx = [_computer, _pathCtrl, _editCtrl, _statusCtrl];
+private _ctx = [_computer, _pathCtrl, _editCtrl, _statusCtrl, _currentUser];
 _loadBtn setVariable ["AE3_ctx", _ctx];
 _saveBtn setVariable ["AE3_ctx", _ctx];
 
@@ -91,16 +92,16 @@ _loadBtn ctrlAddEventHandler ["ButtonClick", {
 
 _saveBtn ctrlAddEventHandler ["ButtonClick", {
 	params ["_button"];
-	((_button getVariable "AE3_ctx")) params ["_computer", "_pathCtrl", "_editCtrl", "_statusCtrl"];
+	((_button getVariable "AE3_ctx")) params ["_computer", "_pathCtrl", "_editCtrl", "_statusCtrl", ["_owner", "root"]];
 
 	private _filesystem = _computer getVariable ["AE3_filesystem", []];
 	private _path = ctrlText _pathCtrl;
 
 	try
 	{
-		// create when missing, then overwrite content
-		[[], _filesystem, _path, "", "root", "root", [[true, true, false], [true, false, false]]] call AE3_filesystem_fnc_ensureFile;
-		[[], _filesystem, _path, "root", ctrlText _editCtrl, false] call AE3_filesystem_fnc_writeToFile;
+		// create when missing, then overwrite content; file is owned by the logged-in user
+		[[], _filesystem, _path, "", _owner, _owner, [[true, true, false], [true, false, false]]] call AE3_filesystem_fnc_ensureFile;
+		[[], _filesystem, _path, _owner, ctrlText _editCtrl, false] call AE3_filesystem_fnc_writeToFile;
 
 		// push to the server right away so the change survives even a hard desktop close
 		_computer setVariable ["AE3_filesystem", _filesystem, 2];

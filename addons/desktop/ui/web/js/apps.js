@@ -450,11 +450,19 @@
           '</div>' +
           '<h3 style="margin-top:14px">Access</h3>' +
           '<label class="muted" style="display:flex;align-items:center;gap:8px"><input type="checkbox" class="ssh"> Allow SSH access to this device</label>' +
+          '<h3 style="margin-top:14px">Network</h3>' +
+          '<div style="display:flex;flex-direction:column;gap:8px;max-width:420px">' +
+            '<label class="muted">IP address (changes immediately)</label>' +
+            '<div style="display:flex;gap:8px"><input class="input sipval" placeholder="192.168.x.x" style="flex:1"><button class="btn accent sipapply">Apply</button></div>' +
+            '<span class="muted sipst"></span>' +
+          '</div>' +
         '</div>';
       var box = body.querySelector("#sysinfo");
       var hostEl = body.querySelector(".shost");
       var wallEl = body.querySelector(".swall");
       var sshEl = body.querySelector(".ssh");
+      var sipEl = body.querySelector(".sipval");
+      var sipSt = body.querySelector(".sipst");
       sshEl.addEventListener("change", function () {
         A3.request("ssh_config", { enabled: sshEl.checked });
       });
@@ -468,7 +476,15 @@
           "Uptime: " + esc(s.uptime || "?");
         if (hostEl) hostEl.value = s.hostname || "";
         if (wallEl) wallEl.value = s.wallpaper || "";
+        if (sipEl) sipEl.value = s.ip || "";
       }).catch(function () { box.textContent = "Unavailable"; });
+      body.querySelector(".sipapply").addEventListener("click", function () {
+        var ip = sipEl.value.trim();
+        A3.request("net_setip", { ip: ip }).then(function (r) {
+          if (r && r.error && r.error !== "") { sipSt.textContent = "Invalid address."; return; }
+          sipSt.textContent = "Applied.";
+        }).catch(function () { sipSt.textContent = "Failed."; });
+      });
 
       body.querySelector(".ssave").addEventListener("click", function () {
         var host = hostEl.value.trim(), wall = wallEl.value.trim();
@@ -667,6 +683,8 @@
         "rootnet": { type: "html", path: "sites/portal/index.html", label: "rootnet" },
         "wiki":    { type: "md",   path: "wiki/Home.md",            label: "wiki" }
       };
+      var intelPages = []; // intel pages registered via Zeus/API
+      A3.request("web_pages", {}).then(function (res) { intelPages = (res && res.pages) || []; }).catch(function () {});
 
       // Injected into every page so in-page links drive the address bar instead of dead relative nav.
       // Arma's CEF renders iframe srcdoc with an opaque origin, so a direct parent.AE3_browserNav()
@@ -708,6 +726,7 @@
           '<button class="btn home" title="Home">&#8962;</button>' +
           '<input class="input addr" style="flex:1" value="home">' +
           '<button class="btn accent go">Go</button>' +
+          '<button class="btn hist" title="History" style="margin-left:4px">&#9776;</button>' +
         '</div>' +
         '<iframe class="page" style="width:100%;height:calc(100% - 50px);border:none;background:#fff"></iframe>';
       var frame = body.querySelector(".page");
@@ -753,6 +772,11 @@
 
         var lower = addr.toLowerCase().replace(/^https?:\/\//, "").replace(/\/+$/, "");
         if (sites[lower]) return sites[lower];
+        for (var pi = 0; pi < intelPages.length; pi++) {
+          if ((intelPages[pi].url || "").toLowerCase() === lower) {
+            return { type: "intel", title: intelPages[pi].title, content: intelPages[pi].content, label: intelPages[pi].url };
+          }
+        }
         if (lower.indexOf("wiki") >= 0) return sites.wiki;
         return sites.home;
       }
@@ -804,6 +828,10 @@
       function load(t) {
         if (t.router) { routerPage(); return; }
         addrEl.value = t.label;
+        if (t.type === "intel") {
+          setDoc(wikiDoc("<h1>" + (t.title || t.label) + "</h1><pre style='white-space:pre-wrap;font-family:inherit'>" + (t.content || "") + "</pre>"));
+          return;
+        }
         curDir = dirOf(t.path); // base for any relative links on the page we are about to show
         if (t.type === "md") {
           A3.loadFile(t.path).then(function (mdText) {
@@ -820,6 +848,7 @@
         var t = resolve(addrRaw);
         if (!fromHistory) { history = history.slice(0, hi + 1); history.push(t.label); hi = history.length - 1; }
         window.AE3_browserNav = function (href) { nav(href); }; // active browser drives in-page links
+        if (!fromHistory && t.label !== "home") { A3.send("web_log", { url: t.label }); }
         load(t);
       }
 
@@ -828,6 +857,13 @@
       body.querySelector(".back").addEventListener("click", function () { if (hi > 0) { hi--; nav(history[hi], true); } });
       body.querySelector(".fwd").addEventListener("click", function () { if (hi < history.length - 1) { hi++; nav(history[hi], true); } });
       addrEl.addEventListener("keydown", function (e) { if (e.key === "Enter") nav(addrEl.value); });
+      body.querySelector(".hist").addEventListener("click", function () {
+        A3.request("web_history", {}).then(function (res) {
+          var text = (res && res.history) || "(no history)";
+          setDoc(wikiDoc("<h1>Browser History</h1><pre style='white-space:pre-wrap;font-family:inherit'>" + text + "</pre>"));
+          addrEl.value = "history";
+        }).catch(function () { setDoc(wikiDoc("<h1>Browser History</h1><p>Unavailable.</p>")); });
+      });
 
       // Re-bind the in-page link hook to this window whenever it gains focus.
       win.el.addEventListener("mousedown", function () { window.AE3_browserNav = function (href) { nav(href); }; });
@@ -1112,7 +1148,10 @@
     showOnDesktop: true, showInDock: true,
     render: function (body) {
       body.innerHTML =
-        '<div class="toolbar"><button class="btn refresh">&#8635;</button><button class="btn compose accent">Compose</button><button class="btn addresses">Addresses</button>' +
+        '<div class="toolbar"><button class="btn refresh">&#8635;</button>' +
+          '<button class="btn tab-inbox accent" data-tab="inbox">Inbox</button>' +
+          '<button class="btn tab-sent" data-tab="sent">Sent</button>' +
+          '<button class="btn compose" style="margin-left:6px">Compose</button><button class="btn addresses">Addresses</button>' +
           '<input class="input msearch" placeholder="Search from / subject" style="flex:1;margin-left:8px"></div>' +
         '<div style="display:flex;height:calc(100% - 50px)">' +
           '<ul class="list mails" style="width:40%;border-right:1px solid var(--line);overflow:auto"></ul>' +
@@ -1123,9 +1162,18 @@
       var searchEl = body.querySelector(".msearch");
       var allMail = [];
       var addresses = [];
+      var mailbox = "inbox";
 
-      // The filename is the delivery timestamp; show it as the received date.
-      function dateOf(file) { return String(file || "").replace(/_/g, " "); }
+      function setActiveTab(tab) {
+        mailbox = tab;
+        body.querySelector(".tab-inbox").className = "btn tab-inbox" + (tab === "inbox" ? " accent" : "");
+        body.querySelector(".tab-sent").className = "btn tab-sent" + (tab === "sent" ? " accent" : "");
+        list();
+      }
+
+      body.querySelector(".tab-inbox").addEventListener("click", function () { setActiveTab("inbox"); });
+      body.querySelector(".tab-sent").addEventListener("click", function () { setActiveTab("sent"); });
+
       function render() {
         var q = (searchEl.value || "").toLowerCase();
         mails.innerHTML = "";
@@ -1137,7 +1185,7 @@
         items.forEach(function (m) {
           var toMeta = m.to ? " &middot; To: " + esc(m.to || "") : "";
           var li = h('<li style="flex-direction:column;align-items:flex-start"><span>' + esc(m.subject || "(no subject)") +
-            '</span><span class="muted" style="font-size:12px">From: ' + esc(m.from || "?") + toMeta + ' &middot; ' + esc(dateOf(m.file)) + "</span></li>");
+            '</span><span class="muted" style="font-size:12px">From: ' + esc(m.from || "?") + toMeta + ' &middot; ' + esc(m.received || "") + "</span></li>");
           li.addEventListener("click", function () { open(m.file); });
           li.addEventListener("contextmenu", function (e) {
             e.preventDefault(); e.stopPropagation();
@@ -1152,7 +1200,8 @@
       }
       function list() {
         mails.innerHTML = '<li class="muted pad">Loading</li>';
-        A3.request("mail_list", {}).then(function (res) {
+        var op = mailbox === "sent" ? "mail_sent_list" : "mail_list";
+        A3.request(op, {}).then(function (res) {
           allMail = (res && res.mails) || [];
           render();
         }).catch(function () { mails.innerHTML = '<li class="muted pad">Unavailable</li>'; });
@@ -1177,9 +1226,10 @@
         A3.request("mail_read", { file: file }).then(function (m) {
           if (m.error && m.error !== "") { reader.innerHTML = '<p class="muted">Cannot open.</p>'; return; }
           var toLine = m.to ? '<br>To: ' + esc(m.to || "") : "";
+          var recLine = m.received ? '<br><span class="muted">' + esc(m.received) + '</span>' : "";
           reader.innerHTML = '<div style="display:flex;align-items:center"><h2 style="flex:1;margin:0">' + esc(m.subject || "") + '</h2>' +
-            '<button class="btn mdel">Delete</button></div><p class="muted">From: ' + esc(m.from || "") + ' &middot; ' + esc(dateOf(file)) +
-            toLine + '</p><hr style="border-color:var(--line)"><pre style="white-space:pre-wrap;font-family:inherit">' + esc(m.body || "") + "</pre>";
+            '<button class="btn mdel">Delete</button></div><p class="muted">From: ' + esc(m.from || "") +
+            toLine + recLine + '</p><hr style="border-color:var(--line)"><pre style="white-space:pre-wrap;font-family:inherit">' + esc(m.body || "") + "</pre>";
           reader.querySelector(".mdel").addEventListener("click", function () { del(file); });
         });
       }
@@ -1331,11 +1381,43 @@
       textEl.addEventListener("keydown", function (e) { if (e.key === "Enter") send(); });
       searchEl.addEventListener("input", function () { renderPeers(); renderThread(); });
       body.querySelector(".newchat").addEventListener("click", function () {
-        Modal.prompt("Start conversation with handle", "@").then(function (handle) {
-          if (!handle) return;
-          if (handle.charAt(0) !== "@") handle = "@" + handle;
-          if (!threads.some(function (t) { return t.peer === handle; })) threads.push({ peer: handle, messages: [] });
-          active = handle; renderPeers(); renderThread();
+        A3.request("handles_all", {}).then(function (res) {
+          var knownHandles = (res && res.handles) || [];
+          var ov = h('<div class="pk-overlay"><div class="pk-dialog" style="width:360px;height:auto;min-height:0">' +
+            '<div class="pk-title">Start conversation</div>' +
+            '<div class="pad" style="display:flex;flex-direction:column;gap:8px">' +
+              '<ul class="list hpick" style="max-height:200px;overflow:auto"></ul>' +
+              '<div style="display:flex;gap:8px"><input class="input hnew" placeholder="or type a handle" style="flex:1"><button class="btn accent hgo">Start</button></div>' +
+              '<div style="text-align:right"><button class="btn hclose">Cancel</button></div>' +
+            '</div></div></div>');
+          document.body.appendChild(ov);
+          var pickEl = ov.querySelector(".hpick");
+          if (!knownHandles.length) {
+            pickEl.innerHTML = '<li class="muted pad">No known handles</li>';
+          }
+          function startWith(handle) {
+            if (!handle) return;
+            if (handle.charAt(0) !== "@") handle = "@" + handle;
+            if (!threads.some(function (t) { return t.peer === handle; })) threads.push({ peer: handle, messages: [] });
+            active = handle; renderPeers(); renderThread(); ov.remove();
+          }
+          knownHandles.forEach(function (hnd) {
+            var display = hnd.display || hnd.handle || hnd;
+            var handle = hnd.handle || hnd;
+            var li = h('<li><span style="flex:1">' + esc(display) + '</span><button class="btn pick">Chat</button></li>');
+            li.querySelector(".pick").addEventListener("click", function () { startWith(handle); });
+            pickEl.appendChild(li);
+          });
+          ov.querySelector(".hgo").addEventListener("click", function () { startWith(ov.querySelector(".hnew").value.trim()); });
+          ov.querySelector(".hnew").addEventListener("keydown", function (e) { if (e.key === "Enter") startWith(ov.querySelector(".hnew").value.trim()); });
+          ov.querySelector(".hclose").addEventListener("click", function () { ov.remove(); });
+        }).catch(function () {
+          Modal.prompt("Start conversation with handle", "@").then(function (handle) {
+            if (!handle) return;
+            if (handle.charAt(0) !== "@") handle = "@" + handle;
+            if (!threads.some(function (t) { return t.peer === handle; })) threads.push({ peer: handle, messages: [] });
+            active = handle; renderPeers(); renderThread();
+          });
         });
       });
       body.querySelector(".handles").addEventListener("click", function () {
@@ -1441,7 +1523,7 @@
   // ---------------- Calculator ----------------
   Apps.register({
     id: "calculator", title: "Calculator", glyph: (Icons.calculator || Icons.about), width: 280, height: 380,
-    showInDock: false, singleton: true,
+    showInDock: true, singleton: true,
     render: function (body) {
       var keys = ["C","(",")","/","7","8","9","*","4","5","6","-","1","2","3","+","0",".","=",""];
       body.innerHTML =
@@ -1489,7 +1571,7 @@
   // laptop (left pane) and the remote device (right pane).
   Apps.register({
     id: "ssh", title: "SSH", glyph: (Icons.terminal || Icons.network), width: 820, height: 560,
-    showInDock: false, singleton: true,
+    showInDock: true, singleton: true,
     render: function (body, win) {
       var conn = null; // { to, user, pass }
       var ipPrefix = "192.168.0.";
@@ -1520,7 +1602,7 @@
               return;
             }
             conn = c; showSession(r.host || c.to);
-          });
+          }).catch(function () { showConnect("Connection timed out. Try again."); });
         });
       }
       function showSession(host) {

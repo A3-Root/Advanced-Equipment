@@ -62,6 +62,22 @@ class CfgVehicles
 					class ModeBoth    { name = "$STR_AE3_ArmaOS_EdenAttributes_ModeBoth"; value = "both"; };
 				};
 			};
+
+			class AE3_EdenAttribute_StaticIp
+			{
+				displayName = "$STR_AE3_ArmaOS_EdenAttributes_StaticIpDisplayName";
+				tooltip = "$STR_AE3_ArmaOS_EdenAttributes_StaticIpTooltip";
+				property = "AE3_EdenAttribute_StaticIp";
+				control = "Edit";
+
+				expression = "_this setVariable ['AE3_network_staticIp', _value, true];";
+
+				defaultValue = "";
+
+				unique = 0;
+				condition = "1";
+				typeName = "STRING";
+			};
 		};
 
 		class AE3_Equipment
@@ -219,6 +235,22 @@ class CfgVehicles
 					class ModeBoth    { name = "$STR_AE3_ArmaOS_EdenAttributes_ModeBoth"; value = "both"; };
 				};
 			};
+
+			class AE3_EdenAttribute_StaticIp
+			{
+				displayName = "$STR_AE3_ArmaOS_EdenAttributes_StaticIpDisplayName";
+				tooltip = "$STR_AE3_ArmaOS_EdenAttributes_StaticIpTooltip";
+				property = "AE3_EdenAttribute_StaticIp";
+				control = "Edit";
+
+				expression = "_this setVariable ['AE3_network_staticIp', _value, true];";
+
+				defaultValue = "";
+
+				unique = 0;
+				condition = "1";
+				typeName = "STRING";
+			};
 		};
 
 		class AE3_Equipment
@@ -375,6 +407,22 @@ class CfgVehicles
 					class ModeGui     { name = "GUI";  value = "gui"; };
 					class ModeBoth    { name = "$STR_AE3_ArmaOS_EdenAttributes_ModeBoth"; value = "both"; };
 				};
+			};
+
+			class AE3_EdenAttribute_StaticIp
+			{
+				displayName = "$STR_AE3_ArmaOS_EdenAttributes_StaticIpDisplayName";
+				tooltip = "$STR_AE3_ArmaOS_EdenAttributes_StaticIpTooltip";
+				property = "AE3_EdenAttribute_StaticIp";
+				control = "Edit";
+
+				expression = "_this setVariable ['AE3_network_staticIp', _value, true];";
+
+				defaultValue = "";
+
+				unique = 0;
+				condition = "1";
+				typeName = "STRING";
 			};
 		};
 

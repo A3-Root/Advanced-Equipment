@@ -204,6 +204,7 @@ switch (_command) do {
 
     // Mail.
     case "mail_list": { [[_computer, "list", _data] call FUNC(mailHandle)] call _reply; };
+    case "mail_sent_list": { [[_computer, "list_sent", _data] call FUNC(mailHandle)] call _reply; };
     case "mail_read": { [[_computer, "read", _data] call FUNC(mailHandle)] call _reply; };
     case "mail_delete": { [[_computer, "delete", _data] call FUNC(mailHandle)] call _reply; };
     case "addr_list": {
@@ -238,6 +239,54 @@ switch (_command) do {
         ]] call CBA_fnc_serverEvent;
     };
 
+    // Browser: registered intel webpages and history file.
+    case "web_pages": {
+        private _pages = missionNamespace getVariable ["AE3_Desktop_Webpages", createHashMap];
+        private _pageOut = [];
+        {
+            private _entry = _pages get _x;
+            _pageOut pushBack createHashMapFromArray [["url", _x], ["title", _entry select 0], ["content", _entry select 1]];
+        } forEach (keys _pages);
+        [_pageOut] call _reply;
+    };
+    case "web_history": {
+        private _whres = createHashMapFromArray [["history", ""]];
+        if (!isNull _computer) then
+        {
+            private _fs = _computer getVariable ["AE3_filesystem", []];
+            if (_fs isNotEqualTo []) then
+            {
+                try
+                {
+                    private _hist = [[], _fs, "/var/log/browser_history", "root", 0] call AE3_filesystem_fnc_getFile;
+                    if (_hist isEqualType "") then { _whres set ["history", _hist]; };
+                }
+                catch {};
+            };
+        };
+        [_whres] call _reply;
+    };
+    case "web_log": {
+        if (!isNull _computer) then
+        {
+            private _url = _data getOrDefault ["url", ""];
+            if (_url isNotEqualTo "") then
+            {
+                private _fs = _computer getVariable ["AE3_filesystem", []];
+                if (_fs isNotEqualTo []) then
+                {
+                    try
+                    {
+                        [[], _fs, "/var/log/browser_history", "", "root", "root", [[true, true, false], [true, false, false]]] call AE3_filesystem_fnc_ensureFile;
+                        [[], _fs, "/var/log/browser_history", "root", format ["[%1] %2%3", [dayTime, "HH:MM"] call BIS_fnc_timeToString, _url, endl], true] call AE3_filesystem_fnc_writeToFile;
+                        _computer setVariable ["AE3_filesystem", _fs, 2];
+                    }
+                    catch {};
+                };
+            };
+        };
+    };
+
     // Messenger: pull live threads and route messages by registered handle.
     case "handle_list": {
         private _handles = [];
@@ -251,6 +300,19 @@ switch (_command) do {
             _handles sort true;
         };
         [createHashMapFromArray [["handles", _handles]]] call _reply;
+    };
+    case "handles_all": {
+        private _allHandles = [];
+        private _ownNetId = if (isNull _computer) then { "" } else { netId _computer };
+        private _hregistry = missionNamespace getVariable ["AE3_msg_handles", createHashMap];
+        {
+            private _hentry = _hregistry get _x;
+            if ((_hentry param [0, ""]) isNotEqualTo _ownNetId) then
+            {
+                _allHandles pushBack createHashMapFromArray [["handle", _x], ["display", _hentry param [1, _x]]];
+            };
+        } forEach (keys _hregistry);
+        [createHashMapFromArray [["handles", _allHandles]]] call _reply;
     };
     case "handle_create": {
         if (isNull _computer) exitWith { [createHashMapFromArray [["error", "no_device"]]] call _reply; };
@@ -318,6 +380,28 @@ switch (_command) do {
         if (!isNull _computer) then {
             [_computer] remoteExec ["AE3_desktop_fnc_netDisconnectServer", 2];
         };
+    };
+
+    case "net_setip": {
+        private _sires = createHashMapFromArray [["error", ""]];
+        if (isNull _computer) then { _sires set ["error", "no_device"]; }
+        else
+        {
+            private _ipStr = _data getOrDefault ["ip", ""];
+            private _parts = _ipStr splitString ".";
+            if (count _parts == 4 && {(_parts findIf { (parseNumber _x) < 0 || (parseNumber _x) > 255 }) < 0}) then
+            {
+                private _newIp = _parts apply { parseNumber _x };
+                [_computer, ["AE3_network_address", _newIp, true]] remoteExecCall ["setVariable", 2];
+                _sires set ["ok", true];
+                _sires set ["ip", _ipStr];
+            }
+            else
+            {
+                _sires set ["error", "bad_ip"];
+            };
+        };
+        [_sires] call _reply;
     };
 
     // Open-window layout persistence: store the desktop's window snapshot on the laptop so a

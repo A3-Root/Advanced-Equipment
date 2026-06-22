@@ -54,5 +54,7 @@ private _line = format ["%1 | %2 | %3%4", _date, _title, _details, endl];
 				WARNING_1("Could not add calendar event: %1",_exception);
 			};
 		};
+		// Keep the web Calendar store in sync (ISO date only; truncate time portion if present).
+		[_x, _date select [0, 10], _title, "", _details] call AE3_armaos_fnc_computer_addCalendarEvent;
 	};
 } forEach _computers;

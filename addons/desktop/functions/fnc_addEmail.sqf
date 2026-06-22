@@ -11,6 +11,9 @@
  * 2: _subject <STRING> - Subject line
  * 3: _body <STRING> - Email body (use endl for line breaks)
  * 4: _to <STRING> (Optional, default: "") - Recipient shown in the email
+ * 5: _receivedTime <STRING> (Optional, default: "") - Override received time (HH:MM); blank = current time
+ * 6: _createFrom <BOOL> (Optional, default: false) - Register From address in the mission address book
+ * 7: _createTo <BOOL> (Optional, default: false) - Register To address in the mission address book
  *
  * Return Value:
  * None
@@ -22,12 +25,12 @@
  * Public: Yes
  */
 
-params ["_target", "_from", "_subject", "_body", ["_to", ""]];
+params ["_target", "_from", "_subject", "_body", ["_to", ""], ["_receivedTime", ""], ["_createFrom", false], ["_createTo", false]];
 
 if (!isServer) exitWith
 {
 	private _targetId = if (_target isEqualType objNull) then { netId _target } else { _target };
-	["ae3_desktop_addEmail", [_targetId, _from, _subject, _body, _to]] call CBA_fnc_serverEvent;
+	["ae3_desktop_addEmail", [_targetId, _from, _subject, _body, _to, _receivedTime, _createFrom, _createTo]] call CBA_fnc_serverEvent;
 };
 
 private _computers = [];
@@ -38,8 +41,9 @@ switch (true) do
 	default                             { _computers = [objectFromNetId _target]; };
 };
 
+private _receivedStr = if (_receivedTime isNotEqualTo "") then { _receivedTime } else { [dayTime, "HH:MM"] call BIS_fnc_timeToString };
 private _toLine = ["", format ["To: %1%2", _to, endl]] select (_to isNotEqualTo "");
-private _content = format ["From: %1%2%3Subject: %4%2%2%5", _from, endl, _toLine, _subject, _body];
+private _content = format ["Received: %1%2From: %3%2%4Subject: %5%2%2%6", _receivedStr, endl, _from, _toLine, _subject, _body];
 private _fileName = format ["mail_%1", round (CBA_missionTime * 10)];
 
 {
@@ -67,3 +71,20 @@ private _fileName = format ["mail_%1", round (CBA_missionTime * 10)];
 		};
 	};
 } forEach _computers;
+
+// Auto-register lore addresses in the mission-wide address book when Zeus plants the email.
+private _toRegister = [];
+if (_createFrom && {_from isNotEqualTo ""} && {(_from find "@") >= 0}) then { _toRegister pushBack _from; };
+if (_createTo && {_to isNotEqualTo ""} && {(_to find "@") >= 0}) then { _toRegister pushBack _to; };
+if (_toRegister isNotEqualTo []) then
+{
+	private _registry = missionNamespace getVariable ["AE3_mail_addresses", createHashMap];
+	{
+		private _key = toLower _x;
+		if ((_registry getOrDefault [_key, []]) isEqualTo []) then
+		{
+			_registry set [_key, ["", _x]];
+		};
+	} forEach _toRegister;
+	missionNamespace setVariable ["AE3_mail_addresses", _registry, true];
+};

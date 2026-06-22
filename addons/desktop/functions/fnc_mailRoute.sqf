@@ -54,5 +54,22 @@ if (isNull _target || {(!_isSelf && {!([_sender] call _connected) || {!([_target
 };
 
 [_target, _fromEntry param [1, _from], _subject, _body, _toEntry param [1, _to]] call AE3_desktop_fnc_addEmail;
+
+// Write a sent copy to the sender's filesystem.
+private _sfs = _sender getVariable ["AE3_filesystem", nil];
+if (!isNil "_sfs") then
+{
+	private _sentReceived = [dayTime, "HH:MM"] call BIS_fnc_timeToString;
+	private _sentFileName = format ["mail_%1", round (CBA_missionTime * 10)];
+	private _sentContent = format ["Received: %1%2From: %3%2To: %4%2Subject: %5%2%2%6", _sentReceived, endl, _fromEntry param [1, _from], _toEntry param [1, _to], _subject, _body];
+	try
+	{
+		[[], _sfs, "/var/sent", "root", "root", [[true, true, true], [true, false, true]]] call AE3_filesystem_fnc_ensureDir;
+		[[], _sfs, format ["/var/sent/%1", _sentFileName], _sentContent, "root", "root", [[true, true, false], [true, false, false]]] call AE3_filesystem_fnc_ensureFile;
+		_sender setVariable ["AE3_filesystem", _sfs, 2];
+	}
+	catch {};
+};
+
 _res set ["ok", true];
 [_owner, _rid, _res] call _reply;

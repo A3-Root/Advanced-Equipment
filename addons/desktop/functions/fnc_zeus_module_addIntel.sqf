@@ -74,8 +74,20 @@ if (_event isEqualTo "onLoad") exitWith
 			(_display displayCtrl _x) ctrlShow _isEmail;
 		} forEach [1713, 1404];
 		{
+			(_display displayCtrl _x) ctrlShow (_isEmail || _isLocked);
+		} forEach [1714, 1405, 1715, 1301, 1716, 1302];
+		{
 			(_display displayCtrl _x) ctrlShow _isLocked;
-		} forEach [1714, 1405, 1715, 1716, 1301, 1302, 1303, 1304, 1305, 1306];
+		} forEach [1303, 1304, 1305, 1306];
+		if (_isEmail) then
+		{
+			(_display displayCtrl 1714) ctrlSetText (localize "STR_AE3_Desktop_Intel_LabelReceivedTime");
+			(_display displayCtrl 1715) ctrlSetText (localize "STR_AE3_Desktop_Intel_LabelCreateFromHandle");
+			(_display displayCtrl 1716) ctrlSetText (localize "STR_AE3_Desktop_Intel_LabelCreateToHandle");
+			(_display displayCtrl 1405) ctrlSetText "";
+			(_display displayCtrl 1301) cbSetChecked false;
+			(_display displayCtrl 1302) cbSetChecked false;
+		};
 	};
 
 	[_combo] call _updateLabels;
@@ -98,13 +110,12 @@ if (_event isEqualTo "onUnload") exitWith
 	private _combo = _display displayCtrl 1702;
 	private _type = _combo lbData (lbCurSel _combo);
 
-	[
-		_type,
-		_target,
-		ctrlText (_display displayCtrl 1401),
-		ctrlText (_display displayCtrl 1402),
-		ctrlText (_display displayCtrl 1403),
-		[ctrlText (_display displayCtrl 1404), ctrlText (_display displayCtrl 1405)] select (_type isEqualTo "lockedfile"),
+	private _f5 = if (_type isEqualTo "email") then
+	{
+		[ctrlText (_display displayCtrl 1405), cbChecked (_display displayCtrl 1301), cbChecked (_display displayCtrl 1302)]
+	}
+	else
+	{
 		[
 			[
 				cbChecked (_display displayCtrl 1301),
@@ -117,6 +128,16 @@ if (_event isEqualTo "onUnload") exitWith
 				cbChecked (_display displayCtrl 1306)
 			]
 		]
+	};
+
+	[
+		_type,
+		_target,
+		ctrlText (_display displayCtrl 1401),
+		ctrlText (_display displayCtrl 1402),
+		ctrlText (_display displayCtrl 1403),
+		[ctrlText (_display displayCtrl 1404), ctrlText (_display displayCtrl 1405)] select (_type isEqualTo "lockedfile"),
+		_f5
 	] call AE3_desktop_fnc_intel_dispatch;
 
 	[localize "STR_AE3_Desktop_Config_AddIntelDisplayName", format ["%1 -> %2", _type, [localize "STR_AE3_Desktop_Intel_TargetAll", [_computer] call FUNC(deviceLabel)] select (!isNull _computer)], 5] call BIS_fnc_curatorHint;

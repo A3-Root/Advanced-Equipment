@@ -24,8 +24,14 @@ private _permissions = _fileObject select 2;
 
 if(_owner isEqualTo '' || _user isEqualTo 'root') exitWith {};
 
-if(_permissions select 1 select _permission) exitWith {};
+if (_owner isEqualTo _user) exitWith
+{
+    if !(_permissions select 0 select _permission) then
+    {
+        throw localize "STR_AE3_Filesystem_Exception_MissingPermissions";
+    };
+};
 
-if((_owner isEqualTo _user) && (_permissions select 0 select _permission)) exitWith {};
+if (_permissions select 1 select _permission) exitWith {};
 
 throw localize "STR_AE3_Filesystem_Exception_MissingPermissions";

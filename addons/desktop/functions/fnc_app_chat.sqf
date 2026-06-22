@@ -57,18 +57,21 @@ _refreshBtn ctrlCommit 0;
 /* ---------------------------------------- */
 
 _historyCtrl setVariable ["AE3_computer", _computer];
+_historyCtrl setVariable ["AE3_toCtrl", _toCtrl];
 
 private _refresh = {
 	params ["_historyCtrl"];
 
 	private _computer = _historyCtrl getVariable "AE3_computer";
+	private _toCtrl2 = _historyCtrl getVariable "AE3_toCtrl";
 	private _filesystem = _computer getVariable ["AE3_filesystem", []];
 	if (_filesystem isEqualTo []) exitWith {};
 
+	private _peerIp = ctrlText _toCtrl2;
 	private _text = "";
 	try
 	{
-		private _content = [[], _filesystem, "/var/mail/inbox", "root", 0] call AE3_filesystem_fnc_getFile;
+		private _content = [[], _filesystem, format ["/var/chat/%1", _peerIp], "root", 0] call AE3_filesystem_fnc_getFile;
 		if (_content isEqualType "") then { _text = _content; };
 	}
 	catch
@@ -108,7 +111,7 @@ private _send = {
 	};
 
 	private _senderIp = [_computer getVariable ["AE3_network_address", [127, 0, 0, 1]]] call AE3_network_fnc_ip2str;
-	["ae3_network_imSend", [netId _target, _senderIp, _text]] call CBA_fnc_serverEvent;
+	["ae3_network_imSend", [netId _target, netId _computer, _senderIp, ctrlText _toCtrl, _text]] call CBA_fnc_serverEvent;
 
 	_msgCtrl ctrlSetText "";
 };

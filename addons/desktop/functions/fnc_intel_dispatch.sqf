@@ -39,7 +39,17 @@ switch (toLower _type) do
 	case "email":
 	{
 		// Fields are From (f1), To (f2), Subject (f3), Body (f4); an empty body is allowed.
-		[_target, _f1, _f3, _f4, _f2] call AE3_desktop_fnc_addEmail;
+		// f5 from the Zeus dialog carries [receivedTime, createFromHandle, createToHandle].
+		private _receivedTime = "";
+		private _createFrom = false;
+		private _createTo = false;
+		if (count _f5 == 3 && {(_f5 select 0) isEqualType ""}) then
+		{
+			_receivedTime = _f5 select 0;
+			_createFrom = _f5 select 1;
+			_createTo = _f5 select 2;
+		};
+		[_target, _f1, _f3, _f4, _f2, _receivedTime, _createFrom, _createTo] call AE3_desktop_fnc_addEmail;
 	};
 	case "webpage":
 	{

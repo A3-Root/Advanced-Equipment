@@ -29,19 +29,21 @@ private _parse = {
     params ["_content", "_file"];
     private _from = "";
     private _to = "";
+    private _received = "";
     private _subject = _file;
     private _bodyStart = 0;
     private _lines = _content splitString endl;
     {
+        if ((_x select [0, 9]) isEqualTo "Received:") then { _received = [_x select [9]] call CBA_fnc_trim; };
         if ((_x select [0, 5]) isEqualTo "From:") then { _from = [_x select [5]] call CBA_fnc_trim; };
         if ((_x select [0, 3]) isEqualTo "To:") then { _to = [_x select [3]] call CBA_fnc_trim; };
         if ((_x select [0, 8]) isEqualTo "Subject:") then { _subject = [_x select [8]] call CBA_fnc_trim; };
-        // Consume the contiguous From/To/Subject header block (and any blank separators) at the top
+        // Consume the contiguous header block (and any blank separators) at the top
         // so the body never repeats the headers shown as styled fields.
-        if (_bodyStart == _forEachIndex && {((_x select [0, 5]) isEqualTo "From:") || {(_x select [0, 3]) isEqualTo "To:"} || {(_x select [0, 8]) isEqualTo "Subject:"} || {([_x] call CBA_fnc_trim) isEqualTo ""}}) then { _bodyStart = _forEachIndex + 1; };
+        if (_bodyStart == _forEachIndex && {((_x select [0, 9]) isEqualTo "Received:") || {(_x select [0, 5]) isEqualTo "From:"} || {(_x select [0, 3]) isEqualTo "To:"} || {(_x select [0, 8]) isEqualTo "Subject:"} || {([_x] call CBA_fnc_trim) isEqualTo ""}}) then { _bodyStart = _forEachIndex + 1; };
     } forEach _lines;
     createHashMapFromArray [
-        ["file", _file], ["from", _from], ["to", _to], ["subject", _subject],
+        ["file", _file], ["from", _from], ["to", _to], ["received", _received], ["subject", _subject],
         ["body", (_lines select [_bodyStart]) joinString endl]
     ]
 };
@@ -80,6 +82,26 @@ switch (_op) do {
         } catch {
             _res set ["error", "not_found"];
         };
+    };
+
+    case "list_sent": {
+        private _items = [];
+        try {
+            ([[], _fs, "/var/sent", "root"] call AE3_filesystem_fnc_chdir) params ["", "_dir"];
+            private _content = _dir select 0;
+            private _sentNames = keys _content;
+            _sentNames sort false;
+            reverse _sentNames;
+            {
+                private _entry = _content get _x;
+                if ((_entry select 0) isEqualType "") then {
+                    private _meta = [_entry select 0, _x] call _parse;
+                    _meta set ["body", ""];
+                    _items pushBack _meta;
+                };
+            } forEach _sentNames;
+        } catch {};
+        _res set ["mails", _items];
     };
 
     // Delete an email: drop the file from /var/mail and push the updated filesystem.

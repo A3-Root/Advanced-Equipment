@@ -58,14 +58,11 @@ if (!isNull (_target getVariable ["AE3_computer_mutex", objNull]) && {_target is
     _res set ["error", "busy"]; ["ssh_" + _op, _res] call _reply;
 };
 
-[_target, "AE3_Userlist", owner _target] call AE3_main_fnc_getRemoteVar;
-
 // Authenticate against the remote user list.
 private _authed = ([_target, _user, _pass, true] call AE3_desktop_fnc_authUser) getOrDefault ["ok", false];
 if (!_authed) exitWith { _res set ["error", "auth_failed"]; ["ssh_" + _op, _res] call _reply; };
 
 private _fsUser = ["root", _user] select (!(_user in ["root", "admin"]));
-[_target, "AE3_filesystem", owner _target] call AE3_main_fnc_getRemoteVar;
 private _tfs = _target getVariable ["AE3_filesystem", []];
 
 switch (_op) do {
