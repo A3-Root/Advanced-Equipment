@@ -10,6 +10,7 @@
  * 1: _from <STRING> - Sender shown in the email
  * 2: _subject <STRING> - Subject line
  * 3: _body <STRING> - Email body (use endl for line breaks)
+ * 4: _to <STRING> (Optional, default: "") - Recipient shown in the email
  *
  * Return Value:
  * None
@@ -21,12 +22,12 @@
  * Public: Yes
  */
 
-params ["_target", "_from", "_subject", "_body"];
+params ["_target", "_from", "_subject", "_body", ["_to", ""]];
 
 if (!isServer) exitWith
 {
 	private _targetId = if (_target isEqualType objNull) then { netId _target } else { _target };
-	["ae3_desktop_addEmail", [_targetId, _from, _subject, _body]] call CBA_fnc_serverEvent;
+	["ae3_desktop_addEmail", [_targetId, _from, _subject, _body, _to]] call CBA_fnc_serverEvent;
 };
 
 private _computers = [];
@@ -37,7 +38,8 @@ switch (true) do
 	default                             { _computers = [objectFromNetId _target]; };
 };
 
-private _content = format ["From: %1%2Subject: %3%2%2%4", _from, endl, _subject, _body];
+private _toLine = ["", format ["To: %1%2", _to, endl]] select (_to isNotEqualTo "");
+private _content = format ["From: %1%2%3Subject: %4%2%2%5", _from, endl, _toLine, _subject, _body];
 private _fileName = format ["mail_%1", round (CBA_missionTime * 10)];
 
 {

@@ -60,9 +60,20 @@ switch (_command) do {
             private _host = _computer getVariable ["ace_cargo_customName", "armaOS"];
             ["hostname", createHashMapFromArray [["hostname", _host]]] call FUNC(jsSend);
         };
-        // Push apps registered by other addons (e.g. Root Cyberwarfare) into the launcher.
+        // Push apps registered by other addons into the launcher. Apps can require a laptop object
+        // variable so addon-specific tools only appear where they were installed.
         private _ext = missionNamespace getVariable [QGVAR(extApps), []];
-        if (_ext isNotEqualTo []) then { ["ext_apps", _ext] call FUNC(jsSend); };
+        if (_ext isNotEqualTo []) then {
+            private _filtered = _ext select {
+                private _extra = _x getOrDefault ["extra", createHashMap];
+                private _requires = _extra getOrDefault ["requiresVar", []];
+                (_requires isEqualTo []) || {
+                    _requires params [["_varName", ""], ["_expected", true]];
+                    _varName isNotEqualTo "" && {(_computer getVariable [_varName, "__AE3_missing__"]) isEqualTo _expected}
+                }
+            };
+            ["ext_apps", _filtered] call FUNC(jsSend);
+        };
         // Seamless re-entry: if the laptop still has an active session (the previous user did
         // NOT sign out), auto-resume that session instead of demanding the password again. Anyone who
         // opens the laptop continues where it was left.

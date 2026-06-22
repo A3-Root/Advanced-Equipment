@@ -77,10 +77,13 @@
           // Slider flow (Root_CW Vehicles #1): open a bounded slider, then send the action with the
           // chosen numeric value (fuel %, speed km/h, alarm seconds).
           if (a.slider && typeof Modal !== "undefined" && typeof Modal.slider === "function") {
-            Modal.slider(a.label + (d.label ? (" - " + d.label) : ""), a.min, a.max, a.value, a.step, a.unit).then(function (v) {
+            Modal.slider(a.label + (d.label ? (" - " + d.label) : ""), a.min, a.max, a.value, a.step, a.unit, a.options || {}).then(function (v) {
               if (v == null) return;
-              A3.send("dev_action", { app: desc.id, type: extra.type, id: d.id, action: a.id, sub: sub || "", path: d.path || "", value: v });
-              setStatus(a.label + " → " + v + (a.unit || "") + "...");
+              var value = (typeof v === "object") ? v.value : v;
+              var payload = { app: desc.id, type: extra.type, id: d.id, action: a.id, sub: sub || "", path: d.path || "", value: value };
+              if (typeof v === "object" && v.lock !== undefined) payload.lock = !!v.lock;
+              A3.send("dev_action", payload);
+              setStatus(a.label + " → " + value + (a.unit || "") + "...");
             });
             return;
           }

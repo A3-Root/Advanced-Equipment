@@ -1130,8 +1130,9 @@
         });
         if (!items.length) { mails.innerHTML = '<li class="muted pad">No mail</li>'; return; }
         items.forEach(function (m) {
+          var toMeta = m.to ? " · To: " + esc(m.to || "") : "";
           var li = h('<li style="flex-direction:column;align-items:flex-start"><span>' + esc(m.subject || "(no subject)") +
-            '</span><span class="muted" style="font-size:12px">From: ' + esc(m.from || "?") + ' &middot; ' + esc(dateOf(m.file)) + "</span></li>");
+            '</span><span class="muted" style="font-size:12px">From: ' + esc(m.from || "?") + toMeta + ' &middot; ' + esc(dateOf(m.file)) + "</span></li>");
           li.addEventListener("click", function () { open(m.file); });
           li.addEventListener("contextmenu", function (e) {
             e.preventDefault(); e.stopPropagation();
@@ -1170,9 +1171,10 @@
       function open(file) {
         A3.request("mail_read", { file: file }).then(function (m) {
           if (m.error && m.error !== "") { reader.innerHTML = '<p class="muted">Cannot open.</p>'; return; }
+          var toLine = m.to ? '<br>To: ' + esc(m.to || "") : "";
           reader.innerHTML = '<div style="display:flex;align-items:center"><h2 style="flex:1;margin:0">' + esc(m.subject || "") + '</h2>' +
             '<button class="btn mdel">Delete</button></div><p class="muted">From: ' + esc(m.from || "") + ' &middot; ' + esc(dateOf(file)) +
-            '</p><hr style="border-color:var(--line)"><pre style="white-space:pre-wrap;font-family:inherit">' + esc(m.body || "") + "</pre>";
+            toLine + '</p><hr style="border-color:var(--line)"><pre style="white-space:pre-wrap;font-family:inherit">' + esc(m.body || "") + "</pre>";
           reader.querySelector(".mdel").addEventListener("click", function () { del(file); });
         });
       }
@@ -1487,9 +1489,11 @@
       var conn = null; // { to, user, pass }
       var ipPrefix = "192.168.0.";
       A3.request("sysinfo", {}).then(function (s) {
+        var gateway = String((s && s.gateway) || "");
         var ip = String((s && s.ip) || "");
-        var parts = ip.split(".");
-        if (parts.length === 4) ipPrefix = parts.slice(0, 3).join(".") + ".";
+        var source = (gateway && gateway !== "-" && gateway !== "127.0.0.1") ? gateway : ip;
+        var parts = source.split(".");
+        if (parts.length === 4 && source !== "127.0.0.1") ipPrefix = parts.slice(0, 3).join(".") + ".";
         var inp = body.querySelector(".sto");
         if (inp && inp.value === "") inp.value = ipPrefix;
       }).catch(function () {});

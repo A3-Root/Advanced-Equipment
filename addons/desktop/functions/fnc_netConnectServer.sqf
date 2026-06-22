@@ -32,6 +32,9 @@ private _notify = {
 if ((_device distance _router) > (_router getVariable ["AE3_network_wirelessRange", 50])) exitWith {
     [false, "Out of range"] call _notify;
 };
+if ((_router getVariable ["AE3_power_powerState", 0]) != 1) exitWith {
+    [false, "Network offline"] call _notify;
+};
 
 private _routerPass = _router getVariable ["AE3_network_password", ""];
 if (_routerPass isNotEqualTo "" && {_password isNotEqualTo _routerPass}) exitWith {
@@ -43,4 +46,8 @@ if (!isNull (_device getVariable ["AE3_network_parent", objNull])) then {
 };
 
 [_device, _router] call AE3_network_fnc_connect_device2router;
-[true, "Connected"] call _notify;
+if (_owner > 0) then {
+    private _ip = [_device getVariable ["AE3_network_address", [127, 0, 0, 1]]] call AE3_network_fnc_ip2str;
+    private _gateway = [_router getVariable ["AE3_network_address", [127, 0, 0, 1]]] call AE3_network_fnc_ip2str;
+    ["ae3_desktop_netResult", [true, format ["Connected: %1", _ip], _ip, _gateway], _owner] call CBA_fnc_ownerEvent;
+};

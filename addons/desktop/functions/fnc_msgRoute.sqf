@@ -33,13 +33,15 @@ if (isNull _sender || {_toEntry isEqualTo []}) exitWith { _res set ["error", "un
 
 private _target = objectFromNetId (_toEntry param [0, ""]);
 if (isNull _target) exitWith { _res set ["error", "unreachable"]; [_owner, _rid, _res] call _reply; };
+private _isSelf = _target isEqualTo _sender;
 
 private _connected = {
 	params ["_device"];
 	private _parent = _device getVariable ["AE3_network_parent", objNull];
 	!isNull _parent && {(_device getVariable ["AE3_power_powerState", 0]) == 1} && {(_parent getVariable ["AE3_power_powerState", 0]) == 1}
 };
-if (!([_sender] call _connected) || {!([_target] call _connected)}) exitWith {
+private _senderPowered = (_sender getVariable ["AE3_power_powerState", 0]) == 1;
+if ((!_isSelf && {!([_sender] call _connected) || {!([_target] call _connected)}}) || {_isSelf && {!_senderPowered}}) exitWith {
 	_res set ["error", "unreachable"];
 	[_owner, _rid, _res] call _reply;
 };

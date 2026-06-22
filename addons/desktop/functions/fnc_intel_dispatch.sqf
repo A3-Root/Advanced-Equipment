@@ -5,12 +5,12 @@
  * and 3DEN AddIntel module handlers.
  *
  * Types and field meanings:
- *  "email"    - f1: From, f2: Subject, f3: Body
+ *  "email"    - f1: From, f2: To or Subject, f3: Subject or Body, f4: Body
  *  "webpage"  - f1: URL,  f2: Title,   f3: Content ("|" separates lines)
  *  "history"  - f1: URL,  f2: Time (optional, "HH:MM")
  *  "calendar" - f1: Date, f2: Title,   f3: Details
  *  "media"    - f1: Source path, f2: image|video|audio, f3: filesystem destination
- *  "lockedfile" - f1: filesystem path, f2: password, f3: content ("|" not allowed in password)
+ *  "lockedfile" - f1: filesystem path, f2: password, f3: content, f4: owner, f5: permissions
  *
  * Arguments:
  * 0: _type <STRING> - See above
@@ -18,6 +18,8 @@
  * 2: _f1 <STRING>
  * 3: _f2 <STRING>
  * 4: _f3 <STRING>
+ * 5: _f4 <STRING> (Optional)
+ * 6: _f5 <ARRAY> (Optional)
  *
  * Return Value:
  * Whether the type was recognized <BOOL>
@@ -28,7 +30,7 @@
  * Public: Yes
  */
 
-params ["_type", "_target", ["_f1", ""], ["_f2", ""], ["_f3", ""]];
+params ["_type", "_target", ["_f1", ""], ["_f2", ""], ["_f3", ""], ["_f4", ""], ["_f5", [[true, true, false], [true, false, false]]]];
 
 private _known = true;
 
@@ -36,7 +38,11 @@ switch (toLower _type) do
 {
 	case "email":
 	{
-		[_target, _f1, _f2, _f3] call AE3_desktop_fnc_addEmail;
+		if (_f4 isEqualTo "") then {
+			[_target, _f1, _f2, _f3] call AE3_desktop_fnc_addEmail;
+		} else {
+			[_target, _f1, _f3, _f4, _f2] call AE3_desktop_fnc_addEmail;
+		};
 	};
 	case "webpage":
 	{
@@ -57,7 +63,8 @@ switch (toLower _type) do
 	};
 	case "lockedfile":
 	{
-		[_target, _f1, _f2, _f3] call AE3_desktop_fnc_addLockedFile;
+		private _owner = ["root", _f4] select (_f4 isNotEqualTo "");
+		[_target, _f1, _f2, _f3, _owner, _f5] call AE3_desktop_fnc_addLockedFile;
 	};
 	default
 	{

@@ -6,6 +6,7 @@ class CfgVehicles
 		class AttributesBase
 		{
 			class Edit;
+			class Checkbox;
 			class ModuleDescription;
 		};
 		class ModuleDescription {};
@@ -63,6 +64,64 @@ class CfgVehicles
 				tooltip = "$STR_AE3_Desktop_Config_IntelFieldsTooltip";
 				typeName = "STRING";
 				defaultValue = """""";
+			};
+			class AE3_ModuleIntel_Field4: Edit
+			{
+				property = "AE3_ModuleIntel_Field4";
+				displayName = "$STR_AE3_Desktop_Config_IntelField4";
+				tooltip = "$STR_AE3_Desktop_Config_IntelFieldsTooltip";
+				typeName = "STRING";
+				defaultValue = """""";
+			};
+			class AE3_ModuleIntel_Owner: Edit
+			{
+				property = "AE3_ModuleIntel_Owner";
+				displayName = "$STR_AE3_Desktop_Intel_LabelOwner";
+				tooltip = "$STR_AE3_Desktop_Config_IntelFieldsTooltip";
+				typeName = "STRING";
+				defaultValue = """root""";
+			};
+			class AE3_ModuleIntel_OwnerRead: Checkbox
+			{
+				property = "AE3_ModuleIntel_OwnerRead";
+				displayName = "$STR_AE3_Desktop_Intel_LabelOwnerRead";
+				typeName = "BOOL";
+				defaultValue = "true";
+			};
+			class AE3_ModuleIntel_OwnerWrite: Checkbox
+			{
+				property = "AE3_ModuleIntel_OwnerWrite";
+				displayName = "$STR_AE3_Desktop_Intel_LabelOwnerWrite";
+				typeName = "BOOL";
+				defaultValue = "true";
+			};
+			class AE3_ModuleIntel_OwnerExecute: Checkbox
+			{
+				property = "AE3_ModuleIntel_OwnerExecute";
+				displayName = "$STR_AE3_Desktop_Intel_LabelOwnerExecute";
+				typeName = "BOOL";
+				defaultValue = "false";
+			};
+			class AE3_ModuleIntel_EveryoneRead: Checkbox
+			{
+				property = "AE3_ModuleIntel_EveryoneRead";
+				displayName = "$STR_AE3_Desktop_Intel_LabelEveryoneRead";
+				typeName = "BOOL";
+				defaultValue = "true";
+			};
+			class AE3_ModuleIntel_EveryoneWrite: Checkbox
+			{
+				property = "AE3_ModuleIntel_EveryoneWrite";
+				displayName = "$STR_AE3_Desktop_Intel_LabelEveryoneWrite";
+				typeName = "BOOL";
+				defaultValue = "false";
+			};
+			class AE3_ModuleIntel_EveryoneExecute: Checkbox
+			{
+				property = "AE3_ModuleIntel_EveryoneExecute";
+				displayName = "$STR_AE3_Desktop_Intel_LabelEveryoneExecute";
+				typeName = "BOOL";
+				defaultValue = "false";
 			};
 			class ModuleDescription: ModuleDescription{};
 		};

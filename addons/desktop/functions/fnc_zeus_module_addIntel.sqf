@@ -54,18 +54,28 @@ if (_event isEqualTo "onLoad") exitWith
 	private _updateLabels = {
 		params ["_combo"];
 		private _display = ctrlParent _combo;
-		private _labels = switch (_combo lbData (lbCurSel _combo)) do
+		private _type = _combo lbData (lbCurSel _combo);
+		private _labels = switch (_type) do
 		{
 			case "webpage":  { [localize "STR_AE3_Desktop_Intel_LabelUrl", localize "STR_AE3_Desktop_Intel_LabelTitle", localize "STR_AE3_Desktop_Intel_LabelContent"] };
 			case "history":  { [localize "STR_AE3_Desktop_Intel_LabelUrl", localize "STR_AE3_Desktop_Intel_LabelTime", ""] };
 			case "calendar": { [localize "STR_AE3_Desktop_Intel_LabelDate", localize "STR_AE3_Desktop_Intel_LabelTitle", localize "STR_AE3_Desktop_Intel_LabelDetails"] };
 			case "media":    { [localize "STR_AE3_Desktop_Intel_LabelSource", localize "STR_AE3_Desktop_Intel_LabelMediaType", localize "STR_AE3_Desktop_Intel_LabelDest"] };
 			case "lockedfile": { [localize "STR_AE3_Desktop_Intel_LabelDest", localize "STR_AE3_Desktop_Intel_LabelPassword", localize "STR_AE3_Desktop_Intel_LabelContent"] };
-			default          { [localize "STR_AE3_Desktop_Intel_LabelFrom", localize "STR_AE3_Desktop_Intel_LabelSubject", localize "STR_AE3_Desktop_Intel_LabelBody"] };
+			default          { [localize "STR_AE3_Desktop_Intel_LabelFrom", localize "STR_AE3_Desktop_Intel_LabelTo", localize "STR_AE3_Desktop_Intel_LabelSubject"] };
 		};
 		(_display displayCtrl 1710) ctrlSetText (_labels select 0);
 		(_display displayCtrl 1711) ctrlSetText (_labels select 1);
 		(_display displayCtrl 1712) ctrlSetText (_labels select 2);
+		private _isEmail = _type isEqualTo "email";
+		private _isLocked = _type isEqualTo "lockedfile";
+		(_display displayCtrl 1713) ctrlSetText (localize "STR_AE3_Desktop_Intel_LabelBody");
+		{
+			(_display displayCtrl _x) ctrlShow _isEmail;
+		} forEach [1713, 1404];
+		{
+			(_display displayCtrl _x) ctrlShow _isLocked;
+		} forEach [1714, 1405, 1715, 1716, 1301, 1302, 1303, 1304, 1305, 1306];
 	};
 
 	[_combo] call _updateLabels;
@@ -93,7 +103,20 @@ if (_event isEqualTo "onUnload") exitWith
 		_target,
 		ctrlText (_display displayCtrl 1401),
 		ctrlText (_display displayCtrl 1402),
-		ctrlText (_display displayCtrl 1403)
+		ctrlText (_display displayCtrl 1403),
+		[ctrlText (_display displayCtrl 1404), ctrlText (_display displayCtrl 1405)] select (_type isEqualTo "lockedfile"),
+		[
+			[
+				cbChecked (_display displayCtrl 1301),
+				cbChecked (_display displayCtrl 1302),
+				cbChecked (_display displayCtrl 1303)
+			],
+			[
+				cbChecked (_display displayCtrl 1304),
+				cbChecked (_display displayCtrl 1305),
+				cbChecked (_display displayCtrl 1306)
+			]
+		]
 	] call AE3_desktop_fnc_intel_dispatch;
 
 	[localize "STR_AE3_Desktop_Config_AddIntelDisplayName", format ["%1 -> %2", _type, [localize "STR_AE3_Desktop_Intel_TargetAll", [_computer] call FUNC(deviceLabel)] select (!isNull _computer)], 5] call BIS_fnc_curatorHint;

@@ -72,7 +72,7 @@ if (hasInterface) then
 
 	// Wireless connect result: forward the server's verdict (ok + message) to the Network app.
 	["ae3_desktop_netResult", {
-		params ["_ok", "_msg"];
-		["net_result", createHashMapFromArray [["ok", _ok], ["msg", _msg]]] call AE3_desktop_fnc_jsSend;
+		params ["_ok", "_msg", ["_ip", ""], ["_gateway", ""]];
+		["net_result", createHashMapFromArray [["ok", _ok], ["msg", _msg], ["ip", _ip], ["gateway", _gateway]]] call AE3_desktop_fnc_jsSend;
 	}] call CBA_fnc_addEventHandler;
 };

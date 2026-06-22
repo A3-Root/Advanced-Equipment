@@ -28,16 +28,18 @@ if (_fs isEqualTo []) exitWith { _res set ["error", "fs_not_ready"]; _res };
 private _parse = {
     params ["_content", "_file"];
     private _from = "";
+    private _to = "";
     private _subject = _file;
     private _bodyStart = 0;
     private _lines = _content splitString endl;
     {
         if ((_x select [0, 5]) isEqualTo "From:") then { _from = [_x select [5]] call CBA_fnc_trim; };
+        if ((_x select [0, 3]) isEqualTo "To:") then { _to = [_x select [3]] call CBA_fnc_trim; };
         if ((_x select [0, 8]) isEqualTo "Subject:") then { _subject = [_x select [8]] call CBA_fnc_trim; };
         if (([_x] call CBA_fnc_trim) isEqualTo "" && {_bodyStart == 0}) then { _bodyStart = _forEachIndex + 1; };
     } forEach _lines;
     createHashMapFromArray [
-        ["file", _file], ["from", _from], ["subject", _subject],
+        ["file", _file], ["from", _from], ["to", _to], ["subject", _subject],
         ["body", (_lines select [_bodyStart]) joinString endl]
     ]
 };

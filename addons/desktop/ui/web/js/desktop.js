@@ -54,6 +54,8 @@
     if (html != null) e.innerHTML = html;
     return e;
   }
+  function joinPath(dir, name) { return (dir.replace(/\/+$/, "") + "/" + name).replace(/\/+/g, "/"); }
+  function desktopDir() { return ((window.AE3_HOME || "/root") + "/Desktop").replace(/\/+/g, "/"); }
 
   // ---------------- Reusable right-click context menu ----------------
   // items: array of { label, action, disabled } or { sep:true }. Shared by the desktop surface and
@@ -110,15 +112,78 @@
   }
 
   // ---------------- Desktop icons (fixed system + dynamic ~/Desktop) ----------------
-  function makeIcon(desk, label, glyph, onOpen) {
+  function makeIcon(desk, label, glyph, onOpen, opts) {
+    opts = opts || {};
     var icon = el("div", "desktop-icon", '<div class="glyph">' + (glyph || "") + '</div><div class="label">' + label + "</div>");
     icon.addEventListener("dblclick", onOpen);
     icon.addEventListener("click", function () {
       desk.querySelectorAll(".desktop-icon").forEach(function (n) { n.classList.remove("sel"); });
       icon.classList.add("sel");
     });
+    if (opts.path) {
+      icon.setAttribute("draggable", "true");
+      icon.addEventListener("dragstart", function (e) {
+        e.dataTransfer.setData("text/plain", opts.path);
+        window.AE3_desktopDrag = { path: opts.path, name: opts.name || label };
+      });
+      icon.addEventListener("contextmenu", function (e) {
+        e.preventDefault(); e.stopPropagation();
+        desk.querySelectorAll(".desktop-icon").forEach(function (n) { n.classList.remove("sel"); });
+        icon.classList.add("sel");
+        desktopEntryMenu(e.clientX, e.clientY, opts);
+      });
+    }
+    if (opts.dirPath) {
+      icon.addEventListener("dragover", function (e) { if (window.AE3_desktopDrag) e.preventDefault(); });
+      icon.addEventListener("drop", function (e) {
+        e.preventDefault();
+        var drag = window.AE3_desktopDrag;
+        if (!drag || drag.path === opts.dirPath) return;
+        A3.request("fs_move", { path: drag.path, dest: joinPath(opts.dirPath, drag.name) }).then(function () { Desktop.refresh(); });
+      });
+    }
+    if (opts.trash) {
+      icon.addEventListener("dragover", function (e) { if (window.AE3_desktopDrag) e.preventDefault(); });
+      icon.addEventListener("drop", function (e) {
+        e.preventDefault();
+        var drag = window.AE3_desktopDrag;
+        if (!drag) return;
+        A3.request("fs_delete", { path: drag.path }).then(function () { Desktop.refresh(); });
+      });
+    }
     desk.appendChild(icon);
     return icon;
+  }
+
+  function pasteTo(destDir) {
+    var cb = window.AE3_clipboard;
+    if (!cb) return;
+    A3.request(cb.op === "cut" ? "fs_move" : "fs_copy", { path: cb.path, dest: joinPath(destDir, cb.name) }).then(function (r) {
+      if (r && r.error && r.error !== "") { Modal.alert("Paste", "Could not paste here."); return; }
+      if (cb.op === "cut") window.AE3_clipboard = null;
+      Desktop.refresh();
+    });
+  }
+
+  function deleteDesktopEntry(path) {
+    A3.request("fs_delete", { path: path }).then(function (r) {
+      if (r && r.error && r.error !== "") { Modal.alert("Delete", "Permission denied."); return; }
+      Desktop.refresh();
+    });
+  }
+
+  function desktopEntryMenu(x, y, opts) {
+    window.AE3_ctxMenu(x, y, [
+      { label: "Open", action: opts.open },
+      { sep: true },
+      { label: "Cut", action: function () { window.AE3_clipboard = { path: opts.path, name: opts.name, op: "cut" }; } },
+      { label: "Copy", action: function () { window.AE3_clipboard = { path: opts.path, name: opts.name, op: "copy" }; } },
+      { label: "Paste", disabled: !window.AE3_clipboard || !opts.dirPath, action: function () { pasteTo(opts.dirPath); } },
+      { sep: true },
+      { label: "Delete", action: function () {
+        Modal.confirm("Delete", "Delete '" + opts.name + "'?").then(function (ok) { if (ok) deleteDesktopEntry(opts.path); });
+      } }
+    ]);
   }
 
   // Load and render the logged-in user's ~/Desktop folder. Launchers (.app, holding "app=<id>")
@@ -134,7 +199,13 @@
         var full = (path + "/" + it.name).replace(/\/+/g, "/");
         var isApp = /\.app$/i.test(it.name);
         var glyph = it.dir ? Icons.folder : (isApp ? Icons.app : Icons.file);
-        var icon = makeIcon(desk, it.name.replace(/\.app$/i, ""), glyph, function () { openDesktopEntry(it, full); });
+        var open = function () { openDesktopEntry(it, full); };
+        var icon = makeIcon(desk, it.name.replace(/\.app$/i, ""), glyph, open, {
+          path: full,
+          name: it.name,
+          open: open,
+          dirPath: it.dir ? ((it.link && it.link !== "") ? it.link : full) : ""
+        });
         // A .app launcher holds "app=<id>"; show the *target* app's real glyph (Mail/Browser/Files/
         // Calculator etc.) instead of a generic/terminal icon.
         if (isApp) {
@@ -190,7 +261,7 @@
     DESKTOP_ICONS.forEach(function (d) {
       if (!Apps.get(d.app)) return; // skip if the backing app is not present (e.g. recyclebin disabled)
       var glyph = (typeof d.glyph === "function") ? d.glyph() : d.glyph;
-      makeIcon(desk, d.label, glyph, function () { Apps.launch(d.app, d.args); });
+      makeIcon(desk, d.label, glyph, function () { Apps.launch(d.app, d.args); }, { trash: d.app === "recyclebin" });
     });
     loadUserDesktop(desk);
     desk.addEventListener("mousedown", function (e) {
@@ -218,6 +289,8 @@
               A3.request("fs_save", { path: deskPath + "/" + name, content: "" }).then(function () { Desktop.refresh(); });
             });
           } },
+          { sep: true },
+          { label: "Paste", disabled: !window.AE3_clipboard, action: function () { pasteTo(deskPath); } },
           { sep: true },
           { label: "Open File Explorer", action: function () { Apps.launch("files", { path: deskPath }); } },
           { label: "Open Recycle Bin", action: function () { Apps.launch("recyclebin"); } },

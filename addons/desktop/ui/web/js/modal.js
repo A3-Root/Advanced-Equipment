@@ -51,13 +51,15 @@
     },
     // Slider input (Root_CW Vehicles #1): pick a numeric value within [min,max]. Resolves the chosen
     // number, or null on cancel. unit is an optional suffix shown next to the value (e.g. "%", "km/h").
-    slider: function (title, min, max, value, step, unit) {
+    slider: function (title, min, max, value, step, unit, opts) {
       min = Number(min); max = Number(max); step = Number(step) || 1;
       if (!isFinite(value)) value = min;
       value = Math.min(max, Math.max(min, Number(value)));
       unit = unit || "";
+      opts = opts || {};
       return new Promise(function (resolve) {
         overlay(function (box, close) {
+          var checkHtml = opts.checkboxLabel ? '<label class="muted" style="display:flex;gap:8px;align-items:center;margin-top:10px"><input class="scheck" type="checkbox">' + opts.checkboxLabel + '</label>' : '';
           box.innerHTML =
             '<div class="titlebar"><span class="title">' + title + '</span></div>' +
             '<div class="pad">' +
@@ -67,6 +69,7 @@
                 '<span class="muted sunit">' + unit + '</span>' +
               '</div>' +
               '<div class="muted" style="font-size:12px;margin-top:6px">Range: ' + min + ' - ' + max + ' ' + unit + '</div>' +
+              checkHtml +
               '<div style="margin-top:12px;text-align:right;display:flex;gap:8px;justify-content:flex-end">' +
               '<button class="btn cancel">Cancel</button><button class="btn accent ok">Apply</button></div></div>';
           var range = box.querySelector(".srange");
@@ -74,7 +77,11 @@
           function clamp(v) { v = Number(v); if (!isFinite(v)) v = min; return Math.min(max, Math.max(min, v)); }
           range.addEventListener("input", function () { num.value = range.value; });
           num.addEventListener("input", function () { range.value = clamp(num.value); });
-          box.querySelector(".ok").addEventListener("click", function () { close(clamp(num.value)); });
+          box.querySelector(".ok").addEventListener("click", function () {
+            var out = clamp(num.value);
+            if (opts.returnObject) out = { value: out, lock: !!(box.querySelector(".scheck") && box.querySelector(".scheck").checked) };
+            close(out);
+          });
           box.querySelector(".cancel").addEventListener("click", function () { close(null); });
         }, resolve);
       });

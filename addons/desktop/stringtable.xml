@@ -311,6 +311,10 @@
                 <German>Feld 3 (Text / Inhalt / Details / Ziel)</German>
                 <Chinesesimp>字段3(正文/内容/详情/目标)</Chinesesimp>
             </Key>
+            <Key ID="STR_AE3_Desktop_Config_IntelField4">
+                <Original>Field 4 (Email body)</Original>
+                <English>Field 4 (Email body)</English>
+            </Key>
             <Key ID="STR_AE3_Desktop_Config_IntelFieldsTooltip">
                 <Original>Meaning depends on the intel type - see the wiki App-Framework page</Original>
                 <English>Meaning depends on the intel type - see the wiki App-Framework page</English>
@@ -462,6 +466,27 @@
                 <German>Details</German>
                 <Chinesesimp>详情</Chinesesimp>
             </Key>
+            <Key ID="STR_AE3_Desktop_Intel_LabelEveryone">
+                <Original>Everyone</Original>
+                <English>Everyone</English>
+                <French>Everyone</French>
+                <Italian>Everyone</Italian>
+                <Russian>Everyone</Russian>
+                <German>Everyone</German>
+                <Chinesesimp>Everyone</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Intel_LabelEveryoneExecute">
+                <Original>Everyone execute</Original>
+                <English>Everyone execute</English>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Intel_LabelEveryoneRead">
+                <Original>Everyone read</Original>
+                <English>Everyone read</English>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Intel_LabelEveryoneWrite">
+                <Original>Everyone write</Original>
+                <English>Everyone write</English>
+            </Key>
             <Key ID="STR_AE3_Desktop_Intel_LabelFrom">
                 <Original>From</Original>
                 <English>From</English>
@@ -479,6 +504,27 @@
                 <Russian>Media type (image / video / audio)</Russian>
                 <German>Medientyp (image / video / audio)</German>
                 <Chinesesimp>媒体类型(image / video / audio)</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Intel_LabelOwner">
+                <Original>Owner</Original>
+                <English>Owner</English>
+                <French>Owner</French>
+                <Italian>Owner</Italian>
+                <Russian>Owner</Russian>
+                <German>Owner</German>
+                <Chinesesimp>Owner</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Intel_LabelOwnerExecute">
+                <Original>Owner execute</Original>
+                <English>Owner execute</English>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Intel_LabelOwnerRead">
+                <Original>Owner read</Original>
+                <English>Owner read</English>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Intel_LabelOwnerWrite">
+                <Original>Owner write</Original>
+                <English>Owner write</English>
             </Key>
             <Key ID="STR_AE3_Desktop_Intel_LabelPassword">
                 <Original>Password to open the file</Original>
@@ -524,6 +570,15 @@
                 <Russian>Title</Russian>
                 <German>Titel</German>
                 <Chinesesimp>标题</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Intel_LabelTo">
+                <Original>To</Original>
+                <English>To</English>
+                <French>To</French>
+                <Italian>To</Italian>
+                <Russian>To</Russian>
+                <German>To</German>
+                <Chinesesimp>To</Chinesesimp>
             </Key>
             <Key ID="STR_AE3_Desktop_Intel_LabelUrl">
                 <Original>URL</Original>

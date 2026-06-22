@@ -13,6 +13,7 @@
  * 2: _glyph <STRING> - Emoji/glyph icon
  * 3: _kind <STRING> - App template; currently "deviceList"
  * 4: _extra <HASHMAP> (Optional) - Extra params forwarded to the JS app (e.g. deviceType)
+ *    Optional key: requiresVar [varName, expectedValue] filters the app per laptop.
  *
  * Return Value:
  * None

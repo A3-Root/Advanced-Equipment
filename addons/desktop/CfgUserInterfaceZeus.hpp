@@ -2,6 +2,7 @@
 class RscEdit;
 class RscCombo;
 class RscListBox;
+class RscCheckBox;
 class RscButtonMenuOK;
 class RscButtonMenuCancel;
 
@@ -24,7 +25,7 @@ class AE3_UserInterface_Zeus_Module_AddIntel
 			x = 0 * GUI_GRID_W + GUI_GRID_X;
 			y = 2 * GUI_GRID_H + GUI_GRID_Y;
 			w = 40 * GUI_GRID_W;
-			h = 16 * GUI_GRID_H;
+			h = 23.5 * GUI_GRID_H;
 			colorBackground[] = {0.2,0.2,0.2,1};
 		};
 	};
@@ -121,12 +122,126 @@ class AE3_UserInterface_Zeus_Module_AddIntel
 			h = 3 * GUI_GRID_H;
 		};
 
+		class RscText_1713: RscText
+		{
+			idc = 1713;
+			text = "";
+			x = 0.5 * GUI_GRID_W + GUI_GRID_X;
+			y = 13.2 * GUI_GRID_H + GUI_GRID_Y;
+			w = 39 * GUI_GRID_W;
+			h = 1 * GUI_GRID_H;
+			style = ST_MULTI;
+			lineSpacing = 1;
+		};
+		class RscEdit_1404: RscEdit
+		{
+			idc = 1404;
+			x = 0.5 * GUI_GRID_W + GUI_GRID_X;
+			y = 14.2 * GUI_GRID_H + GUI_GRID_Y;
+			w = 39 * GUI_GRID_W;
+			h = 1 * GUI_GRID_H;
+		};
+
+		class RscText_1714: RscText
+		{
+			idc = 1714;
+			text = "$STR_AE3_Desktop_Intel_LabelOwner";
+			x = 0.5 * GUI_GRID_W + GUI_GRID_X;
+			y = 13.2 * GUI_GRID_H + GUI_GRID_Y;
+			w = 9 * GUI_GRID_W;
+			h = 1 * GUI_GRID_H;
+		};
+		class RscEdit_1405: RscEdit
+		{
+			idc = 1405;
+			text = "root";
+			x = 10 * GUI_GRID_W + GUI_GRID_X;
+			y = 13.2 * GUI_GRID_H + GUI_GRID_Y;
+			w = 29 * GUI_GRID_W;
+			h = 1 * GUI_GRID_H;
+		};
+
+		class RscText_1715: RscText
+		{
+			idc = 1715;
+			text = "$STR_AE3_Desktop_Intel_LabelOwner";
+			x = 10 * GUI_GRID_W + GUI_GRID_X;
+			y = 14.7 * GUI_GRID_H + GUI_GRID_Y;
+			w = 8 * GUI_GRID_W;
+			h = 1 * GUI_GRID_H;
+			style = ST_CENTER;
+		};
+		class RscText_1716: RscText
+		{
+			idc = 1716;
+			text = "$STR_AE3_Desktop_Intel_LabelEveryone";
+			x = 22 * GUI_GRID_W + GUI_GRID_X;
+			y = 14.7 * GUI_GRID_H + GUI_GRID_Y;
+			w = 8 * GUI_GRID_W;
+			h = 1 * GUI_GRID_H;
+			style = ST_CENTER;
+		};
+		class RscCheckBox_1301: RscCheckBox
+		{
+			idc = 1301;
+			x = 10 * GUI_GRID_W + GUI_GRID_X;
+			y = 16 * GUI_GRID_H + GUI_GRID_Y;
+			w = 1 * GUI_GRID_W;
+			h = 1 * GUI_GRID_H;
+			checked = 1;
+		};
+		class RscCheckBox_1302: RscCheckBox
+		{
+			idc = 1302;
+			x = 13 * GUI_GRID_W + GUI_GRID_X;
+			y = 16 * GUI_GRID_H + GUI_GRID_Y;
+			w = 1 * GUI_GRID_W;
+			h = 1 * GUI_GRID_H;
+			checked = 1;
+		};
+		class RscCheckBox_1303: RscCheckBox
+		{
+			idc = 1303;
+			x = 16 * GUI_GRID_W + GUI_GRID_X;
+			y = 16 * GUI_GRID_H + GUI_GRID_Y;
+			w = 1 * GUI_GRID_W;
+			h = 1 * GUI_GRID_H;
+			checked = 0;
+		};
+		class RscCheckBox_1304: RscCheckBox
+		{
+			idc = 1304;
+			x = 22 * GUI_GRID_W + GUI_GRID_X;
+			y = 16 * GUI_GRID_H + GUI_GRID_Y;
+			w = 1 * GUI_GRID_W;
+			h = 1 * GUI_GRID_H;
+			checked = 1;
+		};
+		class RscCheckBox_1305: RscCheckBox
+		{
+			idc = 1305;
+			x = 25 * GUI_GRID_W + GUI_GRID_X;
+			y = 16 * GUI_GRID_H + GUI_GRID_Y;
+			w = 1 * GUI_GRID_W;
+			h = 1 * GUI_GRID_H;
+			checked = 0;
+		};
+		class RscCheckBox_1306: RscCheckBox
+		{
+			idc = 1306;
+			x = 28 * GUI_GRID_W + GUI_GRID_X;
+			y = 16 * GUI_GRID_H + GUI_GRID_Y;
+			w = 1 * GUI_GRID_W;
+			h = 1 * GUI_GRID_H;
+			checked = 0;
+		};
+
 		class RscText_1720: RscText
 		{
 			idc = 1720;
 			text = "$STR_AE3_Desktop_Config_IntelTargetHint";
 			x = 0.5 * GUI_GRID_W + GUI_GRID_X;
-			y = 13.2 * GUI_GRID_H + GUI_GRID_Y;
+			y = 19.2 * GUI_GRID_H + GUI_GRID_Y;
 			w = 39 * GUI_GRID_W;
 			h = 2 * GUI_GRID_H;
 			style = ST_MULTI;
@@ -138,7 +253,7 @@ class AE3_UserInterface_Zeus_Module_AddIntel
 		{
 			idc = 1; // IDC_OK: engine auto-closes the dialog with exit code 1 (do not change)
 			x = 30 * GUI_GRID_W + GUI_GRID_X;
-			y = 16.5 * GUI_GRID_H + GUI_GRID_Y;
+			y = 22.5 * GUI_GRID_H + GUI_GRID_Y;
 			w = 9.5 * GUI_GRID_W;
 			h = 1 * GUI_GRID_H;
 		};
@@ -146,7 +261,7 @@ class AE3_UserInterface_Zeus_Module_AddIntel
 		{
 			idc = 2; // IDC_CANCEL: engine auto-closes the dialog with exit code 2 (do not change)
 			x = 0.5 * GUI_GRID_W + GUI_GRID_X;
-			y = 16.5 * GUI_GRID_H + GUI_GRID_Y;
+			y = 22.5 * GUI_GRID_H + GUI_GRID_Y;
 			w = 9.5 * GUI_GRID_W;
 			h = 1 * GUI_GRID_H;
 		};
