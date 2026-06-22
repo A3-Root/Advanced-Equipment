@@ -104,6 +104,20 @@ switch (_op) do {
         _res set ["mails", _items];
     };
 
+    // Read a sent email from /var/sent (mirrors "read" but uses the sent directory).
+    case "read_sent": {
+        private _file = _data getOrDefault ["file", ""];
+        try {
+            private _content = [[], _fs, format ["/var/sent/%1", _file], "root", 0] call AE3_filesystem_fnc_getFile;
+            if (_content isEqualType "") then {
+                private _mail = [_content, _file] call _parse;
+                { _res set [_x, _mail get _x]; } forEach (keys _mail);
+            } else { _res set ["error", "not_text"]; };
+        } catch {
+            _res set ["error", "not_found"];
+        };
+    };
+
     // Delete an email: drop the file from /var/mail and push the updated filesystem.
     case "delete": {
         private _file = _data getOrDefault ["file", ""];

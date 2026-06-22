@@ -132,6 +132,10 @@ switch (_command) do {
         private _op = _command select [3]; // strip "fs_"
         [[_computer, _user, _op, _data] call FUNC(fsHandle)] call _reply;
     };
+    // Open a media-marker file natively (image viewer / video / audio) via fnc_openFile.
+    case "fs_open_media": {
+        [_computer, _data getOrDefault ["path", ""], _data getOrDefault ["content", ""]] call FUNC(openFile);
+    };
 
     // --- Network + system info. ---
     // My Computer volumes: list/mount/unmount USB drives.
@@ -206,6 +210,7 @@ switch (_command) do {
     case "mail_list": { [[_computer, "list", _data] call FUNC(mailHandle)] call _reply; };
     case "mail_sent_list": { [[_computer, "list_sent", _data] call FUNC(mailHandle)] call _reply; };
     case "mail_read": { [[_computer, "read", _data] call FUNC(mailHandle)] call _reply; };
+    case "mail_read_sent": { [[_computer, "read_sent", _data] call FUNC(mailHandle)] call _reply; };
     case "mail_delete": { [[_computer, "delete", _data] call FUNC(mailHandle)] call _reply; };
     case "addr_list": {
         private _addresses = [];
@@ -247,7 +252,7 @@ switch (_command) do {
             private _entry = _pages get _x;
             _pageOut pushBack createHashMapFromArray [["url", _x], ["title", _entry select 0], ["content", _entry select 1]];
         } forEach (keys _pages);
-        [_pageOut] call _reply;
+        [createHashMapFromArray [["pages", _pageOut]]] call _reply;
     };
     case "web_history": {
         private _whres = createHashMapFromArray [["history", ""]];

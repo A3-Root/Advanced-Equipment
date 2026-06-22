@@ -82,6 +82,9 @@ if (_event isEqualTo "onLoad") exitWith
 		{
 			(_display displayCtrl _x) ctrlShow _isEmail;
 		} forEach [1717, 1317, 1718, 1318];
+		{
+			(_display displayCtrl _x) ctrlEnable _isEmail;
+		} forEach [1317, 1318];
 		// lockedfile-only: permission column headers and all six permission checkboxes
 		{
 			(_display displayCtrl _x) ctrlShow _isLocked;
@@ -94,12 +97,38 @@ if (_event isEqualTo "onLoad") exitWith
 			(_display displayCtrl 1405) ctrlSetText "";
 			(_display displayCtrl 1317) cbSetChecked false;
 			(_display displayCtrl 1318) cbSetChecked false;
+			// Derive one grid-row height from the y gap between body label (IDC 1713, y=11.2) and
+			// body field (IDC 1404, y=12.2) — avoids using the all-caps GUI_GRID_* preprocessor macros.
+			private _pLabel = ctrlPosition (_display displayCtrl 1713);
+			private _pBody  = ctrlPosition (_display displayCtrl 1404);
+			private _gH = (_pBody select 1) - (_pLabel select 1); // 1 grid row
+			// Shrink body to h=2 rows so the received-time row fits directly below before the checkboxes.
+			(_display displayCtrl 1404) ctrlSetPosition [_pBody select 0, _pBody select 1, _pBody select 2, 2 * _gH];
+			(_display displayCtrl 1404) ctrlCommit 0;
+			private _rowY = (_pBody select 1) + (2.3 * _gH);
+			private _p14 = ctrlPosition (_display displayCtrl 1714);
+			private _p15 = ctrlPosition (_display displayCtrl 1405);
+			(_display displayCtrl 1714) ctrlSetPosition [_p14 select 0, _rowY, _p14 select 2, _p14 select 3];
+			(_display displayCtrl 1405) ctrlSetPosition [_p15 select 0, _rowY, _p15 select 2, _p15 select 3];
+			(_display displayCtrl 1714) ctrlCommit 0;
+			(_display displayCtrl 1405) ctrlCommit 0;
 		};
 		if (_isLocked) then
 		{
 			(_display displayCtrl 1714) ctrlSetText (localize "STR_AE3_Desktop_Intel_LabelOwner");
 			(_display displayCtrl 1715) ctrlSetText (localize "STR_AE3_Desktop_Intel_LabelOwner");
 			(_display displayCtrl 1716) ctrlSetText (localize "STR_AE3_Desktop_Intel_LabelEveryone");
+			// Restore owner row to its config-defined position (y=13.2, which is body_y + 1 grid row).
+			private _pLabel = ctrlPosition (_display displayCtrl 1713);
+			private _pBody  = ctrlPosition (_display displayCtrl 1404);
+			private _gH = (_pBody select 1) - (_pLabel select 1);
+			private _origY = (_pBody select 1) + _gH; // config-defined y=13.2 = body_y + 1 * gridH
+			private _p14 = ctrlPosition (_display displayCtrl 1714);
+			private _p15 = ctrlPosition (_display displayCtrl 1405);
+			(_display displayCtrl 1714) ctrlSetPosition [_p14 select 0, _origY, _p14 select 2, _p14 select 3];
+			(_display displayCtrl 1405) ctrlSetPosition [_p15 select 0, _origY, _p15 select 2, _p15 select 3];
+			(_display displayCtrl 1714) ctrlCommit 0;
+			(_display displayCtrl 1405) ctrlCommit 0;
 		};
 	};
 

@@ -243,7 +243,12 @@
         });
         return;
       }
-      Apps.launch("notepad", { path: path, content: (res && res.content) || "" });
+      var content = (res && res.content) || "";
+      if (content.indexOf("AE3_MEDIA|") === 0) {
+        A3.send("fs_open_media", { path: path, content: content });
+        return;
+      }
+      Apps.launch("notepad", { path: path, content: content });
     });
   };
 
@@ -465,15 +470,18 @@
 
   function onTaskbarChange() { refreshDockRunning(); buildTaskbar(); }
 
-  // ---------------- Clock: centred, date + time, click opens Calendar ----------------
+  // ---------------- Clock: Mission Time (from sysinfo) + Zulu UTC, click opens Calendar ----------------
   var clockTimer = null, batteryTimer = null;
   function startClock() {
+    function pad2(n) { return n < 10 ? "0" + n : "" + n; }
     function tick() {
       var d = new Date();
-      var time = d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-      var date = d.toLocaleDateString([], { weekday: "short", month: "short", day: "numeric" });
+      var zulu = pad2(d.getUTCHours()) + ":" + pad2(d.getUTCMinutes()) + ":" + pad2(d.getUTCSeconds());
+      var mission = (lastSys && lastSys.missionTime) || "--:--";
       var c = document.getElementById("clock");
-      if (c) c.textContent = date + "  " + time;
+      if (c) c.innerHTML =
+        '<span title="Mission time">' + esc(mission) + ' <span class="muted" style="font-size:.8em;opacity:.7">M</span></span>' +
+        '  <span title="Zulu (UTC) time">' + esc(zulu) + ' <span class="muted" style="font-size:.8em;opacity:.7">Z</span></span>';
     }
     if (clockTimer) clearInterval(clockTimer);
     clockTimer = setInterval(tick, 1000); tick();

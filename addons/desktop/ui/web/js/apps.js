@@ -1223,7 +1223,8 @@
         });
       }
       function open(file) {
-        A3.request("mail_read", { file: file }).then(function (m) {
+        var readOp = mailbox === "sent" ? "mail_read_sent" : "mail_read";
+        A3.request(readOp, { file: file }).then(function (m) {
           if (m.error && m.error !== "") { reader.innerHTML = '<p class="muted">Cannot open.</p>'; return; }
           var toLine = m.to ? '<br>To: ' + esc(m.to || "") : "";
           var recLine = m.received ? '<br><span class="muted">' + esc(m.received) + '</span>' : "";
@@ -1362,7 +1363,14 @@
       }
 
       A3.on("chat_data", function (d) {
-        threads = (d && d.threads) || [];
+        var incoming = (d && d.threads) || [];
+        // Preserve an active pending thread the server doesn't know about yet (new conversation,
+        // no messages sent — server won't return it until first message is exchanged).
+        var pending = active && !incoming.some(function (t) { return t.peer === active; })
+          ? threads.find(function (t) { return t.peer === active; })
+          : null;
+        threads = incoming;
+        if (pending) threads.push(pending);
         if (!active && threads.length) active = threads[0].peer;
         renderPeers(); renderThread();
       });
