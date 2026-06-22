@@ -272,7 +272,7 @@ class AE3_UserInterface_Zeus_Asset_Details
             onLoad = "params ['_control']; _control ctrlShow false; _control ctrlEnable false;";
         };
 
-        // Terminal-only Allow SSH toggle.
+        // Terminal-only Allow SSH toggle, and Static IP field on the same row.
         class RscText_1007: RscText
         {
             idc = 1007;
@@ -290,6 +290,29 @@ class AE3_UserInterface_Zeus_Asset_Details
             x = 8 * GUI_GRID_W + GUI_GRID_X;
             y = 13.5 * GUI_GRID_H + GUI_GRID_Y;
             w = 1 * GUI_GRID_W;
+            h = 1 * GUI_GRID_H;
+            colorBackground[] = {-1,-1,-1,0.5};
+            onLoad = "params ['_control']; _control ctrlShow false; _control ctrlEnable false;";
+        };
+        // Terminal-only static IP field: blank = DHCP, non-blank overrides the address on apply.
+        class RscText_1011: RscText
+        {
+            idc = 1011;
+            text = "Static IP";
+            x = 10 * GUI_GRID_W + GUI_GRID_X;
+            y = 13.5 * GUI_GRID_H + GUI_GRID_Y;
+            w = 7 * GUI_GRID_W;
+            h = 1 * GUI_GRID_H;
+            style = ST_RIGHT;
+            onLoad = "params ['_control']; _control ctrlShow false;";
+        };
+        class RscEdit_1916: RscEdit
+        {
+            idc = 1916;
+            text = "";
+            x = 18 * GUI_GRID_W + GUI_GRID_X;
+            y = 13.5 * GUI_GRID_H + GUI_GRID_Y;
+            w = 14 * GUI_GRID_W;
             h = 1 * GUI_GRID_H;
             colorBackground[] = {-1,-1,-1,0.5};
             onLoad = "params ['_control']; _control ctrlShow false; _control ctrlEnable false;";

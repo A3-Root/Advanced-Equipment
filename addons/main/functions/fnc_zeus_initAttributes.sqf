@@ -222,6 +222,8 @@ if (isNull _entity) exitWith {};
         private _hostEditCtrl = _display displayCtrl 1913;
         private _sshLabelCtrl = _display displayCtrl 1007;
         private _sshCheckCtrl = _display displayCtrl 1320;
+        private _ipLabelCtrl = _display displayCtrl 1011;
+        private _ipEditCtrl = _display displayCtrl 1916;
         private _rtLabelCtrl = _display displayCtrl 1008;
         private _rtComboCtrl = _display displayCtrl 1600;
         private _pwLabelCtrl = _display displayCtrl 1009;
@@ -229,14 +231,16 @@ if (isNull _entity) exitWith {};
         private _connectBtnCtrl = _display displayCtrl 2900;
         private _disconnectBtnCtrl = _display displayCtrl 2910;
 
-        { _x ctrlShow true } forEach [_hostLabelCtrl, _hostEditCtrl, _sshLabelCtrl, _sshCheckCtrl, _rtLabelCtrl, _rtComboCtrl, _pwLabelCtrl, _pwEditCtrl, _connectBtnCtrl, _disconnectBtnCtrl];
+        { _x ctrlShow true } forEach [_hostLabelCtrl, _hostEditCtrl, _sshLabelCtrl, _sshCheckCtrl, _ipLabelCtrl, _ipEditCtrl, _rtLabelCtrl, _rtComboCtrl, _pwLabelCtrl, _pwEditCtrl, _connectBtnCtrl, _disconnectBtnCtrl];
         _hostEditCtrl ctrlEnable true;
         _sshCheckCtrl ctrlEnable true;
+        _ipEditCtrl ctrlEnable true;
         _rtComboCtrl ctrlEnable true;
         _pwEditCtrl ctrlEnable true;
 
         _hostEditCtrl ctrlSetText (_entity getVariable ["ace_cargo_customName", "armaOS"]);
         _sshCheckCtrl cbSetChecked (_entity getVariable ["AE3_ssh_enabled", true]);
+        _ipEditCtrl ctrlSetText (_entity getVariable ["AE3_network_staticIp", ""]);
 
         // List routers in reach (within each router's wireless range); preselect the current parent.
         private _parent = _entity getVariable ["AE3_network_parent", objNull];

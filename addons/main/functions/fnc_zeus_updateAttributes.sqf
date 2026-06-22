@@ -83,17 +83,27 @@ if (_exitCode == 1) then
 
     /* ======================================== */
 
-    // Terminal-only attributes: hostname + per-laptop SSH access. Broadcast from the server.
+    // Terminal-only attributes: hostname, SSH access, static IP. Broadcast from the server.
     if (_entity getVariable ["AE3_cap_hasTerminal", false]) then
     {
         private _hostname = ctrlText (_display displayCtrl 1913);
         private _sshEnabled = cbChecked (_display displayCtrl 1320);
+        private _staticIp = ctrlText (_display displayCtrl 1916);
         if (_hostname isNotEqualTo "") then
         {
             [_entity, ["ace_cargo_customName", _hostname, true]] remoteExecCall ["setVariable", 2];
         };
         [_entity, ["AE3_ssh_enabled", _sshEnabled, true]] remoteExecCall ["setVariable", 2];
-        _message = _message + format ["Hostname: %1. SSH: %2.", _hostname, ["disabled", "enabled"] select _sshEnabled];
+        [_entity, ["AE3_network_staticIp", _staticIp, true]] remoteExecCall ["setVariable", 2];
+        if (_staticIp isNotEqualTo "") then
+        {
+            private _ipParts = _staticIp splitString ".";
+            if (count _ipParts == 4) then
+            {
+                [_entity, ["AE3_network_address", (_ipParts apply { parseNumber _x }), true]] remoteExecCall ["setVariable", 2];
+            };
+        };
+        _message = _message + format ["Hostname: %1. SSH: %2. IP: %3.", _hostname, ["disabled", "enabled"] select _sshEnabled, [_staticIp, "DHCP"] select (_staticIp isEqualTo "")];
     };
 
     /* ======================================== */

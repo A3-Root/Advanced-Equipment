@@ -70,23 +70,36 @@ if (_event isEqualTo "onLoad") exitWith
 		private _isEmail = _type isEqualTo "email";
 		private _isLocked = _type isEqualTo "lockedfile";
 		(_display displayCtrl 1713) ctrlSetText (localize "STR_AE3_Desktop_Intel_LabelBody");
+		// email-only: body field
 		{
 			(_display displayCtrl _x) ctrlShow _isEmail;
 		} forEach [1713, 1404];
+		// shared: received-time row (email) / owner-name row (lockedfile)
 		{
 			(_display displayCtrl _x) ctrlShow (_isEmail || _isLocked);
-		} forEach [1714, 1405, 1715, 1301, 1716, 1302];
+		} forEach [1714, 1405];
+		// email-only: sender/recipient address creation checkboxes and labels
+		{
+			(_display displayCtrl _x) ctrlShow _isEmail;
+		} forEach [1717, 1317, 1718, 1318];
+		// lockedfile-only: permission column headers and all six permission checkboxes
 		{
 			(_display displayCtrl _x) ctrlShow _isLocked;
-		} forEach [1303, 1304, 1305, 1306];
+		} forEach [1715, 1716, 1301, 1302, 1303, 1304, 1305, 1306];
 		if (_isEmail) then
 		{
 			(_display displayCtrl 1714) ctrlSetText (localize "STR_AE3_Desktop_Intel_LabelReceivedTime");
-			(_display displayCtrl 1715) ctrlSetText (localize "STR_AE3_Desktop_Intel_LabelCreateFromHandle");
-			(_display displayCtrl 1716) ctrlSetText (localize "STR_AE3_Desktop_Intel_LabelCreateToHandle");
+			(_display displayCtrl 1717) ctrlSetText (localize "STR_AE3_Desktop_Intel_LabelCreateFromHandle");
+			(_display displayCtrl 1718) ctrlSetText (localize "STR_AE3_Desktop_Intel_LabelCreateToHandle");
 			(_display displayCtrl 1405) ctrlSetText "";
-			(_display displayCtrl 1301) cbSetChecked false;
-			(_display displayCtrl 1302) cbSetChecked false;
+			(_display displayCtrl 1317) cbSetChecked false;
+			(_display displayCtrl 1318) cbSetChecked false;
+		};
+		if (_isLocked) then
+		{
+			(_display displayCtrl 1714) ctrlSetText (localize "STR_AE3_Desktop_Intel_LabelOwner");
+			(_display displayCtrl 1715) ctrlSetText (localize "STR_AE3_Desktop_Intel_LabelOwner");
+			(_display displayCtrl 1716) ctrlSetText (localize "STR_AE3_Desktop_Intel_LabelEveryone");
 		};
 	};
 
@@ -112,7 +125,7 @@ if (_event isEqualTo "onUnload") exitWith
 
 	private _f5 = if (_type isEqualTo "email") then
 	{
-		[ctrlText (_display displayCtrl 1405), cbChecked (_display displayCtrl 1301), cbChecked (_display displayCtrl 1302)]
+		[ctrlText (_display displayCtrl 1405), cbChecked (_display displayCtrl 1317), cbChecked (_display displayCtrl 1318)]
 	}
 	else
 	{

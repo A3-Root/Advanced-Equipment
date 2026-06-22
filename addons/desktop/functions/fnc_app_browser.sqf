@@ -220,17 +220,67 @@ _historyBtn ctrlAddEventHandler ["ButtonClick", {
 	params ["_button"];
 	private _pageCtrl = _button getVariable "AE3_pageCtrl";
 	private _computer = _pageCtrl getVariable "AE3_computer";
+	private _group = _pageCtrl getVariable "AE3_group";
+	(_pageCtrl getVariable "AE3_size") params ["_w", "_h"];
+	private _display = ctrlParent _pageCtrl;
+	private _session = uiNamespace getVariable ["AE3_desktop_session", createHashMap];
+	private _theme = _session getOrDefault ["theme", createHashMap];
+
+	{ ctrlDelete _x; } forEach (_pageCtrl getVariable "AE3_linkCtrls");
+	_pageCtrl setVariable ["AE3_linkCtrls", []];
 
 	private _filesystem = _computer getVariable ["AE3_filesystem", []];
-	private _text = localize "STR_AE3_Desktop_Browser_NoHistory";
+	private _entries = [];
 	try
 	{
 		private _content = [[], _filesystem, "/var/log/browser_history", "root", 0] call AE3_filesystem_fnc_getFile;
-		if (_content isEqualType "" && {_content isNotEqualTo ""}) then { _text = _content; };
+		if (_content isEqualType "" && {_content isNotEqualTo ""}) then
+		{
+			{
+				private _line = [_x] call CBA_fnc_trim;
+				if (_line isNotEqualTo "") then
+				{
+					private _spaceIdx = _line find " ";
+					if (_spaceIdx > 0) then
+					{
+						private _url = _line select [_spaceIdx + 1];
+						if (_url isNotEqualTo "") then { _entries pushBack [_url, _line]; };
+					};
+				};
+			} forEach (_content splitString endl);
+		};
 	}
 	catch {};
 
-	_pageCtrl ctrlSetStructuredText (parseText ((_text splitString endl) joinString "<br/>"));
+	private _html = format ["<t size='1.4' color='#5da8e8'>%1</t><br/>", localize "STR_AE3_Desktop_Browser_History"];
+	if (_entries isEqualTo []) then { _html = _html + "<br/>" + (localize "STR_AE3_Desktop_Browser_NoHistory"); };
+	_pageCtrl ctrlSetStructuredText (parseText _html);
+
+	private _linkCtrls = [];
+	{
+		if (_forEachIndex >= 8) exitWith {};
+		_x params ["_url", "_label"];
+		private _btn = _display ctrlCreate ["RscButton", -1, _group];
+		_btn ctrlSetPosition [
+			0.01 + ((_w - 0.02) / 4) * (_forEachIndex mod 4),
+			(_h - 0.095) + 0.045 * floor (_forEachIndex / 4),
+			(_w - 0.05) / 4,
+			0.04
+		];
+		_btn ctrlSetText _label;
+		_btn ctrlSetBackgroundColor (_theme getOrDefault ["accent", [0.2,0.5,0.8,1]]);
+		_btn ctrlSetTextColor (_theme getOrDefault ["text", [1,1,1,1]]);
+		_btn ctrlCommit 0;
+		_btn setVariable ["AE3_pageCtrl", _pageCtrl];
+		_btn setVariable ["AE3_url", _url];
+		_btn ctrlAddEventHandler ["ButtonClick", {
+			params ["_btn"];
+			private _pageCtrl = _btn getVariable "AE3_pageCtrl";
+			[_pageCtrl, _btn getVariable "AE3_url"] call (_pageCtrl getVariable "AE3_navigate");
+		}];
+		_linkCtrls pushBack _btn;
+	} forEach _entries;
+	_pageCtrl setVariable ["AE3_linkCtrls", _linkCtrls];
 }];
 
 // open homepage (or the passed/restored url) immediately

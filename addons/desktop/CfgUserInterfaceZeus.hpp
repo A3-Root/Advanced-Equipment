@@ -184,6 +184,49 @@ class AE3_UserInterface_Zeus_Module_AddIntel
 			h = 1 * GUI_GRID_H;
 			style = ST_CENTER;
 		};
+		// Email-only: sender address creation checkbox + label (hidden by default, shown for email type)
+		class RscCheckBox_1317: RscCheckBox
+		{
+			idc = 1317;
+			x = 10 * GUI_GRID_W + GUI_GRID_X;
+			y = 16 * GUI_GRID_H + GUI_GRID_Y;
+			w = 1 * GUI_GRID_W;
+			h = 1 * GUI_GRID_H;
+			checked = 0;
+			onLoad = "params ['_control']; _control ctrlShow false; _control ctrlEnable false;";
+		};
+		class RscText_1717: RscText
+		{
+			idc = 1717;
+			text = "";
+			x = 11.2 * GUI_GRID_W + GUI_GRID_X;
+			y = 16 * GUI_GRID_H + GUI_GRID_Y;
+			w = 26 * GUI_GRID_W;
+			h = 1 * GUI_GRID_H;
+			onLoad = "params ['_control']; _control ctrlShow false;";
+		};
+		// Email-only: recipient address creation checkbox + label (hidden by default, shown for email type)
+		class RscCheckBox_1318: RscCheckBox
+		{
+			idc = 1318;
+			x = 10 * GUI_GRID_W + GUI_GRID_X;
+			y = 17.5 * GUI_GRID_H + GUI_GRID_Y;
+			w = 1 * GUI_GRID_W;
+			h = 1 * GUI_GRID_H;
+			checked = 0;
+			onLoad = "params ['_control']; _control ctrlShow false; _control ctrlEnable false;";
+		};
+		class RscText_1718: RscText
+		{
+			idc = 1718;
+			text = "";
+			x = 11.2 * GUI_GRID_W + GUI_GRID_X;
+			y = 17.5 * GUI_GRID_H + GUI_GRID_Y;
+			w = 26 * GUI_GRID_W;
+			h = 1 * GUI_GRID_H;
+			onLoad = "params ['_control']; _control ctrlShow false;";
+		};
+		// Lockedfile-only: owner permission checkboxes (r/w/x)
 		class RscCheckBox_1301: RscCheckBox
 		{
 			idc = 1301;
@@ -192,6 +235,7 @@ class AE3_UserInterface_Zeus_Module_AddIntel
 			w = 1 * GUI_GRID_W;
 			h = 1 * GUI_GRID_H;
 			checked = 1;
+			onLoad = "params ['_control']; _control ctrlShow false; _control ctrlEnable false;";
 		};
 		class RscCheckBox_1302: RscCheckBox
 		{
@@ -201,6 +245,7 @@ class AE3_UserInterface_Zeus_Module_AddIntel
 			w = 1 * GUI_GRID_W;
 			h = 1 * GUI_GRID_H;
 			checked = 1;
+			onLoad = "params ['_control']; _control ctrlShow false; _control ctrlEnable false;";
 		};
 		class RscCheckBox_1303: RscCheckBox
 		{
