@@ -66,24 +66,30 @@
         // Perform a single action (confirm / slider / download / plain send). Shared by top-level
         // buttons and submenu children so every flow behaves identically (Drones/Vehicles #1).
         function runAction(d, a, sub) {
-          // Optional confirmation (e.g. doors warn about battery power before locking, Doors #3).
-          if (a.confirm && a.confirm !== "" && typeof Modal !== "undefined") {
-            Modal.confirm(a.label, a.confirm).then(function (ok) {
-              if (ok) A3.send("dev_action", { app: desc.id, type: extra.type, id: d.id, action: a.id, sub: sub || "", path: d.path || "" });
-              if (ok) setStatus(a.label + "...");
-            });
-            return;
-          }
-          // Slider flow (Root_CW Vehicles #1): open a bounded slider, then send the action with the
-          // chosen numeric value (fuel %, speed km/h, alarm seconds).
+          // Slider flow: collect the value first, then confirm battery use before sending it.
           if (a.slider && typeof Modal !== "undefined" && typeof Modal.slider === "function") {
             Modal.slider(a.label + (d.label ? (" - " + d.label) : ""), a.min, a.max, a.value, a.step, a.unit, a.options || {}).then(function (v) {
               if (v == null) return;
               var value = (typeof v === "object") ? v.value : v;
               var payload = { app: desc.id, type: extra.type, id: d.id, action: a.id, sub: sub || "", path: d.path || "", value: value };
               if (typeof v === "object" && v.lock !== undefined) payload.lock = !!v.lock;
-              A3.send("dev_action", payload);
-              setStatus(a.label + " → " + value + (a.unit || "") + "...");
+              var send = function () {
+                A3.send("dev_action", payload);
+                setStatus(a.label + " → " + value + (a.unit || "") + "...");
+              };
+              if (a.confirm && a.confirm !== "" && typeof Modal !== "undefined") {
+                Modal.confirm(a.label, a.confirm).then(function (ok) { if (ok) send(); });
+              } else {
+                send();
+              }
+            });
+            return;
+          }
+          // Optional confirmation for non-slider actions.
+          if (a.confirm && a.confirm !== "" && typeof Modal !== "undefined") {
+            Modal.confirm(a.label, a.confirm).then(function (ok) {
+              if (ok) A3.send("dev_action", { app: desc.id, type: extra.type, id: d.id, action: a.id, sub: sub || "", path: d.path || "" });
+              if (ok) setStatus(a.label + "...");
             });
             return;
           }
