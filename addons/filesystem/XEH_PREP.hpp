@@ -28,5 +28,6 @@ PREP(symlink);
 PREP(symlinkTarget);
 PREP(seedDesktop);
 PREP(chown);
+PREP(chmod);
 PREP(mount);
 PREP(unmount);

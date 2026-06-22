@@ -42,6 +42,16 @@ if (hasInterface) then
 		["chat_data", createHashMapFromArray [["threads", _out]]] call AE3_desktop_fnc_jsSend;
 	}] call CBA_fnc_addEventHandler;
 
+	["ae3_desktop_routeReply", {
+		params ["_rid", "_cmd", "_payload"];
+		[_cmd, createHashMapFromArray [["_rid", _rid], ["data", _payload]]] call AE3_desktop_fnc_jsSend;
+	}] call CBA_fnc_addEventHandler;
+
+	["ae3_desktop_msgNotify", {
+		params ["_peer"];
+		["msg_notify", createHashMapFromArray [["peer", _peer]]] call AE3_desktop_fnc_jsSend;
+	}] call CBA_fnc_addEventHandler;
+
 	// Calendar store changed on the server (Zeus/Eden module or in-app add/delete): nudge the open
 	// web Calendar to re-pull AE3_calendar_events so module-added events appear without a manual
 	// refresh. No-op when no desktop is open or the Calendar app is not subscribed.
@@ -55,7 +65,7 @@ if (hasInterface) then
 		[_cmd, createHashMapFromArray [["_rid", _rid], ["data", _payload]]] call AE3_desktop_fnc_jsSend;
 	}] call CBA_fnc_addEventHandler;
 
-	// USB volume change (connect/auto-mount, #11): nudge an open My Computer app to refresh.
+	// USB volume change (connect/auto-mount): nudge an open My Computer app to refresh.
 	["ae3_desktop_volChanged", {
 		["vol_changed", []] call AE3_desktop_fnc_jsSend;
 	}] call CBA_fnc_addEventHandler;

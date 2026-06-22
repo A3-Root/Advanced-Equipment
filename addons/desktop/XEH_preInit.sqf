@@ -94,4 +94,10 @@ if (isServer) then
 
 	// Web Messenger: client requests its laptop's live IM inbox
 	["ae3_desktop_chatPull", { _this call AE3_desktop_fnc_chatPullServer }] call CBA_fnc_addEventHandler;
+	["ae3_desktop_handleRegister", { _this call AE3_desktop_fnc_handleRegister }] call CBA_fnc_addEventHandler;
+	["ae3_desktop_handleRelease", { _this call AE3_desktop_fnc_handleRelease }] call CBA_fnc_addEventHandler;
+	["ae3_desktop_msgRoute", { _this call AE3_desktop_fnc_msgRoute }] call CBA_fnc_addEventHandler;
+	["ae3_desktop_addrRegister", { _this call AE3_desktop_fnc_addrRegister }] call CBA_fnc_addEventHandler;
+	["ae3_desktop_addrRelease", { _this call AE3_desktop_fnc_addrRelease }] call CBA_fnc_addEventHandler;
+	["ae3_desktop_mailRoute", { _this call AE3_desktop_fnc_mailRoute }] call CBA_fnc_addEventHandler;
 };

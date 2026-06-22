@@ -189,8 +189,7 @@ if (isNull _entity) exitWith {};
 
     /* ======================================== */
 
-    // Router-only wireless config (#1/#10): show + populate the Wireless Range and Gateway fields when
-    // the selected asset is a router; they stay hidden for every other device.
+    // Router wireless fields stay hidden for other asset types.
     if (_entity getVariable ["AE3_cap_isRouter", false]) then
     {
         private _rangeLabelCtrl = _display displayCtrl 1003;
@@ -199,21 +198,24 @@ if (isNull _entity) exitWith {};
         private _gatewayEditCtrl = _display displayCtrl 1911;
         private _ssidLabelCtrl = _display displayCtrl 1005;
         private _ssidEditCtrl = _display displayCtrl 1912;
+        private _passwordLabelCtrl = _display displayCtrl 1010;
+        private _passwordEditCtrl = _display displayCtrl 1915;
 
-        { _x ctrlShow true } forEach [_rangeLabelCtrl, _rangeEditCtrl, _gatewayLabelCtrl, _gatewayEditCtrl, _ssidLabelCtrl, _ssidEditCtrl];
+        { _x ctrlShow true } forEach [_rangeLabelCtrl, _rangeEditCtrl, _gatewayLabelCtrl, _gatewayEditCtrl, _ssidLabelCtrl, _ssidEditCtrl, _passwordLabelCtrl, _passwordEditCtrl];
         _rangeEditCtrl ctrlEnable true;
         _gatewayEditCtrl ctrlEnable true;
         _ssidEditCtrl ctrlEnable true;
+        _passwordEditCtrl ctrlEnable true;
 
         _rangeEditCtrl ctrlSetText str (_entity getVariable ["AE3_network_wirelessRange", 50]);
         _gatewayEditCtrl ctrlSetText ([_entity getVariable ["AE3_network_address", [192, 168, 0, 1]]] call AE3_network_fnc_ip2str);
         _ssidEditCtrl ctrlSetText (_entity getVariable ["ace_cargo_customName", ""]);
+        _passwordEditCtrl ctrlSetText (_entity getVariable ["AE3_network_password", ""]);
     };
 
     /* ======================================== */
 
-    // Terminal-only attributes (#3/#4): hostname, SSH toggle and the Wi-Fi router picker. Shown only for
-    // assets with a terminal (laptops/computers); never for routers or other devices.
+    // Terminal attributes are shown only for assets with a terminal.
     if (_entity getVariable ["AE3_cap_hasTerminal", false]) then
     {
         private _hostLabelCtrl = _display displayCtrl 1006;

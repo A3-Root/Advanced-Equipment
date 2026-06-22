@@ -33,20 +33,37 @@ private _reply = {
 };
 
 private _target = objectFromNetId _targetNetId;
+private _local = objectFromNetId _localNetId;
 private _res = createHashMapFromArray [["error", ""]];
 
 if (isNull _target) exitWith { _res set ["error", "no_route"]; ["ssh_" + _op, _res] call _reply; };
+if (isNull _local) exitWith { _res set ["error", "no_device"]; ["ssh_" + _op, _res] call _reply; };
+
+if !(_target getVariable ["AE3_cap_hasTerminal", false]) exitWith {
+    _res set ["error", "no_route"]; ["ssh_" + _op, _res] call _reply;
+};
+
+if ((_target getVariable ["AE3_power_powerState", 0]) != 1) exitWith {
+    _res set ["error", "offline"]; ["ssh_" + _op, _res] call _reply;
+};
 
 // SSH must be enabled on the remote device.
-if !(_target getVariable ["AE3_ssh_enabled", false]) exitWith {
+if !(_target getVariable ["AE3_ssh_enabled", true]) exitWith {
     _res set ["error", "ssh_disabled"]; ["ssh_" + _op, _res] call _reply;
 };
 
+if (!isNull (_target getVariable ["AE3_computer_mutex", objNull]) && {_target isNotEqualTo _local}) exitWith {
+    _res set ["error", "busy"]; ["ssh_" + _op, _res] call _reply;
+};
+
+[_target, "AE3_Userlist", owner _target] call AE3_main_fnc_getRemoteVar;
+
 // Authenticate against the remote user list.
-private _authed = ([_target, _user, _pass] call AE3_desktop_fnc_authUser) getOrDefault ["ok", false];
+private _authed = ([_target, _user, _pass, true] call AE3_desktop_fnc_authUser) getOrDefault ["ok", false];
 if (!_authed) exitWith { _res set ["error", "auth_failed"]; ["ssh_" + _op, _res] call _reply; };
 
 private _fsUser = ["root", _user] select (!(_user in ["root", "admin"]));
+[_target, "AE3_filesystem", owner _target] call AE3_main_fnc_getRemoteVar;
 private _tfs = _target getVariable ["AE3_filesystem", []];
 
 switch (_op) do {
@@ -87,7 +104,6 @@ switch (_op) do {
     case "pull": {
         private _src = _data getOrDefault ["path", ""];
         private _dest = _data getOrDefault ["dest", ""];
-        private _local = objectFromNetId _localNetId;
         try {
             private _content = [[], _tfs, _src, _fsUser, 0] call AE3_filesystem_fnc_getFile;
             private _lfs = _local getVariable ["AE3_filesystem", []];
@@ -102,7 +118,6 @@ switch (_op) do {
     case "push": {
         private _src = _data getOrDefault ["path", ""];
         private _dest = _data getOrDefault ["dest", ""];
-        private _local = objectFromNetId _localNetId;
         try {
             private _lfs = _local getVariable ["AE3_filesystem", []];
             private _content = [[], _lfs, _src, "root", 0] call AE3_filesystem_fnc_getFile;

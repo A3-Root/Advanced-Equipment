@@ -37,12 +37,12 @@ if (hasInterface) then
             30, // Print message every 30 seconds instead of every 5 seconds
             []
         ] call CBA_fnc_addPerFrameHandler;
-        
+
         localNamespace setVariable ["AE3_DebugModeLoopHandle", _debugModeLoopHandle];
 
         if (_debugOverlayProductiveUse) then
         {
-            [] spawn 
+            [] spawn
             {
                 // enable debug overlay
                 waitUntil { ((findDisplay 46) isNotEqualTo displayNull) };
@@ -60,7 +60,7 @@ if (hasInterface) then
 
         if (_debugOverlayProductiveUse) then
         {
-            [] spawn 
+            [] spawn
             {
             //disable debug overlay
             waitUntil { ((findDisplay 46) isNotEqualTo displayNull) };

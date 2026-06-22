@@ -64,7 +64,7 @@ private _disconnect = ["AE3_Network_DisconnectAction", localize "STR_AE3_Network
 				] call ace_interact_menu_fnc_createAction;
 
 
-// Configure Router (#1/#3): opens the in-game settings dialog, the same interaction menu as
+// Configure Router: opens the in-game settings dialog, the same interaction menu as
 // Connect/Disconnect ("like the Turn On/Off menu"). Eden/Zeus use the Configure Router module or the
 // object's web admin page; this is the runtime ACE path.
 private _configure = ["AE3_Network_ConfigureAction", localize "STR_AE3_Network_Interaction_ConfigureRouter", "",

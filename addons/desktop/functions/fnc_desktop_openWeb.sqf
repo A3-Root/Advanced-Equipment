@@ -38,10 +38,10 @@ _display setVariable [QGVAR(computer), _computer];
 // as the native desktop does (AE3_desktop_fnc_desktop_open). The filesystem and userlist are
 // server-only (initFilesystem / computer_addUser run with isServer), so the web login (authUser)
 // and the Files/Notepad/Settings apps need the synced copy - pulling only in MP previously left
-// module-added users unauthenticated and the filesystem "unavailable" on clients (#1, #2).
+// module-added users unauthenticated and the filesystem "unavailable" on clients.
 //
 // This runs in a BACKGROUND spawn so the login screen paints immediately instead of waiting on
-// several sequential server round-trips (the main cause of the "Sign-In is extremely slow" report).
+// several sequential server round-trips.
 // Nothing downstream needs it to block: the login handler (jsRouter) re-pulls and waits
 // authoritatively for the userlist before replying, and the Files app retries while the filesystem
 // is still syncing. getRemoteVar is a no-op in SP (the server-local copy is already present).

@@ -11,10 +11,10 @@
   // ---------------- Files ----------------
   // Reusable file-browser core (also powers My Computer's embedded pane and the file picker).
   // opts: { extraTools (HTML), onReady(api) }. Returns nothing; drives the given body element.
-  // Exposed on window.AE3_FileBrowser so other apps reuse the exact same browser (#11/#13).
+  // Exposed on window.AE3_FileBrowser so other apps reuse the exact same browser.
   window.AE3_FileBrowser = function (body, win, args, opts) {
     opts = opts || {};
-    // Make the host a flex column so the list fills the pane (#4/#8): the entries <ul> then spans the
+    // Make the host a flex column so the list fills the pane: the entries <ul> then spans the
     // whole empty area, so right-clicking blank space hits it (empty-area menu) and a long list scrolls
     // instead of overflowing behind a dialog footer.
     body.style.display = "flex"; body.style.flexDirection = "column"; body.style.minHeight = "0";
@@ -37,6 +37,13 @@
     var searchInput = body.querySelector(".search");
 
     function go(path) { cwd = path; searching = false; searchInput.value = ""; load(); }
+    function desktopDir() {
+      return ((window.AE3_HOME || "/root") + "/Desktop").replace(/\/+/g, "/");
+    }
+    function maybeRefreshDesktop(path) {
+      var desk = desktopDir();
+      if (path && (path === desk || path.indexOf(desk + "/") === 0) && window.Desktop && Desktop.refresh) Desktop.refresh();
+    }
 
     var loadTries = 0;
     function load() {
@@ -118,6 +125,8 @@
         if (r.error && r.error !== "") { Modal.alert("Paste", "Could not paste here."); return; }
         if (cb.op === "cut") window.AE3_clipboard = null;
         if (!searching) load();
+        maybeRefreshDesktop(destDir);
+        maybeRefreshDesktop(cb.path);
       });
     }
     function doRename(full, name) {
@@ -125,13 +134,46 @@
         if (!nn || nn === name) return;
         var dir = full.replace(/\/+$/, "").split("/").slice(0, -1).join("/") || "/";
         A3.request("fs_move", { path: full, dest: joinPath(dir, nn) }).then(function (r) {
-          if (r.error && r.error !== "") Modal.alert("Rename", "Could not rename."); else load();
+          if (r.error && r.error !== "") Modal.alert("Rename", "Could not rename."); else { load(); maybeRefreshDesktop(full); maybeRefreshDesktop(joinPath(dir, nn)); }
         });
       });
     }
     function doDelete(full) {
       A3.request("fs_delete", { path: full }).then(function (r) {
-        if (r.error && r.error !== "") Modal.alert("Delete", "Permission denied."); else load();
+        if (r.error && r.error !== "") Modal.alert("Delete", "Permission denied."); else { load(); maybeRefreshDesktop(full); }
+      });
+    }
+    function showProperties(full, it) {
+      A3.request("fs_stat", { path: full }).then(function (res) {
+        if (!res || (res.error && res.error !== "")) { Modal.alert("Properties", "Cannot read properties."); return; }
+        var perms = res.permissions || [[false, false, false], [false, false, false]];
+        var ov = h('<div class="pk-overlay"><div class="pk-dialog" style="width:420px;height:auto;min-height:0">' +
+          '<div class="pk-title">Properties</div>' +
+          '<div class="pad" style="display:flex;flex-direction:column;gap:10px">' +
+            '<div><b>' + esc(it.name) + '</b></div>' +
+            '<div class="muted">Owner: ' + esc(res.owner || "") + '</div>' +
+            '<table style="width:100%;border-collapse:collapse"><thead><tr><th></th><th>Read</th><th>Write</th><th>Execute</th></tr></thead>' +
+              '<tbody><tr><td>Owner</td><td><input type="checkbox" class="or"></td><td><input type="checkbox" class="ow"></td><td><input type="checkbox" class="ox"></td></tr>' +
+              '<tr><td>Everyone</td><td><input type="checkbox" class="er"></td><td><input type="checkbox" class="ew"></td><td><input type="checkbox" class="ex"></td></tr></tbody></table>' +
+            '<label style="display:flex;gap:8px;align-items:center"><input type="checkbox" class="rec"> Apply to folder contents</label>' +
+            '<div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn cancel">Cancel</button><button class="btn accent save">Save</button></div>' +
+          '</div></div></div>');
+        document.body.appendChild(ov);
+        [[".or", 0, 0], [".ow", 0, 1], [".ox", 0, 2], [".er", 1, 0], [".ew", 1, 1], [".ex", 1, 2]].forEach(function (m) {
+          ov.querySelector(m[0]).checked = !!(perms[m[1]] && perms[m[1]][m[2]]);
+        });
+        ov.querySelector(".rec").disabled = !it.dir;
+        ov.querySelector(".cancel").addEventListener("click", function () { ov.remove(); });
+        ov.querySelector(".save").addEventListener("click", function () {
+          var next = [
+            [ov.querySelector(".or").checked, ov.querySelector(".ow").checked, ov.querySelector(".ox").checked],
+            [ov.querySelector(".er").checked, ov.querySelector(".ew").checked, ov.querySelector(".ex").checked]
+          ];
+          A3.request("fs_chmod", { path: full, permissions: next, recursive: !!ov.querySelector(".rec").checked }).then(function (r) {
+            if (r.error && r.error !== "") { Modal.alert("Properties", "Permission denied."); return; }
+            ov.remove(); load();
+          });
+        });
       });
     }
     function fileMenu(x, y, it, full) {
@@ -143,19 +185,21 @@
         { label: "Paste", disabled: !window.AE3_clipboard, action: function () { paste(cwd); } },
         { sep: true },
         { label: "Rename", action: function () { doRename(full, it.name); } },
-        { label: "Delete", action: function () { doDelete(full); } }
+        { label: "Delete", action: function () { doDelete(full); } },
+        { sep: true },
+        { label: "Properties", action: function () { showProperties(full, it); } }
       ]);
     }
     function newFolder() {
       Modal.prompt("New folder name", "untitled").then(function (name) {
         if (!name) return;
-        A3.request("fs_mkdir", { path: joinPath(cwd, name) }).then(function (r) { if (r.error && r.error !== "") Modal.alert("New Folder", "Permission denied."); else load(); });
+        A3.request("fs_mkdir", { path: joinPath(cwd, name) }).then(function (r) { if (r.error && r.error !== "") Modal.alert("New Folder", "Permission denied."); else { load(); maybeRefreshDesktop(cwd); } });
       });
     }
     function newFile() {
       Modal.prompt("New file name", "untitled.txt").then(function (name) {
         if (!name) return;
-        A3.request("fs_save", { path: joinPath(cwd, name), content: "" }).then(function (r) { if (r.error && r.error !== "") Modal.alert("New File", "Permission denied."); else load(); });
+        A3.request("fs_save", { path: joinPath(cwd, name), content: "" }).then(function (r) { if (r.error && r.error !== "") Modal.alert("New File", "Permission denied."); else { load(); maybeRefreshDesktop(cwd); } });
       });
     }
     function emptyMenu(x, y) {
@@ -325,7 +369,7 @@
       function setName() { fname.textContent = path || "(unsaved)"; win.el.querySelector(".title").textContent = "Text Editor - " + (path ? path.split("/").pop() : "Untitled"); }
       setName();
 
-      // Launched with a path but no inline content (e.g. Databases' "Open downloaded file", #5, or any
+      // Launched with a path but no inline content; fetch the file so the editor is populated. Any
       // Apps.launch("notepad", { path })): fetch the file so the editor isn't blank. Handles
       // password-protected files the same way the Open flow does.
       if (path && (!args || args.content == null)) {
@@ -383,7 +427,7 @@
     }
   });
 
-  // ---------------- Settings (absorbs System Monitor, #14) ----------------
+  // ---------------- Settings ----------------
   Apps.register({
     id: "settings", title: "Settings", glyph: Icons.settings, width: 560, height: 400,
     showOnDesktop: true, showInDock: true, singleton: true,
@@ -489,7 +533,7 @@
     }
   });
 
-  // ---------------- Calendar (#12: month/year nav + go-to-date + intel events) ----------------
+  // ---------------- Calendar ----------------
   // Events are intel/lore entries (meetings, sightings) attached to a date. The full set is fetched
   // ONCE on open and cached, so month/year navigation is instant (the old per-nav request made
   // navigation feel frozen). Clicking a day shows its events and an add/delete form.
@@ -591,7 +635,7 @@
       body.querySelector(".ny").addEventListener("click", function () { view.setFullYear(view.getFullYear() + 1); draw(); });
       body.querySelector(".today").addEventListener("click", function () { view = new Date(); view.setDate(1); draw(); });
       body.querySelector(".refresh").addEventListener("click", function () { fetchAll(selIso); });
-      // Live update when the store changes server-side (Zeus/Eden module add, #4).
+      // Live update when the store changes server-side.
       A3.on("cal_changed", function () { fetchAll(selIso); });
       body.querySelector(".go").addEventListener("click", function () {
         var v = body.querySelector(".goto").value; if (!v) return;
@@ -601,7 +645,7 @@
     }
   });
 
-  // ---------------- Browser (#18: real pages incl. the wiki rendered from markdown) ----------------
+  // ---------------- Browser ----------------
   // CEF cannot resolve relative <iframe src> from a PBO file, so pages are fetched through
   // A3.loadFile and shown via iframe.srcdoc (self-contained). The wiki's *.md (vendored from the
   // repo wiki/) are rendered client-side with MD.render. Links inside the iframe are intercepted
@@ -621,7 +665,7 @@
 
       // Injected into every page so in-page links drive the address bar instead of dead relative nav.
       // Arma's CEF renders iframe srcdoc with an opaque origin, so a direct parent.AE3_browserNav()
-      // call throws a cross-origin SecurityError (the old dead-link bug, #5). postMessage is
+      // call throws a cross-origin SecurityError. postMessage is
       // origin-agnostic and always reaches the host window, where a single listener routes it.
       var HOOK = '<script>document.addEventListener("click",function(e){' +
         'var a=e.target&&e.target.closest?e.target.closest("a"):null;if(!a)return;' +
@@ -708,7 +752,7 @@
         return sites.home;
       }
 
-      // Router admin page (#1/#3): browsing to the gateway IP or "router" opens a live settings
+      // Router admin page: browsing to the gateway IP or "router" opens a live settings
       // form backed by router_page / router_set instead of a static file.
       function routerPage() {
         addrEl.value = "router";
@@ -787,7 +831,7 @@
     }
   });
 
-  // ---------------- Map (#6/#13/#20: in-window minimap, terrain image + blips) ----------------
+  // ---------------- Map ----------------
   // Renders a player-centred minimap from map_data (self/router/device blips). A static terrain
   // image is drawn underneath when one is registered for the world (window.AE3_MAP_IMAGES[world] =
   // url, populated by mission/asset content); otherwise a styled terrain backdrop + grid is used so
@@ -1063,7 +1107,7 @@
     showOnDesktop: true, showInDock: true,
     render: function (body) {
       body.innerHTML =
-        '<div class="toolbar"><button class="btn refresh">&#8635;</button><button class="btn compose accent">Compose</button>' +
+        '<div class="toolbar"><button class="btn refresh">&#8635;</button><button class="btn compose accent">Compose</button><button class="btn addresses">Addresses</button>' +
           '<input class="input msearch" placeholder="Search from / subject" style="flex:1;margin-left:8px"></div>' +
         '<div style="display:flex;height:calc(100% - 50px)">' +
           '<ul class="list mails" style="width:40%;border-right:1px solid var(--line);overflow:auto"></ul>' +
@@ -1073,6 +1117,7 @@
       var reader = body.querySelector(".reader");
       var searchEl = body.querySelector(".msearch");
       var allMail = [];
+      var addresses = [];
 
       // The filename is the delivery timestamp; show it as the received date.
       function dateOf(file) { return String(file || "").replace(/_/g, " "); }
@@ -1106,6 +1151,12 @@
           render();
         }).catch(function () { mails.innerHTML = '<li class="muted pad">Unavailable</li>'; });
       }
+      function loadAddresses(cb) {
+        A3.request("addr_list", {}).then(function (res) {
+          addresses = (res && res.addresses) || [];
+          if (cb) cb();
+        }).catch(function () { addresses = []; if (cb) cb(); });
+      }
       function del(file) {
         Modal.confirm("Delete", "Delete this email?").then(function (ok) {
           if (!ok) return;
@@ -1127,40 +1178,77 @@
       }
       searchEl.addEventListener("input", render);
       function compose() {
-        reader.innerHTML =
-          '<h3>New message</h3>' +
-          '<div style="display:flex;flex-direction:column;gap:8px;max-width:480px">' +
-            '<input class="input to" placeholder="To (IP, e.g. 192.168.0.2)" value="192.168.0.">' +
-            '<input class="input subj" placeholder="Subject">' +
-            '<textarea class="input bd" rows="8" placeholder="Message"></textarea>' +
-            '<div><button class="btn accent send">Send</button> <span class="muted st"></span></div>' +
-          '</div>';
-        reader.querySelector(".send").addEventListener("click", function () {
-          var st = reader.querySelector(".st");
-          A3.request("mail_send", {
-            to: reader.querySelector(".to").value,
-            subject: reader.querySelector(".subj").value,
-            body: reader.querySelector(".bd").value
-          }).then(function (r) {
-            st.textContent = (r.error && r.error !== "") ? ("Failed: " + r.error) : "Sent.";
-            if (!r.error || r.error === "") setTimeout(list, 400);
+        loadAddresses(function () {
+          var opts = addresses.map(function (a) { return '<option value="' + esc(a) + '">' + esc(a) + '</option>'; }).join("");
+          reader.innerHTML =
+            '<h3>New message</h3>' +
+            '<div style="display:flex;flex-direction:column;gap:8px;max-width:480px">' +
+              '<select class="input from">' + opts + '</select>' +
+              '<input class="input to" placeholder="To (email address)">' +
+              '<input class="input subj" placeholder="Subject">' +
+              '<textarea class="input bd" rows="8" placeholder="Message"></textarea>' +
+              '<div><button class="btn accent send">Send</button> <span class="muted st"></span></div>' +
+            '</div>';
+          if (!addresses.length) reader.querySelector(".st").textContent = "Create an address first.";
+          reader.querySelector(".send").addEventListener("click", function () {
+            var st = reader.querySelector(".st");
+            A3.request("mail_send", {
+              from: reader.querySelector(".from").value,
+              to: reader.querySelector(".to").value,
+              subject: reader.querySelector(".subj").value,
+              body: reader.querySelector(".bd").value
+            }).then(function (r) {
+              var err = r && r.error;
+              st.textContent = err && err !== "" ? ("Failed: " + (err === "unreachable" ? "recipient unreachable" : err)) : "Sent.";
+              if (!err || err === "") setTimeout(list, 400);
+            });
           });
+        });
+      }
+      function manageAddresses() {
+        loadAddresses(function () {
+          reader.innerHTML =
+            '<h3>My addresses</h3>' +
+            '<div style="display:flex;gap:8px;margin-bottom:10px"><input class="input newaddr" placeholder="name@domain.local" style="flex:1"><button class="btn accent addaddr">Create</button></div>' +
+            '<ul class="list addrlist"></ul>';
+          var listEl = reader.querySelector(".addrlist");
+          function draw() {
+            listEl.innerHTML = "";
+            if (!addresses.length) { listEl.innerHTML = '<li class="muted pad">No addresses</li>'; return; }
+            addresses.forEach(function (a) {
+              var li = h('<li><span style="flex:1">' + esc(a) + '</span><button class="btn deladdr">Delete</button></li>');
+              li.querySelector(".deladdr").addEventListener("click", function () {
+                A3.request("addr_delete", { address: a }).then(function () { loadAddresses(draw); });
+              });
+              listEl.appendChild(li);
+            });
+          }
+          reader.querySelector(".addaddr").addEventListener("click", function () {
+            var a = reader.querySelector(".newaddr").value;
+            A3.request("addr_create", { address: a }).then(function (r) {
+              if (r.error && r.error !== "") { Modal.alert("Addresses", r.error === "taken" ? "Address already exists." : "Invalid address."); return; }
+              reader.querySelector(".newaddr").value = "";
+              loadAddresses(draw);
+            });
+          });
+          draw();
         });
       }
       body.querySelector(".refresh").addEventListener("click", list);
       body.querySelector(".compose").addEventListener("click", compose);
+      body.querySelector(".addresses").addEventListener("click", manageAddresses);
       list();
     }
   });
 
-  // ---------------- Messenger (#7: per-peer threads, sent vs received, search) ----------------
+  // ---------------- Messenger ----------------
   Apps.register({
     id: "messenger", title: "Messenger", glyph: Icons.messenger, width: 720, height: 500,
     showInDock: true, singleton: true,
     render: function (body, win) {
       body.innerHTML =
         '<div class="toolbar"><input class="input csearch" placeholder="Search conversations / messages" style="flex:1">' +
-          '<button class="btn newchat accent" title="New conversation">New</button></div>' +
+          '<button class="btn handles" title="My handles">Handles</button><button class="btn newchat accent" title="New conversation">New</button></div>' +
         '<div style="display:flex;height:calc(100% - 50px)">' +
           '<ul class="list peers" style="width:34%;border-right:1px solid var(--line);overflow:auto"></ul>' +
           '<div style="flex:1;display:flex;flex-direction:column">' +
@@ -1173,7 +1261,15 @@
       var textEl = body.querySelector(".text");
       var searchEl = body.querySelector(".csearch");
       var threads = [];      // [{peer, messages:[{dir,time,text}]}]
-      var active = null;     // active peer IP
+      var active = null;     // active peer handle
+      var handles = [];
+
+      function loadHandles(cb) {
+        A3.request("handle_list", {}).then(function (res) {
+          handles = (res && res.handles) || [];
+          if (cb) cb();
+        }).catch(function () { handles = []; if (cb) cb(); });
+      }
 
       function renderPeers() {
         var q = (searchEl.value || "").toLowerCase();
@@ -1219,7 +1315,7 @@
         if (!to) { Modal.alert("Messenger", "Pick or start a conversation first."); return; }
         if (textEl.value.trim() === "") return;
         A3.request("chat_send", { to: to, text: textEl.value }).then(function (r) {
-          if (r.error && r.error !== "") { Modal.alert("Messenger", r.error === "no_route" ? "No route to that address." : ("Could not send: " + r.error)); return; }
+          if (r.error && r.error !== "") { Modal.alert("Messenger", r.error === "unreachable" ? "Recipient unreachable." : ("Could not send: " + r.error)); return; }
           textEl.value = "";
           setTimeout(function () { A3.send("chat_pull", {}); }, 300);
         });
@@ -1228,11 +1324,47 @@
       textEl.addEventListener("keydown", function (e) { if (e.key === "Enter") send(); });
       searchEl.addEventListener("input", function () { renderPeers(); renderThread(); });
       body.querySelector(".newchat").addEventListener("click", function () {
-        Modal.prompt("Start conversation with IP", "192.168.0.").then(function (ip) {
-          if (!ip) return;
-          if (!threads.some(function (t) { return t.peer === ip; })) threads.push({ peer: ip, messages: [] });
-          active = ip; renderPeers(); renderThread();
+        Modal.prompt("Start conversation with handle", "@").then(function (handle) {
+          if (!handle) return;
+          if (handle.charAt(0) !== "@") handle = "@" + handle;
+          if (!threads.some(function (t) { return t.peer === handle; })) threads.push({ peer: handle, messages: [] });
+          active = handle; renderPeers(); renderThread();
         });
+      });
+      body.querySelector(".handles").addEventListener("click", function () {
+        loadHandles(function () {
+          var ov = h('<div class="pk-overlay"><div class="pk-dialog" style="width:420px;height:auto;min-height:0">' +
+            '<div class="pk-title">My handles</div><div class="pad" style="display:flex;flex-direction:column;gap:10px">' +
+            '<div style="display:flex;gap:8px"><input class="input newhandle" placeholder="@handle" style="flex:1"><button class="btn accent addhandle">Create</button></div>' +
+            '<ul class="list handlelist"></ul><div style="text-align:right"><button class="btn close">Close</button></div></div></div></div>');
+          document.body.appendChild(ov);
+          var listEl = ov.querySelector(".handlelist");
+          function draw() {
+            listEl.innerHTML = "";
+            if (!handles.length) { listEl.innerHTML = '<li class="muted pad">No handles</li>'; return; }
+            handles.forEach(function (hnd) {
+              var li = h('<li><span style="flex:1">' + esc(hnd) + '</span><button class="btn delhandle">Delete</button></li>');
+              li.querySelector(".delhandle").addEventListener("click", function () {
+                A3.request("handle_delete", { handle: hnd }).then(function () { loadHandles(draw); });
+              });
+              listEl.appendChild(li);
+            });
+          }
+          ov.querySelector(".addhandle").addEventListener("click", function () {
+            var hnd = ov.querySelector(".newhandle").value;
+            A3.request("handle_create", { handle: hnd }).then(function (r) {
+              if (r.error && r.error !== "") { Modal.alert("Handles", r.error === "taken" ? "Handle already exists." : "Invalid handle."); return; }
+              ov.querySelector(".newhandle").value = "";
+              loadHandles(draw);
+            });
+          });
+          ov.querySelector(".close").addEventListener("click", function () { ov.remove(); });
+          draw();
+        });
+      });
+      A3.on("msg_notify", function (d) {
+        if (window.AE3_toast) window.AE3_toast("New message from " + ((d && d.peer) || "unknown"), "ok");
+        A3.send("chat_pull", {});
       });
 
       A3.send("chat_pull", {});
@@ -1353,11 +1485,19 @@
     showInDock: false, singleton: true,
     render: function (body, win) {
       var conn = null; // { to, user, pass }
+      var ipPrefix = "192.168.0.";
+      A3.request("sysinfo", {}).then(function (s) {
+        var ip = String((s && s.ip) || "");
+        var parts = ip.split(".");
+        if (parts.length === 4) ipPrefix = parts.slice(0, 3).join(".") + ".";
+        var inp = body.querySelector(".sto");
+        if (inp && inp.value === "") inp.value = ipPrefix;
+      }).catch(function () {});
       function showConnect(msg) {
         body.innerHTML =
           '<div class="pad" style="display:flex;flex-direction:column;gap:8px;max-width:360px">' +
             '<h3>Connect via SSH</h3>' +
-            '<input class="input sto" placeholder="Host IP (e.g. 192.168.0.3)" value="192.168.0.">' +
+            '<input class="input sto" placeholder="Host IP" value="' + esc(ipPrefix) + '">' +
             '<input class="input suser" placeholder="Username">' +
             '<input class="input spass" type="password" placeholder="Password">' +
             '<div><button class="btn accent sgo">Connect</button> <span class="muted smsg">' + (msg || "") + '</span></div>' +
@@ -1367,7 +1507,7 @@
           body.querySelector(".smsg").textContent = "Connecting";
           A3.request("ssh_connect", c).then(function (r) {
             if (!r || (r.error && r.error !== "")) {
-              showConnect({ ssh_disabled: "SSH is disabled on that host.", auth_failed: "Wrong username or password.", no_route: "No route to host.", bad_addr: "Invalid address." }[r && r.error] || "Connection failed.");
+              showConnect({ ssh_disabled: "SSH is disabled on that host.", auth_failed: "Wrong username or password.", no_route: "No route to host.", bad_addr: "Invalid address.", busy: "Remote host is busy.", offline: "Remote host is offline." }[r && r.error] || "Connection failed.");
               return;
             }
             conn = c; showSession(r.host || c.to);

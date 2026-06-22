@@ -37,11 +37,41 @@ if (_fs isEqualTo []) exitWith {
     _res
 };
 
-// #9: root and admin see/modify everything; everyone else is permission-bound.
+// Root and admin see/modify everything; everyone else is permission-bound.
 private _fsUser = [_user, "root"] select (_user in ["root", "admin"]);
 private _path = _data getOrDefault ["path", "/"];
 
 switch (_op) do {
+
+    case "stat": {
+        try {
+            private _dir = [[], _fs, _path, _fsUser] call AE3_filesystem_fnc_getParentDir;
+            private _current = (_dir select 1) select 0;
+            private _name = _dir select 2;
+            if (!(_name in _current)) throw "not_found";
+            private _obj = _current get _name;
+            [_obj, _fsUser, 0] call AE3_filesystem_fnc_hasPermission;
+            _res set ["owner", _obj select 1];
+            _res set ["permissions", _obj select 2];
+            _res set ["dir", (_obj select 0) isEqualType createHashMap];
+        } catch {
+            _res set ["error", "denied"];
+        };
+    };
+
+    case "chmod": {
+        private _permissions = _data getOrDefault ["permissions", []];
+        private _recursive = _data getOrDefault ["recursive", false];
+        if !(_permissions isEqualType [] && {count _permissions == 2}) exitWith { _res set ["error", "bad_input"]; };
+        try {
+            private _chmodUser = [_user, "root"] select (_user isEqualTo "root");
+            [[], _fs, _path, _chmodUser, _permissions, _recursive] call AE3_filesystem_fnc_chmod;
+            _computer setVariable ["AE3_filesystem", _fs, 2];
+            _res set ["ok", true];
+        } catch {
+            _res set ["error", "denied"];
+        };
+    };
 
     case "list": {
         private _entries = [];
@@ -253,7 +283,7 @@ switch (_op) do {
         };
     };
 
-    // Recursive, case-insensitive glob search (#13/#14). _data: query (with optional "*"), root.
+    // Recursive, case-insensitive glob search. _data: query (with optional "*"), root.
     case "search": {
         private _query = _data getOrDefault ["query", ""];
         private _root = _data getOrDefault ["root", "/"];

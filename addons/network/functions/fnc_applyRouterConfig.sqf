@@ -1,9 +1,7 @@
 /*
  * Author: Root
- * Description: Applies wireless configuration to a router and broadcasts it: network name
- * (ace_cargo_customName, used as the SSID by the Network app), wireless range, and password. Shared
- * by the in-browser router admin page (AE3_desktop_fnc_routerHandle), the Eden/Zeus router
- * attributes, and the Configure Router module. Server-only. (#1/#3)
+ * Description: Applies wireless configuration to a router and broadcasts it: network name,
+ * wireless range, password, and gateway. Shared by the router admin page and attribute dialogs.
  *
  * Arguments:
  * 0: _router <OBJECT> - The router object

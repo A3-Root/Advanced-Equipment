@@ -19,7 +19,7 @@ params ["_computer"];
 private _terminal = _computer getVariable "AE3_terminal";
 
 // Defensive: a laptop that never opened a CLI shell has no initialized terminal/buffer. Bail rather
-// than crash on "count <Number>" at the buffer math below (Root_CW GUI door action, issue #2).
+// than crash on "count <Number>" at the buffer math below.
 if (isNil "_terminal" || {!(_terminal isEqualType createHashMap)}) exitWith {};
 
 private _terminalBuffer = _terminal get "AE3_terminalBuffer";
@@ -34,7 +34,7 @@ private _terminalApplication = _terminal get "AE3_terminalApplication";
 
 private _terminalInputBuffer = ["", ""];
 
-if (!isNil { _terminal get "AE3_terminalInputBuffer" }) then 
+if (!isNil { _terminal get "AE3_terminalInputBuffer" }) then
 {
 	_terminalInputBuffer = _terminal get "AE3_terminalInputBuffer";
 };

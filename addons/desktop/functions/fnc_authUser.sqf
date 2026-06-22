@@ -2,7 +2,7 @@
 /*
  * Author: Root
  * Description: Validates a username/password against a computer's synced AE3_Userlist for the web
- * desktop login (issue #9). Mirrors the CLI rules: root is blocked unless AE3_AllowRootLogin is
+ * desktop login. Mirrors the CLI rules: root is blocked unless AE3_AllowRootLogin is
  * set. The userlist is broadcast by AE3_armaos_fnc_computer_addUser, so validation is local (no
  * server round-trip), matching the terminal login. Returns a result hashmap for AE3_recv.
  *

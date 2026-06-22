@@ -1,4 +1,4 @@
-// Router configuration dialog (#1/#3): opened from the router's ACE interaction menu (the same menu
+// Router configuration dialog: opened from the router's ACE interaction menu (the same menu
 // as Connect/Disconnect). Lets the operator set the network name, wireless range and password in
 // game, applied via AE3_network_fnc_applyRouterConfig.
 

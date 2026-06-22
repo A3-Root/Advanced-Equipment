@@ -1,7 +1,7 @@
 #include "..\script_component.hpp"
 /*
  * Author: Root
- * Description: Backs the in-browser router admin page (#1/#3). Reads and writes the settings of the
+ * Description: Backs the in-browser router admin page. Reads and writes the settings of the
  * router this laptop is connected to (its gateway): network name (ace_cargo_customName, shown by the
  * Network app's scan), wireless range, and password. Any client connected to the router may view/edit
  * it - mirroring a real consumer router whose web UI is reachable from the LAN. Writes are applied

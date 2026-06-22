@@ -76,7 +76,7 @@ switch (_command) do {
         };
     };
 
-    // Login against the synced user list (issue #9). Replies synchronously (the proven path).
+    // Login against the synced user list. Replies synchronously through the browser bridge.
     // authUser kicks a non-blocking userlist re-pull and returns "retry" when the account has not
     // reached this client yet (MP race right after a Zeus "Add User"); the JS side retries once.
     // The userlist is normally already cached by the open-time background sync (desktop_openWeb), so
@@ -106,7 +106,9 @@ switch (_command) do {
     case "fs_search";
     case "fs_restore";
     case "fs_purge";
-    case "fs_empty_trash": {
+    case "fs_empty_trash";
+    case "fs_stat";
+    case "fs_chmod": {
         private _user = _display getVariable [QGVAR(user), ""];
         private _op = _command select [3]; // strip "fs_"
         [[_computer, _user, _op, _data] call FUNC(fsHandle)] call _reply;
@@ -160,7 +162,7 @@ switch (_command) do {
         [_dres] call _reply;
     };
 
-    // In-window minimap data (#13/#20).
+    // In-window minimap data.
     case "map_data": { [[_computer, _data] call FUNC(mapData)] call _reply; };
 
     // Cryptography apps: caesar/columnar crypto + cryptanalysis, GUI-side of the CLI tools.
@@ -185,62 +187,71 @@ switch (_command) do {
     case "mail_list": { [[_computer, "list", _data] call FUNC(mailHandle)] call _reply; };
     case "mail_read": { [[_computer, "read", _data] call FUNC(mailHandle)] call _reply; };
     case "mail_delete": { [[_computer, "delete", _data] call FUNC(mailHandle)] call _reply; };
-    case "mail_send": {
-        private _mres = createHashMapFromArray [["error", ""]];
-        private _targetIp = ((_data getOrDefault ["to", ""]) splitString ".") apply { parseNumber _x };
-        private _ownIp = _computer getVariable ["AE3_network_address", [127, 0, 0, 1]];
-        if (isNull _computer || {count _targetIp != 4}) then { _mres set ["error", "bad_addr"]; }
-        else {
-            // Loopback: sending to your own address (or 127.0.0.1) delivers to this same laptop -
-            // ping returns null for self, so resolve it directly instead of failing with no_route.
-            private _isLoopback = (_targetIp isEqualTo _ownIp) || {_targetIp isEqualTo [127, 0, 0, 1]};
-            private _target = _computer;
-            if (!_isLoopback) then { ([_computer, _targetIp] call AE3_network_fnc_ping) params ["_target"]; };
-            // Reject ghost IPs: route must resolve and the device must own the requested address.
-            private _valid = !isNull _target
-                && {_isLoopback || {(_target getVariable ["AE3_network_address", []]) isEqualTo _targetIp}}
-                && {_isLoopback || {_ownIp isNotEqualTo [127, 0, 0, 1]}};
-            if (_valid) then {
-                private _senderIp = [_ownIp] call AE3_network_fnc_ip2str;
-                ["ae3_desktop_addEmail", [netId _target, _senderIp, _data getOrDefault ["subject", ""], _data getOrDefault ["body", ""]]] call CBA_fnc_serverEvent;
-                _mres set ["ok", true];
-            } else { _mres set ["error", "no_route"]; };
+    case "addr_list": {
+        private _addresses = [];
+        if (!isNull _computer) then {
+            private _netId = netId _computer;
+            private _registry = missionNamespace getVariable ["AE3_mail_addresses", createHashMap];
+            {
+                private _entry = _registry get _x;
+                if ((_entry param [0, ""]) isEqualTo _netId) then { _addresses pushBack (_entry param [1, _x]); };
+            } forEach (keys _registry);
+            _addresses sort true;
         };
-        [_mres] call _reply;
+        [createHashMapFromArray [["addresses", _addresses]]] call _reply;
+    };
+    case "addr_create": {
+        if (isNull _computer) exitWith { [createHashMapFromArray [["error", "no_device"]]] call _reply; };
+        ["ae3_desktop_addrRegister", [clientOwner, _rid, netId _computer, _data getOrDefault ["address", ""]]] call CBA_fnc_serverEvent;
+    };
+    case "addr_delete": {
+        if (isNull _computer) exitWith { [createHashMapFromArray [["error", "no_device"]]] call _reply; };
+        ["ae3_desktop_addrRelease", [clientOwner, _rid, netId _computer, _data getOrDefault ["address", ""]]] call CBA_fnc_serverEvent;
+    };
+    case "mail_send": {
+        if (isNull _computer) exitWith { [createHashMapFromArray [["error", "no_device"]]] call _reply; };
+        ["ae3_desktop_mailRoute", [
+            clientOwner, _rid, netId _computer,
+            _data getOrDefault ["from", ""],
+            _data getOrDefault ["to", ""],
+            _data getOrDefault ["subject", ""],
+            _data getOrDefault ["body", ""]
+        ]] call CBA_fnc_serverEvent;
     };
 
-    // Messenger: pull live inbox (server round-trip -> pushed back as "chat_data") + send IM.
+    // Messenger: pull live threads and route messages by registered handle.
+    case "handle_list": {
+        private _handles = [];
+        if (!isNull _computer) then {
+            private _netId = netId _computer;
+            private _registry = missionNamespace getVariable ["AE3_msg_handles", createHashMap];
+            {
+                private _entry = _registry get _x;
+                if ((_entry param [0, ""]) isEqualTo _netId) then { _handles pushBack (_entry param [1, _x]); };
+            } forEach (keys _registry);
+            _handles sort true;
+        };
+        [createHashMapFromArray [["handles", _handles]]] call _reply;
+    };
+    case "handle_create": {
+        if (isNull _computer) exitWith { [createHashMapFromArray [["error", "no_device"]]] call _reply; };
+        ["ae3_desktop_handleRegister", [clientOwner, _rid, netId _computer, _data getOrDefault ["handle", ""]]] call CBA_fnc_serverEvent;
+    };
+    case "handle_delete": {
+        if (isNull _computer) exitWith { [createHashMapFromArray [["error", "no_device"]]] call _reply; };
+        ["ae3_desktop_handleRelease", [clientOwner, _rid, netId _computer, _data getOrDefault ["handle", ""]]] call CBA_fnc_serverEvent;
+    };
     case "chat_pull": {
         if (!isNull _computer) then {
             ["ae3_desktop_chatPull", [clientOwner, netId _computer]] call CBA_fnc_serverEvent;
         };
     };
     case "chat_send": {
-        private _cres = createHashMapFromArray [["error", ""]];
-        private _targetIp = ((_data getOrDefault ["to", ""]) splitString ".") apply { parseNumber _x };
-        private _ownIp = _computer getVariable ["AE3_network_address", [127, 0, 0, 1]];
-        if (isNull _computer || {count _targetIp != 4}) then { _cres set ["error", "bad_addr"]; }
-        else {
-            // Loopback: messaging your own address (or 127.0.0.1) delivers to this same laptop.
-            private _isLoopback = (_targetIp isEqualTo _ownIp) || {_targetIp isEqualTo [127, 0, 0, 1]};
-            private _target = _computer;
-            if (!_isLoopback) then { ([_computer, _targetIp] call AE3_network_fnc_ping) params ["_target"]; };
-            // Reject ghost IPs: the route must resolve AND the resolved device must actually own
-            // the requested address. A non-loopback send also requires a real (non-loopback) own IP.
-            private _valid = !isNull _target
-                && {_isLoopback || {(_target getVariable ["AE3_network_address", []]) isEqualTo _targetIp}}
-                && {_isLoopback || {_ownIp isNotEqualTo [127, 0, 0, 1]}};
-            if (_valid) then {
-                private _senderIp = [_ownIp] call AE3_network_fnc_ip2str;
-                private _dstIp = [_targetIp] call AE3_network_fnc_ip2str;
-                ["ae3_network_imSend", [netId _target, netId _computer, _senderIp, _dstIp, _data getOrDefault ["text", ""]]] call CBA_fnc_serverEvent;
-                _cres set ["ok", true];
-            } else { _cres set ["error", "no_route"]; };
-        };
-        [_cres] call _reply;
+        if (isNull _computer) exitWith { [createHashMapFromArray [["error", "no_device"]]] call _reply; };
+        ["ae3_desktop_msgRoute", [clientOwner, _rid, netId _computer, _data getOrDefault ["to", ""], _data getOrDefault ["text", ""]]] call CBA_fnc_serverEvent;
     };
 
-    // Router admin web page (#1/#3): view/edit the connected router's name/range/password.
+    // Router admin web page: view/edit the connected router's name/range/password.
     case "router_page": { [[_computer, "get", _data] call FUNC(routerHandle)] call _reply; };
     case "router_set":  { [[_computer, "set", _data] call FUNC(routerHandle)] call _reply; };
 

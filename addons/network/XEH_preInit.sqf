@@ -7,8 +7,8 @@ if (isServer) then
 	["ae3_network_routerOff", { _this call AE3_network_fnc_router_onTurnOff }] call CBA_fnc_addEventHandler;
 
 	// Instant messaging: record the message on BOTH ends in dedicated per-peer chat threads under
-	// /var/chat/<peerIP> (separate from /var/mail so the Messenger and Email apps never cross-feed,
-	// AE3 GUI issue #7). Each line is "<dir>|HH:MM|<text>" with dir o(ut)/i(n); text newlines are
+	// /var/chat/<peerIP> (separate from /var/mail so the Messenger and Email apps never cross-feed
+    // Each line is "<dir>|HH:MM|<text>" with dir o(ut)/i(n); text newlines are
 	// stripped so a message is always exactly one line regardless of content.
 	["ae3_network_imSend", {
 		params ["_targetNetId", "_senderNetId", "_senderIp", "_targetIp", "_text"];

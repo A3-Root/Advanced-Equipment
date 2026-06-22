@@ -70,13 +70,14 @@ if (_exitCode == 1) then
 
     /* ======================================== */
 
-    // Router-only wireless config (#1/#10): apply the Wireless Range + Gateway fields server-side.
+    // Router wireless settings are applied through the shared router configuration handler.
     if (_entity getVariable ["AE3_cap_isRouter", false]) then
     {
         private _range = parseNumber (ctrlText (_display displayCtrl 1910));
         private _gateway = ctrlText (_display displayCtrl 1911);
         private _ssid = ctrlText (_display displayCtrl 1912);
-        [_entity, _ssid, _range, _entity getVariable ["AE3_network_password", ""], _gateway] remoteExecCall ["AE3_network_fnc_applyRouterConfig", 2];
+        private _password = ctrlText (_display displayCtrl 1915);
+        [_entity, _ssid, _range, _password, _gateway] remoteExecCall ["AE3_network_fnc_applyRouterConfig", 2];
         _message = _message + format ["Network name: %1. Wireless range: %2 m. Gateway: %3.", _ssid, _range, _gateway];
     };
 

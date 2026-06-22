@@ -1,6 +1,6 @@
 /*
  * Author: Root
- * Description: Apply handler for the router configuration dialog (#1/#3). Reads the fields and applies
+ * Description: Apply handler for the router configuration dialog. Reads the fields and applies
  * them to the target router server-side (broadcast) via AE3_network_fnc_applyRouterConfig, then
  * closes the dialog. Bound to the dialog's Apply button. Client-only.
  *

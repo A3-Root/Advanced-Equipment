@@ -2,8 +2,7 @@
 /*
  * Author: Root
  * Description: Provides a player-centred minimap snapshot for the web Map app. A native
- * RscMapControl cannot render inside the CEF page (it would float outside the window - the old
- * native map bug, #13/#20), so the Map app draws a schematic canvas from this data instead:
+ * RscMapControl cannot render inside the CEF page, so the Map app draws a schematic canvas from this data instead:
  * player position/heading plus nearby AE3 devices as blips, all relative to the player. Read-only,
  * client-local.
  *

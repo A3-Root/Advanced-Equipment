@@ -1,6 +1,6 @@
 /*
  * Author: Root
- * Description: Opens the router configuration dialog (#1/#3) from the router's ACE interaction menu,
+ * Description: Opens the router configuration dialog from the router's ACE interaction menu,
  * prefilled with the router's current network name, wireless range and password. Client-only.
  *
  * Arguments:

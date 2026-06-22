@@ -1,10 +1,10 @@
 #include "..\script_component.hpp"
 /*
  * Author: Root
- * Description: Server-side fetch of a laptop's IM threads (/var/chat/<peerIP>) for the web Messenger
+ * Description: Server-side fetch of a laptop's IM threads (/var/chat/<peer>) for the web Messenger
  * app. Reads the authoritative filesystem so incoming messages appear live, parses each thread into
  * structured {dir,time,text} messages, then pushes the per-peer threads back to the requesting
- * client (which forwards them to the browser). Server-only. (AE3 GUI issue #7)
+ * client (which forwards them to the browser). Server-only.
  *
  * Arguments:
  * 0: _owner <NUMBER> - clientOwner that requested the pull
@@ -23,7 +23,7 @@ if (!isServer) exitWith {};
 private _computer = objectFromNetId _computerNetId;
 if (isNull _computer) exitWith {};
 
-// Threads: array of [peerIp, [[dir,time,text], ...]] ordered by peer.
+// Threads are returned as [peer, [[dir,time,text], ...]] ordered by peer name.
 private _threads = [];
 private _fs = _computer getVariable ["AE3_filesystem", []];
 if (_fs isNotEqualTo []) then {

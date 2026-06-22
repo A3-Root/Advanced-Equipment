@@ -154,8 +154,7 @@ class AE3_UserInterface_Zeus_Asset_Details
             onKillFocus = "params ['_control']; private _newText = ctrlText _control; _newText = [_newText, '0123456789.,'] call BIS_fnc_filterString; private _display = ctrlParent _control; private _slider = _display getVariable 'fuelSliderCtrl'; private _newValue = ((round (_newText call BIS_fnc_parseNumber)) min 100); _slider sliderSetPosition _newValue; _control ctrlSetText format ['%1%2', _newValue, '%'];";
         };
 
-        // Router-only wireless config (#1/#10): hidden by default, shown + populated for routers by
-        // AE3_main_fnc_zeus_initAttributes and applied on close by AE3_main_fnc_zeus_updateAttributes.
+        // Router wireless configuration is hidden by default and shown only for router assets.
         class RscText_1003: RscText
         {
             idc = 1003;
@@ -202,7 +201,7 @@ class AE3_UserInterface_Zeus_Asset_Details
             onLoad = "params ['_control']; _control ctrlShow false; _control ctrlEnable false;";
         };
 
-        // Router-only network name / SSID: hidden by default, shown + populated for routers.
+        // Router network name is hidden by default and shown only for router assets.
         class RscText_1005: RscText
         {
             idc = 1005;
@@ -220,6 +219,29 @@ class AE3_UserInterface_Zeus_Asset_Details
             text = "";
             x = 8 * GUI_GRID_W + GUI_GRID_X;
             y = 15 * GUI_GRID_H + GUI_GRID_Y;
+            w = 14 * GUI_GRID_W;
+            h = 1 * GUI_GRID_H;
+            colorBackground[] = {-1,-1,-1,0.5};
+            onLoad = "params ['_control']; _control ctrlShow false; _control ctrlEnable false;";
+        };
+
+        class RscText_1010: RscText
+        {
+            idc = 1010;
+            text = "Network Password";
+            x = 0.5 * GUI_GRID_W + GUI_GRID_X;
+            y = 16.5 * GUI_GRID_H + GUI_GRID_Y;
+            w = 7 * GUI_GRID_W;
+            h = 1 * GUI_GRID_H;
+            style = ST_RIGHT;
+            onLoad = "params ['_control']; _control ctrlShow false;";
+        };
+        class RscEdit_1915: RscEdit
+        {
+            idc = 1915;
+            text = "";
+            x = 8 * GUI_GRID_W + GUI_GRID_X;
+            y = 16.5 * GUI_GRID_H + GUI_GRID_Y;
             w = 14 * GUI_GRID_W;
             h = 1 * GUI_GRID_H;
             colorBackground[] = {-1,-1,-1,0.5};

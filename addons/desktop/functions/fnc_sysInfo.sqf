@@ -47,6 +47,6 @@ _info set ["uptime", ([CBA_missionTime, "HH:MM:SS"] call BIS_fnc_secondsToString
 // Per-laptop wallpaper: a CSS background string or image path ("" = the theme default).
 _info set ["wallpaper", _computer getVariable ["AE3_desktop_wallpaper", ""]];
 // SSH access toggle: whether this device accepts incoming SSH connections.
-_info set ["sshEnabled", _computer getVariable ["AE3_ssh_enabled", false]];
+_info set ["sshEnabled", _computer getVariable ["AE3_ssh_enabled", true]];
 
 _info

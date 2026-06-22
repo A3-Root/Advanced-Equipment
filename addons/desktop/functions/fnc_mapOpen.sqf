@@ -36,7 +36,7 @@ private _map = _display displayCtrl 17021;
 
 private _center = getPosWorld player;
 if (!isNull _computer) then { _center = getPosWorld _computer; };
-// A device map-link (#0f) overrides the centre with the requested grid position.
+// A device map-link overrides the centre with the requested grid position.
 if (_focus isEqualType [] && {count _focus >= 2}) then { _center = [_focus select 0, _focus select 1, 0]; };
 
 // Centre + zoom the map on the laptop/player (or the focused device).
@@ -68,7 +68,7 @@ _markers pushBack _self;
     };
 } forEach (nearestObjects [_center, [], 2000]);
 
-// Highlighted marker for a focused device (#0f).
+// Highlighted marker for a focused device
 if (_focus isEqualType [] && {count _focus >= 2}) then {
     private _fm = createMarkerLocal [format ["AE3_mapFocus_%1", _stamp], _center];
     _fm setMarkerTypeLocal "mil_objective";

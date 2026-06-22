@@ -88,7 +88,7 @@ html, body {
 .task .task-ico svg { width: 14px; height: 14px; }
 .task .task-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-/* ---------- tray (#12/#13) ---------- */
+/* ---------- tray notifications and system status ---------- */
 #topbar .tray { margin-left: 14px; color: var(--muted); display: flex; align-items: center; gap: 14px; }
 #topbar .tray .tray-ico { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-size: 15px; padding: 4px 6px; border-radius: 5px; }
 #topbar .tray .tray-ico:hover { background: rgba(255,255,255,0.12); color: var(--text); }
@@ -202,11 +202,20 @@ html, body {
 .titlebar .ctrl.close { background: var(--accent); }
 .titlebar .ctrl.close:hover { background: #ff6a3d; }
 .window-body { flex: 1; overflow: auto; background: var(--surface); }
+.resize-grip {
+  position: absolute; right: 0; bottom: 0; width: 14px; height: 14px;
+  cursor: nwse-resize; z-index: 3;
+}
+.resize-grip::after {
+  content: ""; position: absolute; right: 3px; bottom: 3px; width: 7px; height: 7px;
+  border-right: 2px solid rgba(255,255,255,0.45);
+  border-bottom: 2px solid rgba(255,255,255,0.45);
+}
 .window.minimized { display: none; }
 
 /* generic widgets used by apps */
 .toolbar { display: flex; align-items: center; gap: 6px; padding: 8px; background: #2b2b2b; border-bottom: 1px solid var(--line); flex: 0 0 auto; }
-/* Let toolbar inputs shrink instead of pushing buttons (New Folder/Delete) off the edge (#9/#11). */
+/* Let toolbar inputs shrink instead of pushing action buttons off the edge. */
 .toolbar .input { min-width: 0; }
 .btn { background: var(--surface-2); color: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 6px 12px; cursor: pointer; font-size: 13px; }
 .btn:hover { background: #4a4a4a; }
@@ -217,7 +226,7 @@ html, body {
 .list li { padding: 7px 12px; cursor: pointer; display: flex; align-items: center; gap: 8px; }
 .list li:hover { background: rgba(255,255,255,0.07); }
 .list li.sel { background: rgba(233,84,32,0.25); }
-/* file browser list fills its pane so empty space is right-clickable and long lists scroll (#4/#8). */
+/* File browser list fills its pane so empty space is right-clickable and long lists scroll. */
 .list.entries { flex: 1 1 auto; min-height: 0; overflow: auto; }
 /* type tint by row class: folders gold, .app programs blue, plain files white. */
 .list li.isdir .ico { color: #e9b96e; }
@@ -263,7 +272,7 @@ svg { vertical-align: middle; }
 .pk-foot { display: flex; align-items: center; gap: 8px; padding: 10px; border-top: 1px solid var(--line); }
 .pk-foot .pk-name { flex: 0 0 240px; }
 
-/* ---------- toast notifications (Root_CW general #1) ---------- */
+/* ---------- toast notifications ---------- */
 #toasts {
   position: fixed; top: calc(var(--topbar-h) + 12px); left: 50%; transform: translateX(-50%);
   z-index: 2200; display: flex; flex-direction: column; align-items: center; gap: 8px; pointer-events: none;

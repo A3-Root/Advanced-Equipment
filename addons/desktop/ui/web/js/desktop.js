@@ -80,7 +80,7 @@
     }, 0);
   };
 
-  // ---------------- Toast notifications (Root_CW general #1) ----------------
+  // ---------------- Toast notifications ----------------
   // Prominent, top-centre, colour-coded transient messages so action feedback (blocked by low
   // battery, overload not allowed, success, ...) can't be missed in a small inline status line.
   // kind: "ok" | "warn" | "error" (anything else = neutral). Auto-dismisses; toasts stack.
@@ -109,7 +109,7 @@
     });
   }
 
-  // ---------------- Desktop icons (fixed system + dynamic ~/Desktop, #9) ----------------
+  // ---------------- Desktop icons (fixed system + dynamic ~/Desktop) ----------------
   function makeIcon(desk, label, glyph, onOpen) {
     var icon = el("div", "desktop-icon", '<div class="glyph">' + (glyph || "") + '</div><div class="label">' + label + "</div>");
     icon.addEventListener("dblclick", onOpen);
@@ -196,7 +196,7 @@
     desk.addEventListener("mousedown", function (e) {
       if (e.target === desk) desk.querySelectorAll(".desktop-icon").forEach(function (n) { n.classList.remove("sel"); });
     });
-    // Desktop right-click (#9/#16): create items directly in the user's ~/Desktop folder so they
+    // Desktop right-click creates items directly in the user's ~/Desktop folder so they
     // appear on the desktop surface, like a real Ubuntu/Debian desktop.
     if (!desk.dataset.ctx) {
       desk.dataset.ctx = "1";
@@ -514,7 +514,7 @@
     }
   };
 
-  // Shared device map-link (#0f): open the full in-game map centred on a grid position, with a
+  // Shared device map-link: open the full in-game map centred on a grid position, with a
   // labelled marker. Used by Root Cyberwarfare device apps' [Map] buttons. pos = [x,y].
   window.AE3_openMap = function (pos, label) {
     if (!pos || pos.length < 2) { A3.send("map_open", {}); return; }
