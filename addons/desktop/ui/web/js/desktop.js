@@ -600,9 +600,9 @@
 
   // Shared device map-link: open the full in-game map centred on a grid position, with a
   // labelled marker. Used by Root Cyberwarfare device apps' [Map] buttons. pos = [x,y].
-  window.AE3_openMap = function (pos, label) {
+  window.AE3_openMap = function (pos, label, marker) {
     if (!pos || pos.length < 2) { A3.send("map_open", {}); return; }
-    A3.send("map_open", { pos: pos, label: label || "" });
+    A3.send("map_open", { pos: pos, label: label || "", marker: marker !== false });
   };
 
   window.Apps = Apps;

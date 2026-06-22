@@ -26,7 +26,8 @@ private _parent = _computer getVariable ["AE3_network_parent", objNull];
 
 private _routers = (nearestObjects [_computer, [], _scanCap]) select {
     (_x != _computer) && {alive _x} && {_x getVariable ["AE3_cap_isRouter", false]} &&
-    {(_computer distance _x) <= (_x getVariable ["AE3_network_wirelessRange", 50])}
+    {(_computer distance _x) <= (_x getVariable ["AE3_network_wirelessRange", 50])} &&
+    {(_x getVariable ["AE3_power_powerState", 0]) == 1}
 };
 
 private _list = [];

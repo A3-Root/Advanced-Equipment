@@ -26,12 +26,19 @@ if (!isServer) exitWith
 	true
 };
 
+// Copy before iterating: fnc_removeNetworkConnection modifies the children array
+private _children = +(_router getVariable ["AE3_network_children", []]);
 {
-	// Only reset regular clients - never reset the address of a connected router
+	// Cascaded routers manage their own subnets; only fully disconnect regular clients
 	if (!(_x getVariable ["AE3_cap_isRouter", false])) then
 	{
-		_x setVariable ["AE3_network_address", [127, 0, 0, 1], true];
+		private _clientOwner = owner _x;
+		if (_clientOwner > 0) then
+		{
+			["ae3_desktop_netResult", [false, "Router offline"], _clientOwner] call CBA_fnc_ownerEvent;
+		};
+		[_x] call AE3_network_fnc_removeNetworkConnection;
 	};
-} forEach (_router getVariable ["AE3_network_children", []]);
+} forEach _children;
 
 true

@@ -24,6 +24,7 @@ if (!hasInterface) exitWith { displayNull };
 
 private _focus = _data getOrDefault ["pos", []];
 private _focusLabel = _data getOrDefault ["label", ""];
+private _focusMarker = _data getOrDefault ["marker", true];
 
 // Parent to the open browser display so the overlay sits on top of the CEF desktop.
 private _parent = findDisplay 17010;
@@ -69,7 +70,7 @@ _markers pushBack _self;
 } forEach (nearestObjects [_center, [], 2000]);
 
 // Highlighted marker for a focused device
-if (_focus isEqualType [] && {count _focus >= 2}) then {
+if (_focusMarker && {_focus isEqualType []} && {count _focus >= 2}) then {
     private _fm = createMarkerLocal [format ["AE3_mapFocus_%1", _stamp], _center];
     _fm setMarkerTypeLocal "mil_objective";
     _fm setMarkerColorLocal "ColorOrange";
