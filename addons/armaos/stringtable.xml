@@ -1435,8 +1435,8 @@
                 <Chinesesimp>默认(CBA设置)</Chinesesimp>
             </Key>
             <Key ID="STR_AE3_ArmaOS_EdenAttributes_StaticIpDisplayName">
-                <Original>Static IP (a.b.c.d, blank = DHCP)</Original>
-                <English>Static IP (a.b.c.d, blank = DHCP)</English>
+                <Original>Static IP (blank = DHCP)</Original>
+                <English>Static IP (blank = DHCP)</English>
             </Key>
             <Key ID="STR_AE3_ArmaOS_EdenAttributes_StaticIpTooltip">
                 <Original>Assign a fixed IP address. Leave blank to use DHCP from the connected router. Format: 192.168.1.5</Original>

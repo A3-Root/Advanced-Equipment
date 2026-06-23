@@ -54,7 +54,7 @@ class CfgVehicles
 			{
 				property = "AE3_ModuleRouter_Gateway";
 				displayName = "Default Gateway";
-				tooltip = "Default gateway as a.b.c.d (e.g. 10.0.0.1). Leave blank to keep the current gateway.";
+				tooltip = "Default Gateway (e.g. 192.168.0.1). Leave blank to keep the current gateway.";
 				typeName = "STRING";
 				defaultValue = """""";
 			};

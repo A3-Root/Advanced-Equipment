@@ -181,7 +181,7 @@ class AE3_UserInterface_Zeus_Asset_Details
         class RscText_1004: RscText
         {
             idc = 1004;
-            text = "Default Gateway (a.b.c.d)";
+            text = "Default Gateway";
             x = 0.5 * GUI_GRID_W + GUI_GRID_X;
             y = 13.5 * GUI_GRID_H + GUI_GRID_Y;
             w = 7 * GUI_GRID_W;

@@ -79,7 +79,7 @@ class AE3_RouterConfigDialog
 
 		class AE3_RC_LblGateway : RscText
 		{
-			idc = -1; text = "Default gateway (a.b.c.d)";
+			idc = -1; text = "Default Gateway";
 			x = "0.31 * safezoneW + safezoneX"; y = "0.55 * safezoneH + safezoneY";
 			w = "0.16 * safezoneW"; h = "0.035 * safezoneH";
 		};
