@@ -801,8 +801,8 @@
             '.ok{color:#26a269;margin-left:10px;font-size:13px}</style></head><body><div class="card">' +
             '<h1>Router Settings</h1><p class="sub">Gateway ' + (r.gateway || "") + '</p>' +
             '<label>Network name (SSID)</label><input id="rn" value="' + esc(r.name || "") + '">' +
-            '<label>Wireless range (m)</label><input id="rr" type="number" value="' + esc(String(r.range || 50)) + '">' +
-            '<label>Default gateway (a.b.c.d)</label><input id="rg" value="' + esc(String(r.gateway || "")) + '">' +
+            '<label>Wifi Range (m)</label><input id="rr" type="number" value="' + esc(String(r.range || 100)) + '">' +
+            '<label>Default Gateway</label><input id="rg" value="' + esc(String(r.gateway || "")) + '">' +
             '<label>Password (blank = open network)</label><input id="rp" value="' + esc(r.password || "") + '">' +
             '<div><button id="rs">Apply</button><span class="ok" id="rstat"></span></div></div>' +
             '<script>document.getElementById("rs").addEventListener("click",function(){' +
