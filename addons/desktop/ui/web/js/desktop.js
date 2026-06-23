@@ -193,12 +193,17 @@
   // Load and render the logged-in user's ~/Desktop folder. Launchers (.app, holding "app=<id>")
   // launch the app; folders open Files there; files open in the default viewer; symlinks follow
   // their target. Mirrors a real Ubuntu/Debian desktop.
-  function loadUserDesktop(desk) {
+  function loadUserDesktop(desk, retries) {
+    retries = retries || 0;
     var home = window.AE3_HOME;
     if (!home) return;
     var path = home + "/Desktop";
     A3.request("fs_list", { path: path }).then(function (res) {
       if (!res || (res.error && res.error !== "")) return;
+      if (res.loading) {
+        if (retries < 6) setTimeout(function () { loadUserDesktop(desk, retries + 1); }, 500);
+        return;
+      }
       (res.entries || []).forEach(function (it) {
         var full = (path + "/" + it.name).replace(/\/+/g, "/");
         var isApp = /\.app$/i.test(it.name);
@@ -470,18 +475,14 @@
 
   function onTaskbarChange() { refreshDockRunning(); buildTaskbar(); }
 
-  // ---------------- Clock: Mission Time (from sysinfo) + Zulu UTC, click opens Calendar ----------------
+  // ---------------- Clock: Mission Date + Time, click opens Calendar ----------------
   var clockTimer = null, batteryTimer = null;
   function startClock() {
-    function pad2(n) { return n < 10 ? "0" + n : "" + n; }
     function tick() {
-      var d = new Date();
-      var zulu = pad2(d.getUTCHours()) + ":" + pad2(d.getUTCMinutes()) + ":" + pad2(d.getUTCSeconds());
       var mission = (lastSys && lastSys.missionTime) || "--:--";
+      var mDate   = (lastSys && lastSys.missionDate)  || "";
       var c = document.getElementById("clock");
-      if (c) c.innerHTML =
-        '<span title="Mission time">' + esc(mission) + ' <span class="muted" style="font-size:.8em;opacity:.7">M</span></span>' +
-        '  <span title="Zulu (UTC) time">' + esc(zulu) + ' <span class="muted" style="font-size:.8em;opacity:.7">Z</span></span>';
+      if (c) c.textContent = mDate ? mDate + "  " + mission : mission;
     }
     if (clockTimer) clearInterval(clockTimer);
     clockTimer = setInterval(tick, 1000); tick();

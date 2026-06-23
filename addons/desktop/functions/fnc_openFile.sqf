@@ -24,6 +24,13 @@ params ["_computer", "_path", "_content"];
 private _session = uiNamespace getVariable ["AE3_desktop_session", createHashMap];
 private _display = _session getOrDefault ["display", displayNull];
 private _theme = _session getOrDefault ["theme", createHashMap];
+if (isNull _display) then {
+	private _webCtrl = uiNamespace getVariable [QGVAR(browserCtrl), controlNull];
+	if (!isNull _webCtrl) then {
+		_display = ctrlParent _webCtrl;
+		_theme = createHashMap;
+	};
+};
 if (isNull _display) exitWith {};
 
 // Executables can only be run from the terminal

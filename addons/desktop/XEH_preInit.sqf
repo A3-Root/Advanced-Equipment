@@ -103,5 +103,4 @@ if (isServer) then
 	["ae3_desktop_addrRegister", { _this call AE3_desktop_fnc_addrRegister }] call CBA_fnc_addEventHandler;
 	["ae3_desktop_addrRelease", { _this call AE3_desktop_fnc_addrRelease }] call CBA_fnc_addEventHandler;
 	["ae3_desktop_mailRoute", { _this call AE3_desktop_fnc_mailRoute }] call CBA_fnc_addEventHandler;
-	["ae3_desktop_sshOp", { _this call AE3_desktop_fnc_sshOpServer }] call CBA_fnc_addEventHandler;
 };

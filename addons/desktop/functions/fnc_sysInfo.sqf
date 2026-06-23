@@ -44,8 +44,10 @@ if (!isNull _gateway) then {
 
 _info set ["hostname", _computer getVariable ["ace_cargo_customName", "armaOS"]];
 _info set ["uptime", ([CBA_missionTime, "HH:MM:SS"] call BIS_fnc_secondsToString)];
-date params ["", "", "", "_mHour", "_mMin"];
-_info set ["missionTime", [_mHour * 3600 + _mMin * 60, "HH:MM"] call BIS_fnc_secondsToString];
+private _d = date;
+private _months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+_info set ["missionDate", format ["%1 %2", _d select 2, _months param [(_d select 1) - 1, ""]]];
+_info set ["missionTime", [dayTime, "HH:MM"] call BIS_fnc_timeToString];
 // Per-laptop wallpaper: a CSS background string or image path ("" = the theme default).
 _info set ["wallpaper", _computer getVariable ["AE3_desktop_wallpaper", ""]];
 // SSH access toggle: whether this device accepts incoming SSH connections.

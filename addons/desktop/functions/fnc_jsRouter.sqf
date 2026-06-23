@@ -219,7 +219,7 @@ switch (_command) do {
             private _registry = missionNamespace getVariable ["AE3_mail_addresses", createHashMap];
             {
                 private _entry = _registry get _x;
-                if ((_entry param [0, ""]) isEqualTo _netId) then { _addresses pushBack (_entry param [1, _x]); };
+                if ((_entry param [0, ""]) isEqualTo _netId || { (_entry param [0, ""]) isEqualTo "" }) then { _addresses pushBack (_entry param [1, _x]); };
             } forEach (keys _registry);
             _addresses sort true;
         };
