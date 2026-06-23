@@ -364,9 +364,15 @@ switch (_command) do {
         private _sres = createHashMapFromArray [["error", ""]];
         if (isNull _computer || {count _targetIp != 4}) exitWith { _sres set ["error", "bad_addr"]; [_sres] call _reply; };
         // The server resolves the target device from the IP (topology-agnostic) and replies async
-        // via ae3_desktop_sshReply.
+        // via ae3_desktop_sshReply. Only plain strings are passed across the network event (no
+        // HashMap) so the payload serializes reliably in multiplayer.
+        private _opArgs = [
+            _data getOrDefault ["path", ""],
+            _data getOrDefault ["dest", ""],
+            _data getOrDefault ["content", ""]
+        ];
         ["ae3_desktop_sshOp", [clientOwner, _rid, netId _computer, _targetIp,
-            _data getOrDefault ["user", ""], _data getOrDefault ["pass", ""], _op, _data]] call CBA_fnc_serverEvent;
+            _data getOrDefault ["user", ""], _data getOrDefault ["pass", ""], _op, _opArgs]] call CBA_fnc_serverEvent;
     };
 
     case "net_connect": {

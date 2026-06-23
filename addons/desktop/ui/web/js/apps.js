@@ -432,6 +432,34 @@
     }
   });
 
+  // ---------------- Image Viewer ----------------
+  // Opens an image registered via AE3_desktop_fnc_registerMedia. The picture is rendered inside
+  // the desktop webview (A3.loadTexture -> base64 data URL), so it appears above the OS surface
+  // rather than behind it like a native control would.
+  Apps.register({
+    id: "media", title: "Image Viewer", glyph: Icons.files, width: 720, height: 540,
+    showInDock: false,
+    render: function (body, win, args) {
+      var path = (args && args.path) || "";
+      var name = (args && args.title) || path.split("\\").pop().split("/").pop();
+      win.el.querySelector(".title").textContent = "Image Viewer - " + name;
+      body.style.background = "#111";
+      body.style.display = "flex";
+      body.style.alignItems = "center";
+      body.style.justifyContent = "center";
+      body.innerHTML =
+        '<div class="muted mload" style="padding:16px">Loading image...</div>' +
+        '<img class="mimg" style="display:none;max-width:100%;max-height:100%;object-fit:contain">';
+      var img = body.querySelector(".mimg");
+      var load = body.querySelector(".mload");
+      img.onload = function () { load.style.display = "none"; img.style.display = "block"; };
+      img.onerror = function () { load.textContent = "Cannot display this image."; };
+      A3.loadTexture(path, 2048).then(function (url) {
+        img.src = url;
+      }).catch(function () { load.textContent = "Cannot load image: " + esc(name); });
+    }
+  });
+
   // ---------------- Settings ----------------
   Apps.register({
     id: "settings", title: "Settings", glyph: Icons.settings, width: 560, height: 400,

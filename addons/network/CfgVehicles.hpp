@@ -185,6 +185,29 @@ class CfgVehicles
 			};
 		};
 
+		// Routers ship with a built-in 100 Wh battery so they run without an external supply.
+		class AE3_InternalDevice
+		{
+			displayName = "$STR_AE3_Power_Config_BatteryDisplayName";
+			defaultPowerLevel = 1;
+
+			turnOnAction = "_this + [true] call AE3_power_fnc_turnOnBatteryAction";
+			turnOffAction = "";
+
+			class AE3_PowerInterface
+			{
+				internal = 1;
+			};
+
+			class AE3_Battery
+			{
+				capacity = 0.1; // 100 Watt-hours max. capacity
+				recharging = 0.05/3600; // 50 Watts power consumption while recharging
+				level = 0.1; // start fully charged
+				internal = 1;
+			};
+		};
+
 		class AE3_Equipment
 		{
 			class AE3_ace3Interactions

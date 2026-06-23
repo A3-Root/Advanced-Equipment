@@ -611,6 +611,106 @@ class CfgVehicles
 
 	/* ================================================================================ */
 
+	// MODULE SAVE LAPTOP
+	class AE3_SaveLaptop: Module_F
+	{
+		scope = 2;
+		scopeCurator = 2;
+		displayName = "$STR_AE3_ArmaOS_Config_SaveLaptopDisplayName";
+		icon = "\z\ae3\addons\armaos\ui\AE3_Module_Icons_addUser.paa";
+		category = "AE3_armaosModules";
+
+		function = "AE3_armaos_fnc_module_saveLaptop";
+		functionPriority = 1;
+		isGlobal = 0; // server-only execution; the snapshot lives in the server-side buffer
+		isTriggerActivated = 1;
+		isDisposable = 1;
+		is3DEN = 0;
+
+		class Attributes: AttributesBase
+		{
+			class AE3_ModuleSaveSlot: Edit
+			{
+				property = "AE3_ModuleSaveSlot";
+				displayName = "$STR_AE3_ArmaOS_Config_SaveSlotDisplayName";
+				tooltip = "$STR_AE3_ArmaOS_Config_SaveSlotTooltip";
+				typeName = "STRING";
+				defaultValue = """slot1""";
+			};
+			class ModuleDescription: ModuleDescription{};
+		};
+
+		class ModuleDescription: ModuleDescription
+		{
+			description = "$STR_AE3_ArmaOS_Config_ModuleSaveLaptopDescription";
+			sync[] = { "Land_Laptop_03_sand_F_AE3" };
+
+			class Land_Laptop_03_sand_F_AE3
+			{
+				description[] = {
+					"Captures this laptop's files, users, calendar, emails and network settings",
+					"into the named save slot."
+				};
+				position = 1;
+				direction = 0;
+				optional = 0;
+				duplicate = 0;
+			};
+		};
+	};
+
+	/* ================================================================================ */
+
+	// MODULE RESTORE LAPTOP
+	class AE3_RestoreLaptop: Module_F
+	{
+		scope = 2;
+		scopeCurator = 2;
+		displayName = "$STR_AE3_ArmaOS_Config_RestoreLaptopDisplayName";
+		icon = "\z\ae3\addons\armaos\ui\AE3_Module_Icons_addUser.paa";
+		category = "AE3_armaosModules";
+
+		function = "AE3_armaos_fnc_module_restoreLaptop";
+		functionPriority = 1;
+		isGlobal = 0; // server-only execution; reads the server-side snapshot buffer
+		isTriggerActivated = 1;
+		isDisposable = 1;
+		is3DEN = 0;
+
+		class Attributes: AttributesBase
+		{
+			class AE3_ModuleSaveSlot: Edit
+			{
+				property = "AE3_ModuleSaveSlot";
+				displayName = "$STR_AE3_ArmaOS_Config_SaveSlotDisplayName";
+				tooltip = "$STR_AE3_ArmaOS_Config_SaveSlotTooltip";
+				typeName = "STRING";
+				defaultValue = """slot1""";
+			};
+			class ModuleDescription: ModuleDescription{};
+		};
+
+		class ModuleDescription: ModuleDescription
+		{
+			description = "$STR_AE3_ArmaOS_Config_ModuleRestoreLaptopDescription";
+			sync[] = { "Land_Laptop_03_sand_F_AE3" };
+
+			class Land_Laptop_03_sand_F_AE3
+			{
+				description[] = {
+					"Overwrites this fresh laptop with the contents saved under the named slot,",
+					"replacing a laptop that was lost or disabled."
+				};
+				position = 1;
+				direction = 0;
+				optional = 0;
+				duplicate = 0;
+			};
+		};
+	};
+
+	/* ================================================================================ */
+
 	// MODULE ADD CALENDAR EVENT
 	class AE3_AddCalendarEvent: Module_F
 	{

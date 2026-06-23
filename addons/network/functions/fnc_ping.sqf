@@ -32,14 +32,14 @@ if (!isNil {_entity getVariable "AE3_network_children"}) exitWith
 
 	// Target is in catch
 	private _result = [objNull, 0];
-	if ((_target call AE3_network_fnc_ip2str) in _catch) then
+	if (([_target] call AE3_network_fnc_ip2str) in _catch) then
 	{
-		private _next = _catch get (_target call AE3_network_fnc_ip2str);
+		private _next = _catch get ([_target] call AE3_network_fnc_ip2str);
 		private _res = [_next, _target, _entity] call AE3_network_fnc_ping;
 
 		if (isNull (_res select 0)) exitWith
 		{
-			_catch deleteAt (_target call AE3_network_fnc_ip2str);
+			_catch deleteAt ([_target] call AE3_network_fnc_ip2str);
 			_entity setVariable ["AE3_network_addressCatch", _catch, true];
 			_result = _res;
 		};
@@ -57,7 +57,7 @@ if (!isNil {_entity getVariable "AE3_network_children"}) exitWith
 
 		if (!isNull (_res select 0)) exitWith
 		{
-			_catch set [(_target call AE3_network_fnc_ip2str), _x];
+			_catch set [([_target] call AE3_network_fnc_ip2str), _x];
 			_entity setVariable ["AE3_network_addressCatch", _catch, true];
 
 			private _len = (_res select 1) + (_x distance _entity);
@@ -77,7 +77,7 @@ if (!isNil {_entity getVariable "AE3_network_children"}) exitWith
 
 		if (!isNull(_res select 0)) then
 		{
-			_catch set [(_target call AE3_network_fnc_ip2str), _parent];
+			_catch set [([_target] call AE3_network_fnc_ip2str), _parent];
 			_entity setVariable ["AE3_network_addressCatch", _catch, true];
 
 			private _len = (_res select 1) + (_parent distance _entity);

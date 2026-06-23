@@ -1329,6 +1329,14 @@
                 <German>Dieses Modul definiert Benutzer für einen armaOS Computer. Synchronisiere einfach ein oder mehrere dieser Module mit einem unterstützten Computer.</German>
                 <Chinesesimp>此模块定义armaOS计算机的用户.只需将这些模块中的一个或多个同步到指定的计算机.</Chinesesimp>
             </Key>
+            <Key ID="STR_AE3_ArmaOS_Config_ModuleRestoreLaptopDescription">
+                <Original>Overwrites the synced laptop with the data stored under the named save slot, replacing a laptop that was lost or disabled.</Original>
+                <English>Overwrites the synced laptop with the data stored under the named save slot, replacing a laptop that was lost or disabled.</English>
+            </Key>
+            <Key ID="STR_AE3_ArmaOS_Config_ModuleSaveLaptopDescription">
+                <Original>Captures all of the synced laptop's data (files, users, calendar, emails, network settings) into the named save slot.</Original>
+                <English>Captures all of the synced laptop's data (files, users, calendar, emails, network settings) into the named save slot.</English>
+            </Key>
             <Key ID="STR_AE3_ArmaOS_Config_PasswordDisplayName">
                 <Original>Password</Original>
                 <English>Password</English>
@@ -1346,6 +1354,22 @@
                 <Russian>Пароль для авторизации пользователя, например '123456', 'password' или 'Qf5:xxR12#fTG'</Russian>
                 <German>Kennwort eines authorisierten Benutzers, zum Beispiel '123456', 'password' oder 'Qf5:xxR12#fTG'</German>
                 <Chinesesimp>授权用户的密码,例如'114514','password'或'Qf5:xxR12#fTG'</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_ArmaOS_Config_RestoreLaptopDisplayName">
+                <Original>AE3 Restore Laptop</Original>
+                <English>AE3 Restore Laptop</English>
+            </Key>
+            <Key ID="STR_AE3_ArmaOS_Config_SaveLaptopDisplayName">
+                <Original>AE3 Save Laptop</Original>
+                <English>AE3 Save Laptop</English>
+            </Key>
+            <Key ID="STR_AE3_ArmaOS_Config_SaveSlotDisplayName">
+                <Original>Save Slot</Original>
+                <English>Save Slot</English>
+            </Key>
+            <Key ID="STR_AE3_ArmaOS_Config_SaveSlotTooltip">
+                <Original>Name of the slot the laptop snapshot is stored under. Use the same name on the Restore Laptop module.</Original>
+                <English>Name of the slot the laptop snapshot is stored under. Use the same name on the Restore Laptop module.</English>
             </Key>
             <Key ID="STR_AE3_ArmaOS_Config_UseDisplayName">
                 <Original>Use</Original>

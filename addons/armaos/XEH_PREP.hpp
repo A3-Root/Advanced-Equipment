@@ -3,6 +3,8 @@ PREP(module_addUser);
 PREP(module_addSecurityCommands);
 PREP(module_addGames);
 PREP(module_addCalendarEvent);
+PREP(module_saveLaptop);
+PREP(module_restoreLaptop);
 
 /* Calendar */
 PREP(computer_addCalendarEvent);
@@ -168,6 +170,9 @@ PREP(terminal_syncInputState);
 /* Laptop Inventory Functions */
 PREP(laptop_obj2item);
 PREP(laptop_item2obj);
+PREP(laptop_stateVarsExcluded);
+PREP(laptop_captureState);
+PREP(laptop_applyState);
 PREP(laptop_pickup);
 PREP(laptop_deploy);
 PREP(laptop_handlePut);

@@ -97,6 +97,35 @@
       return next();
     },
 
+    // Load an image asset as a data URL for an <img>/CSS background. A3API.RequestTexture renders
+    // the engine texture (paa/jpg/png, mission or mod) to a base64 PNG data URL, so arbitrary
+    // images display inside the webview (above the OS surface) instead of a hidden native control.
+    // Resolution order mirrors loadFile: absolute paths as-is, otherwise this addon's web root then
+    // the mission root.
+    loadTexture: function (rel, maxRes) {
+      rel = String(rel).replace(/\//g, "\\");
+      var res = maxRes || 2048;
+      if (typeof A3API === "undefined" || !A3API || !A3API.RequestTexture) {
+        return Promise.reject(new Error("no A3API.RequestTexture"));
+      }
+      function requestOne(full) {
+        full = normalizePath(full);
+        return Promise.resolve(A3API.RequestTexture(full, res)).then(function (t) {
+          if (t == null || t === "") throw new Error("empty/missing: " + full);
+          return t;
+        });
+      }
+      if (rel.charAt(0) === "\\") return requestOne(rel); // absolute - this or any other mod
+      var roots = (window.AE3_WEB_ROOTS ||
+        [window.AE3_WEB_ROOT || "\\z\\ae3\\addons\\desktop\\ui\\web\\", ""]).concat([""]);
+      var i = 0;
+      function next() {
+        if (i >= roots.length) return Promise.reject(new Error("not found in any root: " + rel));
+        return requestOne(roots[i++] + rel).catch(next);
+      }
+      return next();
+    },
+
     emit: emit
   };
 

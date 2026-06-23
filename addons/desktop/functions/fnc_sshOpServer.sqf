@@ -4,8 +4,9 @@
  * Description: Server-side SSH backend for the web SSH app. Handles connect (auth against the
  * REMOTE device's user list + its SSH-enabled flag) and remote filesystem ops (list/read) plus
  * cross-device copy (pull remote->local, push local->remote). Every op replies to the requesting
- * client via "ae3_desktop_sshReply", echoing the rid so the JS A3.request promise resolves.
- * Server-only.
+ * client via "ae3_desktop_sshReply", echoing the rid so the JS A3.request promise resolves. The
+ * body is guarded so any failure still sends exactly one reply, turning errors into a visible
+ * verdict instead of a client-side timeout. Server-only.
  *
  * Arguments:
  * 0: _clientOwner <NUMBER> - clientOwner that issued the request
@@ -15,7 +16,7 @@
  * 4: _user <STRING> - remote username
  * 5: _pass <STRING> - remote password
  * 6: _op <STRING> - "connect" | "ls" | "read" | "pull" | "push"
- * 7: _data <HASHMAP> - op-specific (path, dest, content)
+ * 7: _opArgs <ARRAY> - op-specific strings: [path, dest, content]
  *
  * Return Value:
  * None
@@ -23,111 +24,126 @@
  * Public: No
  */
 
-params ["_clientOwner", "_rid", "_localNetId", "_targetIp", "_user", "_pass", "_op", ["_data", createHashMap, [createHashMap]]];
+params ["_clientOwner", "_rid", "_localNetId", "_targetIp", "_user", "_pass", "_op", ["_opArgs", [], [[]]]];
 
 if (!isServer) exitWith {};
+
+_opArgs params [["_argPath", ""], ["_argDest", ""], ["_argContent", ""]];
+
+private _debug = (missionNamespace getVariable [QGVAR(debug), false]) || {missionNamespace getVariable ["AE3_DebugMode", false]};
 
 private _reply = {
     params ["_cmd", "_payload"];
     ["ae3_desktop_sshReply", [_clientOwner, _rid, _cmd, _payload]] call CBA_fnc_ownerEvent;
 };
 
-private _target = objNull;
-private _local = objectFromNetId _localNetId;
+if (_debug) then {
+    diag_log text format ["[AE3 desktop] sshOpServer enter op=%1 target=%2 user=%3 rid=%4", _op, _targetIp, _user, _rid];
+};
+
 private _res = createHashMapFromArray [["error", ""]];
 
-if (isNull _local) exitWith { _res set ["error", "no_device"]; ["ssh_" + _op, _res] call _reply; };
-private _ownIp = _local getVariable ["AE3_network_address", [127, 0, 0, 1]];
-if (_targetIp isEqualTo [127, 0, 0, 1] || {_targetIp isEqualTo _ownIp}) then { _target = _local; } else { { if ((_x getVariable ["AE3_network_address", []]) isEqualTo _targetIp) exitWith { _target = _x; }; } forEach (missionNamespace getVariable ["ae3_desktop_computers", []]); };
-if (isNull _target) exitWith { _res set ["error", "no_route"]; ["ssh_" + _op, _res] call _reply; };
+// Validation failures raise a tagged error code (caught below); the engine-level exceptions are
+// reported as "internal" so the client always receives a reply rather than timing out.
+try {
+    private _local = objectFromNetId _localNetId;
+    if (isNull _local) then { throw "no_device" };
 
-if !(_target getVariable ["AE3_cap_hasTerminal", false]) exitWith {
-    _res set ["error", "no_route"]; ["ssh_" + _op, _res] call _reply;
-};
-
-if ((_target getVariable ["AE3_power_powerState", 0]) != 1) exitWith {
-    _res set ["error", "offline"]; ["ssh_" + _op, _res] call _reply;
-};
-
-// SSH must be enabled on the remote device.
-if !(_target getVariable ["AE3_ssh_enabled", true]) exitWith {
-    _res set ["error", "ssh_disabled"]; ["ssh_" + _op, _res] call _reply;
-};
-
-if (!isNull (_target getVariable ["AE3_computer_mutex", objNull]) && {_target isNotEqualTo _local}) exitWith {
-    _res set ["error", "busy"]; ["ssh_" + _op, _res] call _reply;
-};
-
-// Authenticate against the remote user list.
-private _authed = ([_target, _user, _pass, true] call AE3_desktop_fnc_authUser) getOrDefault ["ok", false];
-if (!_authed) exitWith { _res set ["error", "auth_failed"]; ["ssh_" + _op, _res] call _reply; };
-
-private _fsUser = ["root", _user] select (!(_user in ["root", "admin"]));
-private _tfs = _target getVariable ["AE3_filesystem", []];
-
-switch (_op) do {
-
-    case "connect": {
-        _res set ["ok", true];
-        _res set ["host", _target getVariable ["ace_cargo_customName", "remote"]];
+    private _ownIp = _local getVariable ["AE3_network_address", [127, 0, 0, 1]];
+    private _target = objNull;
+    if (_targetIp isEqualTo [127, 0, 0, 1] || {_targetIp isEqualTo _ownIp}) then {
+        _target = _local;
+    } else {
+        {
+            if ((_x getVariable ["AE3_network_address", []]) isEqualTo _targetIp) exitWith { _target = _x; };
+        } forEach (missionNamespace getVariable ["ae3_desktop_computers", []]);
     };
 
-    case "ls": {
-        private _path = _data getOrDefault ["path", "/"];
-        private _entries = [];
-        try {
-            ([[], _tfs, _path, _fsUser] call AE3_filesystem_fnc_chdir) params ["", "_dir"];
-            [_dir, _fsUser, 0] call AE3_filesystem_fnc_hasPermission;
-            private _content = _dir select 0;
-            private _names = keys _content; _names sort true;
-            {
-                private _child = _content get _x;
-                private _link = [(_child select 0)] call AE3_filesystem_fnc_symlinkTarget;
-                _entries pushBack createHashMapFromArray [
-                    ["name", _x], ["dir", (_child select 0) isEqualType createHashMap], ["link", _link]
-                ];
-            } forEach _names;
-            _res set ["entries", _entries];
-        } catch { _res set ["error", "denied"]; _res set ["entries", []]; };
-    };
+    if (isNull _target) then { throw "no_route" };
+    if !(_target getVariable ["AE3_cap_hasTerminal", false]) then { throw "no_route" };
+    if ((_target getVariable ["AE3_power_powerState", 0]) != 1) then { throw "offline" };
+    // SSH must be enabled on the remote device.
+    if !(_target getVariable ["AE3_ssh_enabled", true]) then { throw "ssh_disabled" };
+    if (!isNull (_target getVariable ["AE3_computer_mutex", objNull]) && {_target isNotEqualTo _local}) then { throw "busy" };
 
-    case "read": {
-        private _path = _data getOrDefault ["path", ""];
-        try {
-            private _content = [[], _tfs, _path, _fsUser, 0] call AE3_filesystem_fnc_getFile;
-            if (_content isEqualType "") then { _res set ["content", _content]; } else { _res set ["error", "not_text"]; };
-        } catch { _res set ["error", "denied"]; };
-    };
+    // Authenticate against the remote user list.
+    private _authed = ([_target, _user, _pass, true] call AE3_desktop_fnc_authUser) getOrDefault ["ok", false];
+    if (!_authed) then { throw "auth_failed" };
 
-    // Copy a remote file down to the local laptop.
-    case "pull": {
-        private _src = _data getOrDefault ["path", ""];
-        private _dest = _data getOrDefault ["dest", ""];
-        try {
-            private _content = [[], _tfs, _src, _fsUser, 0] call AE3_filesystem_fnc_getFile;
-            private _lfs = _local getVariable ["AE3_filesystem", []];
-            [[], _lfs, _dest, "", "root", "root", [[true, true, false], [true, false, false]]] call AE3_filesystem_fnc_ensureFile;
-            [[], _lfs, _dest, "root", _content, false] call AE3_filesystem_fnc_writeToFile;
-            _local setVariable ["AE3_filesystem", _lfs, 2];
+    private _fsUser = ["root", _user] select (!(_user in ["root", "admin"]));
+    private _tfs = _target getVariable ["AE3_filesystem", []];
+
+    switch (_op) do {
+
+        case "connect": {
             _res set ["ok", true];
-        } catch { _res set ["error", "denied"]; };
-    };
+            _res set ["host", _target getVariable ["ace_cargo_customName", "remote"]];
+        };
 
-    // Copy a local file up to the remote device.
-    case "push": {
-        private _src = _data getOrDefault ["path", ""];
-        private _dest = _data getOrDefault ["dest", ""];
-        try {
-            private _lfs = _local getVariable ["AE3_filesystem", []];
-            private _content = [[], _lfs, _src, "root", 0] call AE3_filesystem_fnc_getFile;
-            [[], _tfs, _dest, "", _fsUser, _fsUser, [[true, true, false], [true, false, false]]] call AE3_filesystem_fnc_ensureFile;
-            [[], _tfs, _dest, _fsUser, _content, false] call AE3_filesystem_fnc_writeToFile;
-            _target setVariable ["AE3_filesystem", _tfs, 2];
-            _res set ["ok", true];
-        } catch { _res set ["error", "denied"]; };
-    };
+        case "ls": {
+            private _path = _argPath;
+            if (_path isEqualTo "") then { _path = "/"; };
+            private _entries = [];
+            try {
+                ([[], _tfs, _path, _fsUser] call AE3_filesystem_fnc_chdir) params ["", "_dir"];
+                [_dir, _fsUser, 0] call AE3_filesystem_fnc_hasPermission;
+                private _content = _dir select 0;
+                private _names = keys _content; _names sort true;
+                {
+                    private _child = _content get _x;
+                    private _link = [(_child select 0)] call AE3_filesystem_fnc_symlinkTarget;
+                    _entries pushBack createHashMapFromArray [
+                        ["name", _x], ["dir", (_child select 0) isEqualType createHashMap], ["link", _link]
+                    ];
+                } forEach _names;
+                _res set ["entries", _entries];
+            } catch { _res set ["error", "denied"]; _res set ["entries", []]; };
+        };
 
-    default { _res set ["error", "bad_op"]; };
+        case "read": {
+            try {
+                private _content = [[], _tfs, _argPath, _fsUser, 0] call AE3_filesystem_fnc_getFile;
+                if (_content isEqualType "") then { _res set ["content", _content]; } else { _res set ["error", "not_text"]; };
+            } catch { _res set ["error", "denied"]; };
+        };
+
+        // Copy a remote file down to the local laptop.
+        case "pull": {
+            try {
+                private _content = [[], _tfs, _argPath, _fsUser, 0] call AE3_filesystem_fnc_getFile;
+                private _lfs = _local getVariable ["AE3_filesystem", []];
+                [[], _lfs, _argDest, "", "root", "root", [[true, true, false], [true, false, false]]] call AE3_filesystem_fnc_ensureFile;
+                [[], _lfs, _argDest, "root", _content, false] call AE3_filesystem_fnc_writeToFile;
+                _local setVariable ["AE3_filesystem", _lfs, 2];
+                _res set ["ok", true];
+            } catch { _res set ["error", "denied"]; };
+        };
+
+        // Copy a local file up to the remote device.
+        case "push": {
+            try {
+                private _lfs = _local getVariable ["AE3_filesystem", []];
+                private _content = [[], _lfs, _argPath, "root", 0] call AE3_filesystem_fnc_getFile;
+                [[], _tfs, _argDest, "", _fsUser, _fsUser, [[true, true, false], [true, false, false]]] call AE3_filesystem_fnc_ensureFile;
+                [[], _tfs, _argDest, _fsUser, _content, false] call AE3_filesystem_fnc_writeToFile;
+                _target setVariable ["AE3_filesystem", _tfs, 2];
+                _res set ["ok", true];
+            } catch { _res set ["error", "denied"]; };
+        };
+
+        default { _res set ["error", "bad_op"]; };
+    };
+} catch {
+    if (_exception isEqualType "") then {
+        _res set ["error", _exception];
+    } else {
+        _res set ["error", "internal"];
+        diag_log text format ["[AE3 desktop] sshOpServer exception op=%1: %2", _op, _exception];
+    };
+};
+
+if (_debug) then {
+    diag_log text format ["[AE3 desktop] sshOpServer reply op=%1 res=%2 rid=%3", _op, _res, _rid];
 };
 
 ["ssh_" + _op, _res] call _reply;
