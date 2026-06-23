@@ -440,12 +440,12 @@
                 <Chinesesimp>内容 - | 表示换行,[[url|label]] 表示链接</Chinesesimp>
             </Key>
             <Key ID="STR_AE3_Desktop_Intel_LabelCreateFromHandle">
-                <Original>Create address for sender?</Original>
-                <English>Create address for sender?</English>
+                <Original>Create and Save Sender Address?</Original>
+                <English>Create and Save Sender Address?</English>
             </Key>
             <Key ID="STR_AE3_Desktop_Intel_LabelCreateToHandle">
-                <Original>Create address for recipient?</Original>
-                <English>Create address for recipient?</English>
+                <Original>Create and Save Recipient Address?</Original>
+                <English>Create and Save Recipient Address?</English>
             </Key>
             <Key ID="STR_AE3_Desktop_Intel_LabelDate">
                 <Original>Date (YYYY-MM-DD HH:MM)</Original>
