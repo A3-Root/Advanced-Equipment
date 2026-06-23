@@ -102,7 +102,7 @@
     // images display inside the webview (above the OS surface) instead of a hidden native control.
     // Resolution order mirrors loadFile: absolute paths as-is, otherwise this addon's web root then
     // the mission root.
-    loadTexture: function (rel, maxRes) {
+    loadTexture: function (rel, maxRes, extraRoots) {
       rel = String(rel).replace(/\//g, "\\");
       var res = maxRes || 2048;
       if (typeof A3API === "undefined" || !A3API || !A3API.RequestTexture) {
@@ -116,7 +116,7 @@
         });
       }
       if (rel.charAt(0) === "\\") return requestOne(rel); // absolute - this or any other mod
-      var roots = (window.AE3_WEB_ROOTS ||
+      var roots = extraRoots || (window.AE3_WEB_ROOTS ||
         [window.AE3_WEB_ROOT || "\\z\\ae3\\addons\\desktop\\ui\\web\\", ""]).concat([""]);
       var i = 0;
       function next() {

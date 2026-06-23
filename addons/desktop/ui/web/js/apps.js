@@ -7,6 +7,17 @@
   function h(html) { var d = document.createElement("div"); d.innerHTML = html.trim(); return d.firstElementChild; }
   function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
   function joinPath(dir, name) { return (dir.replace(/\/+$/, "") + "/" + name).replace(/\/+/g, "/"); }
+  function seedIpPrefix(body, selector, currentPrefix) {
+    A3.request("sysinfo", {}).then(function (s) {
+      var gateway = String((s && s.gateway) || "");
+      var ip = String((s && s.ip) || "");
+      var source = (gateway && gateway !== "-" && gateway !== "127.0.0.1") ? gateway : ip;
+      var parts = source.split(".");
+      if (parts.length === 4 && source !== "127.0.0.1") currentPrefix.value = parts.slice(0, 3).join(".") + ".";
+      var inp = body.querySelector(selector);
+      if (inp && inp.value === "") inp.value = currentPrefix.value;
+    }).catch(function () {});
+  }
 
   // Shared file Properties dialog (owner + read/write/execute matrix for Owner and Everyone), used by
   // both the Files browser and the desktop surface so the two stay identical. `it` is { name, dir };
@@ -454,7 +465,7 @@
       var load = body.querySelector(".mload");
       img.onload = function () { load.style.display = "none"; img.style.display = "block"; };
       img.onerror = function () { load.textContent = "Cannot display this image."; };
-      A3.loadTexture(path, 2048).then(function (url) {
+      A3.loadTexture(path, 2048, ["", window.AE3_WEB_ROOT || "\\z\\ae3\\addons\\desktop\\ui\\web\\"]).then(function (url) {
         img.src = url;
       }).catch(function () { load.textContent = "Cannot load image: " + esc(name); });
     }
@@ -1602,6 +1613,45 @@
     }
   });
 
+  // ---------------- Ping ----------------
+  // Tests whether another device is reachable through the simulated AE3 network.
+  Apps.register({
+    id: "ping", title: "Ping", glyph: (Icons.network || Icons.terminal), width: 420, height: 260,
+    showInDock: true, singleton: true,
+    render: function (body) {
+      var ipPrefix = { value: "192.168.0." };
+      seedIpPrefix(body, ".pto", ipPrefix);
+      body.innerHTML =
+        '<div class="pad" style="display:flex;flex-direction:column;gap:10px;max-width:380px">' +
+          '<h3>Ping</h3>' +
+          '<input class="input pto" placeholder="Host IP" value="' + esc(ipPrefix.value) + '">' +
+          '<div><button class="btn accent pgo">Ping</button></div>' +
+          '<pre class="pout" style="min-height:76px;white-space:pre-wrap;background:#1e1e1e;padding:10px;border-radius:6px;margin:0;font-family:monospace;font-size:12px"></pre>' +
+        '</div>';
+      var input = body.querySelector(".pto");
+      var out = body.querySelector(".pout");
+      function run() {
+        var ip = input.value.trim();
+        if (ip === "") return;
+        out.textContent = "Pinging " + ip + "...";
+        A3.request("ping_host", { to: ip }).then(function (r) {
+          if (!r || (r.error && r.error !== "")) {
+            out.textContent = {
+              bad_addr: "Invalid address.",
+              no_route: "Package dropped."
+            }[r && r.error] || "Package dropped.";
+            return;
+          }
+          var routeLength = Math.round(Number(r.routeLength || 0));
+          var ms = Math.round(routeLength / 1e5);
+          out.textContent = "Reply from " + ip + " (" + (r.host || "remote") + ")\nroute=" + routeLength + "m time=" + ms + "ms";
+        }).catch(function () { out.textContent = "Ping timed out."; });
+      }
+      body.querySelector(".pgo").addEventListener("click", run);
+      input.addEventListener("keydown", function (e) { if (e.key === "Enter") run(); });
+    }
+  });
+
   // ---------------- SSH ----------------
   // Connect to another SSH-enabled device on the network, then browse/copy files between the local
   // laptop (left pane) and the remote device (right pane).
@@ -1610,21 +1660,13 @@
     showInDock: true, singleton: true,
     render: function (body, win) {
       var conn = null; // { to, user, pass }
-      var ipPrefix = "192.168.0.";
-      A3.request("sysinfo", {}).then(function (s) {
-        var gateway = String((s && s.gateway) || "");
-        var ip = String((s && s.ip) || "");
-        var source = (gateway && gateway !== "-" && gateway !== "127.0.0.1") ? gateway : ip;
-        var parts = source.split(".");
-        if (parts.length === 4 && source !== "127.0.0.1") ipPrefix = parts.slice(0, 3).join(".") + ".";
-        var inp = body.querySelector(".sto");
-        if (inp && inp.value === "") inp.value = ipPrefix;
-      }).catch(function () {});
+      var ipPrefix = { value: "192.168.0." };
+      seedIpPrefix(body, ".sto", ipPrefix);
       function showConnect(msg) {
         body.innerHTML =
           '<div class="pad" style="display:flex;flex-direction:column;gap:8px;max-width:360px">' +
             '<h3>Connect via SSH</h3>' +
-            '<input class="input sto" placeholder="Host IP" value="' + esc(ipPrefix) + '">' +
+            '<input class="input sto" placeholder="Host IP" value="' + esc(ipPrefix.value) + '">' +
             '<input class="input suser" placeholder="Username">' +
             '<input class="input spass" type="password" placeholder="Password">' +
             '<div><button class="btn accent sgo">Connect</button> <span class="muted smsg">' + (msg || "") + '</span></div>' +

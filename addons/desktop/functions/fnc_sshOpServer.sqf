@@ -49,15 +49,7 @@ try {
     private _local = objectFromNetId _localNetId;
     if (isNull _local) then { throw "no_device" };
 
-    private _ownIp = _local getVariable ["AE3_network_address", [127, 0, 0, 1]];
-    private _target = objNull;
-    if (_targetIp isEqualTo [127, 0, 0, 1] || {_targetIp isEqualTo _ownIp}) then {
-        _target = _local;
-    } else {
-        {
-            if ((_x getVariable ["AE3_network_address", []]) isEqualTo _targetIp) exitWith { _target = _x; };
-        } forEach (missionNamespace getVariable ["ae3_desktop_computers", []]);
-    };
+    ([_local, _targetIp] call AE3_network_fnc_ping) params ["_target"];
 
     if (isNull _target) then { throw "no_route" };
     if !(_target getVariable ["AE3_cap_hasTerminal", false]) then { throw "no_route" };

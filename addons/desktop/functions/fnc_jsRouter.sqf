@@ -352,6 +352,21 @@ switch (_command) do {
         [_sres] call _reply;
     };
 
+    case "ping_host": {
+        private _ipParts = (_data getOrDefault ["to", ""]) splitString ".";
+        private _targetIp = _ipParts apply { parseNumber _x };
+        private _pres = createHashMapFromArray [["error", ""]];
+        if (isNull _computer || {count _ipParts != 4} || {_ipParts findIf {!(_x regexMatch "^[0-9]{1,3}$") || {(parseNumber _x) > 255}} >= 0}) exitWith { _pres set ["error", "bad_addr"]; [_pres] call _reply; };
+
+        ([_computer, _targetIp] call AE3_network_fnc_ping) params ["_target", "_routeLength"];
+        if (isNull _target) exitWith { _pres set ["error", "no_route"]; [_pres] call _reply; };
+
+        _pres set ["ok", true];
+        _pres set ["host", _target getVariable ["ace_cargo_customName", "remote"]];
+        _pres set ["routeLength", _routeLength];
+        [_pres] call _reply;
+    };
+
     // SSH client ops: connect + remote filesystem browse/copy. Resolve the target IP, then run
     // server-side (auth against the remote user list); the server replies async via ae3_desktop_sshReply.
     case "ssh_connect";
@@ -360,9 +375,10 @@ switch (_command) do {
     case "ssh_pull";
     case "ssh_push": {
         private _op = _command select [4]; // strip "ssh_"
-        private _targetIp = ((_data getOrDefault ["to", ""]) splitString ".") apply { parseNumber _x };
+        private _ipParts = (_data getOrDefault ["to", ""]) splitString ".";
+        private _targetIp = _ipParts apply { parseNumber _x };
         private _sres = createHashMapFromArray [["error", ""]];
-        if (isNull _computer || {count _targetIp != 4}) exitWith { _sres set ["error", "bad_addr"]; [_sres] call _reply; };
+        if (isNull _computer || {count _ipParts != 4} || {_ipParts findIf {!(_x regexMatch "^[0-9]{1,3}$") || {(parseNumber _x) > 255}} >= 0}) exitWith { _sres set ["error", "bad_addr"]; [_sres] call _reply; };
         // The server resolves the target device from the IP (topology-agnostic) and replies async
         // via ae3_desktop_sshReply. Only plain strings are passed across the network event (no
         // HashMap) so the payload serializes reliably in multiplayer.

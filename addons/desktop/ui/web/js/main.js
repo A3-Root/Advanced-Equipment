@@ -1,5 +1,5 @@
 /*
- * AE3 web desktop boot. Shows the login screen (per-user filesystem, issue #9), authenticates
+ * AE3 web desktop boot. Shows the login screen for per-user filesystem access, authenticates
  * against the AE3 user list via the SQF backend (A3.request "login"), then starts the desktop.
  * SQF can also push "boot" with session info to skip/seed login.
  */
