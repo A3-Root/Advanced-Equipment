@@ -448,7 +448,7 @@
   // the desktop webview (A3.loadTexture -> base64 data URL), so it appears above the OS surface
   // rather than behind it like a native control would.
   Apps.register({
-    id: "media", title: "Image Viewer", glyph: Icons.files, width: 720, height: 540,
+    id: "media", title: "Image Viewer", glyph: Icons.image, width: 720, height: 540,
     showInDock: false,
     render: function (body, win, args) {
       var path = (args && args.path) || "";
@@ -465,7 +465,10 @@
       var load = body.querySelector(".mload");
       img.onload = function () { load.style.display = "none"; img.style.display = "block"; };
       img.onerror = function () { load.textContent = "Cannot display this image."; };
-      A3.loadTexture(path, 2048, ["", window.AE3_WEB_ROOT || "\\z\\ae3\\addons\\desktop\\ui\\web\\"]).then(function (url) {
+      // A registered source can be absolute (\myMod\img.paa), addon-relative, or mission-relative
+      // (media\images\pic.jpg). Try the path as mission-relative, as a VFS-absolute path (leading
+      // backslash) and finally under this addon's web root so any valid form resolves.
+      A3.loadTexture(path, 2048, ["", "\\", window.AE3_WEB_ROOT || "\\z\\ae3\\addons\\desktop\\ui\\web\\"]).then(function (url) {
         img.src = url;
       }).catch(function () { load.textContent = "Cannot load image: " + esc(name); });
     }
@@ -1616,7 +1619,7 @@
   // ---------------- Ping ----------------
   // Tests whether another device is reachable through the simulated AE3 network.
   Apps.register({
-    id: "ping", title: "Ping", glyph: (Icons.network || Icons.terminal), width: 420, height: 260,
+    id: "ping", title: "Ping", glyph: (Icons.ping || Icons.terminal), width: 420, height: 260,
     showInDock: true, singleton: true,
     render: function (body) {
       var ipPrefix = { value: "192.168.0." };

@@ -56,11 +56,15 @@ if (count _parts != 2) exitWith
 };
 _parts params ["_user", "_ipString"];
 
-private _targetIp = (_ipString splitString ".") apply { parseNumber _x };
-if (count _targetIp != 4) exitWith
+private _targetIp = [_ipString] call AE3_network_fnc_str2ip;
+if (_targetIp isEqualTo []) exitWith
 {
 	[_computer, format [localize "STR_AE3_ArmaOS_Ssh_InvalidAddress", _ipString]] call AE3_armaos_fnc_shell_stdout;
 	[_computer] call AE3_armaos_fnc_shell_playErrorSound;
+};
+
+if (AE3_DebugMode || {missionNamespace getVariable ["AE3_NetworkDebugEnabled", false]}) then {
+	diag_log text format ["[AE3][ROUTE] ssh source=%1#%2 target=%3 user=%4", [_computer, true] call ace_cargo_fnc_getNameItem, netId _computer, [_targetIp] call AE3_network_fnc_ip2str, _user];
 };
 
 // Route to the target over the simulated network

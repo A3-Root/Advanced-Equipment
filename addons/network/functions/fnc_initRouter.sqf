@@ -128,7 +128,26 @@ if (!isDedicated && !_internal) then
 		_entity setVariable ["AE3_network_password", _entity getVariable "AE3_network_password", true];
 	 };
 
-	 _entity setVariable ["AE3_network_address", _address, true];
+	 // Default gateway. A value pre-set by an Eden attribute or the placement module is honoured;
+	 // otherwise each independently placed (root) router is handed the next /24 so two routers never
+	 // share a subnet: 1st -> 192.168.0.1, 2nd -> 192.168.1.1, and so on. Cascaded child routers keep
+	 // the address they were initialised with.
+	 private _gateway = _address;
+	 if (isNull _parent) then
+	 {
+		private _preset = _entity getVariable ["AE3_network_address", []];
+		if (count _preset == 4 && {(_preset findIf { !(_x isEqualType 0) || {_x < 0} || {_x > 255} }) == -1}) then
+		{
+			_gateway = _preset;
+		}
+		else
+		{
+			private _idx = missionNamespace getVariable ["AE3_network_rootRouterCount", 0];
+			_gateway = [192, 168, _idx % 256, 1];
+			missionNamespace setVariable ["AE3_network_rootRouterCount", _idx + 1];
+		};
+	 };
+	 _entity setVariable ["AE3_network_address", _gateway, true];
 
 	 _entity setVariable ["AE3_network_parent", _parent, true];
 

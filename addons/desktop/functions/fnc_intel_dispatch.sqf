@@ -8,7 +8,6 @@
  *  "email"    - f1: From, f2: To, f3: Subject, f4: Body
  *  "webpage"  - f1: URL,  f2: Title,   f3: Content ("|" separates lines)
  *  "history"  - f1: URL,  f2: Time (optional, "HH:MM")
- *  "calendar" - f1: Date, f2: Title,   f3: Details
  *  "media"    - f1: Source path, f2: image|video|audio, f3: filesystem destination
  *  "lockedfile" - f1: filesystem path, f2: password, f3: content, f4: owner, f5: permissions
  *
@@ -58,10 +57,6 @@ switch (toLower _type) do
 	case "history":
 	{
 		[_target, _f1, _f2] call AE3_desktop_fnc_addHistoryEntry;
-	};
-	case "calendar":
-	{
-		[_target, _f1, _f2, _f3] call AE3_desktop_fnc_addCalendarEvent;
 	};
 	case "media":
 	{

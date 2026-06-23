@@ -101,6 +101,17 @@ class AE3_UserInterface_Zeus_Module_AddIntel
 			w = 39 * GUI_GRID_W;
 			h = 1 * GUI_GRID_H;
 		};
+		// Media-type picker: replaces the second field for the "media" type so the kind is chosen
+		// from a list instead of typed. Hidden by default; shown (with edit 1402 hidden) for media.
+		class RscCombo_1602: RscCombo
+		{
+			idc = 1602;
+			x = 0.5 * GUI_GRID_W + GUI_GRID_X;
+			y = 7.5 * GUI_GRID_H + GUI_GRID_Y;
+			w = 39 * GUI_GRID_W;
+			h = 1 * GUI_GRID_H;
+			onLoad = "params ['_control']; _control ctrlShow false;";
+		};
 
 		class RscText_1712: RscText
 		{

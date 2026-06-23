@@ -1,7 +1,5 @@
 /* Module Functions */
 PREP(module_addUser);
-PREP(module_addSecurityCommands);
-PREP(module_addGames);
 PREP(module_addCalendarEvent);
 PREP(module_saveLaptop);
 PREP(module_restoreLaptop);
@@ -59,6 +57,8 @@ PREP(computer_turnOff);
 PREP(computer_addUser);
 PREP(computer_addSecurityCommands);
 PREP(computer_addGames);
+PREP(attr_addSecurityCommands);
+PREP(attr_addGames);
 PREP(computer_addCustomCommand);
 PREP(computer_initWithCommands);
 

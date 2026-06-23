@@ -251,9 +251,12 @@ if (isNull _entity) exitWith {};
             private _range = _r getVariable ["AE3_network_wirelessRange", 100];
             if ((_entity distance _r) <= _range) then
             {
-                private _name = [_r, true] call ace_cargo_fnc_getNameItem;
+                private _objName = [_r, false] call ace_cargo_fnc_getNameItem;
+                private _networkName = _r getVariable ["ace_cargo_customName", ""];
                 private _ip = [_r getVariable ["AE3_network_address", [192, 168, 0, 1]]] call AE3_network_fnc_ip2str;
-                private _i = _rtComboCtrl lbAdd format ["%1 (%2)", _name, _ip];
+                // Lead with the network (SSID) name so routers read as "Test (12.12.44.212) [Rugged Router (Black)]".
+                private _label = if (_networkName isEqualTo "") then { format ["%1 (%2)", _objName, _ip] } else { format ["%1 (%2) [%3]", _networkName, _ip, _objName] };
+                private _i = _rtComboCtrl lbAdd _label;
                 _rtComboCtrl lbSetData [_i, netId _r];
                 if (_r isEqualTo _parent) then { _rtComboCtrl lbSetCurSel _i; };
             };

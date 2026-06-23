@@ -636,24 +636,6 @@
                 <German>Schutz dauerhaft entfernen (Datei wird neu geschrieben)</German>
                 <Chinesesimp>永久移除保护(重写文件)</Chinesesimp>
             </Key>
-            <Key ID="STR_AE3_ArmaOS_Config_AddGamesDisplayName">
-                <Original>AE3 Add Games</Original>
-                <English>AE3 Add Games</English>
-                <French>AE3 Ajouter des jeux</French>
-                <Italian>AE3 Aggiungi giochi</Italian>
-                <Russian>AE3 Add Games</Russian>
-                <German>AE3 Spiele hinzufügen</German>
-                <Chinesesimp>AE3添加游戏</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_Config_AddSecurityCommandsDisplayName">
-                <Original>AE3 Add Security Commands</Original>
-                <English>AE3 Add Security Commands</English>
-                <French>AE3 Ajouter des commandes de sécurité</French>
-                <Italian>AE3 Aggiungi comandi di sicurezza</Italian>
-                <Russian>AE3 Add Security Commands</Russian>
-                <German>AE3 Security-Befehle hinzufügen</German>
-                <Chinesesimp>AE3添加安全命令</Chinesesimp>
-            </Key>
             <Key ID="STR_AE3_ArmaOS_Config_AddUserDisplayName">
                 <Original>AE3 Add User</Original>
                 <English>AE3 Add User</English>
@@ -1275,15 +1257,6 @@
                 <German>Laptop</German>
                 <Chinesesimp>笔记本电脑</Chinesesimp>
             </Key>
-            <Key ID="STR_AE3_ArmaOS_Config_ModuleAddGamesDescription">
-                <Original>This module adds games to an armaOS computer. Simply sync this module to a supported computer.</Original>
-                <English>This module adds games to an armaOS computer. Simply sync this module to a supported computer.</English>
-                <French>Ce module ajoute des jeux à un ordinateur armaOS. Synchronisez simplement ce module avec un ordinateur pris en charge.</French>
-                <Italian>Questo modulo aggiunge giochi ad un computer armaOS. Semplicemente sincronizza questo modulo ad un computer supportato.</Italian>
-                <Russian>Этот модуль добавляет компьютерные игры в armaOS. Просто синхронизируйте этот модуль с поддерживаемым компьютером.</Russian>
-                <German>Dieses Modul fügt einem armaOS Computer Spiele hinzu. Synchronisiere einfach dieses Modul mit einem unterstützten Computer.</German>
-                <Chinesesimp>这个模块将游戏添加到armaOS电脑中.只需将这个模块同步到目标电脑上.</Chinesesimp>
-            </Key>
             <Key ID="STR_AE3_ArmaOS_Config_ModuleAddGamesSnakeTooltip">
                 <Original>The 'snake' game. Eat fruits while getting longer and longer. Don't collide with yourself or the walls.</Original>
                 <English>The 'snake' game. Eat fruits while getting longer and longer. Don't collide with yourself or the walls.</English>
@@ -1310,15 +1283,6 @@
                 <Russian>Команда "crypto" позволяет вам шифровать и расшифровывать сообщения.</Russian>
                 <German>Der 'crypto' Befehl ermöglicht Nachrichten zu ver- und entschlüsseln.</German>
                 <Chinesesimp>'crypto' 命令能让你对信息进行加密和解密.</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_Config_ModuleAddSecurityCommandsDescription">
-                <Original>This module adds security commands to an armaOS computer. Simply sync this module to a supported computer.</Original>
-                <English>This module adds security commands to an armaOS computer. Simply sync this module to a supported computer.</English>
-                <French>Ce module ajoute des commandes de sécurité à un ordinateur armaOS. Synchronisez simplement ce module avec un ordinateur pris en charge.</French>
-                <Italian>Questo modulo aggiunge comandi di security ad un computer armaOS. Semplicemente sincronizza il modulo con un computer supportato.</Italian>
-                <Russian>Этот модуль добавляет команды безопасности к компьютеру armaOS. Просто синхронизируйте этот модуль с поддерживаемым компьютером.</Russian>
-                <German>Dieses Modul fügt Security-Befehle zu einem armaOS Computer hinzu. Synchronisiere einfach dieses Modul mit einem unterstützten Computer.</German>
-                <Chinesesimp>这个模块将安全指令添加到armaOS电脑中.只需将这个模块同步到目标电脑上.</Chinesesimp>
             </Key>
             <Key ID="STR_AE3_ArmaOS_Config_ModuleAddUserDescription">
                 <Original>This module defines users for an armaOS computer. Simply sync one or more of these modules to a supported computer.</Original>

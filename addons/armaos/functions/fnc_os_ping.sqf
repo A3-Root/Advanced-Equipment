@@ -33,13 +33,13 @@ private _ae3OptsSuccess = false; private _ae3OptsThings = [];
 
 if (!_ae3OptsSuccess) exitWith {};
 
-private _address = (_ae3OptsThings select 0) splitString ".";
+private _address = [_ae3OptsThings select 0] call AE3_network_fnc_str2ip;
 
-if (count _address != 4) exitWith { [_computer, localize "STR_AE3_ArmaOS_Exception_InvalidAddress"] call AE3_armaos_fnc_shell_stdout };
+if (_address isEqualTo []) exitWith { [_computer, localize "STR_AE3_ArmaOS_Exception_InvalidAddress"] call AE3_armaos_fnc_shell_stdout };
 
-{
-	_address set [_forEachIndex, parseNumber _x];
-}forEach _address;
+if (AE3_DebugMode || {missionNamespace getVariable ["AE3_NetworkDebugEnabled", false]}) then {
+	diag_log text format ["[AE3][ROUTE] ping source=%1#%2 target=%3", [_computer, true] call ace_cargo_fnc_getNameItem, netId _computer, [_address] call AE3_network_fnc_ip2str];
+};
 
 private _result = [_computer, _address, _computer] call AE3_network_fnc_ping;
 

@@ -13,9 +13,7 @@ class CfgPatches
                 "AE3_AddUser",
                 "AE3_AddCalendarEvent",
                 "AE3_SaveLaptop",
-                "AE3_RestoreLaptop",
-                "AE3_AddSecurityCommands",
-                "AE3_AddGames"
+                "AE3_RestoreLaptop"
             };
         weapons[] = {"Item_Laptop_AE3"};
         requiredVersion = REQUIRED_VERSION;

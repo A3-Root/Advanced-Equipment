@@ -6,6 +6,7 @@ PREP(initNetworkDevice);
 PREP(initRouter);
 PREP(router_onTurnOff);
 PREP(applyRouterConfig);
+PREP(attr_router);
 PREP(router_openConfig);
 PREP(router_applyConfigDialog);
 
@@ -23,6 +24,7 @@ PREP(dhcp_onTurnOn);
 
 /* Generic */
 PREP(ip2str);
+PREP(str2ip);
 
 /* Connections */
 PREP(createNetworkConnection);

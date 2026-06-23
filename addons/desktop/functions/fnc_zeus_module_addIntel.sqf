@@ -44,11 +44,23 @@ if (_event isEqualTo "onLoad") exitWith
 		["email", localize "STR_AE3_Desktop_Intel_Email"],
 		["webpage", localize "STR_AE3_Desktop_Intel_Webpage"],
 		["history", localize "STR_AE3_Desktop_Intel_History"],
-		["calendar", localize "STR_AE3_Desktop_Intel_Calendar"],
 		["media", localize "STR_AE3_Desktop_Intel_Media"],
 		["lockedfile", localize "STR_AE3_Desktop_Intel_LockedFile"]
 	];
 	_combo lbSetCurSel 0;
+
+	// Media kind picker (image/video/audio): populated once, shown only for the "media" type.
+	private _mediaCombo = _display displayCtrl 1602;
+	{
+		_x params ["_mediaId", "_mediaLabel"];
+		private _mi = _mediaCombo lbAdd _mediaLabel;
+		_mediaCombo lbSetData [_mi, _mediaId];
+	} forEach [
+		["image", localize "STR_AE3_Desktop_Intel_MediaImage"],
+		["video", localize "STR_AE3_Desktop_Intel_MediaVideo"],
+		["audio", localize "STR_AE3_Desktop_Intel_MediaAudio"]
+	];
+	_mediaCombo lbSetCurSel 0;
 
 	// Per-type field labels
 	private _updateLabels = {
@@ -59,7 +71,6 @@ if (_event isEqualTo "onLoad") exitWith
 		{
 			case "webpage":  { [localize "STR_AE3_Desktop_Intel_LabelUrl", localize "STR_AE3_Desktop_Intel_LabelTitle", localize "STR_AE3_Desktop_Intel_LabelContent"] };
 			case "history":  { [localize "STR_AE3_Desktop_Intel_LabelUrl", localize "STR_AE3_Desktop_Intel_LabelTime", ""] };
-			case "calendar": { [localize "STR_AE3_Desktop_Intel_LabelDate", localize "STR_AE3_Desktop_Intel_LabelTitle", localize "STR_AE3_Desktop_Intel_LabelDetails"] };
 			case "media":    { [localize "STR_AE3_Desktop_Intel_LabelSource", localize "STR_AE3_Desktop_Intel_LabelMediaType", localize "STR_AE3_Desktop_Intel_LabelDest"] };
 			case "lockedfile": { [localize "STR_AE3_Desktop_Intel_LabelDest", localize "STR_AE3_Desktop_Intel_LabelPassword", localize "STR_AE3_Desktop_Intel_LabelContent"] };
 			default          { [localize "STR_AE3_Desktop_Intel_LabelFrom", localize "STR_AE3_Desktop_Intel_LabelTo", localize "STR_AE3_Desktop_Intel_LabelSubject"] };
@@ -69,6 +80,10 @@ if (_event isEqualTo "onLoad") exitWith
 		(_display displayCtrl 1712) ctrlSetText (_labels select 2);
 		private _isEmail = _type isEqualTo "email";
 		private _isLocked = _type isEqualTo "lockedfile";
+		// Media uses the kind dropdown (1602) in place of the second text field (1402).
+		private _isMedia = _type isEqualTo "media";
+		(_display displayCtrl 1602) ctrlShow _isMedia;
+		(_display displayCtrl 1402) ctrlShow (!_isMedia);
 		(_display displayCtrl 1713) ctrlSetText (localize "STR_AE3_Desktop_Intel_LabelBody");
 		// email-only: body field
 		{
@@ -152,6 +167,17 @@ if (_event isEqualTo "onUnload") exitWith
 	private _combo = _display displayCtrl 1702;
 	private _type = _combo lbData (lbCurSel _combo);
 
+	// For media the second field is taken from the kind dropdown; every other type reads the edit.
+	private _field2 = if (_type isEqualTo "media") then
+	{
+		private _mediaCombo = _display displayCtrl 1602;
+		_mediaCombo lbData (lbCurSel _mediaCombo)
+	}
+	else
+	{
+		ctrlText (_display displayCtrl 1402)
+	};
+
 	private _f5 = if (_type isEqualTo "email") then
 	{
 		[ctrlText (_display displayCtrl 1405), cbChecked (_display displayCtrl 1317), cbChecked (_display displayCtrl 1318)]
@@ -176,7 +202,7 @@ if (_event isEqualTo "onUnload") exitWith
 		_type,
 		_target,
 		ctrlText (_display displayCtrl 1401),
-		ctrlText (_display displayCtrl 1402),
+		_field2,
 		ctrlText (_display displayCtrl 1403),
 		[ctrlText (_display displayCtrl 1404), ctrlText (_display displayCtrl 1405)] select (_type isEqualTo "lockedfile"),
 		_f5

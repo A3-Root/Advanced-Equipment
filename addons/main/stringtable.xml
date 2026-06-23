@@ -880,42 +880,6 @@
                 <German>Dieses Modul fügt eine Datei zu einem Objekt hinzu, das Dateisysteme unterstützt, wie Computer.</German>
                 <Chinesesimp>此模块将文件添加到支持文件系统的对象(如计算机).</Chinesesimp>
             </Key>
-            <Key ID="STR_AE3_Main_Zeus_Module_AddGames">
-                <Original>AE3 Add Games</Original>
-                <English>AE3 Add Games</English>
-                <French>AE3 Ajouter des jeux</French>
-                <Italian>AE3 Aggiungi giochi</Italian>
-                <Russian>AE3 Add Games</Russian>
-                <German>AE3 Spiele hinzufügen</German>
-                <Chinesesimp>AE3添加游戏</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_Main_Zeus_Module_AddGames_Description">
-                <Original>This module adds games to an armaOS computer.</Original>
-                <English>This module adds games to an armaOS computer.</English>
-                <French>Ce module ajoute des jeux à un ordinateur armaOS.</French>
-                <Italian>Questo modulo aggiunge giochi ad un computer armaOS.</Italian>
-                <Russian>Этот модуль добавляет компьютерные игры в armaOS.</Russian>
-                <German>Dieses Modul fügt einem armaOS Computer Spiele hinzu.</German>
-                <Chinesesimp>这个模块将游戏添加到armaOS电脑中.</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_Main_Zeus_Module_AddSecurityCommands">
-                <Original>AE3 Add Security Commands</Original>
-                <English>AE3 Add Security Commands</English>
-                <French>AE3 Ajouter des commandes de sécurité</French>
-                <Italian>AE3 Aggiungi comandi di sicurezza</Italian>
-                <Russian>AE3 Add Security Commands</Russian>
-                <German>AE3 Security-Befehle hinzufügen</German>
-                <Chinesesimp>AE3添加安全命令</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_Main_Zeus_Module_AddSecurityCommands_Description">
-                <Original>This module adds security commands to an armaOS computer.</Original>
-                <English>This module adds security commands to an armaOS computer.</English>
-                <French>Ce module ajoute des commandes de sécurité à un ordinateur armaOS.</French>
-                <Italian>Questo modulo aggiunge comandi di security ad un computer armaOS.</Italian>
-                <Russian>Этот модуль добавляет команды безопасности к компьютеру armaOS.</Russian>
-                <German>Dieses Modul fügt Security-Befehle zu einem armaOS Computer hinzu.</German>
-                <Chinesesimp>这个模块将安全指令添加到armaOS电脑中.</Chinesesimp>
-            </Key>
             <Key ID="STR_AE3_Main_Zeus_Module_AddUser">
                 <Original>AE3 Add User</Original>
                 <English>AE3 Add User</English>

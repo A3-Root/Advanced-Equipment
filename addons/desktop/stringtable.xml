@@ -394,15 +394,6 @@
                 <German>Dies ist eine ausführbare Datei - im Terminal ausführen</German>
                 <Chinesesimp>这是可执行文件 - 请在终端应用中运行</Chinesesimp>
             </Key>
-            <Key ID="STR_AE3_Desktop_Intel_Calendar">
-                <Original>Calendar entry</Original>
-                <English>Calendar entry</English>
-                <French>Entrée de calendrier</French>
-                <Italian>Voce di calendario</Italian>
-                <Russian>Calendar entry</Russian>
-                <German>Kalendereintrag</German>
-                <Chinesesimp>日历条目</Chinesesimp>
-            </Key>
             <Key ID="STR_AE3_Desktop_Intel_Email">
                 <Original>Email</Original>
                 <English>Email</English>
@@ -447,15 +438,6 @@
                 <Original>Create and Save Recipient Address?</Original>
                 <English>Create and Save Recipient Address?</English>
             </Key>
-            <Key ID="STR_AE3_Desktop_Intel_LabelDate">
-                <Original>Date (YYYY-MM-DD HH:MM)</Original>
-                <English>Date (YYYY-MM-DD HH:MM)</English>
-                <French>Date (AAAA-MM-JJ HH:MM)</French>
-                <Italian>Data (AAAA-MM-GG HH:MM)</Italian>
-                <Russian>Date (YYYY-MM-DD HH:MM)</Russian>
-                <German>Datum (JJJJ-MM-TT HH:MM)</German>
-                <Chinesesimp>日期(YYYY-MM-DD HH:MM)</Chinesesimp>
-            </Key>
             <Key ID="STR_AE3_Desktop_Intel_LabelDest">
                 <Original>Save to path (e.g. /home/user/file.txt)</Original>
                 <English>Save to path (e.g. /home/user/file.txt)</English>
@@ -464,15 +446,6 @@
                 <Russian>Save to path (e.g. /home/user/file.txt)</Russian>
                 <German>Speichern unter (z. B. /home/user/file.txt)</German>
                 <Chinesesimp>保存到路径(例如 /home/user/file.txt)</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_Desktop_Intel_LabelDetails">
-                <Original>Details</Original>
-                <English>Details</English>
-                <French>Détails</French>
-                <Italian>Dettagli</Italian>
-                <Russian>Details</Russian>
-                <German>Details</German>
-                <Chinesesimp>详情</Chinesesimp>
             </Key>
             <Key ID="STR_AE3_Desktop_Intel_LabelEveryone">
                 <Original>Everyone</Original>
@@ -618,6 +591,33 @@
                 <Russian>Media file</Russian>
                 <German>Mediendatei</German>
                 <Chinesesimp>媒体文件</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Intel_MediaAudio">
+                <Original>Audio</Original>
+                <English>Audio</English>
+                <French>Audio</French>
+                <Italian>Audio</Italian>
+                <Russian>Audio</Russian>
+                <German>Audio</German>
+                <Chinesesimp>音频</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Intel_MediaImage">
+                <Original>Image</Original>
+                <English>Image</English>
+                <French>Image</French>
+                <Italian>Immagine</Italian>
+                <Russian>Image</Russian>
+                <German>Bild</German>
+                <Chinesesimp>图像</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Intel_MediaVideo">
+                <Original>Video</Original>
+                <English>Video</English>
+                <French>Vidéo</French>
+                <Italian>Video</Italian>
+                <Russian>Video</Russian>
+                <German>Video</German>
+                <Chinesesimp>视频</Chinesesimp>
             </Key>
             <Key ID="STR_AE3_Desktop_Intel_TargetAll">
                 <Original>all laptops</Original>

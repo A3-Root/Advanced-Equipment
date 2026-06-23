@@ -1,3 +1,56 @@
+// Router wireless configuration exposed as 3DEN object attributes (replacing the old Configure
+// Router module). Applied at mission start via AE3_network_fnc_attr_router. A blank Network Name or
+// Gateway keeps the auto-assigned value, so each placed router still gets its own incrementing
+// subnet unless explicitly overridden. Shared by every router variant.
+#define AE3_ROUTER_CONFIG_ATTRIBUTES \
+	class Attributes \
+	{ \
+		class AE3_RouterSsid \
+		{ \
+			displayName = "Network Name (SSID)"; \
+			tooltip = "Wireless network name. Leave blank to keep the default object name."; \
+			property = "AE3_RouterSsid"; \
+			control = "Edit"; \
+			expression = "[_this, 'ssid', _value] call AE3_network_fnc_attr_router;"; \
+			defaultValue = """"""; \
+			typeName = "STRING"; \
+			condition = "1"; \
+		}; \
+		class AE3_RouterGateway \
+		{ \
+			displayName = "Default Gateway"; \
+			tooltip = "Default gateway, e.g. 192.168.0.1. Leave blank to keep the auto-assigned subnet."; \
+			property = "AE3_RouterGateway"; \
+			control = "Edit"; \
+			expression = "[_this, 'gateway', _value] call AE3_network_fnc_attr_router;"; \
+			defaultValue = """"""; \
+			typeName = "STRING"; \
+			condition = "1"; \
+		}; \
+		class AE3_RouterRange \
+		{ \
+			displayName = "Wifi Range (m)"; \
+			tooltip = "Maximum distance (m) at which laptops can connect to this router."; \
+			property = "AE3_RouterRange"; \
+			control = "Edit"; \
+			expression = "[_this, 'range', _value] call AE3_network_fnc_attr_router;"; \
+			defaultValue = "100"; \
+			typeName = "NUMBER"; \
+			condition = "1"; \
+		}; \
+		class AE3_RouterPassword \
+		{ \
+			displayName = "Network Password"; \
+			tooltip = "Password required to connect. Leave blank for an open network."; \
+			property = "AE3_RouterPassword"; \
+			control = "Edit"; \
+			expression = "[_this, 'password', _value] call AE3_network_fnc_attr_router;"; \
+			defaultValue = """"""; \
+			typeName = "STRING"; \
+			condition = "1"; \
+		}; \
+	};
+
 class CfgVehicles
 {
 	/* ================================================================================ */
@@ -11,6 +64,8 @@ class CfgVehicles
 		editorCategory = "AE3_Assets";
 
 		curatorInfoTypeEmpty = "AE3_UserInterface_Zeus_Asset_Details";
+
+		AE3_ROUTER_CONFIG_ATTRIBUTES
 
 		class AE3_Device
 		{
@@ -88,6 +143,8 @@ class CfgVehicles
 
 		curatorInfoTypeEmpty = "AE3_UserInterface_Zeus_Asset_Details";
 
+		AE3_ROUTER_CONFIG_ATTRIBUTES
+
 		class AE3_Device
 		{
 			displayName = "$STR_AE3_Network_Config_RouterDisplayName";
@@ -163,6 +220,8 @@ class CfgVehicles
 		editorCategory = "AE3_Assets";
 
 		curatorInfoTypeEmpty = "AE3_UserInterface_Zeus_Asset_Details";
+
+		AE3_ROUTER_CONFIG_ATTRIBUTES
 
 		class AE3_Device
 		{

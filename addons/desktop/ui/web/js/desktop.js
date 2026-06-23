@@ -23,7 +23,7 @@
     settings: "System & Core Utilities", network: "System & Core Utilities",
     ping: "System & Core Utilities", ssh: "System & Core Utilities", about: "System & Core Utilities",
     notepad: "Productivity & Files", calculator: "Productivity & Files", calendar: "Productivity & Files",
-    files: "Productivity & Files", recyclebin: "Productivity & Files",
+    files: "Productivity & Files", recyclebin: "Productivity & Files", media: "Productivity & Files",
     browser: "Communication & Web", mail: "Communication & Web", messenger: "Communication & Web", map: "Communication & Web",
     snake: "Games & Entertainment",
     crypto: "Cryptography", crack: "Cryptography"
@@ -32,7 +32,7 @@
   // the last category here. My Computer is intentionally not menu-listed (it lives on the desktop/dock).
   var CATEGORY_ORDER = ["System & Core Utilities", "Productivity & Files", "Communication & Web", "Games & Entertainment", "Cryptography", "Hacking Tools"];
   var APP_ORDER = ["settings", "network", "ping", "ssh", "about",
-    "notepad", "calculator", "calendar", "files", "recyclebin",
+    "notepad", "calculator", "calendar", "files", "recyclebin", "media",
     "browser", "mail", "messenger", "map", "snake", "crypto", "crack"];
   function appRank(app) { var i = APP_ORDER.indexOf(app.id); return i < 0 ? 999 : i; }
 

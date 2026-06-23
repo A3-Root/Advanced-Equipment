@@ -32,6 +32,8 @@
     power:    svg('<path d="M12 3v9" /><path d="M7.5 6.5a7 7 0 1 0 9 0"/>'),
     battery:  svg('<rect x="2.5" y="8" width="16" height="8" rx="1.5"/><path d="M20.5 11v2"/><rect x="4.5" y="10" width="9" height="4" fill="currentColor" stroke="none"/>'),
     wifi:     svg('<path d="M2 8.5a16 16 0 0 1 20 0M5 12a11 11 0 0 1 14 0M8.5 15.5a6 6 0 0 1 7 0"/><circle cx="12" cy="19" r="1" fill="currentColor" stroke="none"/>'),
+    ping:     svg('<circle cx="12" cy="12" r="2.2" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="6"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/>'),
+    image:    svg('<rect x="3.5" y="5" width="17" height="14" rx="2"/><circle cx="8.5" cy="10" r="1.6"/><path d="m5 17 5-5 4 4 2-2 3 3"/>'),
     device:   svg('<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/>'),
     door:     svg('<rect x="5" y="3" width="14" height="18" rx="1"/><circle cx="15.5" cy="12" r="1" fill="currentColor" stroke="none"/>'),
     light:    svg('<path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 1 4 10.5c-.7.7-1 1.2-1 2.5H9c0-1.3-.3-1.8-1-2.5A6 6 0 0 1 12 3z"/>'),

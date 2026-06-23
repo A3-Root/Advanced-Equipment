@@ -353,10 +353,13 @@ switch (_command) do {
     };
 
     case "ping_host": {
-        private _ipParts = (_data getOrDefault ["to", ""]) splitString ".";
-        private _targetIp = _ipParts apply { parseNumber _x };
+        private _targetIp = [_data getOrDefault ["to", ""]] call AE3_network_fnc_str2ip;
         private _pres = createHashMapFromArray [["error", ""]];
-        if (isNull _computer || {count _ipParts != 4} || {_ipParts findIf {!(_x regexMatch "^[0-9]{1,3}$") || {(parseNumber _x) > 255}} >= 0}) exitWith { _pres set ["error", "bad_addr"]; [_pres] call _reply; };
+        if (isNull _computer || {_targetIp isEqualTo []}) exitWith { _pres set ["error", "bad_addr"]; [_pres] call _reply; };
+
+        if (AE3_DebugMode || {missionNamespace getVariable ["AE3_NetworkDebugEnabled", false]}) then {
+            diag_log text format ["[AE3][ROUTE] ping_host source=%1#%2 target=%3", _computer getVariable ["ace_cargo_customName", "?"], netId _computer, [_targetIp] call AE3_network_fnc_ip2str];
+        };
 
         ([_computer, _targetIp] call AE3_network_fnc_ping) params ["_target", "_routeLength"];
         if (isNull _target) exitWith { _pres set ["error", "no_route"]; [_pres] call _reply; };
@@ -375,10 +378,13 @@ switch (_command) do {
     case "ssh_pull";
     case "ssh_push": {
         private _op = _command select [4]; // strip "ssh_"
-        private _ipParts = (_data getOrDefault ["to", ""]) splitString ".";
-        private _targetIp = _ipParts apply { parseNumber _x };
+        private _targetIp = [_data getOrDefault ["to", ""]] call AE3_network_fnc_str2ip;
         private _sres = createHashMapFromArray [["error", ""]];
-        if (isNull _computer || {count _ipParts != 4} || {_ipParts findIf {!(_x regexMatch "^[0-9]{1,3}$") || {(parseNumber _x) > 255}} >= 0}) exitWith { _sres set ["error", "bad_addr"]; [_sres] call _reply; };
+        if (isNull _computer || {_targetIp isEqualTo []}) exitWith { _sres set ["error", "bad_addr"]; [_sres] call _reply; };
+
+        if (AE3_DebugMode || {missionNamespace getVariable ["AE3_NetworkDebugEnabled", false]}) then {
+            diag_log text format ["[AE3][ROUTE] ssh_%1 source=%2#%3 target=%4 user=%5", _op, _computer getVariable ["ace_cargo_customName", "?"], netId _computer, [_targetIp] call AE3_network_fnc_ip2str, _data getOrDefault ["user", ""]];
+        };
         // The server resolves the target device from the IP (topology-agnostic) and replies async
         // via ae3_desktop_sshReply. Only plain strings are passed across the network event (no
         // HashMap) so the payload serializes reliably in multiplayer.
