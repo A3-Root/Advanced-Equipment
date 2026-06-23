@@ -118,7 +118,7 @@ if (!isDedicated && !_internal) then
 	 // Eden/Zeus (AE3_network_wirelessRange / AE3_network_password) is preserved. A blank password
 	 // means an open network.
 	 if (isNil {_entity getVariable "AE3_network_wirelessRange"}) then {
-		_entity setVariable ["AE3_network_wirelessRange", missionNamespace getVariable ["AE3_network_defaultWirelessRange", 50], true];
+		_entity setVariable ["AE3_network_wirelessRange", missionNamespace getVariable ["AE3_network_defaultWirelessRange", 100], true];
 	 } else {
 		_entity setVariable ["AE3_network_wirelessRange", _entity getVariable "AE3_network_wirelessRange", true];
 	 };

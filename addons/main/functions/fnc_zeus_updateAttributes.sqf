@@ -78,7 +78,7 @@ if (_exitCode == 1) then
         private _ssid = ctrlText (_display displayCtrl 1912);
         private _password = ctrlText (_display displayCtrl 1915);
         [_entity, _ssid, _range, _password, _gateway] remoteExecCall ["AE3_network_fnc_applyRouterConfig", 2];
-        _message = _message + format ["Network name: %1. Wireless range: %2 m. Gateway: %3.", _ssid, _range, _gateway];
+        _message = _message + format ["Network name: %1. Wifi range: %2m. Gateway: %3.", _ssid, _range, _gateway];
     };
 
     /* ======================================== */

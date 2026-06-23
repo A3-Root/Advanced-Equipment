@@ -51,7 +51,7 @@ class AE3_RouterConfigDialog
 
 		class AE3_RC_LblRange : RscText
 		{
-			idc = -1; text = "Wireless range (m)";
+			idc = -1; text = "Wifi Range (m)";
 			x = "0.31 * safezoneW + safezoneX"; y = "0.45 * safezoneH + safezoneY";
 			w = "0.16 * safezoneW"; h = "0.035 * safezoneH";
 		};

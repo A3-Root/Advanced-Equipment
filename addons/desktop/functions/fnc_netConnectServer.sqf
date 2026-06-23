@@ -29,7 +29,7 @@ private _notify = {
 
 // Range + password gate. The scan already filters by range, but re-check on the server so a
 // stale/forged request cannot connect out of range or without the right password.
-if ((_device distance _router) > (_router getVariable ["AE3_network_wirelessRange", 50])) exitWith {
+if ((_device distance _router) > (_router getVariable ["AE3_network_wirelessRange", 100])) exitWith {
     [false, "Out of range"] call _notify;
 };
 if ((_router getVariable ["AE3_power_powerState", 0]) != 1) exitWith {

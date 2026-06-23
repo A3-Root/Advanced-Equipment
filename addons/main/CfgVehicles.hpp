@@ -37,10 +37,10 @@ class CfgVehicles
 			class AE3_ModuleRouter_Range: Edit
 			{
 				property = "AE3_ModuleRouter_Range";
-				displayName = "Wireless Range (m)";
+				displayName = "Wifi Range (m)";
 				tooltip = "Maximum distance (m) at which laptops can connect to the synced router(s).";
 				typeName = "NUMBER";
-				defaultValue = "50";
+				defaultValue = "100";
 			};
 			class AE3_ModuleRouter_Password: Edit
 			{

@@ -22,9 +22,9 @@ params ["_module", "_syncedUnits", "_activated"];
 if (!_activated) exitWith { true };
 if (!isServer) exitWith {};
 
-private _range = _module getVariable ["AE3_ModuleRouter_Range", 50];
+private _range = _module getVariable ["AE3_ModuleRouter_Range", 100];
 if !(_range isEqualType 0) then { _range = parseNumber (str _range); };
-if (_range <= 0) then { _range = 50; };
+if (_range <= 0) then { _range = 100; };
 private _password = _module getVariable ["AE3_ModuleRouter_Password", ""];
 private _gateway = _module getVariable ["AE3_ModuleRouter_Gateway", ""]; // "a.b.c.d", blank = unchanged
 
@@ -32,7 +32,7 @@ private _gateway = _module getVariable ["AE3_ModuleRouter_Gateway", ""]; // "a.b
 // is fiddly) - every router within the module's wireless range, so the module still does something.
 private _targets = _syncedUnits select { _x getVariable ["AE3_cap_isRouter", false] };
 if (_targets isEqualTo []) then {
-    _targets = (nearestObjects [getPosWorld _module, [], _range max 50]) select { _x getVariable ["AE3_cap_isRouter", false] };
+    _targets = (nearestObjects [getPosWorld _module, [], _range max 100]) select { _x getVariable ["AE3_cap_isRouter", false] };
 };
 
 diag_log format ["[AE3] ConfigureRouter module: range=%1 password='%2' gateway='%3' targets=%4 (synced=%5)", _range, _password, _gateway, count _targets, count _syncedUnits];

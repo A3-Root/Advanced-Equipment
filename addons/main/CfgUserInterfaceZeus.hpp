@@ -158,7 +158,7 @@ class AE3_UserInterface_Zeus_Asset_Details
         class RscText_1003: RscText
         {
             idc = 1003;
-            text = "Wireless Range (m)";
+            text = "Wifi Range (m)";
             x = 0.5 * GUI_GRID_W + GUI_GRID_X;
             y = 12 * GUI_GRID_H + GUI_GRID_Y;
             w = 7 * GUI_GRID_W;

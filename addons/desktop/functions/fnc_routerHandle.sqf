@@ -30,7 +30,7 @@ switch (_op) do {
 
     case "get": {
         _res set ["name", _router getVariable ["ace_cargo_customName", "Router"]];
-        _res set ["range", _router getVariable ["AE3_network_wirelessRange", 50]];
+        _res set ["range", _router getVariable ["AE3_network_wirelessRange", 100]];
         _res set ["password", _router getVariable ["AE3_network_password", ""]];
         _res set ["gateway", ([_router getVariable ["AE3_network_address", [192, 168, 0, 1]]] call AE3_network_fnc_ip2str)];
     };

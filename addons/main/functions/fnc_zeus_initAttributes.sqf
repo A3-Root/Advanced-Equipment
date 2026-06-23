@@ -162,7 +162,7 @@ if (isNull _entity) exitWith {};
 
         private _result = [_battery] call AE3_power_fnc_getBatteryLevel;
         _result params ["_batteryLevel", "_batteryLevelPercent", "_batteryCapacity"];
-        
+
         _batteryLevelPercent = round _batteryLevelPercent;
 
         _batteryLevelSliderCtrl sliderSetPosition _batteryLevelPercent;
@@ -207,7 +207,7 @@ if (isNull _entity) exitWith {};
         _ssidEditCtrl ctrlEnable true;
         _passwordEditCtrl ctrlEnable true;
 
-        _rangeEditCtrl ctrlSetText str (_entity getVariable ["AE3_network_wirelessRange", 50]);
+        _rangeEditCtrl ctrlSetText str (_entity getVariable ["AE3_network_wirelessRange", 100]);
         _gatewayEditCtrl ctrlSetText ([_entity getVariable ["AE3_network_address", [192, 168, 0, 1]]] call AE3_network_fnc_ip2str);
         _ssidEditCtrl ctrlSetText (_entity getVariable ["ace_cargo_customName", ""]);
         _passwordEditCtrl ctrlSetText (_entity getVariable ["AE3_network_password", ""]);
@@ -248,7 +248,7 @@ if (isNull _entity) exitWith {};
         private _routers = (nearestObjects [_entity, [], 300]) select { _x getVariable ["AE3_cap_isRouter", false] };
         {
             private _r = _x;
-            private _range = _r getVariable ["AE3_network_wirelessRange", 50];
+            private _range = _r getVariable ["AE3_network_wirelessRange", 100];
             if ((_entity distance _r) <= _range) then
             {
                 private _name = [_r, true] call ace_cargo_fnc_getNameItem;
