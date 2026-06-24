@@ -81,44 +81,6 @@ class CfgVehicles
 		};
 	};
 
-	// MODULE ADD CAMERA - registers a CCTV feed for the desktop CCTV app. Sync it to (or place
-	// it on) the object the camera view should originate from.
-	class AE3_AddCamera: Module_F
-	{
-		scope = 2;
-		scopeCurator = 2;
-		displayName = "$STR_AE3_Desktop_Config_AddCameraDisplayName";
-		icon = "\z\ae3\addons\armaos\ui\AE3_Module_Icons_addUser.paa";
-		category = "AE3_armaosModules";
-
-		function = "AE3_desktop_fnc_module_addCamera";
-		functionPriority = 1;
-		isGlobal = 0;
-		isTriggerActivated = 1;
-		isDisposable = 1;
-		is3DEN = 0;
-
-		curatorInfoType = "AE3_UserInterface_Zeus_Module_AddCamera";
-
-		class Attributes: AttributesBase
-		{
-			class AE3_ModuleCamera_Name: Edit
-			{
-				property = "AE3_ModuleCamera_Name";
-				displayName = "$STR_AE3_Desktop_Access_CameraName";
-				tooltip = "$STR_AE3_Desktop_Access_CameraNameTooltip";
-				typeName = "STRING";
-				defaultValue = """Camera""";
-			};
-			class ModuleDescription: ModuleDescription{};
-		};
-
-		class ModuleDescription: ModuleDescription
-		{
-			description = "$STR_AE3_Desktop_Config_ModuleAddCameraDescription";
-		};
-	};
-
 	// MODULE CRASH DEVICE - crashes every synced AE3 laptop (blue screen until power-cycled).
 	// No dialog; place/sync on a laptop and (optionally) gate behind a trigger.
 	class AE3_CrashDevice: Module_F

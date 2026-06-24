@@ -34,7 +34,7 @@ private _debug = (missionNamespace getVariable [QGVAR(debug), false]) || {missio
 
 private _reply = {
     params ["_cmd", "_payload"];
-    ["ae3_desktop_sshReply", [_clientOwner, _rid, _cmd, _payload]] call CBA_fnc_ownerEvent;
+    ["ae3_desktop_sshReply", [_rid, _cmd, _payload], _clientOwner] call CBA_fnc_ownerEvent;
 };
 
 if (_debug) then {

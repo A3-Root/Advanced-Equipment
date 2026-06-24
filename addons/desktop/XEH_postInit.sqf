@@ -63,7 +63,7 @@ if (hasInterface) then
 
 	// SSH server reply: forward to the SSH app, echoing the rid so its A3.request resolves.
 	["ae3_desktop_sshReply", {
-		params ["_owner", "_rid", "_cmd", "_payload"];
+		params ["_rid", "_cmd", "_payload"];
 		[_cmd, createHashMapFromArray [["_rid", _rid], ["data", _payload]]] call AE3_desktop_fnc_jsSend;
 	}] call CBA_fnc_addEventHandler;
 

@@ -3,6 +3,8 @@
 // fnc_intel_updateFields). attributeLoad/attributeSave round-trip a single flat value array, so the
 // module reads one property (AE3_ModuleIntel_Data) instead of a static list of attributes.
 
+#define AE3_INTEL_EDEN_SIZE (0.65 * GUI_GRID_H)
+
 class RscControlsGroupNoScrollbars;
 
 class Cfg3DEN
@@ -24,6 +26,7 @@ class Cfg3DEN
 				class RscText_1701: RscText
 				{
 					idc = 1701;
+					sizeEx = AE3_INTEL_EDEN_SIZE;
 					text = "$STR_AE3_Desktop_Config_IntelTypeDisplayName";
 					x = 0 * GUI_GRID_W;
 					y = 0 * GUI_GRID_H;
@@ -33,6 +36,7 @@ class Cfg3DEN
 				class RscCombo_1702: RscCombo
 				{
 					idc = 1702;
+					sizeEx = AE3_INTEL_EDEN_SIZE;
 					x = 10 * GUI_GRID_W;
 					y = 0 * GUI_GRID_H;
 					w = 29 * GUI_GRID_W;
@@ -42,6 +46,7 @@ class Cfg3DEN
 				class RscText_1710: RscText
 				{
 					idc = 1710;
+					sizeEx = AE3_INTEL_EDEN_SIZE;
 					text = "";
 					x = 0 * GUI_GRID_W;
 					y = 1.5 * GUI_GRID_H;
@@ -53,6 +58,7 @@ class Cfg3DEN
 				class RscEdit_1401: RscEdit
 				{
 					idc = 1401;
+					sizeEx = AE3_INTEL_EDEN_SIZE;
 					x = 0 * GUI_GRID_W;
 					y = 2.5 * GUI_GRID_H;
 					w = 39 * GUI_GRID_W;
@@ -62,6 +68,7 @@ class Cfg3DEN
 				class RscText_1711: RscText
 				{
 					idc = 1711;
+					sizeEx = AE3_INTEL_EDEN_SIZE;
 					text = "";
 					x = 0 * GUI_GRID_W;
 					y = 4 * GUI_GRID_H;
@@ -73,6 +80,7 @@ class Cfg3DEN
 				class RscEdit_1402: RscEdit
 				{
 					idc = 1402;
+					sizeEx = AE3_INTEL_EDEN_SIZE;
 					x = 0 * GUI_GRID_W;
 					y = 5 * GUI_GRID_H;
 					w = 39 * GUI_GRID_W;
@@ -82,6 +90,7 @@ class Cfg3DEN
 				class RscCombo_1602: RscCombo
 				{
 					idc = 1602;
+					sizeEx = AE3_INTEL_EDEN_SIZE;
 					x = 0 * GUI_GRID_W;
 					y = 5 * GUI_GRID_H;
 					w = 39 * GUI_GRID_W;
@@ -92,6 +101,7 @@ class Cfg3DEN
 				class RscText_1712: RscText
 				{
 					idc = 1712;
+					sizeEx = AE3_INTEL_EDEN_SIZE;
 					text = "";
 					x = 0 * GUI_GRID_W;
 					y = 6.5 * GUI_GRID_H;
@@ -103,6 +113,7 @@ class Cfg3DEN
 				class RscEdit_1403: RscEdit
 				{
 					idc = 1403;
+					sizeEx = AE3_INTEL_EDEN_SIZE;
 					x = 0 * GUI_GRID_W;
 					y = 7.5 * GUI_GRID_H;
 					w = 39 * GUI_GRID_W;
@@ -112,6 +123,7 @@ class Cfg3DEN
 				class RscText_1713: RscText
 				{
 					idc = 1713;
+					sizeEx = AE3_INTEL_EDEN_SIZE;
 					text = "";
 					x = 0 * GUI_GRID_W;
 					y = 8.7 * GUI_GRID_H;
@@ -123,6 +135,7 @@ class Cfg3DEN
 				class RscEdit_1404: RscEdit
 				{
 					idc = 1404;
+					sizeEx = AE3_INTEL_EDEN_SIZE;
 					x = 0 * GUI_GRID_W;
 					y = 9.7 * GUI_GRID_H;
 					w = 39 * GUI_GRID_W;
@@ -134,6 +147,7 @@ class Cfg3DEN
 				class RscText_1714: RscText
 				{
 					idc = 1714;
+					sizeEx = AE3_INTEL_EDEN_SIZE;
 					text = "$STR_AE3_Desktop_Intel_LabelOwner";
 					x = 0 * GUI_GRID_W;
 					y = 10.7 * GUI_GRID_H;
@@ -143,6 +157,7 @@ class Cfg3DEN
 				class RscEdit_1405: RscEdit
 				{
 					idc = 1405;
+					sizeEx = AE3_INTEL_EDEN_SIZE;
 					text = "root";
 					x = 10 * GUI_GRID_W;
 					y = 10.7 * GUI_GRID_H;
@@ -153,6 +168,7 @@ class Cfg3DEN
 				class RscText_1715: RscText
 				{
 					idc = 1715;
+					sizeEx = AE3_INTEL_EDEN_SIZE;
 					text = "$STR_AE3_Desktop_Intel_LabelOwner";
 					x = 10 * GUI_GRID_W;
 					y = 12.2 * GUI_GRID_H;
@@ -163,6 +179,7 @@ class Cfg3DEN
 				class RscText_1716: RscText
 				{
 					idc = 1716;
+					sizeEx = AE3_INTEL_EDEN_SIZE;
 					text = "$STR_AE3_Desktop_Intel_LabelEveryone";
 					x = 22 * GUI_GRID_W;
 					y = 12.2 * GUI_GRID_H;
@@ -184,6 +201,7 @@ class Cfg3DEN
 				class RscText_1717: RscText
 				{
 					idc = 1717;
+					sizeEx = AE3_INTEL_EDEN_SIZE;
 					text = "";
 					x = 11.2 * GUI_GRID_W;
 					y = 13.5 * GUI_GRID_H;
@@ -205,6 +223,7 @@ class Cfg3DEN
 				class RscText_1718: RscText
 				{
 					idc = 1718;
+					sizeEx = AE3_INTEL_EDEN_SIZE;
 					text = "";
 					x = 11.2 * GUI_GRID_W;
 					y = 15 * GUI_GRID_H;
@@ -277,3 +296,5 @@ class Cfg3DEN
 		};
 	};
 };
+
+#undef AE3_INTEL_EDEN_SIZE

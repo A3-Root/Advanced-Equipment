@@ -2,7 +2,7 @@
 /*
  * Author: Root
  * Description: 3DEN/trigger handler for the AE3_AddIntel module. Reads the module attributes
- * and dispatches the intel to laptops synced to the module (or all laptops when none synced).
+ * and dispatches the intel to synced laptops or the laptop underneath the module.
  *
  * Arguments:
  * 0: _module <OBJECT>
@@ -51,18 +51,18 @@ if (_activated) then
 		[[_oR, _oW, _oX], [_eR, _eW, _eX]]
 	};
 
-	private _laptops = (synchronizedObjects _module) select { isClass (configOf _x >> "AE3_Device") };
+	private _isLaptop = { isClass (configOf _this >> "AE3_USB_Interface") || {_this getVariable ["AE3_cap_hasTerminal", false]} };
+	private _laptops = (synchronizedObjects _module) select { _x call _isLaptop };
 
 	if (_laptops isEqualTo []) then
 	{
-		[_type, "all", _f1, _f2, _f3, _arg6, _f7] call AE3_desktop_fnc_intel_dispatch;
-	}
-	else
-	{
-		{
-			[_type, _x, _f1, _f2, _f3, _arg6, _f7] call AE3_desktop_fnc_intel_dispatch;
-		} forEach _laptops;
+		private _nearby = nearestObjects [_module, [], 3] select { _x call _isLaptop };
+		if (_nearby isNotEqualTo []) then { _laptops pushBack (_nearby select 0); };
 	};
+
+	{
+		[_type, _x, _f1, _f2, _f3, _arg6, _f7] call AE3_desktop_fnc_intel_dispatch;
+	} forEach _laptops;
 
 	deleteVehicle _module;
 };

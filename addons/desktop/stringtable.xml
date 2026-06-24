@@ -14,18 +14,6 @@
                 <Original>CLI</Original>
                 <English>CLI</English>
             </Key>
-            <Key ID="STR_AE3_Desktop_Access_CameraHint">
-                <Original>The camera view originates from the object this module is placed on or synced to.</Original>
-                <English>The camera view originates from the object this module is placed on or synced to.</English>
-            </Key>
-            <Key ID="STR_AE3_Desktop_Access_CameraName">
-                <Original>Camera name</Original>
-                <English>Camera name</English>
-            </Key>
-            <Key ID="STR_AE3_Desktop_Access_CameraNameTooltip">
-                <Original>Name shown for this feed in the CCTV app.</Original>
-                <English>Name shown for this feed in the CCTV app.</English>
-            </Key>
             <Key ID="STR_AE3_Desktop_Access_GUI">
                 <Original>GUI</Original>
                 <English>GUI</English>
@@ -41,10 +29,6 @@
             <Key ID="STR_AE3_Desktop_Access_ModeDefault">
                 <Original>Default (mission setting)</Original>
                 <English>Default (mission setting)</English>
-            </Key>
-            <Key ID="STR_AE3_Desktop_Access_NoCamera">
-                <Original>Place this module on the object the camera should view.</Original>
-                <English>Place this module on the object the camera should view.</English>
             </Key>
             <Key ID="STR_AE3_Desktop_Access_NoLaptop">
                 <Original>Place this module on a laptop.</Original>
@@ -267,10 +251,6 @@
                 <German>Keine Nachrichten - empfangene Nachrichten erscheinen hier (/var/mail/inbox)</German>
                 <Chinesesimp>无消息 - 收到的消息显示在此处(/var/mail/inbox)</Chinesesimp>
             </Key>
-            <Key ID="STR_AE3_Desktop_Config_AddCameraDisplayName">
-                <Original>AE3: Add Camera</Original>
-                <English>AE3: Add Camera</English>
-            </Key>
             <Key ID="STR_AE3_Desktop_Config_AddIntelDisplayName">
                 <Original>AE3: Add Intel</Original>
                 <English>AE3: Add Intel</English>
@@ -285,13 +265,13 @@
                 <English>AE3: Crash Device</English>
             </Key>
             <Key ID="STR_AE3_Desktop_Config_IntelTargetHint">
-                <Original>Place this module on an AE3 laptop to target it; placed anywhere else, the intel goes to ALL laptops. In 3DEN you can also sync the module to laptops.</Original>
-                <English>Place this module on an AE3 laptop to target it; placed anywhere else, the intel goes to ALL laptops. In 3DEN you can also sync the module to laptops.</English>
-                <French>Placez ce module sur un ordinateur AE3 pour le cibler ; ailleurs, le renseignement va à TOUS les ordinateurs. En 3DEN, synchronisez le module avec des ordinateurs.</French>
-                <Italian>Posiziona il modulo su un laptop AE3 per indirizzarlo; altrove, l'intel va a TUTTI i laptop. In 3DEN puoi anche sincronizzare il modulo ai laptop.</Italian>
-                <Russian>Place this module on an AE3 laptop to target it; placed anywhere else, the intel goes to ALL laptops.</Russian>
-                <German>Modul auf einem AE3-Laptop platzieren, um ihn anzuvisieren; sonst geht das Intel an ALLE Laptops. In 3DEN kann das Modul auch mit Laptops synchronisiert werden.</German>
-                <Chinesesimp>将此模块放在AE3笔记本电脑上以定位它;放在其他地方,情报将发送到所有笔记本电脑.在3DEN中也可以将模块同步到笔记本电脑.</Chinesesimp>
+                <Original>Place this module on an AE3 laptop to target it. In 3DEN you can also sync the module to laptops.</Original>
+                <English>Place this module on an AE3 laptop to target it. In 3DEN you can also sync the module to laptops.</English>
+                <French>Placez ce module sur un ordinateur AE3 pour le cibler. En 3DEN, synchronisez le module avec des ordinateurs.</French>
+                <Italian>Posiziona il modulo su un laptop AE3 per indirizzarlo. In 3DEN puoi anche sincronizzare il modulo ai laptop.</Italian>
+                <Russian>Place this module on an AE3 laptop to target it. In 3DEN you can also sync the module to laptops.</Russian>
+                <German>Modul auf einem AE3-Laptop platzieren, um ihn anzuvisieren. In 3DEN kann das Modul auch mit Laptops synchronisiert werden.</German>
+                <Chinesesimp>将此模块放在AE3笔记本电脑上以定位它.在3DEN中也可以将模块同步到笔记本电脑.</Chinesesimp>
             </Key>
             <Key ID="STR_AE3_Desktop_Config_IntelTypeDisplayName">
                 <Original>Intel type</Original>
@@ -314,10 +294,6 @@
             <Key ID="STR_AE3_Desktop_Config_InterfaceAccessDisplayName">
                 <Original>AE3: Interface &amp; Access</Original>
                 <English>AE3: Interface &amp; Access</English>
-            </Key>
-            <Key ID="STR_AE3_Desktop_Config_ModuleAddCameraDescription">
-                <Original>Registers a CCTV feed for the desktop CCTV app. Place on / sync to the object the camera view should originate from.</Original>
-                <English>Registers a CCTV feed for the desktop CCTV app. Place on / sync to the object the camera view should originate from.</English>
             </Key>
             <Key ID="STR_AE3_Desktop_Config_ModuleAddIntelDescription">
                 <Original>Plants intel on laptops: emails, webpages, browser history, calendar entries or media files.</Original>

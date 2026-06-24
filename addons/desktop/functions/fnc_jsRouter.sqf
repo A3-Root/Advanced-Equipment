@@ -51,6 +51,27 @@ private _reply = {
     [_command, createHashMapFromArray [["_rid", _rid], ["data", _payload]]] call FUNC(jsSend);
 };
 
+private _resolveMediaMarker = {
+    params ["_result"];
+
+    if (!(_result isEqualType createHashMap)) exitWith { _result };
+
+    private _content = _result getOrDefault ["content", ""];
+    if (!(_content isEqualType "") || {(_content select [0, 10]) isNotEqualTo "AE3_MEDIA|"}) exitWith { _result };
+
+    (_content splitString "|") params ["", "_type", "_sourcePath"];
+    if ((toLower _type) isNotEqualTo "image") exitWith { _result };
+    if (_sourcePath isEqualTo "" || {(_sourcePath select [0, 1]) isEqualTo "\"}) exitWith { _result };
+
+    private _missionPath = getMissionPath _sourcePath;
+    if (_missionPath isNotEqualTo "" && {fileExists _missionPath}) then
+    {
+        _result set ["content", format ["AE3_MEDIA|%1|%2", _type, _missionPath]];
+    };
+
+    _result
+};
+
 switch (_command) do {
 
     // UI is up: seed the hostname only (does NOT skip login - the user still authenticates via
@@ -130,7 +151,9 @@ switch (_command) do {
     case "fs_chmod": {
         private _user = _display getVariable [QGVAR(user), ""];
         private _op = _command select [3]; // strip "fs_"
-        [[_computer, _user, _op, _data] call FUNC(fsHandle)] call _reply;
+        private _fsResult = [_computer, _user, _op, _data] call FUNC(fsHandle);
+        if (_op in ["read", "unlock"]) then { _fsResult = [_fsResult] call _resolveMediaMarker; };
+        [_fsResult] call _reply;
     };
     // Open a media-marker file natively (image viewer / video / audio) via fnc_openFile.
     case "fs_open_media": {

@@ -34,6 +34,17 @@
 		defaultValue = "false"; \
 		typeName = "BOOL"; \
 		condition = "1"; \
+	}; \
+	class AE3_LaptopStartOn \
+	{ \
+		displayName = "Powered On At Start"; \
+		tooltip = "Switch the laptop on automatically when the mission starts."; \
+		property = "AE3_LaptopStartOn"; \
+		control = "Checkbox"; \
+		expression = "_this setVariable ['AE3_power_startOn', _value, true]; if (_value) then {[{ params ['_computer']; !alive _computer || {!isNil {_computer getVariable 'AE3_power_fnc_turnOnWrapper'}} }, { params ['_computer']; if (alive _computer && {(_computer getVariable ['AE3_power_powerState', 0]) != 1}) then {[_computer] call AE3_power_fnc_turnOnDevice;}; }, [_this]] call CBA_fnc_waitUntilAndExecute;};"; \
+		defaultValue = "false"; \
+		typeName = "BOOL"; \
+		condition = "1"; \
 	};
 
 class CfgVehicles

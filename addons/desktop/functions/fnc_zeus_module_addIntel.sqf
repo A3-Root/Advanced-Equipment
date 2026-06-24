@@ -2,7 +2,7 @@
 /*
  * Author: Root
  * Description: Handles the Zeus "Add Intel" module dialog (onLoad/onUnload). Placed on a
- * laptop, the intel targets that laptop; placed anywhere else it targets all laptops.
+ * laptop, the intel targets that laptop; placed anywhere else it is ignored.
  * Field meanings switch with the selected type (see fnc_intel_dispatch).
  *
  * Arguments:
@@ -24,12 +24,12 @@ private _module = missionNamespace getVariable ["BIS_fnc_initCuratorAttributes_t
 
 if (_event isEqualTo "onLoad") exitWith
 {
-	// Target laptop is optional: placed on a laptop -> that laptop, otherwise "all"
+	// Target laptop is required: placed on a laptop -> that laptop.
 	private _mouseOver = missionNamespace getVariable ["BIS_fnc_curatorObjectPlaced_mouseOver", [""]];
 	_mouseOver params ["_mouseOverType", "_mouseOverUnit"];
 
 	private _computer = objNull;
-	if (_mouseOverType isEqualTo "OBJECT" && {isClass (configOf _mouseOverUnit >> "AE3_Device")}) then
+	if (_mouseOverType isEqualTo "OBJECT" && {isClass (configOf _mouseOverUnit >> "AE3_USB_Interface") || {_mouseOverUnit getVariable ["AE3_cap_hasTerminal", false]}}) then
 	{
 		_computer = _mouseOverUnit;
 	};
@@ -53,7 +53,12 @@ if (_event isEqualTo "onUnload") exitWith
 	if (_exitCode == 2) exitWith { deleteVehicle _module; };
 
 	private _computer = _display getVariable ["AE3_linkedComputer", objNull];
-	private _target = if (isNull _computer) then { "all" } else { netId _computer };
+	if (isNull _computer) exitWith
+	{
+		[localize "STR_AE3_Desktop_Config_AddIntelDisplayName", "Place the module on a laptop.", 5] call BIS_fnc_curatorHint;
+		deleteVehicle _module;
+	};
+	private _target = netId _computer;
 
 	private _combo = _display displayCtrl 1702;
 	private _type = _combo lbData (lbCurSel _combo);

@@ -25,6 +25,8 @@
 
 params ["_entity", ["_name", "Device"], ["_powerState", 0], ["_initFnc", {}], ["_turnOnFnc", {}], ["_turnOnCondition", {true}], ["_turnOffFnc", {}], ["_turnOffCondition", {true}], ["_standbyFnc", {}], ["_standbyCondition", {true}]];
 
+private _startOn = _entity getVariable ["AE3_power_startOn", false];
+
 private _turnOnWrapper = {
 	params['_target', ['_args', []]];
 
@@ -230,7 +232,7 @@ if(isServer) then
 	// The restoration flag is set by fnc_laptop_item2obj before variables are restored
 	private _wasRestored = _entity getVariable ["AE3_laptop_restored", false];
 	if (!_wasRestored) then {
-		_entity setVariable ["AE3_power_powerState", _powerState, true];
+		_entity setVariable ["AE3_power_powerState", [0, _powerState] select (!_startOn), true];
 	};
 	// else: power state was already restored from saved data, don't overwrite it
 };
@@ -246,3 +248,8 @@ _entity setVariable ["AE3_power_fnc_standbyCondition", _standbyCondition];
 _entity setVariable ["AE3_power_fnc_standbyWrapper", _standbyWrapper];
 
 [_entity] call _initFnc;
+
+if (isServer && _startOn) then
+{
+	[_entity] call AE3_power_fnc_turnOnDevice;
+};
