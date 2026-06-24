@@ -25,7 +25,9 @@ private _name = ctrlText (_dlg displayCtrl 17031);
 private _range = parseNumber (ctrlText (_dlg displayCtrl 17032));
 private _pass = ctrlText (_dlg displayCtrl 17033);
 private _gateway = ctrlText (_dlg displayCtrl 17034);
+private _extSsh = cbChecked (_dlg displayCtrl 17035);
+private _extAllow = ctrlText (_dlg displayCtrl 17036);
 
-[_router, _name, _range, _pass, _gateway] remoteExecCall ["AE3_network_fnc_applyRouterConfig", 2];
+[_router, _name, _range, _pass, _gateway, _extSsh, _extAllow] remoteExecCall ["AE3_network_fnc_applyRouterConfig", 2];
 
 _dlg closeDisplay 1;

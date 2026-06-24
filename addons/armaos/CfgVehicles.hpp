@@ -110,7 +110,7 @@ class CfgVehicles
 
 				expression = "_this setVariable ['AE3_network_staticIp', _value, true];";
 
-				defaultValue = "";
+				defaultValue = """""";
 
 				unique = 0;
 				condition = "1";
@@ -285,7 +285,7 @@ class CfgVehicles
 
 				expression = "_this setVariable ['AE3_network_staticIp', _value, true];";
 
-				defaultValue = "";
+				defaultValue = """""";
 
 				unique = 0;
 				condition = "1";
@@ -460,7 +460,7 @@ class CfgVehicles
 
 				expression = "_this setVariable ['AE3_network_staticIp', _value, true];";
 
-				defaultValue = "";
+				defaultValue = """""";
 
 				unique = 0;
 				condition = "1";

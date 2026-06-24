@@ -29,8 +29,8 @@ if ([_parent, _parent] call AE3_network_fnc_connect_isCyclic) exitWith
 	_parent setVariable ["AE3_network_children", _children - [_router], true];
 };
 
-_router setVariable ["AE3_network_address", [_router] call AE3_network_fnc_dhcp_get, true];
-
+// The linked router keeps its own gateway/subnet; only the devices below it are (re)leased so they
+// stay inside that router's subnet. This keeps each router a distinct gateway after cascading.
 if (count (_router getVariable ["AE3_network_children", []]) != 0) then
 {
 	[_router] call AE3_network_fnc_dhcp_refresh;

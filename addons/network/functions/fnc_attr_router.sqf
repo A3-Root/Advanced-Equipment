@@ -6,8 +6,8 @@
  *
  * Arguments:
  * 0: Router <OBJECT>
- * 1: Key <STRING> - "ssid" | "gateway" | "range" | "password"
- * 2: Value <STRING|NUMBER> - Setting value from the attribute
+ * 1: Key <STRING> - "ssid" | "gateway" | "range" | "password" | "extssh" | "extallow" | "starton"
+ * 2: Value <STRING|NUMBER|BOOL> - Setting value from the attribute
  *
  * Returns:
  * None
@@ -31,6 +31,20 @@ if (!isServer) exitWith {};
 			case "range":      { if (_value > 0) then { _router setVariable ["AE3_network_wirelessRange", _value, true]; }; };
 			case "password":   { _router setVariable ["AE3_network_password", _value, true]; };
 			case "ssid":       { if (_value isNotEqualTo "") then { _router setVariable ["ace_cargo_customName", _value, true]; }; };
+				case "extssh":     { _router setVariable ["AE3_network_allowExternalSsh", _value, true]; };
+				case "extallow":   { _router setVariable ["AE3_network_externalAllow", _value, true]; };
+				case "starton":
+				{
+					// Power the router on once its power device has finished initialising.
+					if (_value) then
+					{
+						[
+							{ params ["_router"]; !alive _router || {!isNil {_router getVariable "AE3_power_fnc_turnOnWrapper"}} },
+							{ params ["_router"]; [_router] call AE3_power_fnc_turnOnDevice; },
+							[_router]
+						] call CBA_fnc_waitUntilAndExecute;
+					};
+				};
 		};
 	},
 	[_router, _key, _value]

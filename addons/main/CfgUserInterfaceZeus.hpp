@@ -248,6 +248,52 @@ class AE3_UserInterface_Zeus_Asset_Details
             onLoad = "params ['_control']; _control ctrlShow false; _control ctrlEnable false;";
         };
 
+        // Router-only external access policy: allow ping/SSH from other gateways, with an optional
+        // allow list of source-gateway regex patterns. Hidden by default; shown for router assets.
+        class RscText_1012: RscText
+        {
+            idc = 1012;
+            text = "Allow External SSH";
+            x = 0.5 * GUI_GRID_W + GUI_GRID_X;
+            y = 18 * GUI_GRID_H + GUI_GRID_Y;
+            w = 7 * GUI_GRID_W;
+            h = 1 * GUI_GRID_H;
+            style = ST_RIGHT;
+            onLoad = "params ['_control']; _control ctrlShow false;";
+        };
+        class RscCheckBox_1321: RscCheckBox
+        {
+            idc = 1321;
+            x = 8 * GUI_GRID_W + GUI_GRID_X;
+            y = 18 * GUI_GRID_H + GUI_GRID_Y;
+            w = 1 * GUI_GRID_W;
+            h = 1 * GUI_GRID_H;
+            colorBackground[] = {-1,-1,-1,0.5};
+            onLoad = "params ['_control']; _control ctrlShow false; _control ctrlEnable false;";
+        };
+        class RscText_1013: RscText
+        {
+            idc = 1013;
+            text = "Allowed Gateways";
+            x = 10 * GUI_GRID_W + GUI_GRID_X;
+            y = 18 * GUI_GRID_H + GUI_GRID_Y;
+            w = 7 * GUI_GRID_W;
+            h = 1 * GUI_GRID_H;
+            style = ST_RIGHT;
+            onLoad = "params ['_control']; _control ctrlShow false;";
+        };
+        class RscEdit_1917: RscEdit
+        {
+            idc = 1917;
+            text = "";
+            x = 18 * GUI_GRID_W + GUI_GRID_X;
+            y = 18 * GUI_GRID_H + GUI_GRID_Y;
+            w = 14 * GUI_GRID_W;
+            h = 1 * GUI_GRID_H;
+            colorBackground[] = {-1,-1,-1,0.5};
+            onLoad = "params ['_control']; _control ctrlShow false; _control ctrlEnable false;";
+        };
+
         // Terminal-only hostname: hidden by default, shown + populated for laptops/computers.
         class RscText_1006: RscText
         {

@@ -28,3 +28,5 @@ uiNamespace setVariable ["AE3_router_configTarget", _router];
 (_dlg displayCtrl 17032) ctrlSetText (str (_router getVariable ["AE3_network_wirelessRange", 100]));
 (_dlg displayCtrl 17033) ctrlSetText (_router getVariable ["AE3_network_password", ""]);
 (_dlg displayCtrl 17034) ctrlSetText ([_router getVariable ["AE3_network_address", [192, 168, 0, 1]]] call AE3_network_fnc_ip2str);
+(_dlg displayCtrl 17035) cbSetChecked (_router getVariable ["AE3_network_allowExternalSsh", false]);
+(_dlg displayCtrl 17036) ctrlSetText (_router getVariable ["AE3_network_externalAllow", ""]);

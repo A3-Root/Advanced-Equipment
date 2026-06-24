@@ -232,8 +232,8 @@ _composeBtn ctrlAddEventHandler ["ButtonClick", {
 		private _targetIp = (ctrlText _toCtrl splitString ".") apply { parseNumber _x };
 		if (count _targetIp != 4) exitWith { hintSilent (localize "STR_AE3_ArmaOS_Ssh_InvalidAddress"); };
 
-		// route over the simulated network
-		([_computer, _targetIp] call AE3_network_fnc_ping) params ["_target"];
+		// route over the simulated network (honours each router's external access policy)
+		([_computer, _targetIp] call AE3_network_fnc_resolve) params ["_target"];
 		if (isNull _target || {_target isEqualTo _computer}) exitWith
 		{
 			hintSilent format [localize "STR_AE3_ArmaOS_Ssh_NoRoute", ctrlText _toCtrl];

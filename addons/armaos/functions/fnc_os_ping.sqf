@@ -41,7 +41,7 @@ if (AE3_DebugMode || {missionNamespace getVariable ["AE3_NetworkDebugEnabled", f
 	diag_log text format ["[AE3][ROUTE] ping source=%1#%2 target=%3", [_computer, true] call ace_cargo_fnc_getNameItem, netId _computer, [_address] call AE3_network_fnc_ip2str];
 };
 
-private _result = [_computer, _address, _computer] call AE3_network_fnc_ping;
+private _result = [_computer, _address] call AE3_network_fnc_resolve;
 
 if(isNull (_result select 0)) exitWith { [_computer, localize "STR_AE3_ArmaOS_Exception_PackageDropped"] call AE3_armaos_fnc_shell_stdout };
 

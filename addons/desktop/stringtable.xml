@@ -628,6 +628,26 @@
                 <German>alle Laptops</German>
                 <Chinesesimp>所有笔记本电脑</Chinesesimp>
             </Key>
+            <Key ID="STR_AE3_Desktop_Intel_TypeEmail">
+                <Original>Email</Original>
+                <English>Email</English>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Intel_TypeHistory">
+                <Original>Browser History</Original>
+                <English>Browser History</English>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Intel_TypeLockedFile">
+                <Original>Locked File</Original>
+                <English>Locked File</English>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Intel_TypeMedia">
+                <Original>Media</Original>
+                <English>Media</English>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Intel_TypeWebpage">
+                <Original>Webpage</Original>
+                <English>Webpage</English>
+            </Key>
             <Key ID="STR_AE3_Desktop_Intel_Webpage">
                 <Original>Webpage</Original>
                 <English>Webpage</English>

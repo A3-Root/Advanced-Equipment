@@ -6,6 +6,7 @@ class CfgVehicles
 		class AttributesBase
 		{
 			class Edit;
+			class Combo;
 			class Checkbox;
 			class ModuleDescription;
 		};
@@ -33,13 +34,21 @@ class CfgVehicles
 
 		class Attributes: AttributesBase
 		{
-			class AE3_ModuleIntel_Type: Edit
+			class AE3_ModuleIntel_Type: Combo
 			{
 				property = "AE3_ModuleIntel_Type";
 				displayName = "$STR_AE3_Desktop_Config_IntelTypeDisplayName";
 				tooltip = "$STR_AE3_Desktop_Config_IntelTypeTooltip";
 				typeName = "STRING";
 				defaultValue = """email""";
+				class Values
+				{
+					class Email      { name = "$STR_AE3_Desktop_Intel_TypeEmail";      value = "email"; };
+					class Webpage    { name = "$STR_AE3_Desktop_Intel_TypeWebpage";    value = "webpage"; };
+					class History    { name = "$STR_AE3_Desktop_Intel_TypeHistory";    value = "history"; };
+					class Media      { name = "$STR_AE3_Desktop_Intel_TypeMedia";      value = "media"; };
+					class LockedFile { name = "$STR_AE3_Desktop_Intel_TypeLockedFile"; value = "lockedfile"; };
+				};
 			};
 			class AE3_ModuleIntel_Field1: Edit
 			{

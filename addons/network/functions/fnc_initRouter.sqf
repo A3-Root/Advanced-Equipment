@@ -128,19 +128,19 @@ if (!isDedicated && !_internal) then
 		_entity setVariable ["AE3_network_password", _entity getVariable "AE3_network_password", true];
 	 };
 
-	 // Default gateway. A value pre-set by an Eden attribute or the placement module is honoured;
-	 // otherwise each independently placed (root) router is handed the next /24 so two routers never
-	 // share a subnet: 1st -> 192.168.0.1, 2nd -> 192.168.1.1, and so on. Cascaded child routers keep
-	 // the address they were initialised with.
+	 // Default gateway. A value pre-set by an Eden attribute / placement module is honoured first; an
+	 // explicit address passed to this function is used next; otherwise each router is handed the next
+	 // free /24 so no two routers share a subnet: 1st -> 192.168.0.1, 2nd -> 192.168.1.1, and so on.
+	 // This applies to cascaded child routers too, so every router stays a distinct gateway.
 	 private _gateway = _address;
-	 if (isNull _parent) then
+	 private _preset = _entity getVariable ["AE3_network_address", []];
+	 if (count _preset == 4 && {(_preset findIf { !(_x isEqualType 0) || {_x < 0} || {_x > 255} }) == -1}) then
 	 {
-		private _preset = _entity getVariable ["AE3_network_address", []];
-		if (count _preset == 4 && {(_preset findIf { !(_x isEqualType 0) || {_x < 0} || {_x > 255} }) == -1}) then
-		{
-			_gateway = _preset;
-		}
-		else
+		_gateway = _preset;
+	 }
+	 else
+	 {
+		if (_address isEqualTo [192, 168, 0, 1]) then
 		{
 			private _idx = missionNamespace getVariable ["AE3_network_rootRouterCount", 0];
 			_gateway = [192, 168, _idx % 256, 1];
@@ -154,6 +154,26 @@ if (!isDedicated && !_internal) then
 	 _entity setVariable ["AE3_network_children", [], true];
 	 _entity setVariable ["AE3_network_addressCatch", createHashMap, true];
 	 _entity setVariable ["AE3_network_addressCounter", 0, true];
+
+	 // External access policy: whether laptops on OTHER gateways may reach devices on this router
+	 // (ping/ssh). The optional allow list narrows it to source gateways matching one of its regex
+	 // patterns; blank means any gateway once external access is enabled. Eden/Zeus/API presets kept.
+	 if (isNil {_entity getVariable "AE3_network_allowExternalSsh"}) then {
+		_entity setVariable ["AE3_network_allowExternalSsh", false, true];
+	 } else {
+		_entity setVariable ["AE3_network_allowExternalSsh", _entity getVariable "AE3_network_allowExternalSsh", true];
+	 };
+	 if (isNil {_entity getVariable "AE3_network_externalAllow"}) then {
+		_entity setVariable ["AE3_network_externalAllow", "", true];
+	 } else {
+		_entity setVariable ["AE3_network_externalAllow", _entity getVariable "AE3_network_externalAllow", true];
+	 };
+
+	 // Global router registry: lets the resolver map a target IP to its owning subnet without a
+	 // physical link between gateways. Dead/null entries are skipped at lookup time.
+	 private _registry = missionNamespace getVariable ["AE3_network_routers", []];
+	 _registry pushBackUnique _entity;
+	 missionNamespace setVariable ["AE3_network_routers", _registry, true];
 
 
 	if (!isNull _parent) then

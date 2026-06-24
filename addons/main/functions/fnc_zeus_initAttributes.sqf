@@ -200,17 +200,25 @@ if (isNull _entity) exitWith {};
         private _ssidEditCtrl = _display displayCtrl 1912;
         private _passwordLabelCtrl = _display displayCtrl 1010;
         private _passwordEditCtrl = _display displayCtrl 1915;
+        private _extSshLabelCtrl = _display displayCtrl 1012;
+        private _extSshCheckCtrl = _display displayCtrl 1321;
+        private _extAllowLabelCtrl = _display displayCtrl 1013;
+        private _extAllowEditCtrl = _display displayCtrl 1917;
 
-        { _x ctrlShow true } forEach [_rangeLabelCtrl, _rangeEditCtrl, _gatewayLabelCtrl, _gatewayEditCtrl, _ssidLabelCtrl, _ssidEditCtrl, _passwordLabelCtrl, _passwordEditCtrl];
+        { _x ctrlShow true } forEach [_rangeLabelCtrl, _rangeEditCtrl, _gatewayLabelCtrl, _gatewayEditCtrl, _ssidLabelCtrl, _ssidEditCtrl, _passwordLabelCtrl, _passwordEditCtrl, _extSshLabelCtrl, _extSshCheckCtrl, _extAllowLabelCtrl, _extAllowEditCtrl];
         _rangeEditCtrl ctrlEnable true;
         _gatewayEditCtrl ctrlEnable true;
         _ssidEditCtrl ctrlEnable true;
         _passwordEditCtrl ctrlEnable true;
+        _extSshCheckCtrl ctrlEnable true;
+        _extAllowEditCtrl ctrlEnable true;
 
         _rangeEditCtrl ctrlSetText str (_entity getVariable ["AE3_network_wirelessRange", 100]);
         _gatewayEditCtrl ctrlSetText ([_entity getVariable ["AE3_network_address", [192, 168, 0, 1]]] call AE3_network_fnc_ip2str);
         _ssidEditCtrl ctrlSetText (_entity getVariable ["ace_cargo_customName", ""]);
         _passwordEditCtrl ctrlSetText (_entity getVariable ["AE3_network_password", ""]);
+        _extSshCheckCtrl cbSetChecked (_entity getVariable ["AE3_network_allowExternalSsh", false]);
+        _extAllowEditCtrl ctrlSetText (_entity getVariable ["AE3_network_externalAllow", ""]);
     };
 
     /* ======================================== */

@@ -33,6 +33,8 @@ switch (_op) do {
         _res set ["range", _router getVariable ["AE3_network_wirelessRange", 100]];
         _res set ["password", _router getVariable ["AE3_network_password", ""]];
         _res set ["gateway", ([_router getVariable ["AE3_network_address", [192, 168, 0, 1]]] call AE3_network_fnc_ip2str)];
+        _res set ["extSsh", _router getVariable ["AE3_network_allowExternalSsh", false]];
+        _res set ["extAllow", _router getVariable ["AE3_network_externalAllow", ""]];
     };
 
     case "set": {
@@ -41,8 +43,10 @@ switch (_op) do {
         if !(_range isEqualType 0) then { _range = parseNumber (str _range); };
         private _password = _data getOrDefault ["password", ""];
         private _gateway = _data getOrDefault ["gateway", ""]; // "a.b.c.d", blank = unchanged
+        private _extSsh = _data getOrDefault ["extSsh", false];
+        private _extAllow = _data getOrDefault ["extAllow", ""];
         // Apply on the server (router is server-owned) and broadcast so scans/connects see it.
-        [_router, _name, _range, _password, _gateway] remoteExecCall ["AE3_network_fnc_applyRouterConfig", 2];
+        [_router, _name, _range, _password, _gateway, _extSsh, _extAllow] remoteExecCall ["AE3_network_fnc_applyRouterConfig", 2];
         _res set ["ok", true];
     };
 

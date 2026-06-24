@@ -361,7 +361,7 @@ switch (_command) do {
             diag_log text format ["[AE3][ROUTE] ping_host source=%1#%2 target=%3", _computer getVariable ["ace_cargo_customName", "?"], netId _computer, [_targetIp] call AE3_network_fnc_ip2str];
         };
 
-        ([_computer, _targetIp] call AE3_network_fnc_ping) params ["_target", "_routeLength"];
+        ([_computer, _targetIp] call AE3_network_fnc_resolve) params ["_target", "_routeLength"];
         if (isNull _target) exitWith { _pres set ["error", "no_route"]; [_pres] call _reply; };
 
         _pres set ["ok", true];
@@ -426,6 +426,9 @@ switch (_command) do {
             {
                 private _newIp = _parts apply { parseNumber _x };
                 [_computer, ["AE3_network_address", _newIp, true]] remoteExecCall ["setVariable", 2];
+                // Persist as a static lease so a power-cycle (AE3_network_fnc_dhcp_onTurnOn) keeps it
+                // instead of overwriting with a fresh DHCP address.
+                [_computer, ["AE3_network_staticIp", _ipStr, true]] remoteExecCall ["setVariable", 2];
                 _sires set ["ok", true];
                 _sires set ["ip", _ipStr];
             }

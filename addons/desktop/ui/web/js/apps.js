@@ -15,7 +15,9 @@
       var parts = source.split(".");
       if (parts.length === 4 && source !== "127.0.0.1") currentPrefix.value = parts.slice(0, 3).join(".") + ".";
       var inp = body.querySelector(selector);
-      if (inp && inp.value === "") inp.value = currentPrefix.value;
+      // Replace an empty field or a still-untouched bare prefix (ends with "."), but never a target
+      // the user has already typed in full.
+      if (inp && (inp.value === "" || (/\.$/).test(inp.value))) inp.value = currentPrefix.value;
     }).catch(function () {});
   }
 
@@ -449,28 +451,52 @@
   // rather than behind it like a native control would.
   Apps.register({
     id: "media", title: "Image Viewer", glyph: Icons.image, width: 720, height: 540,
-    showInDock: false,
+    showInDock: true, singleton: false,
     render: function (body, win, args) {
-      var path = (args && args.path) || "";
-      var name = (args && args.title) || path.split("\\").pop().split("/").pop();
-      win.el.querySelector(".title").textContent = "Image Viewer - " + name;
       body.style.background = "#111";
       body.style.display = "flex";
-      body.style.alignItems = "center";
-      body.style.justifyContent = "center";
+      body.style.flexDirection = "column";
       body.innerHTML =
-        '<div class="muted mload" style="padding:16px">Loading image...</div>' +
-        '<img class="mimg" style="display:none;max-width:100%;max-height:100%;object-fit:contain">';
+        '<div class="toolbar"><button class="btn mopen">Open image…</button>' +
+          '<span class="muted mname" style="margin-left:10px;align-self:center"></span></div>' +
+        '<div class="mstage" style="flex:1;min-height:0;display:flex;align-items:center;justify-content:center">' +
+          '<div class="muted mload" style="padding:16px">No image open. Use "Open image…" to load one.</div>' +
+          '<img class="mimg" style="display:none;max-width:100%;max-height:100%;object-fit:contain">' +
+        '</div>';
       var img = body.querySelector(".mimg");
       var load = body.querySelector(".mload");
+      var nameEl = body.querySelector(".mname");
       img.onload = function () { load.style.display = "none"; img.style.display = "block"; };
-      img.onerror = function () { load.textContent = "Cannot display this image."; };
-      // A registered source can be absolute (\myMod\img.paa), addon-relative, or mission-relative
-      // (media\images\pic.jpg). Try the path as mission-relative, as a VFS-absolute path (leading
-      // backslash) and finally under this addon's web root so any valid form resolves.
-      A3.loadTexture(path, 2048, ["", "\\", window.AE3_WEB_ROOT || "\\z\\ae3\\addons\\desktop\\ui\\web\\"]).then(function (url) {
-        img.src = url;
-      }).catch(function () { load.textContent = "Cannot load image: " + esc(name); });
+      img.onerror = function () { img.style.display = "none"; load.style.display = "block"; load.textContent = "Cannot display this image."; };
+
+      // Render a registered media source. It can be absolute (\myMod\img.paa), addon-relative, or
+      // mission-relative (media\images\pic.jpg); try each form so any valid path resolves.
+      function showImage(srcPath, name) {
+        nameEl.textContent = name || "";
+        win.el.querySelector(".title").textContent = "Image Viewer" + (name ? " - " + name : "");
+        if (!srcPath) { img.style.display = "none"; load.style.display = "block"; load.textContent = 'No image open. Use "Open image…" to load one.'; return; }
+        img.style.display = "none"; load.style.display = "block"; load.textContent = "Loading image…";
+        A3.loadTexture(srcPath, 2048, ["", "\\", window.AE3_WEB_ROOT || "\\z\\ae3\\addons\\desktop\\ui\\web\\"]).then(function (url) {
+          img.src = url;
+        }).catch(function () { img.style.display = "none"; load.style.display = "block"; load.textContent = "Cannot load image: " + esc(name || srcPath); });
+      }
+
+      // Open another image: pick a VFS file, resolve its media marker to the underlying source path.
+      body.querySelector(".mopen").addEventListener("click", function () {
+        AE3_pickFile("open", { title: "Open image", start: (window.AE3_HOME || "/home") }).then(function (p) {
+          if (!p) return;
+          A3.request("fs_read", { path: p }).then(function (res) {
+            var content = (res && res.content) || "";
+            if (content.indexOf("AE3_MEDIA|") === 0) {
+              var media = content.split("|");
+              if (String(media[1]).toLowerCase() === "image") { showImage(media[2], p.split("/").pop()); return; }
+            }
+            Modal.alert("Open image", "That file is not an image.");
+          });
+        });
+      });
+
+      showImage((args && args.path) || "", (args && args.title) || ((args && args.path) ? String(args.path).split("\\").pop().split("/").pop() : ""));
     }
   });
 
@@ -846,9 +872,11 @@
             '<label>Wifi Range (m)</label><input id="rr" type="number" value="' + esc(String(r.range || 100)) + '">' +
             '<label>Default Gateway</label><input id="rg" value="' + esc(String(r.gateway || "")) + '">' +
             '<label>Password (blank = open network)</label><input id="rp" value="' + esc(r.password || "") + '">' +
+            '<label><input id="rx" type="checkbox" style="width:auto;margin-right:8px"' + (r.extSsh ? " checked" : "") + '>Allow External SSH (from other gateways)</label>' +
+            '<label>Allowed Gateways (regex, blank = any)</label><input id="ra" value="' + esc(String(r.extAllow || "")) + '">' +
             '<div><button id="rs">Apply</button><span class="ok" id="rstat"></span></div></div>' +
             '<script>document.getElementById("rs").addEventListener("click",function(){' +
-            'parent.postMessage({__ae3router:{name:document.getElementById("rn").value,range:document.getElementById("rr").value,password:document.getElementById("rp").value,gateway:document.getElementById("rg").value}},"*");' +
+            'parent.postMessage({__ae3router:{name:document.getElementById("rn").value,range:document.getElementById("rr").value,password:document.getElementById("rp").value,gateway:document.getElementById("rg").value,extSsh:document.getElementById("rx").checked,extAllow:document.getElementById("ra").value}},"*");' +
             'document.getElementById("rstat").textContent="Applied.";});<\/script></body></html>';
           setDoc(doc);
         });

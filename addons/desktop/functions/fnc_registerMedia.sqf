@@ -28,6 +28,10 @@
 
 params ["_sourcePath", "_type", "_fsDest", ["_targets", "all"]];
 
+// Canonicalise the source path: Arma textures/videos use backslash separators. Normalising once here
+// keeps the native viewer, the web viewer and any persisted window state in agreement.
+_sourcePath = (trim _sourcePath) splitString "/" joinString "\";
+
 if (!isServer) exitWith
 {
 	["ae3_desktop_registerMedia", [_sourcePath, _type, _fsDest, _targets]] call CBA_fnc_serverEvent;

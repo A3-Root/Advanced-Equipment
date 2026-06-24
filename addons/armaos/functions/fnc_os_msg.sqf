@@ -47,8 +47,8 @@ if (count _targetIp != 4) exitWith
 	[_computer] call AE3_armaos_fnc_shell_playErrorSound;
 };
 
-// Route to the target over the simulated network
-([_computer, _targetIp] call AE3_network_fnc_ping) params ["_target", "_routeLength"];
+// Route to the target over the simulated network (honours each router's external access policy)
+([_computer, _targetIp] call AE3_network_fnc_resolve) params ["_target", "_routeLength"];
 
 if (isNull _target || {_target isEqualTo _computer}) exitWith
 {

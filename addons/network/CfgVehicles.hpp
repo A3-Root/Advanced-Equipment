@@ -49,6 +49,51 @@
 			typeName = "STRING"; \
 			condition = "1"; \
 		}; \
+		class AE3_EdenAttribute_PowerLevel \
+		{ \
+			displayName = "$STR_AE3_Main_EdenAttributes_PowerLevelDisplayName"; \
+			tooltip = "$STR_AE3_Main_EdenAttributes_PowerLevelTooltip"; \
+			property = "AE3_EdenAttribute_PowerLevel"; \
+			control = "Slider"; \
+			expression = "_this setVariable ['%s', _value, true];"; \
+			defaultValue = "1"; \
+			validate = "number"; \
+			typeName = "NUMBER"; \
+			condition = "1"; \
+		}; \
+		class AE3_RouterStartOn \
+		{ \
+			displayName = "Powered On At Start"; \
+			tooltip = "Switch the router on automatically when the mission starts."; \
+			property = "AE3_RouterStartOn"; \
+			control = "Checkbox"; \
+			expression = "[_this, 'starton', _value] call AE3_network_fnc_attr_router;"; \
+			defaultValue = "false"; \
+			typeName = "BOOL"; \
+			condition = "1"; \
+		}; \
+		class AE3_RouterAllowExternalSsh \
+		{ \
+			displayName = "Allow External SSH"; \
+			tooltip = "Allow laptops on other gateways to ping/SSH devices on this router. Leave the allowed gateways blank to permit any gateway."; \
+			property = "AE3_RouterAllowExternalSsh"; \
+			control = "Checkbox"; \
+			expression = "[_this, 'extssh', _value] call AE3_network_fnc_attr_router;"; \
+			defaultValue = "false"; \
+			typeName = "BOOL"; \
+			condition = "1"; \
+		}; \
+		class AE3_RouterExternalAllow \
+		{ \
+			displayName = "External Allowed Gateways"; \
+			tooltip = "Optional comma/space separated regex patterns of source gateways allowed external access. Blank means any gateway."; \
+			property = "AE3_RouterExternalAllow"; \
+			control = "Edit"; \
+			expression = "[_this, 'extallow', _value] call AE3_network_fnc_attr_router;"; \
+			defaultValue = """"""; \
+			typeName = "STRING"; \
+			condition = "1"; \
+		}; \
 	};
 
 class CfgVehicles

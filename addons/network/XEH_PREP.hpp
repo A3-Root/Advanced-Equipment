@@ -17,6 +17,7 @@ PREP(connect_isCyclic);
 PREP(disconnect);
 
 PREP(ping);
+PREP(resolve);
 
 PREP(dhcp_get);
 PREP(dhcp_refresh);

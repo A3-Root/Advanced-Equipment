@@ -67,8 +67,8 @@ if (AE3_DebugMode || {missionNamespace getVariable ["AE3_NetworkDebugEnabled", f
 	diag_log text format ["[AE3][ROUTE] ssh source=%1#%2 target=%3 user=%4", [_computer, true] call ace_cargo_fnc_getNameItem, netId _computer, [_targetIp] call AE3_network_fnc_ip2str, _user];
 };
 
-// Route to the target over the simulated network
-([_computer, _targetIp] call AE3_network_fnc_ping) params ["_target", "_routeLength"];
+// Route to the target over the simulated network (honours each router's external access policy)
+([_computer, _targetIp] call AE3_network_fnc_resolve) params ["_target", "_routeLength"];
 
 if (isNull _target || {_target isEqualTo _computer}) exitWith
 {

@@ -49,7 +49,7 @@ try {
     private _local = objectFromNetId _localNetId;
     if (isNull _local) then { throw "no_device" };
 
-    ([_local, _targetIp] call AE3_network_fnc_ping) params ["_target"];
+    ([_local, _targetIp] call AE3_network_fnc_resolve) params ["_target"];
 
     if (isNull _target) then { throw "no_route" };
     if !(_target getVariable ["AE3_cap_hasTerminal", false]) then { throw "no_route" };

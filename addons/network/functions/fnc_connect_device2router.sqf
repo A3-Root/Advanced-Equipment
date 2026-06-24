@@ -15,7 +15,14 @@ private _children = _parent getVariable ["AE3_network_children", []];
 _parent setVariable ["AE3_network_children", _children + [_device], true];
 
 _device setVariable ["AE3_network_parent", _parent, true];
-_device setVariable ["AE3_network_address", [_device] call AE3_network_fnc_dhcp_get, true];
+if (isNull _parent) then
+{
+	_device setVariable ["AE3_network_address", [127, 0, 0, 1], true];
+}
+else
+{
+	_device setVariable ["AE3_network_address", [_parent] call AE3_network_fnc_dhcp_get, true];
+};
 
 if (isNull _parent) then
 {
