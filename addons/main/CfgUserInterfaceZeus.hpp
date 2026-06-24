@@ -1074,7 +1074,7 @@ class AE3_UserInterface_Zeus_Module_AddCalendarEvent
         class RscText_1000: RscText
         {
             idc = 1000;
-            text = "Add Calendar Event";
+            text = "AE3: Add Calendar Event";
             x = 0 * GUI_GRID_W + GUI_GRID_X;
             y = 0 * GUI_GRID_H + GUI_GRID_Y;
             w = 40 * GUI_GRID_W;

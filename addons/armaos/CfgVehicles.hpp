@@ -770,7 +770,7 @@ class CfgVehicles
 	{
 		scope = 2;
 		scopeCurator = 2;
-		displayName = "Add Calendar Event";
+		displayName = "AE3: Add Calendar Event";
 		icon = "\z\ae3\addons\armaos\ui\AE3_Module_Icons_addUser.paa";
 		category = "AE3_armaosModules";
 
