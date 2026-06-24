@@ -6,8 +6,6 @@ class CfgVehicles
 		class AttributesBase
 		{
 			class Edit;
-			class Combo;
-			class Checkbox;
 			class ModuleDescription;
 		};
 		class ModuleDescription {};
@@ -34,103 +32,18 @@ class CfgVehicles
 
 		class Attributes: AttributesBase
 		{
-			class AE3_ModuleIntel_Type: Combo
+			// One dynamic control: a type dropdown whose visible fields follow the selected type.
+			// The whole configuration is stored as a single serialized value (see fnc_intel_3denSave)
+			// and read back by AE3_desktop_fnc_module_addIntel.
+			class AE3_ModuleIntel_Data: Edit
 			{
-				property = "AE3_ModuleIntel_Type";
+				property = "AE3_ModuleIntel_Data";
 				displayName = "$STR_AE3_Desktop_Config_IntelTypeDisplayName";
 				tooltip = "$STR_AE3_Desktop_Config_IntelTypeTooltip";
-				typeName = "STRING";
-				defaultValue = """email""";
-				class Values
-				{
-					class Email      { name = "$STR_AE3_Desktop_Intel_TypeEmail";      value = "email"; };
-					class Webpage    { name = "$STR_AE3_Desktop_Intel_TypeWebpage";    value = "webpage"; };
-					class History    { name = "$STR_AE3_Desktop_Intel_TypeHistory";    value = "history"; };
-					class Media      { name = "$STR_AE3_Desktop_Intel_TypeMedia";      value = "media"; };
-					class LockedFile { name = "$STR_AE3_Desktop_Intel_TypeLockedFile"; value = "lockedfile"; };
-				};
-			};
-			class AE3_ModuleIntel_Field1: Edit
-			{
-				property = "AE3_ModuleIntel_Field1";
-				displayName = "$STR_AE3_Desktop_Config_IntelField1";
-				tooltip = "$STR_AE3_Desktop_Config_IntelFieldsTooltip";
+				control = "AE3_Intel3denControl";
 				typeName = "STRING";
 				defaultValue = """""";
-			};
-			class AE3_ModuleIntel_Field2: Edit
-			{
-				property = "AE3_ModuleIntel_Field2";
-				displayName = "$STR_AE3_Desktop_Config_IntelField2";
-				tooltip = "$STR_AE3_Desktop_Config_IntelFieldsTooltip";
-				typeName = "STRING";
-				defaultValue = """""";
-			};
-			class AE3_ModuleIntel_Field3: Edit
-			{
-				property = "AE3_ModuleIntel_Field3";
-				displayName = "$STR_AE3_Desktop_Config_IntelField3";
-				tooltip = "$STR_AE3_Desktop_Config_IntelFieldsTooltip";
-				typeName = "STRING";
-				defaultValue = """""";
-			};
-			class AE3_ModuleIntel_Field4: Edit
-			{
-				property = "AE3_ModuleIntel_Field4";
-				displayName = "$STR_AE3_Desktop_Config_IntelField4";
-				tooltip = "$STR_AE3_Desktop_Config_IntelFieldsTooltip";
-				typeName = "STRING";
-				defaultValue = """""";
-			};
-			class AE3_ModuleIntel_Owner: Edit
-			{
-				property = "AE3_ModuleIntel_Owner";
-				displayName = "$STR_AE3_Desktop_Intel_LabelOwner";
-				tooltip = "$STR_AE3_Desktop_Config_IntelFieldsTooltip";
-				typeName = "STRING";
-				defaultValue = """root""";
-			};
-			class AE3_ModuleIntel_OwnerRead: Checkbox
-			{
-				property = "AE3_ModuleIntel_OwnerRead";
-				displayName = "$STR_AE3_Desktop_Intel_LabelOwnerRead";
-				typeName = "BOOL";
-				defaultValue = "true";
-			};
-			class AE3_ModuleIntel_OwnerWrite: Checkbox
-			{
-				property = "AE3_ModuleIntel_OwnerWrite";
-				displayName = "$STR_AE3_Desktop_Intel_LabelOwnerWrite";
-				typeName = "BOOL";
-				defaultValue = "true";
-			};
-			class AE3_ModuleIntel_OwnerExecute: Checkbox
-			{
-				property = "AE3_ModuleIntel_OwnerExecute";
-				displayName = "$STR_AE3_Desktop_Intel_LabelOwnerExecute";
-				typeName = "BOOL";
-				defaultValue = "false";
-			};
-			class AE3_ModuleIntel_EveryoneRead: Checkbox
-			{
-				property = "AE3_ModuleIntel_EveryoneRead";
-				displayName = "$STR_AE3_Desktop_Intel_LabelEveryoneRead";
-				typeName = "BOOL";
-				defaultValue = "true";
-			};
-			class AE3_ModuleIntel_EveryoneWrite: Checkbox
-			{
-				property = "AE3_ModuleIntel_EveryoneWrite";
-				displayName = "$STR_AE3_Desktop_Intel_LabelEveryoneWrite";
-				typeName = "BOOL";
-				defaultValue = "false";
-			};
-			class AE3_ModuleIntel_EveryoneExecute: Checkbox
-			{
-				property = "AE3_ModuleIntel_EveryoneExecute";
-				displayName = "$STR_AE3_Desktop_Intel_LabelEveryoneExecute";
-				typeName = "BOOL";
-				defaultValue = "false";
+				expression = "_this setVariable ['AE3_ModuleIntel_Data', _value];";
 			};
 			class ModuleDescription: ModuleDescription{};
 		};

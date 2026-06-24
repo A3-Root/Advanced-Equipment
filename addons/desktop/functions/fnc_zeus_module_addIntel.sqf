@@ -35,123 +35,14 @@ if (_event isEqualTo "onLoad") exitWith
 	};
 	_display setVariable ["AE3_linkedComputer", _computer];
 
-	private _combo = _display displayCtrl 1702;
-	{
-		_x params ["_typeId", "_label"];
-		private _index = _combo lbAdd _label;
-		_combo lbSetData [_index, _typeId];
-	} forEach [
-		["email", localize "STR_AE3_Desktop_Intel_Email"],
-		["webpage", localize "STR_AE3_Desktop_Intel_Webpage"],
-		["history", localize "STR_AE3_Desktop_Intel_History"],
-		["media", localize "STR_AE3_Desktop_Intel_Media"],
-		["lockedfile", localize "STR_AE3_Desktop_Intel_LockedFile"]
-	];
-	_combo lbSetCurSel 0;
+	// Populate the type/media combos and lay out the fields for the initial type, then keep the
+	// layout in sync as the type changes. The same helpers drive the 3DEN module attribute control.
+	[_display] call AE3_desktop_fnc_intel_initFields;
+	[_display] call AE3_desktop_fnc_intel_updateFields;
 
-	// Media kind picker (image/video/audio): populated once, shown only for the "media" type.
-	private _mediaCombo = _display displayCtrl 1602;
-	{
-		_x params ["_mediaId", "_mediaLabel"];
-		private _mi = _mediaCombo lbAdd _mediaLabel;
-		_mediaCombo lbSetData [_mi, _mediaId];
-	} forEach [
-		["image", localize "STR_AE3_Desktop_Intel_MediaImage"],
-		["video", localize "STR_AE3_Desktop_Intel_MediaVideo"],
-		["audio", localize "STR_AE3_Desktop_Intel_MediaAudio"]
-	];
-	_mediaCombo lbSetCurSel 0;
-
-	// Per-type field labels
-	private _updateLabels = {
+	(_display displayCtrl 1702) ctrlAddEventHandler ["LBSelChanged", {
 		params ["_combo"];
-		private _display = ctrlParent _combo;
-		private _type = _combo lbData (lbCurSel _combo);
-		private _labels = switch (_type) do
-		{
-			case "webpage":  { [localize "STR_AE3_Desktop_Intel_LabelUrl", localize "STR_AE3_Desktop_Intel_LabelTitle", localize "STR_AE3_Desktop_Intel_LabelContent"] };
-			case "history":  { [localize "STR_AE3_Desktop_Intel_LabelUrl", localize "STR_AE3_Desktop_Intel_LabelTime", ""] };
-			case "media":    { [localize "STR_AE3_Desktop_Intel_LabelSource", localize "STR_AE3_Desktop_Intel_LabelMediaType", localize "STR_AE3_Desktop_Intel_LabelDest"] };
-			case "lockedfile": { [localize "STR_AE3_Desktop_Intel_LabelDest", localize "STR_AE3_Desktop_Intel_LabelPassword", localize "STR_AE3_Desktop_Intel_LabelContent"] };
-			default          { [localize "STR_AE3_Desktop_Intel_LabelFrom", localize "STR_AE3_Desktop_Intel_LabelTo", localize "STR_AE3_Desktop_Intel_LabelSubject"] };
-		};
-		(_display displayCtrl 1710) ctrlSetText (_labels select 0);
-		(_display displayCtrl 1711) ctrlSetText (_labels select 1);
-		(_display displayCtrl 1712) ctrlSetText (_labels select 2);
-		private _isEmail = _type isEqualTo "email";
-		private _isLocked = _type isEqualTo "lockedfile";
-		// Media uses the kind dropdown (1602) in place of the second text field (1402).
-		private _isMedia = _type isEqualTo "media";
-		(_display displayCtrl 1602) ctrlShow _isMedia;
-		(_display displayCtrl 1402) ctrlShow (!_isMedia);
-		(_display displayCtrl 1713) ctrlSetText (localize "STR_AE3_Desktop_Intel_LabelBody");
-		// email-only: body field
-		{
-			(_display displayCtrl _x) ctrlShow _isEmail;
-		} forEach [1713, 1404];
-		// shared: received-time row (email) / owner-name row (lockedfile)
-		{
-			(_display displayCtrl _x) ctrlShow (_isEmail || _isLocked);
-		} forEach [1714, 1405];
-		// email-only: sender/recipient address creation checkboxes and labels
-		{
-			(_display displayCtrl _x) ctrlShow _isEmail;
-		} forEach [1717, 1317, 1718, 1318];
-		{
-			(_display displayCtrl _x) ctrlEnable _isEmail;
-		} forEach [1317, 1318];
-		// lockedfile-only: permission column headers and all six permission checkboxes
-		{
-			(_display displayCtrl _x) ctrlShow _isLocked;
-		} forEach [1715, 1716, 1301, 1302, 1303, 1304, 1305, 1306];
-		if (_isEmail) then
-		{
-			(_display displayCtrl 1714) ctrlSetText (localize "STR_AE3_Desktop_Intel_LabelReceivedTime");
-			(_display displayCtrl 1717) ctrlSetText (localize "STR_AE3_Desktop_Intel_LabelCreateFromHandle");
-			(_display displayCtrl 1718) ctrlSetText (localize "STR_AE3_Desktop_Intel_LabelCreateToHandle");
-			(_display displayCtrl 1405) ctrlSetText "";
-			(_display displayCtrl 1317) cbSetChecked false;
-			(_display displayCtrl 1318) cbSetChecked false;
-			// Derive one grid-row height from the y gap between body label (IDC 1713, y=11.2) and
-			// body field (IDC 1404, y=12.2) — avoids using the all-caps GUI_GRID_* preprocessor macros.
-			private _pLabel = ctrlPosition (_display displayCtrl 1713);
-			private _pBody  = ctrlPosition (_display displayCtrl 1404);
-			private _gH = (_pBody select 1) - (_pLabel select 1); // 1 grid row
-			// Shrink body to h=2 rows so the received-time row fits directly below before the checkboxes.
-			(_display displayCtrl 1404) ctrlSetPosition [_pBody select 0, _pBody select 1, _pBody select 2, 2 * _gH];
-			(_display displayCtrl 1404) ctrlCommit 0;
-			private _rowY = (_pBody select 1) + (2.3 * _gH);
-			private _p14 = ctrlPosition (_display displayCtrl 1714);
-			private _p15 = ctrlPosition (_display displayCtrl 1405);
-			(_display displayCtrl 1714) ctrlSetPosition [_p14 select 0, _rowY, _p14 select 2, _p14 select 3];
-			(_display displayCtrl 1405) ctrlSetPosition [_p15 select 0, _rowY, _p15 select 2, _p15 select 3];
-			(_display displayCtrl 1714) ctrlCommit 0;
-			(_display displayCtrl 1405) ctrlCommit 0;
-		};
-		if (_isLocked) then
-		{
-			(_display displayCtrl 1714) ctrlSetText (localize "STR_AE3_Desktop_Intel_LabelOwner");
-			(_display displayCtrl 1715) ctrlSetText (localize "STR_AE3_Desktop_Intel_LabelOwner");
-			(_display displayCtrl 1716) ctrlSetText (localize "STR_AE3_Desktop_Intel_LabelEveryone");
-			// Restore owner row to its config-defined position (y=13.2, which is body_y + 1 grid row).
-			private _pLabel = ctrlPosition (_display displayCtrl 1713);
-			private _pBody  = ctrlPosition (_display displayCtrl 1404);
-			private _gH = (_pBody select 1) - (_pLabel select 1);
-			private _origY = (_pBody select 1) + _gH; // config-defined y=13.2 = body_y + 1 * gridH
-			private _p14 = ctrlPosition (_display displayCtrl 1714);
-			private _p15 = ctrlPosition (_display displayCtrl 1405);
-			(_display displayCtrl 1714) ctrlSetPosition [_p14 select 0, _origY, _p14 select 2, _p14 select 3];
-			(_display displayCtrl 1405) ctrlSetPosition [_p15 select 0, _origY, _p15 select 2, _p15 select 3];
-			(_display displayCtrl 1714) ctrlCommit 0;
-			(_display displayCtrl 1405) ctrlCommit 0;
-		};
-	};
-
-	[_combo] call _updateLabels;
-	_combo setVariable ["AE3_updateLabels", _updateLabels];
-	_combo ctrlAddEventHandler ["LBSelChanged", {
-		params ["_combo"];
-		[_combo] call (_combo getVariable "AE3_updateLabels");
+		[ctrlParent _combo] call AE3_desktop_fnc_intel_updateFields;
 	}];
 };
 

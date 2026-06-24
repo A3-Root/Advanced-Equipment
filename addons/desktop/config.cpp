@@ -18,6 +18,8 @@ class CfgPatches
 #include "ui\RscAE3Desktop.hpp"
 #include "CfgAE3Apps.hpp"
 #include "CfgAE3Themes.hpp"
-#include "CfgVehicles.hpp"
 #include "\z\ae3\addons\main\defines.inc"
 #include "CfgUserInterfaceZeus.hpp"
+// Defines AE3_Intel3denControl before CfgVehicles inherits it for the Add Intel module attribute.
+#include "Cfg3DEN.hpp"
+#include "CfgVehicles.hpp"

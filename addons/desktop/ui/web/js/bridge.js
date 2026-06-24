@@ -126,6 +126,34 @@
       return next();
     },
 
+    // Resolve any registered image source to a data URL for an <img>/CSS background, covering both
+    // origins:
+    //   - mod/addon assets (absolute "\z\..." or a ".paa", and engine-loadable .jpg/.png) render
+    //     through A3API.RequestTexture, which returns a base64 PNG data URL.
+    //   - mission-folder images that the texture sampler cannot load (e.g. a raw "media\images\x.jpg")
+    //     fall back to a base64-encoded sidecar: the file at "<path>.b64" (or the path itself when it
+    //     already ends in .b64) is read as text via RequestFile and wrapped in a data URL. This mirrors
+    //     the proven mission-media path and works without shipping textures inside a PBO.
+    loadImage: function (rel, maxRes, extraRoots) {
+      var self = this;
+      var src = String(rel).replace(/\//g, "\\");
+      function mimeFor(path) {
+        var ext = (path.replace(/\.b64$/i, "").split(".").pop() || "png").toLowerCase();
+        if (ext === "jpg" || ext === "jpeg") return "image/jpeg";
+        if (ext === "gif") return "image/gif";
+        return "image/png"; // png, paa(->png), and anything else
+      }
+      function fromB64() {
+        var b64path = /\.b64$/i.test(src) ? src : src + ".b64";
+        return self.loadFile(b64path, extraRoots).then(function (txt) {
+          return "data:" + mimeFor(src) + ";base64," + String(txt).replace(/\s/g, "");
+        });
+      }
+      // A pre-encoded source skips the sampler entirely.
+      if (/\.b64$/i.test(src)) return fromB64();
+      return self.loadTexture(src, maxRes, extraRoots).catch(fromB64);
+    },
+
     emit: emit
   };
 

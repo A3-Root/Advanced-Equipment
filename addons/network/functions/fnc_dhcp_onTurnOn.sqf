@@ -10,15 +10,11 @@
 
 params ["_entity"];
 
-private _static = _entity getVariable ["AE3_network_staticIp", ""];
-if (_static isNotEqualTo "") then
+private _static = [_entity getVariable ["AE3_network_staticIp", ""]] call AE3_network_fnc_str2ip;
+if (_static isNotEqualTo []) then
 {
 	// Static IP configured via Eden attribute or setVariable before power-on; skip DHCP.
-	private _parts = _static splitString ".";
-	if (count _parts == 4) then
-	{
-		_entity setVariable ["AE3_network_address", (_parts apply { parseNumber _x }), true];
-	};
+	_entity setVariable ["AE3_network_address", _static, true];
 }
 else
 {

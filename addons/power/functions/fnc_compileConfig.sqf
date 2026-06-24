@@ -20,7 +20,7 @@ params['_deviceCfg', '_config'];
 
 _config set ['device', [
 		getText (_deviceCfg >> "displayName"),
-		getNumber (_deviceCfg >> "defaultPowerState"),
+		getNumber (_deviceCfg >> "defaultPowerLevel"),
 		compile (getText (_deviceCfg >> "init")),
 		compile (getText (_deviceCfg >> "turnOnAction")),
 		compile ([_deviceCfg, "turnOnActionCondition", "true"] call BIS_fnc_returnConfigEntry),

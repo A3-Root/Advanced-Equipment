@@ -284,46 +284,6 @@
                 <Original>AE3: Crash Device</Original>
                 <English>AE3: Crash Device</English>
             </Key>
-            <Key ID="STR_AE3_Desktop_Config_IntelField1">
-                <Original>Field 1 (From / URL / Date / Source)</Original>
-                <English>Field 1 (From / URL / Date / Source)</English>
-                <French>Champ 1 (De / URL / Date / Source)</French>
-                <Italian>Campo 1 (Da / URL / Data / Sorgente)</Italian>
-                <Russian>Field 1 (From / URL / Date / Source)</Russian>
-                <German>Feld 1 (Von / URL / Datum / Quelle)</German>
-                <Chinesesimp>字段1(发件人/URL/日期/来源)</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_Desktop_Config_IntelField2">
-                <Original>Field 2 (Subject / Title / Time / Type)</Original>
-                <English>Field 2 (Subject / Title / Time / Type)</English>
-                <French>Champ 2 (Objet / Titre / Heure / Type)</French>
-                <Italian>Campo 2 (Oggetto / Titolo / Ora / Tipo)</Italian>
-                <Russian>Field 2 (Subject / Title / Time / Type)</Russian>
-                <German>Feld 2 (Betreff / Titel / Zeit / Typ)</German>
-                <Chinesesimp>字段2(主题/标题/时间/类型)</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_Desktop_Config_IntelField3">
-                <Original>Field 3 (Body / Content / Details / Destination)</Original>
-                <English>Field 3 (Body / Content / Details / Destination)</English>
-                <French>Champ 3 (Corps / Contenu / Détails / Destination)</French>
-                <Italian>Campo 3 (Corpo / Contenuto / Dettagli / Destinazione)</Italian>
-                <Russian>Field 3 (Body / Content / Details / Destination)</Russian>
-                <German>Feld 3 (Text / Inhalt / Details / Ziel)</German>
-                <Chinesesimp>字段3(正文/内容/详情/目标)</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_Desktop_Config_IntelField4">
-                <Original>Field 4 (Email body)</Original>
-                <English>Field 4 (Email body)</English>
-            </Key>
-            <Key ID="STR_AE3_Desktop_Config_IntelFieldsTooltip">
-                <Original>Meaning depends on the intel type - see the wiki App-Framework page</Original>
-                <English>Meaning depends on the intel type - see the wiki App-Framework page</English>
-                <French>La signification dépend du type - voir la page wiki App-Framework</French>
-                <Italian>Il significato dipende dal tipo - vedi la pagina wiki App-Framework</Italian>
-                <Russian>Meaning depends on the intel type - see the wiki App-Framework page</Russian>
-                <German>Bedeutung hängt vom Intel-Typ ab - siehe Wiki-Seite App-Framework</German>
-                <Chinesesimp>含义取决于情报类型 - 参见wiki App-Framework页面</Chinesesimp>
-            </Key>
             <Key ID="STR_AE3_Desktop_Config_IntelTargetHint">
                 <Original>Place this module on an AE3 laptop to target it; placed anywhere else, the intel goes to ALL laptops. In 3DEN you can also sync the module to laptops.</Original>
                 <English>Place this module on an AE3 laptop to target it; placed anywhere else, the intel goes to ALL laptops. In 3DEN you can also sync the module to laptops.</English>
@@ -456,18 +416,6 @@
                 <German>Everyone</German>
                 <Chinesesimp>Everyone</Chinesesimp>
             </Key>
-            <Key ID="STR_AE3_Desktop_Intel_LabelEveryoneExecute">
-                <Original>Everyone execute</Original>
-                <English>Everyone execute</English>
-            </Key>
-            <Key ID="STR_AE3_Desktop_Intel_LabelEveryoneRead">
-                <Original>Everyone read</Original>
-                <English>Everyone read</English>
-            </Key>
-            <Key ID="STR_AE3_Desktop_Intel_LabelEveryoneWrite">
-                <Original>Everyone write</Original>
-                <English>Everyone write</English>
-            </Key>
             <Key ID="STR_AE3_Desktop_Intel_LabelFrom">
                 <Original>From</Original>
                 <English>From</English>
@@ -494,18 +442,6 @@
                 <Russian>Owner</Russian>
                 <German>Owner</German>
                 <Chinesesimp>Owner</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_Desktop_Intel_LabelOwnerExecute">
-                <Original>Owner execute</Original>
-                <English>Owner execute</English>
-            </Key>
-            <Key ID="STR_AE3_Desktop_Intel_LabelOwnerRead">
-                <Original>Owner read</Original>
-                <English>Owner read</English>
-            </Key>
-            <Key ID="STR_AE3_Desktop_Intel_LabelOwnerWrite">
-                <Original>Owner write</Original>
-                <English>Owner write</English>
             </Key>
             <Key ID="STR_AE3_Desktop_Intel_LabelPassword">
                 <Original>Password to open the file</Original>
@@ -627,26 +563,6 @@
                 <Russian>all laptops</Russian>
                 <German>alle Laptops</German>
                 <Chinesesimp>所有笔记本电脑</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_Desktop_Intel_TypeEmail">
-                <Original>Email</Original>
-                <English>Email</English>
-            </Key>
-            <Key ID="STR_AE3_Desktop_Intel_TypeHistory">
-                <Original>Browser History</Original>
-                <English>Browser History</English>
-            </Key>
-            <Key ID="STR_AE3_Desktop_Intel_TypeLockedFile">
-                <Original>Locked File</Original>
-                <English>Locked File</English>
-            </Key>
-            <Key ID="STR_AE3_Desktop_Intel_TypeMedia">
-                <Original>Media</Original>
-                <English>Media</English>
-            </Key>
-            <Key ID="STR_AE3_Desktop_Intel_TypeWebpage">
-                <Original>Webpage</Original>
-                <English>Webpage</English>
             </Key>
             <Key ID="STR_AE3_Desktop_Intel_Webpage">
                 <Original>Webpage</Original>

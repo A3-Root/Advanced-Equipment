@@ -77,6 +77,10 @@ PREP(registerCamera);
 PREP(intel_dispatch);
 PREP(addLockedFile);
 PREP(promptUnlock);
+PREP(intel_initFields);
+PREP(intel_updateFields);
+PREP(intel_3denLoad);
+PREP(intel_3denSave);
 
 /* Zeus/3DEN modules */
 PREP(zeus_module_addIntel);

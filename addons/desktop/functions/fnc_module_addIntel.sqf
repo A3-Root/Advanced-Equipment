@@ -25,35 +25,42 @@ if (!isServer) exitWith {};
 
 if (_activated) then
 {
-	private _type = _module getVariable ["AE3_ModuleIntel_Type", "email"];
-	private _f1 = _module getVariable ["AE3_ModuleIntel_Field1", ""];
-	private _f2 = _module getVariable ["AE3_ModuleIntel_Field2", ""];
-	private _f3 = _module getVariable ["AE3_ModuleIntel_Field3", ""];
-	private _f4 = _module getVariable ["AE3_ModuleIntel_Field4", ""];
-	private _owner = _module getVariable ["AE3_ModuleIntel_Owner", "root"];
-	private _permissions = [
-		[
-			_module getVariable ["AE3_ModuleIntel_OwnerRead", true],
-			_module getVariable ["AE3_ModuleIntel_OwnerWrite", true],
-			_module getVariable ["AE3_ModuleIntel_OwnerExecute", false]
-		],
-		[
-			_module getVariable ["AE3_ModuleIntel_EveryoneRead", true],
-			_module getVariable ["AE3_ModuleIntel_EveryoneWrite", false],
-			_module getVariable ["AE3_ModuleIntel_EveryoneExecute", false]
-		]
+	// The dynamic attribute control stores every field as one serialized array (see fnc_intel_3denSave).
+	private _raw = _module getVariable ["AE3_ModuleIntel_Data", ""];
+	private _data = switch (true) do
+	{
+		case (_raw isEqualType []): { _raw };
+		case (_raw isEqualType "" && {_raw isNotEqualTo ""}): { parseSimpleArray _raw };
+		default { [] };
+	};
+	_data params [
+		["_type", "email"], ["_f1", ""], ["_f2", ""], ["_f3", ""], ["_f4", ""], ["_field5", "root"],
+		["_createFrom", false], ["_createTo", false],
+		["_oR", true], ["_oW", true], ["_oX", false], ["_eR", true], ["_eW", false], ["_eX", false]
 	];
+
+	// The sixth field is the body for most types, the owner for a locked file; the seventh carries
+	// the email address-creation options for emails and the permission grid for everything else.
+	private _arg6 = [_f4, _field5] select (_type isEqualTo "lockedfile");
+	private _f7 = if (_type isEqualTo "email") then
+	{
+		[_field5, _createFrom, _createTo]
+	}
+	else
+	{
+		[[_oR, _oW, _oX], [_eR, _eW, _eX]]
+	};
 
 	private _laptops = (synchronizedObjects _module) select { isClass (configOf _x >> "AE3_Device") };
 
 	if (_laptops isEqualTo []) then
 	{
-		[_type, "all", _f1, _f2, _f3, [_f4, _owner] select (_type isEqualTo "lockedfile"), _permissions] call AE3_desktop_fnc_intel_dispatch;
+		[_type, "all", _f1, _f2, _f3, _arg6, _f7] call AE3_desktop_fnc_intel_dispatch;
 	}
 	else
 	{
 		{
-			[_type, _x, _f1, _f2, _f3, [_f4, _owner] select (_type isEqualTo "lockedfile"), _permissions] call AE3_desktop_fnc_intel_dispatch;
+			[_type, _x, _f1, _f2, _f3, _arg6, _f7] call AE3_desktop_fnc_intel_dispatch;
 		} forEach _laptops;
 	};
 

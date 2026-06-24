@@ -476,7 +476,7 @@
         win.el.querySelector(".title").textContent = "Image Viewer" + (name ? " - " + name : "");
         if (!srcPath) { img.style.display = "none"; load.style.display = "block"; load.textContent = 'No image open. Use "Open image…" to load one.'; return; }
         img.style.display = "none"; load.style.display = "block"; load.textContent = "Loading image…";
-        A3.loadTexture(srcPath, 2048, ["", "\\", window.AE3_WEB_ROOT || "\\z\\ae3\\addons\\desktop\\ui\\web\\"]).then(function (url) {
+        A3.loadImage(srcPath, 2048, ["", "\\", window.AE3_WEB_ROOT || "\\z\\ae3\\addons\\desktop\\ui\\web\\"]).then(function (url) {
           img.src = url;
         }).catch(function () { img.style.display = "none"; load.style.display = "block"; load.textContent = "Cannot load image: " + esc(name || srcPath); });
       }
