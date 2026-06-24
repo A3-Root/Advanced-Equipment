@@ -32,11 +32,6 @@ if (_event isEqualTo "onLoad") exitWith
 	if (_mouseOverType isEqualTo "OBJECT" && {_mouseOverUnit call _isLaptop}) then
 	{
 		_computer = _mouseOverUnit;
-	}
-	else
-	{
-		private _nearby = nearestObjects [_module, [], 3] select { _x call _isLaptop };
-		if (_nearby isNotEqualTo []) then { _computer = _nearby select 0; };
 	};
 	_display setVariable ["AE3_linkedComputer", _computer];
 

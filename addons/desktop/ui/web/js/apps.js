@@ -264,7 +264,10 @@
         if (!hits.length) { entries.innerHTML = '<li class="muted pad">No matches</li>'; return; }
         hits.forEach(function (it) {
           var name = it.path.split("/").pop();
-          var li = h('<li><span class="ico">' + (it.dir ? Icons.folder : Icons.file) + '</span><span>' + esc(name) +
+          var isApp = /\.app$/i.test(name);
+          var cls = it.dir ? "isdir" : (isApp ? "isapp" : "isfile");
+          var glyph = it.dir ? Icons.folder : (isApp ? Icons.app : Icons.file);
+          var li = h('<li class="' + cls + '"><span class="ico">' + glyph + '</span><span>' + esc(name) +
             ' <span class="muted" style="font-size:11px">' + esc(it.path) + '</span></span></li>');
           li.addEventListener("dblclick", function () {
             if (it.dir) { go(it.path); } else { openFile(it.path); }
@@ -475,8 +478,15 @@
         nameEl.textContent = name || "";
         win.el.querySelector(".title").textContent = "Image Viewer" + (name ? " - " + name : "");
         if (!srcPath) { img.style.display = "none"; load.style.display = "block"; load.textContent = 'No image open. Use "Open image…" to load one.'; return; }
-        A3.send("fs_open_media", { path: name || srcPath, content: "AE3_MEDIA|image|" + srcPath });
-        img.style.display = "none"; load.style.display = "block"; load.textContent = "Opened in native image viewer.";
+        img.removeAttribute("src");
+        img.style.display = "none"; load.style.display = "block"; load.textContent = "Loading image...";
+        A3.loadImage(srcPath).then(function (dataUrl) {
+          img.src = dataUrl;
+        }).catch(function () {
+          img.style.display = "none";
+          load.style.display = "block";
+          load.textContent = "Cannot display this image.";
+        });
       }
 
       // Open another image: pick a VFS file, resolve its media marker to the underlying source path.
@@ -1750,7 +1760,10 @@
             rentries.innerHTML = "";
             if (res.error && res.error !== "") { rentries.innerHTML = '<li class="muted pad">' + esc(res.error) + "</li>"; return; }
             (res.entries || []).forEach(function (it) {
-              var li = h('<li><span class="ico">' + (it.dir ? Icons.folder : Icons.file) + '</span><span>' + esc(it.name) + "</span></li>");
+              var isApp = /\.app$/i.test(it.name);
+              var cls = it.dir ? "isdir" : (isApp ? "isapp" : "isfile");
+              var glyph = it.dir ? Icons.folder : (isApp ? Icons.app : Icons.file);
+              var li = h('<li class="' + cls + '"><span class="ico">' + glyph + '</span><span>' + esc(it.name) + "</span></li>");
               li.addEventListener("dblclick", function () { if (it.dir) { rcwd = joinPath(rcwd, it.name); rload(); } });
               li.addEventListener("contextmenu", function (e) {
                 e.preventDefault(); e.stopPropagation();

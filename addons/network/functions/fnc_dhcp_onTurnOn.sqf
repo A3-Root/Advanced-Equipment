@@ -13,7 +13,6 @@ params ["_entity"];
 private _parent = _entity getVariable ["AE3_network_parent", objNull];
 private _leases = _entity getVariable ["AE3_network_staticIpByRouter", createHashMap];
 private _staticStr = if (isNull _parent) then { "" } else { _leases getOrDefault [netId _parent, ""] };
-if (_staticStr isEqualTo "") then { _staticStr = _entity getVariable ["AE3_network_staticIpDefault", ""]; };
 private _static = [_staticStr] call AE3_network_fnc_str2ip;
 
 if (_static isNotEqualTo [] && {!([_entity, _static] call AE3_network_fnc_ipInUse)}) then

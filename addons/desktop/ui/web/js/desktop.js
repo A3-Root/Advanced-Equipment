@@ -251,7 +251,12 @@
       var content = (res && res.content) || "";
       if (content.indexOf("AE3_MEDIA|") === 0) {
         var media = content.split("|");
-        A3.send("fs_open_media", { path: path, content: content });
+        var type = String(media[1] || "").toLowerCase();
+        if (type === "image") {
+          Apps.launch("media", { path: media.slice(2).join("|"), title: path.split("/").pop() });
+        } else {
+          A3.send("fs_open_media", { path: path, content: content });
+        }
         return;
       }
       Apps.launch("notepad", { path: path, content: content });

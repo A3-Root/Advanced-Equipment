@@ -51,6 +51,7 @@ if (count call {_networkConsumer getVariable ["AE3_network_children", []]} == 0)
 };
 
 // reset ip address of network consumer
+_networkConsumer setVariable ["AE3_network_staticIp", "", true];
 _networkConsumer setVariable ["AE3_network_address", [127, 0, 0, 1], true];
 
 true;

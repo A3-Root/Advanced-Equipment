@@ -38,9 +38,15 @@ if (!isServer) exitWith {};
 				_router setVariable ["AE3_power_startOn", _value, true];
 				if (_value) then
 				{
-					// Power the router on once its power device has finished initialising.
+					// Power the router on once both router and power initialisation have finished.
 					[
-						{ params ["_router"]; !alive _router || {!isNil {_router getVariable "AE3_power_fnc_turnOnWrapper"}} },
+						{
+							params ["_router"];
+							!alive _router || {
+								_router getVariable ["AE3_cap_isRouter", false] &&
+								{!isNil {_router getVariable "AE3_power_fnc_turnOnWrapper"}}
+							}
+						},
 						{
 							params ["_router"];
 							if (alive _router && {(_router getVariable ["AE3_power_powerState", 0]) != 1}) then

@@ -33,10 +33,6 @@ else
 	// has a saved static address for that router.
 	private _leases = _device getVariable ["AE3_network_staticIpByRouter", createHashMap];
 	private _staticStr = _leases getOrDefault [netId _parent, ""];
-	if (_staticStr isEqualTo "") then
-	{
-		_staticStr = _device getVariable ["AE3_network_staticIpDefault", ""];
-	};
 	private _static = [_staticStr] call AE3_network_fnc_str2ip;
 	if (_static isNotEqualTo [] && {!([_device, _static] call AE3_network_fnc_ipInUse)}) then
 	{
