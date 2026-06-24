@@ -46,34 +46,69 @@ if (!(_content isEqualType "")) exitWith {};
 
 if ((_content select [0, 10]) isEqualTo "AE3_MEDIA|") exitWith
 {
-	(_content splitString "|") params ["", "_type", "_sourcePath"];
+	([_content] call AE3_desktop_fnc_parseMediaMarker) params ["", "_type", "", "", "_sourcePath"];
+	if (AE3_DebugMode) then { diag_log format ["[AE3 DEBUG] [%1] openFile native viewer: type=%2 src=%3", time, _type, _sourcePath]; };
 
-	switch (toLower _type) do
+	switch (_type) do
 	{
 		case "image":
 		{
-			// dedicated image window
-			private _group = _display ctrlCreate ["RscControlsGroupNoScrollbars", -1];
-			_group ctrlSetPosition [safeZoneX + 0.25, safeZoneY + 0.1, 0.45, 0.55];
-			_group ctrlCommit 0;
+			// Native image viewer used as the fallback when the in-OS web viewer cannot display the
+			// source. The picture renders through the engine texture loader (which reliably handles
+			// mission and mod .jpg/.paa), in a child display of the desktop so it sits ON TOP of the
+			// web surface, with a Close button (and Esc) to dismiss it.
+			private _imgDisplay = _display createDisplay "RscDisplayEmpty";
 
-			private _body = _display ctrlCreate ["RscText", -1, _group];
-			_body ctrlSetPosition [0, 0, 0.45, 0.55];
-			_body ctrlSetBackgroundColor (_theme getOrDefault ["window", [0,0,0,1]]);
-			_body ctrlCommit 0;
+			if (isNull _imgDisplay) then
+			{
+				// No child display available: fall back to an overlay on the desktop display itself.
+				private _group = _display ctrlCreate ["RscControlsGroupNoScrollbars", -1];
+				_group ctrlSetPosition [safeZoneX + 0.25, safeZoneY + 0.1, 0.45, 0.55];
+				_group ctrlCommit 0;
 
-			private _pic = _display ctrlCreate ["RscPicture", -1, _group];
-			_pic ctrlSetPosition [0.01, 0.05, 0.43, 0.45];
-			_pic ctrlSetText _sourcePath;
-			_pic ctrlCommit 0;
+				private _body = _display ctrlCreate ["RscText", -1, _group];
+				_body ctrlSetPosition [0, 0, 0.45, 0.55];
+				_body ctrlSetBackgroundColor (_theme getOrDefault ["window", [0,0,0,1]]);
+				_body ctrlCommit 0;
 
-			private _closeBtn = _display ctrlCreate ["RscButton", -1, _group];
-			_closeBtn ctrlSetPosition [0.40, 0, 0.05, 0.04];
-			_closeBtn ctrlSetText "X";
-			_closeBtn ctrlSetBackgroundColor (_theme getOrDefault ["accent", [0.2,0.5,0.8,1]]);
-			_closeBtn ctrlCommit 0;
-			_closeBtn setVariable ["AE3_group", _group];
-			_closeBtn ctrlAddEventHandler ["ButtonClick", { ctrlDelete ((_this select 0) getVariable "AE3_group"); }];
+				private _pic = _display ctrlCreate ["RscPicture", -1, _group];
+				_pic ctrlSetPosition [0.01, 0.05, 0.43, 0.45];
+				_pic ctrlSetText _sourcePath;
+				_pic ctrlCommit 0;
+
+				private _closeBtn = _display ctrlCreate ["RscButton", -1, _group];
+				_closeBtn ctrlSetPosition [0.40, 0, 0.05, 0.04];
+				_closeBtn ctrlSetText "X";
+				_closeBtn ctrlSetBackgroundColor (_theme getOrDefault ["accent", [0.2,0.5,0.8,1]]);
+				_closeBtn ctrlCommit 0;
+				_closeBtn setVariable ["AE3_group", _group];
+				_closeBtn ctrlAddEventHandler ["ButtonClick", { ctrlDelete ((_this select 0) getVariable "AE3_group"); }];
+			}
+			else
+			{
+				private _bg = _imgDisplay ctrlCreate ["RscText", -1];
+				_bg ctrlSetPosition [safeZoneX, safeZoneY, safeZoneW, safeZoneH];
+				_bg ctrlSetBackgroundColor [0, 0, 0, 0.85];
+				_bg ctrlCommit 0;
+
+				private _pic = _imgDisplay ctrlCreate ["RscPicture", -1];
+				_pic ctrlSetPosition [safeZoneX + 0.10 * safeZoneW, safeZoneY + 0.08 * safeZoneH, 0.80 * safeZoneW, 0.84 * safeZoneH];
+				_pic ctrlSetText _sourcePath;
+				_pic ctrlCommit 0;
+
+				private _closeBtn = _imgDisplay ctrlCreate ["RscButton", -1];
+				_closeBtn ctrlSetPosition [safeZoneX + safeZoneW - 0.13, safeZoneY + 0.02, 0.11, 0.05];
+				_closeBtn ctrlSetText (localize "STR_AE3_Desktop_Media_Close");
+				_closeBtn ctrlSetBackgroundColor (_theme getOrDefault ["accent", [0.2, 0.5, 0.8, 1]]);
+				_closeBtn ctrlCommit 0;
+				_closeBtn ctrlAddEventHandler ["ButtonClick", { (ctrlParent (_this select 0)) closeDisplay 2; }];
+
+				// Esc closes the viewer too.
+				_imgDisplay displayAddEventHandler ["KeyDown", {
+					params ["_disp", "_key"];
+					if (_key isEqualTo 1) then { _disp closeDisplay 2; true } else { false }
+				}];
+			};
 		};
 		case "video":
 		{

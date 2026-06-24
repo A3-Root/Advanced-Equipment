@@ -35,15 +35,21 @@ if (!isServer) exitWith {};
 			case "extallow":   { _router setVariable ["AE3_network_externalAllow", _value, true]; };
 			case "starton":
 			{
-				_router setVariable ["AE3_power_startOn", _value, true];
-				if (_value) then
+				// Coerce to a strict boolean: a checkbox attribute may arrive as a Number, which would
+				// otherwise break the boolean checks below and skip the auto power-on entirely.
+				private _startOn = _value isEqualTo true;
+				_router setVariable ["AE3_power_startOn", _startOn, true];
+				if (AE3_DebugMode) then { diag_log format ["[AE3 DEBUG] [%1] attr_router starton on %2: value=%3", time, _router, _startOn]; };
+				if (_startOn) then
 				{
-					// Power the router on once both router and power initialisation have finished.
+					// Power the router on only once its power initialisation is fully complete
+					// (AE3_power_initDone covers the device and its internal battery), so the turn-on
+					// never runs against a half-initialised device.
 					[
 						{
 							params ["_router"];
 							!alive _router || {
-								_router getVariable ["AE3_cap_isRouter", false] &&
+								_router getVariable ["AE3_power_initDone", false] &&
 								{!isNil {_router getVariable "AE3_power_fnc_turnOnWrapper"}}
 							}
 						},
@@ -51,7 +57,8 @@ if (!isServer) exitWith {};
 							params ["_router"];
 							if (alive _router && {(_router getVariable ["AE3_power_powerState", 0]) != 1}) then
 							{
-								[_router] call AE3_power_fnc_turnOnDevice;
+								private _ok = [_router] call AE3_power_fnc_turnOnDevice;
+								if (AE3_DebugMode) then { diag_log format ["[AE3 DEBUG] [%1] attr_router auto power-on %2: turnOnDevice=%3", time, _router, _ok]; };
 							};
 						},
 						[_router]

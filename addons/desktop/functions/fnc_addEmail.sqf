@@ -27,6 +27,11 @@
 
 params ["_target", "_from", "_subject", "_body", ["_to", ""], ["_receivedTime", ""], ["_createFrom", false], ["_createTo", false]];
 
+// Normalise the address-book flags to strict booleans so a non-bool handle (e.g. a Number coming from
+// a 3DEN checkbox attribute) can never reach the boolean logic below.
+_createFrom = _createFrom isEqualTo true;
+_createTo = _createTo isEqualTo true;
+
 if (!isServer) exitWith
 {
 	private _targetId = if (_target isEqualType objNull) then { netId _target } else { _target };

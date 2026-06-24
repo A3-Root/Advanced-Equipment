@@ -74,24 +74,42 @@ if (_event isEqualTo "onUnload") exitWith
 		ctrlText (_display displayCtrl 1402)
 	};
 
-	private _f5 = if (_type isEqualTo "email") then
+	// Sixth dispatch field: email/webpage/history -> body edit; lockedfile -> owner; media -> the
+	// mod/mission path hint taken from the "source is a mod path" checkbox (IDC 1318).
+	private _arg6 = switch (_type) do
 	{
-		[ctrlText (_display displayCtrl 1405), cbChecked (_display displayCtrl 1317), cbChecked (_display displayCtrl 1318)]
-	}
-	else
+		case "lockedfile": { ctrlText (_display displayCtrl 1405) };
+		case "media":      { ["mission", "mod"] select (cbChecked (_display displayCtrl 1318)) };
+		default            { ctrlText (_display displayCtrl 1404) };
+	};
+
+	// Seventh dispatch field: email -> [receivedTime, createFrom, createTo]; media -> native
+	// RscPicture fallback toggle (IDC 1317); lockedfile/others -> the permission grid.
+	private _f5 = switch (_type) do
 	{
-		[
+		case "email":
+		{
+			[ctrlText (_display displayCtrl 1405), cbChecked (_display displayCtrl 1317), cbChecked (_display displayCtrl 1318)]
+		};
+		case "media":
+		{
+			cbChecked (_display displayCtrl 1317)
+		};
+		default
+		{
 			[
-				cbChecked (_display displayCtrl 1301),
-				cbChecked (_display displayCtrl 1302),
-				cbChecked (_display displayCtrl 1303)
-			],
-			[
-				cbChecked (_display displayCtrl 1304),
-				cbChecked (_display displayCtrl 1305),
-				cbChecked (_display displayCtrl 1306)
+				[
+					cbChecked (_display displayCtrl 1301),
+					cbChecked (_display displayCtrl 1302),
+					cbChecked (_display displayCtrl 1303)
+				],
+				[
+					cbChecked (_display displayCtrl 1304),
+					cbChecked (_display displayCtrl 1305),
+					cbChecked (_display displayCtrl 1306)
+				]
 			]
-		]
+		};
 	};
 
 	[
@@ -100,7 +118,7 @@ if (_event isEqualTo "onUnload") exitWith
 		ctrlText (_display displayCtrl 1401),
 		_field2,
 		ctrlText (_display displayCtrl 1403),
-		[ctrlText (_display displayCtrl 1404), ctrlText (_display displayCtrl 1405)] select (_type isEqualTo "lockedfile"),
+		_arg6,
 		_f5
 	] call AE3_desktop_fnc_intel_dispatch;
 

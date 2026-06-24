@@ -132,8 +132,10 @@ switch (_command) do {
         private _op = _command select [3]; // strip "fs_"
         [[_computer, _user, _op, _data] call FUNC(fsHandle)] call _reply;
     };
-    // Open a media-marker file natively (image viewer / video / audio) via fnc_openFile.
+    // Open a media-marker file natively (image viewer / video / audio) via fnc_openFile. Images reach
+    // here as the native RscPicture fallback after the in-OS web viewer could not display them.
     case "fs_open_media": {
+        if (AE3_DebugMode) then { diag_log format ["[AE3 DEBUG] [%1] fs_open_media native handoff: path=%2 content=%3", time, _data getOrDefault ["path", ""], _data getOrDefault ["content", ""]]; };
         [_computer, _data getOrDefault ["path", ""], _data getOrDefault ["content", ""]] call FUNC(openFile);
     };
 

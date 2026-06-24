@@ -251,5 +251,6 @@ _entity setVariable ["AE3_power_fnc_standbyWrapper", _standbyWrapper];
 
 if (isServer && _startOn) then
 {
+	if (AE3_DebugMode) then { diag_log format ["[AE3 DEBUG] [%1] initDevice immediate power-on for %2 (startOn read at init)", time, _entity]; };
 	[_entity] call AE3_power_fnc_turnOnDevice;
 };

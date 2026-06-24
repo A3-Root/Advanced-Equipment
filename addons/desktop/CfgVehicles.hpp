@@ -95,14 +95,14 @@ class CfgVehicles
 				property = "AE3_ModuleIntel_CreateFrom";
 				displayName = "Create sender address";
 				typeName = "BOOL";
-				defaultValue = 0;
+				defaultValue = "false";
 			};
 			class AE3_ModuleIntel_CreateTo: Checkbox
 			{
 				property = "AE3_ModuleIntel_CreateTo";
 				displayName = "Create recipient address";
 				typeName = "BOOL";
-				defaultValue = 0;
+				defaultValue = "false";
 			};
 			class ModuleDescription: ModuleDescription{};
 		};
@@ -228,6 +228,27 @@ class CfgVehicles
 				displayName = "Laptop path";
 				typeName = "STRING";
 				defaultValue = """/home/admin/Desktop/media.jpg""";
+			};
+			class AE3_ModuleIntel_Scope: Combo
+			{
+				property = "AE3_ModuleIntel_Scope";
+				displayName = "Path type";
+				tooltip = "Where the source file lives: a mission-folder file or a loaded mod path.";
+				typeName = "STRING";
+				defaultValue = """mission""";
+				class Values
+				{
+					class Mission { name = "Mission file"; value = "mission"; };
+					class Mod { name = "Mod path"; value = "mod"; };
+				};
+			};
+			class AE3_ModuleIntel_Native: Checkbox
+			{
+				property = "AE3_ModuleIntel_Native";
+				displayName = "Native RscPicture fallback";
+				tooltip = "If the in-OS image viewer cannot display the file, retry with the native engine viewer.";
+				typeName = "BOOL";
+				defaultValue = "false";
 			};
 			class ModuleDescription: ModuleDescription{};
 		};

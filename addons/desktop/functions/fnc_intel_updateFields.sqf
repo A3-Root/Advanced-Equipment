@@ -61,12 +61,13 @@ private _isMedia = _type isEqualTo "media";
 {
 	(_x call _getCtrl) ctrlShow (_isEmail || _isLocked);
 } forEach [1714, 1405];
-// email-only: sender/recipient address creation checkboxes and labels
+// email + media: the two checkbox rows. Email uses them for sender/recipient address creation;
+// media reuses them for the native-RscPicture fallback (1317) and the mod-path hint (1318).
 {
-	(_x call _getCtrl) ctrlShow _isEmail;
+	(_x call _getCtrl) ctrlShow (_isEmail || _isMedia);
 } forEach [1717, 1317, 1718, 1318];
 {
-	(_x call _getCtrl) ctrlEnable _isEmail;
+	(_x call _getCtrl) ctrlEnable (_isEmail || _isMedia);
 } forEach [1317, 1318];
 // lockedfile-only: permission column headers and all six permission checkboxes
 {
@@ -112,4 +113,12 @@ if (_isLocked) then
 	(1405 call _getCtrl) ctrlSetPosition [_p15 select 0, _origY, _p15 select 2, _p15 select 3];
 	(1714 call _getCtrl) ctrlCommit 0;
 	(1405 call _getCtrl) ctrlCommit 0;
+};
+if (_isMedia) then
+{
+	// Relabel the two shared checkboxes for the media options and start them unchecked.
+	(1717 call _getCtrl) ctrlSetText (localize "STR_AE3_Desktop_Intel_LabelNativeFallback");
+	(1718 call _getCtrl) ctrlSetText (localize "STR_AE3_Desktop_Intel_LabelModPath");
+	(1317 call _getCtrl) cbSetChecked false;
+	(1318 call _getCtrl) cbSetChecked false;
 };

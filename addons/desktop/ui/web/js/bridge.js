@@ -100,9 +100,11 @@
     // Load an image asset as a data URL for an <img>/CSS background. A3API.RequestTexture renders
     // the engine texture (paa/jpg/png, mission or mod) to a base64 PNG data URL, so arbitrary
     // images display inside the webview (above the OS surface) instead of a hidden native control.
-    // Resolution order mirrors loadFile: absolute paths as-is, otherwise this addon's web root then
-    // the mission root.
-    loadTexture: function (rel, maxRes, extraRoots) {
+    // The path is tried AS GIVEN first (a mission-relative "media\images\x.jpg" or an absolute mod
+    // path), then the addon web root, so a mission file gets a clean attempt before the engine ever
+    // sees a non-existent web-root path (which is what produced the "Unknown sampler texture type"
+    // warning). The scope hint ("mod"/"mission"/"auto") just reorders those candidates.
+    loadTexture: function (rel, maxRes, extraRoots, scope) {
       rel = String(rel).replace(/\//g, "\\");
       var res = maxRes || 2048;
       if (typeof A3API === "undefined" || !A3API || !A3API.RequestTexture) {
@@ -112,12 +114,19 @@
         full = normalizePath(full);
         return Promise.resolve(A3API.RequestTexture(full, res)).then(function (t) {
           if (t == null || t === "") throw new Error("empty/missing: " + full);
+          console.log("[AE3 media] RequestTexture OK:", full);
           return t;
+        }, function (e) {
+          console.log("[AE3 media] RequestTexture FAIL:", full, (e && e.message) || e);
+          throw e;
         });
       }
       if (rel.charAt(0) === "\\") return requestOne(rel); // absolute - this or any other mod
-      var roots = extraRoots || (window.AE3_WEB_ROOTS ||
-        [window.AE3_WEB_ROOT || "\\z\\ae3\\addons\\desktop\\ui\\web\\", ""]).concat([""]);
+      var web = window.AE3_WEB_ROOT || "\\z\\ae3\\addons\\desktop\\ui\\web\\";
+      var roots;
+      if (extraRoots && extraRoots.length) { roots = extraRoots; }
+      else if (scope === "mod") { roots = [web, ""]; }     // mod-relative asset under this addon
+      else { roots = ["", web]; }                          // mission/auto: bare mission path first
       var i = 0;
       function next() {
         if (i >= roots.length) return Promise.reject(new Error("not found in any root: " + rel));
@@ -134,9 +143,10 @@
     //     fall back to a base64-encoded sidecar: the file at "<path>.b64" (or the path itself when it
     //     already ends in .b64) is read as text via RequestFile and wrapped in a data URL. This mirrors
     //     the proven mission-media path and works without shipping textures inside a PBO.
-    loadImage: function (rel, maxRes, extraRoots) {
+    loadImage: function (rel, maxRes, extraRoots, scope) {
       var self = this;
       var src = String(rel).replace(/\//g, "\\");
+      scope = scope || "auto";
       function mimeFor(path) {
         var ext = (path.replace(/\.b64$/i, "").split(".").pop() || "png").toLowerCase();
         if (ext === "jpg" || ext === "jpeg") return "image/jpeg";
@@ -145,13 +155,34 @@
       }
       function fromB64() {
         var b64path = /\.b64$/i.test(src) ? src : src + ".b64";
+        console.log("[AE3 media] loadImage trying b64 sidecar:", b64path);
         return self.loadFile(b64path, extraRoots).then(function (txt) {
+          console.log("[AE3 media] b64 sidecar OK:", b64path);
           return "data:" + mimeFor(src) + ";base64," + String(txt).replace(/\s/g, "");
         });
       }
+      console.log("[AE3 media] loadImage start:", src, "scope=" + scope);
       // A pre-encoded source skips the sampler entirely.
       if (/\.b64$/i.test(src)) return fromB64();
-      return self.loadTexture(src, maxRes, extraRoots).catch(fromB64);
+      // Try the engine texture sampler (handles .paa and mod/mission images it can load), then fall
+      // back to a base64 sidecar for sources the sampler refuses (e.g. some raw mission .jpg).
+      return self.loadTexture(src, maxRes, extraRoots, scope).catch(fromB64);
+    },
+
+    // Parse a media marker file's content into {type, scope, native, path}, or null if it is not a
+    // marker. Understands both the current "AE3_MEDIA|<type>|<scope>|<native>|<path>" form and the
+    // legacy "AE3_MEDIA|<type>|<path>" form.
+    parseMedia: function (content) {
+      var s = String(content || "");
+      if (s.indexOf("AE3_MEDIA|") !== 0) return null;
+      var p = s.split("|");
+      var type = (p[1] || "").toLowerCase();
+      if (p.length >= 5) {
+        var scope = (p[2] || "auto").toLowerCase();
+        if (scope !== "mod" && scope !== "mission") scope = "auto";
+        return { type: type, scope: scope, native: p[3] === "1", path: p.slice(4).join("|") };
+      }
+      return { type: type, scope: "auto", native: false, path: p.slice(2).join("|") };
     },
 
     emit: emit

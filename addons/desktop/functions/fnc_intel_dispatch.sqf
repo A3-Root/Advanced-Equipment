@@ -45,8 +45,8 @@ switch (toLower _type) do
 		if (count _f5 == 3 && {(_f5 select 0) isEqualType ""}) then
 		{
 			_receivedTime = _f5 select 0;
-			_createFrom = _f5 select 1;
-			_createTo = _f5 select 2;
+			_createFrom = (_f5 select 1) isEqualTo true;
+			_createTo = (_f5 select 2) isEqualTo true;
 		};
 		[_target, _f1, _f3, _f4, _f2, _receivedTime, _createFrom, _createTo] call AE3_desktop_fnc_addEmail;
 	};
@@ -72,7 +72,10 @@ switch (toLower _type) do
 				if (isNull _targetObject) then { [] } else { [_targetObject] };
 			};
 		};
-		[_f1, _f2, _f3, _targets] call AE3_desktop_fnc_registerMedia;
+		// f4 carries the mod/mission path hint; f5 the native-RscPicture fallback toggle.
+		private _scope = ["auto", _f4] select (_f4 isEqualType "");
+		private _mediaNative = _f5 isEqualTo true;
+		[_f1, _f2, _f3, _targets, _scope, _mediaNative] call AE3_desktop_fnc_registerMedia;
 	};
 	case "lockedfile":
 	{

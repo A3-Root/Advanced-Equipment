@@ -250,10 +250,12 @@
       }
       var content = (res && res.content) || "";
       if (content.indexOf("AE3_MEDIA|") === 0) {
-        var media = content.split("|");
-        var type = String(media[1] || "").toLowerCase();
-        if (type === "image") {
-          Apps.launch("media", { path: media.slice(2).join("|"), title: path.split("/").pop() });
+        var media = A3.parseMedia(content);
+        if (media && media.type === "image") {
+          Apps.launch("media", {
+            path: media.path, scope: media.scope, native: media.native,
+            vfsPath: path, marker: content, title: path.split("/").pop()
+          });
         } else {
           A3.send("fs_open_media", { path: path, content: content });
         }

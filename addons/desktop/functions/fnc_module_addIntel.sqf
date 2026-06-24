@@ -67,6 +67,8 @@ if (_activated) then
 			_f1 = _module getVariable ["AE3_ModuleIntel_Source", ""];
 			_f2 = _module getVariable ["AE3_ModuleIntel_MediaType", "image"];
 			_f3 = _module getVariable ["AE3_ModuleIntel_Dest", ""];
+			_arg6 = _module getVariable ["AE3_ModuleIntel_Scope", "mission"];
+			_f7 = _module getVariable ["AE3_ModuleIntel_Native", false];
 		};
 		case "lockedfile":
 		{
@@ -82,8 +84,20 @@ if (_activated) then
 		};
 	};
 
+	// Trigger-activated modules can fire before a synced laptop has finished initialising its
+	// filesystem, in which case the intel writes would be silently dropped. Defer each dispatch until
+	// the laptop reports ready so the intel always lands. The deferred blocks capture the laptop, so
+	// the module object itself can be removed immediately.
 	{
-		[_type, _x, _f1, _f2, _f3, _arg6, _f7] call AE3_desktop_fnc_intel_dispatch;
+		[
+			{ params ["_lp"]; !alive _lp || {_lp getVariable ["AE3_filesystemReady", false]} },
+			{
+				params ["_lp", "_type", "_f1", "_f2", "_f3", "_arg6", "_f7"];
+				if (!alive _lp) exitWith {};
+				[_type, _lp, _f1, _f2, _f3, _arg6, _f7] call AE3_desktop_fnc_intel_dispatch;
+			},
+			[_x, _type, _f1, _f2, _f3, _arg6, _f7]
+		] call CBA_fnc_waitUntilAndExecute;
 	} forEach (_laptops select {_type isNotEqualTo ""});
 
 	deleteVehicle _module;

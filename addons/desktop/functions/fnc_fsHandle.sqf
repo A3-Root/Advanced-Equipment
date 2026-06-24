@@ -126,6 +126,9 @@ switch (_op) do {
                 ([_content] call AE3_armaos_fnc_shell_parseLockedFile) params ["_locked", "", "_payload"];
                 if (_locked) then { _res set ["locked", true]; }
                 else { _res set ["content", _content]; };
+                if (AE3_DebugMode && {(_content select [0, 10]) isEqualTo "AE3_MEDIA|"}) then {
+                    diag_log format ["[AE3 DEBUG] [%1] fsHandle read media marker at %2: %3", time, _path, _content];
+                };
             }
             else { _res set ["error", "not_text"]; };
         } catch {

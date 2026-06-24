@@ -474,18 +474,27 @@
 
       // Render a registered media source. It can be absolute (\myMod\img.paa), addon-relative, or
       // mission-relative (media\images\pic.jpg); try each form so any valid path resolves.
-      function showImage(srcPath, name) {
+      function showImage(srcPath, name, opts) {
+        opts = opts || {};
         nameEl.textContent = name || "";
         win.el.querySelector(".title").textContent = "Image Viewer" + (name ? " - " + name : "");
         if (!srcPath) { img.style.display = "none"; load.style.display = "block"; load.textContent = 'No image open. Use "Open image…" to load one.'; return; }
         img.removeAttribute("src");
         img.style.display = "none"; load.style.display = "block"; load.textContent = "Loading image...";
-        A3.loadImage(srcPath).then(function (dataUrl) {
+        A3.loadImage(srcPath, undefined, undefined, opts.scope).then(function (dataUrl) {
           img.src = dataUrl;
         }).catch(function () {
-          img.style.display = "none";
-          load.style.display = "block";
-          load.textContent = "Cannot display this image.";
+          // The in-OS viewer could not render the source. If the mission maker allowed the native
+          // fallback, hand the marker off to the engine's RscPicture viewer; otherwise report it.
+          if (opts.native && opts.marker) {
+            console.log("[AE3 media] web viewer failed; handing off to native RscPicture for", srcPath);
+            load.textContent = "Opening in native viewer...";
+            A3.send("fs_open_media", { path: opts.vfsPath || srcPath, content: opts.marker });
+          } else {
+            img.style.display = "none";
+            load.style.display = "block";
+            load.textContent = "Cannot display this image.";
+          }
         });
       }
 
@@ -495,16 +504,19 @@
           if (!p) return;
           A3.request("fs_read", { path: p }).then(function (res) {
             var content = (res && res.content) || "";
-            if (content.indexOf("AE3_MEDIA|") === 0) {
-              var media = content.split("|");
-              if (String(media[1]).toLowerCase() === "image") { showImage(media[2], p.split("/").pop()); return; }
+            var media = A3.parseMedia(content);
+            if (media && media.type === "image") {
+              showImage(media.path, p.split("/").pop(), { scope: media.scope, native: media.native, vfsPath: p, marker: content });
+              return;
             }
             Modal.alert("Open image", "That file is not an image.");
           });
         });
       });
 
-      showImage((args && args.path) || "", (args && args.title) || ((args && args.path) ? String(args.path).split("\\").pop().split("/").pop() : ""));
+      showImage((args && args.path) || "",
+        (args && args.title) || ((args && args.path) ? String(args.path).split("\\").pop().split("/").pop() : ""),
+        { scope: (args && args.scope), native: (args && args.native), vfsPath: (args && args.vfsPath), marker: (args && args.marker) });
     }
   });
 

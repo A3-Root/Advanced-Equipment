@@ -62,7 +62,7 @@
 if (isServer) then
 {
 	ae3_desktop_computers = [];
-	ae3_desktop_pendingMedia = []; // [_sourcePath, _type, _fsDest] entries applied to future laptops
+	ae3_desktop_pendingMedia = []; // [_sourcePath, _type, _fsDest, _scope, _native] entries applied to future laptops
 
 	// Emitted by AE3_armaos_fnc_device_initComplete after a computer finished initializing
 	["ae3_armaos_deviceReady", {
@@ -75,8 +75,8 @@ if (isServer) then
 
 		// Apply media registered for "future" laptops
 		{
-			_x params ["_sourcePath", "_type", "_fsDest"];
-			[_sourcePath, _type, _fsDest, [_computer]] call AE3_desktop_fnc_registerMedia;
+			_x params ["_sourcePath", "_type", "_fsDest", ["_scope", "auto"], ["_native", false]];
+			[_sourcePath, _type, _fsDest, [_computer], _scope, _native] call AE3_desktop_fnc_registerMedia;
 		} forEach ae3_desktop_pendingMedia;
 	}] call CBA_fnc_addEventHandler;
 

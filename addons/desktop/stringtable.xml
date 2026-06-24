@@ -401,6 +401,24 @@
                 <German>Medientyp (image / video / audio)</German>
                 <Chinesesimp>媒体类型(image / video / audio)</Chinesesimp>
             </Key>
+            <Key ID="STR_AE3_Desktop_Intel_LabelModPath">
+                <Original>Source is a mod path (off = mission file)</Original>
+                <English>Source is a mod path (off = mission file)</English>
+                <French>La source est un chemin de mod (décoché = fichier de mission)</French>
+                <Italian>L'origine è un percorso mod (off = file missione)</Italian>
+                <Russian>Source is a mod path (off = mission file)</Russian>
+                <German>Quelle ist ein Mod-Pfad (aus = Missionsdatei)</German>
+                <Chinesesimp>来源为模组路径(关闭则为任务文件)</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Intel_LabelNativeFallback">
+                <Original>Native RscPicture fallback</Original>
+                <English>Native RscPicture fallback</English>
+                <French>Repli RscPicture natif</French>
+                <Italian>Ripiego RscPicture nativo</Italian>
+                <Russian>Native RscPicture fallback</Russian>
+                <German>Natives RscPicture-Fallback</German>
+                <Chinesesimp>原生 RscPicture 回退</Chinesesimp>
+            </Key>
             <Key ID="STR_AE3_Desktop_Intel_LabelOwner">
                 <Original>Owner</Original>
                 <English>Owner</English>
@@ -593,6 +611,15 @@
                 <Russian>Recenter</Russian>
                 <German>Zentrieren</German>
                 <Chinesesimp>重新居中</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Media_Close">
+                <Original>Close</Original>
+                <English>Close</English>
+                <French>Fermer</French>
+                <Italian>Chiudi</Italian>
+                <Russian>Close</Russian>
+                <German>Schließen</German>
+                <Chinesesimp>关闭</Chinesesimp>
             </Key>
             <Key ID="STR_AE3_Desktop_Media_Playing">
                 <Original>Playing audio ...</Original>

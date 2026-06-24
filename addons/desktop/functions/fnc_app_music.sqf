@@ -55,13 +55,10 @@ if (_filesystem isNotEqualTo []) then
 			}
 			else
 			{
-				if (_content isEqualType "" && {(_content select [0, 10]) isEqualTo "AE3_MEDIA|"}) then
+				([_content] call AE3_desktop_fnc_parseMediaMarker) params ["_isMedia", "_type", "", "", "_sourcePath"];
+				if (_isMedia && {_type isEqualTo "audio"}) then
 				{
-					(_content splitString "|") params ["", "_type", "_sourcePath"];
-					if (_type isEqualTo "audio") then
-					{
-						_tracks pushBack [_pathPrefix + "/" + _x, _sourcePath];
-					};
+					_tracks pushBack [_pathPrefix + "/" + _x, _sourcePath];
 				};
 			};
 		} forEach (keys _dirContent);
