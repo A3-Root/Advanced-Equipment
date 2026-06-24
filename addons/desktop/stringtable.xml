@@ -612,15 +612,6 @@
                 <German>Zentrieren</German>
                 <Chinesesimp>重新居中</Chinesesimp>
             </Key>
-            <Key ID="STR_AE3_Desktop_Media_Close">
-                <Original>Close</Original>
-                <English>Close</English>
-                <French>Fermer</French>
-                <Italian>Chiudi</Italian>
-                <Russian>Close</Russian>
-                <German>Schließen</German>
-                <Chinesesimp>关闭</Chinesesimp>
-            </Key>
             <Key ID="STR_AE3_Desktop_Media_Playing">
                 <Original>Playing audio ...</Original>
                 <English>Playing audio ...</English>

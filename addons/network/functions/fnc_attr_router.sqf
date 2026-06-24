@@ -16,7 +16,11 @@
 
 params ["_router", ["_key", ""], ["_value", ""]];
 
-if (AE3_DebugMode) then { diag_log format ["[AE3 DEBUG] [%1] attr_router CALLED: key=%2 value=%3 (%4) isServer=%5", time, _key, _value, typeName _value, isServer]; };
+// Read the debug flag safely: this runs from an Eden attribute expression which can fire before the
+// CBA setting is initialised, so the global may still be nil (a bare reference would throw and abort
+// the whole expression, silently skipping the power-on).
+private _dbg = missionNamespace getVariable ["AE3_DebugMode", false];
+if (_dbg) then { diag_log format ["[AE3 DEBUG] [%1] attr_router CALLED: key=%2 value=%3 (%4) isServer=%5", time, _key, _value, typeName _value, isServer]; };
 
 if (!isServer) exitWith {};
 
@@ -28,7 +32,7 @@ if (_key isEqualTo "starton") exitWith
 	// power-on is never skipped just because of the value's type.
 	private _startOn = _value in [true, 1];
 	_router setVariable ["AE3_power_startOn", _startOn, true];
-	if (AE3_DebugMode) then { diag_log format ["[AE3 DEBUG] [%1] attr_router starton on %2: startOn=%3", time, _router, _startOn]; };
+	if (_dbg) then { diag_log format ["[AE3 DEBUG] [%1] attr_router starton on %2: startOn=%3", time, _router, _startOn]; };
 	if (!_startOn) exitWith {};
 
 	// Power the router on once its power initialisation is fully complete (AE3_power_initDone covers
@@ -46,7 +50,7 @@ if (_key isEqualTo "starton") exitWith
 			if (alive _router && {(_router getVariable ["AE3_power_powerState", 0]) != 1}) then
 			{
 				private _ok = [_router] call AE3_power_fnc_turnOnDevice;
-				if (AE3_DebugMode) then { diag_log format ["[AE3 DEBUG] [%1] attr_router auto power-on %2: turnOnDevice=%3", time, _router, _ok]; };
+				if (_dbg) then { diag_log format ["[AE3 DEBUG] [%1] attr_router auto power-on %2: turnOnDevice=%3", time, _router, _ok]; };
 			};
 		},
 		[_router]

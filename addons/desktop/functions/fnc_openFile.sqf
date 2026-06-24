@@ -86,22 +86,42 @@ if ((_content select [0, 10]) isEqualTo "AE3_MEDIA|") exitWith
 			}
 			else
 			{
-				private _bg = _imgDisplay ctrlCreate ["RscText", -1];
-				_bg ctrlSetPosition [safeZoneX, safeZoneY, safeZoneW, safeZoneH];
-				_bg ctrlSetBackgroundColor [0, 0, 0, 0.85];
-				_bg ctrlCommit 0;
+				// Centred, window-sized panel (not full-screen) with a title bar, mirroring the in-OS
+				// Image Viewer footprint. A dim backdrop catches clicks so they don't reach the world.
+				private _w = 0.5;
+				private _h = 0.6;
+				private _x = safeZoneX + (safeZoneW - _w) / 2;
+				private _y = safeZoneY + (safeZoneH - _h) / 2;
+				private _barH = 0.045;
 
-				private _pic = _imgDisplay ctrlCreate ["RscPicture", -1];
-				_pic ctrlSetPosition [safeZoneX + 0.10 * safeZoneW, safeZoneY + 0.08 * safeZoneH, 0.80 * safeZoneW, 0.84 * safeZoneH];
-				_pic ctrlSetText _sourcePath;
-				_pic ctrlCommit 0;
+				private _backdrop = _imgDisplay ctrlCreate ["RscText", -1];
+				_backdrop ctrlSetPosition [safeZoneX, safeZoneY, safeZoneW, safeZoneH];
+				_backdrop ctrlSetBackgroundColor [0, 0, 0, 0.6];
+				_backdrop ctrlCommit 0;
+
+				private _panel = _imgDisplay ctrlCreate ["RscText", -1];
+				_panel ctrlSetPosition [_x, _y, _w, _h];
+				_panel ctrlSetBackgroundColor (_theme getOrDefault ["window", [0.1, 0.1, 0.1, 1]]);
+				_panel ctrlCommit 0;
+
+				private _title = _imgDisplay ctrlCreate ["RscText", -1];
+				_title ctrlSetPosition [_x, _y, _w - _barH, _barH];
+				_title ctrlSetText _path;
+				_title ctrlSetBackgroundColor (_theme getOrDefault ["titlebar", [0.15, 0.15, 0.15, 1]]);
+				_title ctrlSetTextColor (_theme getOrDefault ["text", [1, 1, 1, 1]]);
+				_title ctrlCommit 0;
 
 				private _closeBtn = _imgDisplay ctrlCreate ["RscButton", -1];
-				_closeBtn ctrlSetPosition [safeZoneX + safeZoneW - 0.13, safeZoneY + 0.02, 0.11, 0.05];
-				_closeBtn ctrlSetText (localize "STR_AE3_Desktop_Media_Close");
+				_closeBtn ctrlSetPosition [_x + _w - _barH, _y, _barH, _barH];
+				_closeBtn ctrlSetText "X";
 				_closeBtn ctrlSetBackgroundColor (_theme getOrDefault ["accent", [0.2, 0.5, 0.8, 1]]);
 				_closeBtn ctrlCommit 0;
 				_closeBtn ctrlAddEventHandler ["ButtonClick", { (ctrlParent (_this select 0)) closeDisplay 2; }];
+
+				private _pic = _imgDisplay ctrlCreate ["RscPictureKeepAspect", -1];
+				_pic ctrlSetPosition [_x + 0.006, _y + _barH + 0.006, _w - 0.012, _h - _barH - 0.012];
+				_pic ctrlSetText _sourcePath;
+				_pic ctrlCommit 0;
 
 				// Esc closes the viewer too.
 				_imgDisplay displayAddEventHandler ["KeyDown", {
