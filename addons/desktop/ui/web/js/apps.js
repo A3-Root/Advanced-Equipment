@@ -469,9 +469,6 @@
       var img = body.querySelector(".mimg");
       var load = body.querySelector(".mload");
       var nameEl = body.querySelector(".mname");
-      img.onload = function () { load.style.display = "none"; img.style.display = "block"; };
-      img.onerror = function () { img.style.display = "none"; load.style.display = "block"; load.textContent = "Cannot display this image."; };
-
       // Render a registered media source. It can be absolute (\myMod\img.paa), addon-relative, or
       // mission-relative (media\images\pic.jpg); try each form so any valid path resolves.
       function showImage(srcPath, name, opts) {
@@ -479,23 +476,35 @@
         nameEl.textContent = name || "";
         win.el.querySelector(".title").textContent = "Image Viewer" + (name ? " - " + name : "");
         if (!srcPath) { img.style.display = "none"; load.style.display = "block"; load.textContent = 'No image open. Use "Open image…" to load one.'; return; }
+
+        // Any web-side failure funnels here. The engine can return a NON-empty but unusable texture
+        // for a format its CEF sampler refuses (raw mission .jpg), which "resolves" the promise and
+        // then either fails to decode or decodes to a 0x0 image - so reject, decode-error and empty
+        // pixels all route to the same place, and the native RscPicture fallback (if allowed) runs.
+        var handed = false;
+        function failToNative(reason) {
+          if (handed) return;
+          console.log("[AE3 media] web viewer failed (" + reason + ") for", srcPath, "native=", !!opts.native);
+          if (opts.native && opts.marker) {
+            handed = true;
+            img.style.display = "none"; load.style.display = "block"; load.textContent = "Opening in native viewer...";
+            A3.send("fs_open_media", { path: opts.vfsPath || srcPath, content: opts.marker });
+          } else {
+            img.style.display = "none"; load.style.display = "block"; load.textContent = "Cannot display this image.";
+          }
+        }
+
+        img.onload = function () {
+          if (!img.naturalWidth || !img.naturalHeight) { failToNative("empty texture"); return; }
+          load.style.display = "none"; img.style.display = "block";
+        };
+        img.onerror = function () { failToNative("decode error"); };
+
         img.removeAttribute("src");
         img.style.display = "none"; load.style.display = "block"; load.textContent = "Loading image...";
         A3.loadImage(srcPath, undefined, undefined, opts.scope).then(function (dataUrl) {
           img.src = dataUrl;
-        }).catch(function () {
-          // The in-OS viewer could not render the source. If the mission maker allowed the native
-          // fallback, hand the marker off to the engine's RscPicture viewer; otherwise report it.
-          if (opts.native && opts.marker) {
-            console.log("[AE3 media] web viewer failed; handing off to native RscPicture for", srcPath);
-            load.textContent = "Opening in native viewer...";
-            A3.send("fs_open_media", { path: opts.vfsPath || srcPath, content: opts.marker });
-          } else {
-            img.style.display = "none";
-            load.style.display = "block";
-            load.textContent = "Cannot display this image.";
-          }
-        });
+        }).catch(function () { failToNative("loadImage rejected"); });
       }
 
       // Open another image: pick a VFS file, resolve its media marker to the underlying source path.
