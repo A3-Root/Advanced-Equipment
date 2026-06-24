@@ -5,7 +5,16 @@ class CfgPatches
     class ADDON
 	{
         name = QUOTE(COMPONENT);
-        units[] = { "AE3_AddIntel", "AE3_InterfaceAccess", "AE3_CrashDevice" };
+        units[] = {
+            "AE3_AddIntel",
+            "AE3_AddEmail",
+            "AE3_AddWebpage",
+            "AE3_AddBrowserHistory",
+            "AE3_AddMedia",
+            "AE3_AddPasswordedFile",
+            "AE3_InterfaceAccess",
+            "AE3_CrashDevice"
+        };
         weapons[] = {};
         requiredVersion = REQUIRED_VERSION;
         requiredAddons[] = {"cba_main", "ace_main", "ae3_main", "ae3_armaos", "ae3_filesystem", "ae3_network", "ae3_power"};
@@ -20,6 +29,4 @@ class CfgPatches
 #include "CfgAE3Themes.hpp"
 #include "\z\ae3\addons\main\defines.inc"
 #include "CfgUserInterfaceZeus.hpp"
-// Defines AE3_Intel3denControl before CfgVehicles inherits it for the Add Intel module attribute.
-#include "Cfg3DEN.hpp"
 #include "CfgVehicles.hpp"

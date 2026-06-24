@@ -51,27 +51,6 @@ private _reply = {
     [_command, createHashMapFromArray [["_rid", _rid], ["data", _payload]]] call FUNC(jsSend);
 };
 
-private _resolveMediaMarker = {
-    params ["_result"];
-
-    if (!(_result isEqualType createHashMap)) exitWith { _result };
-
-    private _content = _result getOrDefault ["content", ""];
-    if (!(_content isEqualType "") || {(_content select [0, 10]) isNotEqualTo "AE3_MEDIA|"}) exitWith { _result };
-
-    (_content splitString "|") params ["", "_type", "_sourcePath"];
-    if ((toLower _type) isNotEqualTo "image") exitWith { _result };
-    if (_sourcePath isEqualTo "" || {(_sourcePath select [0, 1]) isEqualTo "\"}) exitWith { _result };
-
-    private _missionPath = getMissionPath _sourcePath;
-    if (_missionPath isNotEqualTo "" && {fileExists _missionPath}) then
-    {
-        _result set ["content", format ["AE3_MEDIA|%1|%2", _type, _missionPath]];
-    };
-
-    _result
-};
-
 switch (_command) do {
 
     // UI is up: seed the hostname only (does NOT skip login - the user still authenticates via
@@ -151,9 +130,7 @@ switch (_command) do {
     case "fs_chmod": {
         private _user = _display getVariable [QGVAR(user), ""];
         private _op = _command select [3]; // strip "fs_"
-        private _fsResult = [_computer, _user, _op, _data] call FUNC(fsHandle);
-        if (_op in ["read", "unlock"]) then { _fsResult = [_fsResult] call _resolveMediaMarker; };
-        [_fsResult] call _reply;
+        [[_computer, _user, _op, _data] call FUNC(fsHandle)] call _reply;
     };
     // Open a media-marker file natively (image viewer / video / audio) via fnc_openFile.
     case "fs_open_media": {
@@ -270,6 +247,13 @@ switch (_command) do {
     // Browser: registered intel webpages and history file.
     case "web_pages": {
         private _pages = missionNamespace getVariable ["AE3_Desktop_Webpages", createHashMap];
+        if (!isNull _computer) then
+        {
+            private _localPages = _computer getVariable ["AE3_Desktop_Webpages", createHashMap];
+            {
+                _pages set [_x, _localPages get _x];
+            } forEach (keys _localPages);
+        };
         private _pageOut = [];
         {
             private _entry = _pages get _x;
@@ -444,23 +428,9 @@ switch (_command) do {
         else
         {
             private _ipStr = _data getOrDefault ["ip", ""];
-            private _parts = _ipStr splitString ".";
-            if (count _parts == 4 && {(_parts findIf { (parseNumber _x) < 0 || (parseNumber _x) > 255 }) < 0}) then
-            {
-                private _newIp = _parts apply { parseNumber _x };
-                [_computer, ["AE3_network_address", _newIp, true]] remoteExecCall ["setVariable", 2];
-                // Persist as a static lease so a power-cycle (AE3_network_fnc_dhcp_onTurnOn) keeps it
-                // instead of overwriting with a fresh DHCP address.
-                [_computer, ["AE3_network_staticIp", _ipStr, true]] remoteExecCall ["setVariable", 2];
-                _sires set ["ok", true];
-                _sires set ["ip", _ipStr];
-            }
-            else
-            {
-                _sires set ["error", "bad_ip"];
-            };
+            ["ae3_desktop_setStaticIp", [clientOwner, _rid, netId _computer, _ipStr]] call CBA_fnc_serverEvent;
         };
-        [_sires] call _reply;
+        if (_sires getOrDefault ["error", ""] isNotEqualTo "") then { [_sires] call _reply; };
     };
 
     // Open-window layout persistence: store the desktop's window snapshot on the laptop so a

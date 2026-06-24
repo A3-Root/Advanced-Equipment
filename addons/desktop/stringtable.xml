@@ -282,15 +282,6 @@
                 <German>Intel-Typ</German>
                 <Chinesesimp>情报类型</Chinesesimp>
             </Key>
-            <Key ID="STR_AE3_Desktop_Config_IntelTypeTooltip">
-                <Original>email, webpage, history, calendar or media</Original>
-                <English>email, webpage, history, calendar or media</English>
-                <French>email, webpage, history, calendar ou media</French>
-                <Italian>email, webpage, history, calendar o media</Italian>
-                <Russian>email, webpage, history, calendar or media</Russian>
-                <German>email, webpage, history, calendar oder media</German>
-                <Chinesesimp>email, webpage, history, calendar 或 media</Chinesesimp>
-            </Key>
             <Key ID="STR_AE3_Desktop_Config_InterfaceAccessDisplayName">
                 <Original>AE3: Interface &amp; Access</Original>
                 <English>AE3: Interface &amp; Access</English>

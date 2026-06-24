@@ -22,6 +22,8 @@ PREP(resolve);
 PREP(dhcp_get);
 PREP(dhcp_refresh);
 PREP(dhcp_onTurnOn);
+PREP(ipInUse);
+PREP(setStaticIp);
 
 /* Generic */
 PREP(ip2str);

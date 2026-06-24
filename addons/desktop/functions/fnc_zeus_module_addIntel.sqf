@@ -24,14 +24,19 @@ private _module = missionNamespace getVariable ["BIS_fnc_initCuratorAttributes_t
 
 if (_event isEqualTo "onLoad") exitWith
 {
-	// Target laptop is required: placed on a laptop -> that laptop.
+	private _isLaptop = { isClass (configOf _this >> "AE3_USB_Interface") || {_this getVariable ["AE3_cap_hasTerminal", false]} };
 	private _mouseOver = missionNamespace getVariable ["BIS_fnc_curatorObjectPlaced_mouseOver", [""]];
 	_mouseOver params ["_mouseOverType", "_mouseOverUnit"];
 
 	private _computer = objNull;
-	if (_mouseOverType isEqualTo "OBJECT" && {isClass (configOf _mouseOverUnit >> "AE3_USB_Interface") || {_mouseOverUnit getVariable ["AE3_cap_hasTerminal", false]}}) then
+	if (_mouseOverType isEqualTo "OBJECT" && {_mouseOverUnit call _isLaptop}) then
 	{
 		_computer = _mouseOverUnit;
+	}
+	else
+	{
+		private _nearby = nearestObjects [_module, [], 3] select { _x call _isLaptop };
+		if (_nearby isNotEqualTo []) then { _computer = _nearby select 0; };
 	};
 	_display setVariable ["AE3_linkedComputer", _computer];
 

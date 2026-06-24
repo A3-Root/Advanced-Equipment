@@ -96,15 +96,7 @@ if (_exitCode == 1) then
             [_entity, ["ace_cargo_customName", _hostname, true]] remoteExecCall ["setVariable", 2];
         };
         [_entity, ["AE3_ssh_enabled", _sshEnabled, true]] remoteExecCall ["setVariable", 2];
-        [_entity, ["AE3_network_staticIp", _staticIp, true]] remoteExecCall ["setVariable", 2];
-        if (_staticIp isNotEqualTo "") then
-        {
-            private _ipParts = _staticIp splitString ".";
-            if (count _ipParts == 4) then
-            {
-                [_entity, ["AE3_network_address", (_ipParts apply { parseNumber _x }), true]] remoteExecCall ["setVariable", 2];
-            };
-        };
+        [_entity, _staticIp] remoteExecCall ["AE3_network_fnc_setStaticIp", 2];
         _message = _message + format ["Hostname: %1. SSH: %2. IP: %3.", _hostname, ["disabled", "enabled"] select _sshEnabled, [_staticIp, "DHCP"] select (_staticIp isEqualTo "")];
     };
 

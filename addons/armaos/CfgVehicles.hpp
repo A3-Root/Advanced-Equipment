@@ -119,7 +119,7 @@ class CfgVehicles
 				property = "AE3_EdenAttribute_StaticIp";
 				control = "Edit";
 
-				expression = "_this setVariable ['AE3_network_staticIp', _value, true];";
+				expression = "_this setVariable ['AE3_network_staticIpDefault', _value, true];";
 
 				defaultValue = """""";
 
@@ -294,7 +294,7 @@ class CfgVehicles
 				property = "AE3_EdenAttribute_StaticIp";
 				control = "Edit";
 
-				expression = "_this setVariable ['AE3_network_staticIp', _value, true];";
+				expression = "_this setVariable ['AE3_network_staticIpDefault', _value, true];";
 
 				defaultValue = """""";
 
@@ -469,7 +469,7 @@ class CfgVehicles
 				property = "AE3_EdenAttribute_StaticIp";
 				control = "Edit";
 
-				expression = "_this setVariable ['AE3_network_staticIp', _value, true];";
+				expression = "_this setVariable ['AE3_network_staticIpDefault', _value, true];";
 
 				defaultValue = """""";
 

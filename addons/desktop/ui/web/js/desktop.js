@@ -251,13 +251,7 @@
       var content = (res && res.content) || "";
       if (content.indexOf("AE3_MEDIA|") === 0) {
         var media = content.split("|");
-        // Images render in the webview (above the OS surface); video/audio play through the
-        // engine's native players, routed via SQF.
-        if (String(media[1]).toLowerCase() === "image") {
-          Apps.launch("media", { path: media[2], title: path.split("/").pop() });
-        } else {
-          A3.send("fs_open_media", { path: path, content: content });
-        }
+        A3.send("fs_open_media", { path: path, content: content });
         return;
       }
       Apps.launch("notepad", { path: path, content: content });

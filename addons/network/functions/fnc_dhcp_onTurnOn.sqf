@@ -10,16 +10,19 @@
 
 params ["_entity"];
 
-private _static = [_entity getVariable ["AE3_network_staticIp", ""]] call AE3_network_fnc_str2ip;
-if (_static isNotEqualTo []) then
+private _parent = _entity getVariable ["AE3_network_parent", objNull];
+private _leases = _entity getVariable ["AE3_network_staticIpByRouter", createHashMap];
+private _staticStr = if (isNull _parent) then { "" } else { _leases getOrDefault [netId _parent, ""] };
+if (_staticStr isEqualTo "") then { _staticStr = _entity getVariable ["AE3_network_staticIpDefault", ""]; };
+private _static = [_staticStr] call AE3_network_fnc_str2ip;
+
+if (_static isNotEqualTo [] && {!([_entity, _static] call AE3_network_fnc_ipInUse)}) then
 {
-	// Static IP configured via Eden attribute or setVariable before power-on; skip DHCP.
+	_entity setVariable ["AE3_network_staticIp", _staticStr, true];
 	_entity setVariable ["AE3_network_address", _static, true];
 }
 else
 {
-	private _parent = _entity getVariable ["AE3_network_parent", objNull];
-
 	if (!isNull _parent) then
 	{
 		// Assign the DHCP lease once the parent router is actually powered. Turn-on ordering can race
@@ -27,7 +30,11 @@ else
 		// 127.0.0.1 loopback fallback shown in System Settings.
 		[
 			{ params ["_entity", "_parent"]; !alive _parent || {(_parent getVariable ["AE3_power_powerState", 0]) == 1} },
-			{ params ["_entity", "_parent"]; _entity setVariable ["AE3_network_address", [_parent] call AE3_network_fnc_dhcp_get, true]; },
+			{
+				params ["_entity", "_parent"];
+				_entity setVariable ["AE3_network_staticIp", "", true];
+				_entity setVariable ["AE3_network_address", [_parent] call AE3_network_fnc_dhcp_get, true];
+			},
 			[_entity, _parent]
 		] call CBA_fnc_waitUntilAndExecute;
 	};

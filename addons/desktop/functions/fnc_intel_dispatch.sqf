@@ -52,7 +52,7 @@ switch (toLower _type) do
 	};
 	case "webpage":
 	{
-		[_f1, _f2, _f3 splitString "|"] call AE3_desktop_fnc_registerWebpage;
+		[_f1, _f2, _f3 splitString "|", _target] call AE3_desktop_fnc_registerWebpage;
 	};
 	case "history":
 	{
@@ -60,7 +60,18 @@ switch (toLower _type) do
 	};
 	case "media":
 	{
-		private _targets = if (_target isEqualType objNull) then { [_target] } else { _target };
+		private _targets = switch (true) do
+		{
+			case (_target isEqualType objNull): { [_target] };
+			case (_target isEqualType []): { _target };
+			case (_target isEqualTo "all"): { "all" };
+			case (_target isEqualTo "future"): { "future" };
+			default
+			{
+				private _targetObject = objectFromNetId _target;
+				if (isNull _targetObject) then { [] } else { [_targetObject] };
+			};
+		};
 		[_f1, _f2, _f3, _targets] call AE3_desktop_fnc_registerMedia;
 	};
 	case "lockedfile":

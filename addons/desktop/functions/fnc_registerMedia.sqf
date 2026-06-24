@@ -49,18 +49,25 @@ if ((toLower _type) isEqualTo "image") then
 
 private _computers = [];
 
-if (_targets isEqualType []) then
+switch (true) do
 {
-	_computers = _targets;
-}
-else
-{
-	_computers = +(missionNamespace getVariable ["ae3_desktop_computers", []]);
-
-	if (_targets isEqualTo "future") then
+	case (_targets isEqualType []):
 	{
-		// Remember for laptops initialized later (see XEH_preInit deviceReady handler)
+		_computers = _targets;
+	};
+	case (_targets isEqualTo "all"):
+	{
+		_computers = +(missionNamespace getVariable ["ae3_desktop_computers", []]);
+	};
+	case (_targets isEqualTo "future"):
+	{
+		_computers = +(missionNamespace getVariable ["ae3_desktop_computers", []]);
 		ae3_desktop_pendingMedia pushBack [_sourcePath, _type, _fsDest];
+	};
+	default
+	{
+		private _targetObject = objectFromNetId _targets;
+		if (!isNull _targetObject) then { _computers = [_targetObject]; };
 	};
 };
 

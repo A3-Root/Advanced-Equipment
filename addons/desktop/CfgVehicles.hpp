@@ -6,16 +6,17 @@ class CfgVehicles
 		class AttributesBase
 		{
 			class Edit;
+			class Checkbox;
+			class Combo;
 			class ModuleDescription;
 		};
 		class ModuleDescription {};
 	};
 
-	// MODULE ADD INTEL - plants emails, webpages, browser history, calendar entries or media
-	// on a laptop (place on a laptop) or on all laptops (place anywhere else)
+	// MODULE ADD INTEL - Zeus dialog for planting one intel entry on the laptop under the module.
 	class AE3_AddIntel: Module_F
 	{
-		scope = 2;
+		scope = 1;
 		scopeCurator = 2;
 		displayName = "$STR_AE3_Desktop_Config_AddIntelDisplayName";
 		icon = "\z\ae3\addons\armaos\ui\AE3_Module_Icons_addUser.paa";
@@ -30,28 +31,254 @@ class CfgVehicles
 
 		curatorInfoType = "AE3_UserInterface_Zeus_Module_AddIntel";
 
-		class Attributes: AttributesBase
-		{
-			// One dynamic control: a type dropdown whose visible fields follow the selected type.
-			// The whole configuration is stored as a single serialized value (see fnc_intel_3denSave)
-			// and read back by AE3_desktop_fnc_module_addIntel.
-			class AE3_ModuleIntel_Data: Edit
-			{
-				property = "AE3_ModuleIntel_Data";
-				displayName = "$STR_AE3_Desktop_Config_IntelTypeDisplayName";
-				tooltip = "$STR_AE3_Desktop_Config_IntelTypeTooltip";
-				control = "AE3_Intel3denControl";
-				typeName = "STRING";
-				defaultValue = """""";
-				expression = "_this setVariable ['AE3_ModuleIntel_Data', _value];";
-			};
-			class ModuleDescription: ModuleDescription{};
-		};
-
 		class ModuleDescription: ModuleDescription
 		{
 			description = "$STR_AE3_Desktop_Config_ModuleAddIntelDescription";
 			sync[] = { "Land_Laptop_03_sand_F_AE3" };
+		};
+	};
+
+	class AE3_AddEmail: Module_F
+	{
+		scope = 2;
+		scopeCurator = 0;
+		displayName = "AE3: Add Email";
+		icon = "\z\ae3\addons\armaos\ui\AE3_Module_Icons_addUser.paa";
+		category = "AE3_armaosModules";
+		function = "AE3_desktop_fnc_module_addIntel";
+		functionPriority = 1;
+		isGlobal = 0;
+		isTriggerActivated = 1;
+		isDisposable = 1;
+		is3DEN = 0;
+		ae3_intelType = "email";
+
+		class Attributes: AttributesBase
+		{
+			class AE3_ModuleIntel_From: Edit
+			{
+				property = "AE3_ModuleIntel_From";
+				displayName = "From";
+				typeName = "STRING";
+				defaultValue = """informant@lan""";
+			};
+			class AE3_ModuleIntel_To: Edit
+			{
+				property = "AE3_ModuleIntel_To";
+				displayName = "To";
+				typeName = "STRING";
+				defaultValue = """admin@lan""";
+			};
+			class AE3_ModuleIntel_Subject: Edit
+			{
+				property = "AE3_ModuleIntel_Subject";
+				displayName = "Subject";
+				typeName = "STRING";
+				defaultValue = """Intel""";
+			};
+			class AE3_ModuleIntel_Body: Edit
+			{
+				property = "AE3_ModuleIntel_Body";
+				displayName = "Body";
+				typeName = "STRING";
+				defaultValue = """""";
+			};
+			class AE3_ModuleIntel_Received: Edit
+			{
+				property = "AE3_ModuleIntel_Received";
+				displayName = "Received (HH:MM, blank = current)";
+				typeName = "STRING";
+				defaultValue = """""";
+			};
+			class AE3_ModuleIntel_CreateFrom: Checkbox
+			{
+				property = "AE3_ModuleIntel_CreateFrom";
+				displayName = "Create sender address";
+				typeName = "BOOL";
+				defaultValue = 0;
+			};
+			class AE3_ModuleIntel_CreateTo: Checkbox
+			{
+				property = "AE3_ModuleIntel_CreateTo";
+				displayName = "Create recipient address";
+				typeName = "BOOL";
+				defaultValue = 0;
+			};
+			class ModuleDescription: ModuleDescription{};
+		};
+	};
+
+	class AE3_AddWebpage: Module_F
+	{
+		scope = 2;
+		scopeCurator = 0;
+		displayName = "AE3: Add Webpage";
+		icon = "\z\ae3\addons\armaos\ui\AE3_Module_Icons_addUser.paa";
+		category = "AE3_armaosModules";
+		function = "AE3_desktop_fnc_module_addIntel";
+		functionPriority = 1;
+		isGlobal = 0;
+		isTriggerActivated = 1;
+		isDisposable = 1;
+		is3DEN = 0;
+		ae3_intelType = "webpage";
+
+		class Attributes: AttributesBase
+		{
+			class AE3_ModuleIntel_Url: Edit
+			{
+				property = "AE3_ModuleIntel_Url";
+				displayName = "URL";
+				typeName = "STRING";
+				defaultValue = """intel.root/page""";
+			};
+			class AE3_ModuleIntel_Title: Edit
+			{
+				property = "AE3_ModuleIntel_Title";
+				displayName = "Title";
+				typeName = "STRING";
+				defaultValue = """Intel Page""";
+			};
+			class AE3_ModuleIntel_Content: Edit
+			{
+				property = "AE3_ModuleIntel_Content";
+				displayName = "Content";
+				typeName = "STRING";
+				defaultValue = """""";
+			};
+			class ModuleDescription: ModuleDescription{};
+		};
+	};
+
+	class AE3_AddBrowserHistory: Module_F
+	{
+		scope = 2;
+		scopeCurator = 0;
+		displayName = "AE3: Add Browser History";
+		icon = "\z\ae3\addons\armaos\ui\AE3_Module_Icons_addUser.paa";
+		category = "AE3_armaosModules";
+		function = "AE3_desktop_fnc_module_addIntel";
+		functionPriority = 1;
+		isGlobal = 0;
+		isTriggerActivated = 1;
+		isDisposable = 1;
+		is3DEN = 0;
+		ae3_intelType = "history";
+
+		class Attributes: AttributesBase
+		{
+			class AE3_ModuleIntel_Url: Edit
+			{
+				property = "AE3_ModuleIntel_Url";
+				displayName = "URL";
+				typeName = "STRING";
+				defaultValue = """intel.root/page""";
+			};
+			class AE3_ModuleIntel_Time: Edit
+			{
+				property = "AE3_ModuleIntel_Time";
+				displayName = "Time (HH:MM, blank = random)";
+				typeName = "STRING";
+				defaultValue = """""";
+			};
+			class ModuleDescription: ModuleDescription{};
+		};
+	};
+
+	class AE3_AddMedia: Module_F
+	{
+		scope = 2;
+		scopeCurator = 0;
+		displayName = "AE3: Add Media";
+		icon = "\z\ae3\addons\armaos\ui\AE3_Module_Icons_addUser.paa";
+		category = "AE3_armaosModules";
+		function = "AE3_desktop_fnc_module_addIntel";
+		functionPriority = 1;
+		isGlobal = 0;
+		isTriggerActivated = 1;
+		isDisposable = 1;
+		is3DEN = 0;
+		ae3_intelType = "media";
+
+		class Attributes: AttributesBase
+		{
+			class AE3_ModuleIntel_Source: Edit
+			{
+				property = "AE3_ModuleIntel_Source";
+				displayName = "Source path";
+				typeName = "STRING";
+				defaultValue = """media\images\mission.jpg""";
+			};
+			class AE3_ModuleIntel_MediaType: Combo
+			{
+				property = "AE3_ModuleIntel_MediaType";
+				displayName = "Media type";
+				typeName = "STRING";
+				defaultValue = """image""";
+				class Values
+				{
+					class Image { name = "Image"; value = "image"; };
+					class Video { name = "Video"; value = "video"; };
+					class Audio { name = "Audio"; value = "audio"; };
+				};
+			};
+			class AE3_ModuleIntel_Dest: Edit
+			{
+				property = "AE3_ModuleIntel_Dest";
+				displayName = "Laptop path";
+				typeName = "STRING";
+				defaultValue = """/home/admin/Desktop/media.jpg""";
+			};
+			class ModuleDescription: ModuleDescription{};
+		};
+	};
+
+	class AE3_AddPasswordedFile: Module_F
+	{
+		scope = 2;
+		scopeCurator = 0;
+		displayName = "AE3: Add Passworded File";
+		icon = "\z\ae3\addons\armaos\ui\AE3_Module_Icons_addUser.paa";
+		category = "AE3_armaosModules";
+		function = "AE3_desktop_fnc_module_addIntel";
+		functionPriority = 1;
+		isGlobal = 0;
+		isTriggerActivated = 1;
+		isDisposable = 1;
+		is3DEN = 0;
+		ae3_intelType = "lockedfile";
+
+		class Attributes: AttributesBase
+		{
+			class AE3_ModuleIntel_Dest: Edit
+			{
+				property = "AE3_ModuleIntel_Dest";
+				displayName = "Laptop path";
+				typeName = "STRING";
+				defaultValue = """/home/admin/Desktop/locked.txt""";
+			};
+			class AE3_ModuleIntel_Password: Edit
+			{
+				property = "AE3_ModuleIntel_Password";
+				displayName = "Password";
+				typeName = "STRING";
+				defaultValue = """password""";
+			};
+			class AE3_ModuleIntel_Content: Edit
+			{
+				property = "AE3_ModuleIntel_Content";
+				displayName = "Content";
+				typeName = "STRING";
+				defaultValue = """""";
+			};
+			class AE3_ModuleIntel_Owner: Edit
+			{
+				property = "AE3_ModuleIntel_Owner";
+				displayName = "Owner";
+				typeName = "STRING";
+				defaultValue = """root""";
+			};
+			class ModuleDescription: ModuleDescription{};
 		};
 	};
 

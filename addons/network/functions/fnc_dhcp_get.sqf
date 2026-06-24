@@ -16,14 +16,25 @@ params ["_entity"];
 
 if (isNull _entity || {!alive _entity} || {(_entity getVariable ["AE3_power_powerState", 0]) == 0}) exitWith { [127, 0, 0, 1] };
 
-private _counter = (_entity getVariable ["AE3_network_addressCounter", 0]) + 1;
-_entity setVariable ["AE3_network_addressCounter", _counter, true];
-
 private _address = _entity getVariable ["AE3_network_address", [192, 168, 0, 1]];
+private _counter = _entity getVariable ["AE3_network_addressCounter", 0];
+private _lease = [127, 0, 0, 1];
 
-[
-	_address select 0,
-	_address select 1,
-	_address select 2,
-	((_address select 3) + _counter) % 256
-];
+for "_i" from 1 to 254 do
+{
+	_counter = (_counter + 1) % 255;
+	if (_counter == 0) then { _counter = 1; };
+	private _candidate = [
+		_address select 0,
+		_address select 1,
+		_address select 2,
+		((_address select 3) + _counter) % 256
+	];
+	if ((_candidate select 3) != (_address select 3) && {!([objNull, _candidate] call AE3_network_fnc_ipInUse)}) exitWith
+	{
+		_lease = _candidate;
+	};
+};
+
+_entity setVariable ["AE3_network_addressCounter", _counter, true];
+_lease

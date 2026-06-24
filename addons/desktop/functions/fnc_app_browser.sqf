@@ -97,7 +97,11 @@ private _navigate = {
 	} forEach (_pageCtrl getVariable "AE3_linkCtrls");
 	_pageCtrl setVariable ["AE3_linkCtrls", []];
 
-	private _pages = missionNamespace getVariable ["AE3_Desktop_Webpages", createHashMap];
+	private _pages = +(missionNamespace getVariable ["AE3_Desktop_Webpages", createHashMap]);
+	private _localPages = _computer getVariable ["AE3_Desktop_Webpages", createHashMap];
+	{
+		_pages set [_x, _localPages get _x];
+	} forEach (keys _localPages);
 	private _html = "";
 	private _links = []; // [[url, label], ...]
 

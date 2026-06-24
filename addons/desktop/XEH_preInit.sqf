@@ -86,6 +86,12 @@ if (isServer) then
 	// Client-routed interface mode changes
 	["ae3_desktop_setInterfaceMode", { _this call AE3_desktop_fnc_setInterfaceMode }] call CBA_fnc_addEventHandler;
 	["ae3_desktop_setInterfaceAccess", { _this call AE3_desktop_fnc_setInterfaceAccess }] call CBA_fnc_addEventHandler;
+	["ae3_desktop_setStaticIp", {
+		params ["_owner", "_rid", "_netId", "_ip"];
+		private _device = objectFromNetId _netId;
+		private _res = [_device, _ip] call AE3_network_fnc_setStaticIp;
+		["ae3_desktop_routeReply", [_rid, "net_setip", _res], _owner] call CBA_fnc_ownerEvent;
+	}] call CBA_fnc_addEventHandler;
 
 	// Client-routed intel APIs (email, webpages, browser history, calendar)
 	["ae3_desktop_addEmail", { _this call AE3_desktop_fnc_addEmail }] call CBA_fnc_addEventHandler;
