@@ -461,10 +461,10 @@
       body.style.display = "flex";
       body.style.flexDirection = "column";
       body.innerHTML =
-        '<div class="toolbar"><button class="btn mopen">Open image…</button>' +
+        '<div class="toolbar"><button class="btn mopen">Open </button>' +
           '<span class="muted mname" style="margin-left:10px;align-self:center"></span></div>' +
         '<div class="mstage" style="flex:1;min-height:0;display:flex;align-items:center;justify-content:center">' +
-          '<div class="muted mload" style="padding:16px">No image open. Use "Open image…" to load one.</div>' +
+          '<div class="muted mload" style="padding:16px">No image open. Use "Open image" to load one.</div>' +
           '<img class="mimg" style="display:none;max-width:100%;max-height:100%;object-fit:contain">' +
         '</div>';
       var img = body.querySelector(".mimg");
@@ -476,7 +476,7 @@
         opts = opts || {};
         nameEl.textContent = name || "";
         win.el.querySelector(".title").textContent = "Image Viewer" + (name ? " - " + name : "");
-        if (!srcPath) { img.style.display = "none"; load.style.display = "block"; load.textContent = 'No image open. Use "Open image…" to load one.'; return; }
+        if (!srcPath) { img.style.display = "none"; load.style.display = "block"; load.textContent = 'No image open. Use "Open image" to load one.'; return; }
 
         // Any web-side failure funnels here and hands off to the native RscPicture viewer (which
         // renders through the engine texture loader and handles every image type). The CEF texture

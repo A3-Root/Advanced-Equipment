@@ -73,7 +73,16 @@ _titleCtrl ctrlCommit 0;
 private _trackX = _x + 0.02;
 private _trackY = _y + 0.065;
 private _trackW = _w - 0.04;
-private _trackH = 0.016;
+private _trackH = 0.022;
+
+// Click receiver placed FIRST (underneath): the opaque track/fill drawn on top hide its hover
+// highlight, while clicks still fall through the static bar to reach it. This avoids the button's
+// hover state painting over the progress bar.
+private _seek = _ov ctrlCreate ["RscButton", -1];
+_seek ctrlSetPosition [_trackX, _trackY, _trackW, _trackH];
+_seek ctrlSetText "";
+_seek ctrlSetBackgroundColor [0, 0, 0, 0];
+_seek ctrlCommit 0;
 
 private _track = _ov ctrlCreate ["RscText", -1];
 _track ctrlSetPosition [_trackX, _trackY, _trackW, _trackH];
@@ -84,13 +93,6 @@ private _fill = _ov ctrlCreate ["RscText", -1];
 _fill ctrlSetPosition [_trackX, _trackY, 0, _trackH];
 _fill ctrlSetBackgroundColor (_theme getOrDefault ["accent", [0.2, 0.5, 0.8, 1]]);
 _fill ctrlCommit 0;
-
-// Transparent button over the track captures the seek click.
-private _seek = _ov ctrlCreate ["RscButton", -1];
-_seek ctrlSetPosition [_trackX, _trackY - 0.012, _trackW, _trackH + 0.024];
-_seek ctrlSetText "";
-_seek ctrlSetBackgroundColor [0, 0, 0, 0];
-_seek ctrlCommit 0;
 
 private _timeCtrl = _ov ctrlCreate ["RscText", -1];
 _timeCtrl ctrlSetPosition [_trackX, _trackY + 0.026, _trackW - 0.12, 0.03];
