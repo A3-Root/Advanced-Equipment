@@ -9,6 +9,8 @@
  * 0: _computer <OBJECT> - The laptop
  * 1: _path <STRING> - Virtual filesystem path (for the window title)
  * 2: _content <STRING|CODE> - File content
+ * 3: _rect <ARRAY> (Optional, default: []) - [x, y, w, h] as viewport fractions of the in-OS window
+ *    that requested the open, used to position the native image viewer to overlay it
  *
  * Return Value:
  * None
@@ -19,7 +21,7 @@
  * Public: Yes
  */
 
-params ["_computer", "_path", "_content"];
+params ["_computer", "_path", "_content", ["_rect", []]];
 
 private _session = uiNamespace getVariable ["AE3_desktop_session", createHashMap];
 private _display = _session getOrDefault ["display", displayNull];
@@ -86,13 +88,30 @@ if ((_content select [0, 10]) isEqualTo "AE3_MEDIA|") exitWith
 			}
 			else
 			{
-				// Centred, window-sized panel (not full-screen) with a title bar, mirroring the in-OS
-				// Image Viewer footprint. A dim backdrop catches clicks so they don't reach the world.
+				// Window-sized panel (not full-screen) with a title bar. When the caller passed the
+				// footprint of the in-OS Image Viewer window (viewport fractions), map it onto the web
+				// surface's on-screen rectangle so the native viewer overlays that window exactly;
+				// otherwise fall back to a centred panel. A dim backdrop catches stray clicks.
+				private _barH = 0.045;
+				private _x = 0;
+				private _y = 0;
 				private _w = 0.5;
 				private _h = 0.6;
-				private _x = safeZoneX + (safeZoneW - _w) / 2;
-				private _y = safeZoneY + (safeZoneH - _h) / 2;
-				private _barH = 0.045;
+				if (_rect isEqualType [] && {count _rect >= 4} && {(_rect select 2) > 0} && {(_rect select 3) > 0}) then
+				{
+					private _wc = uiNamespace getVariable [QGVAR(browserCtrl), controlNull];
+					private _cp = if (isNull _wc) then { [safeZoneX, safeZoneY, safeZoneW, safeZoneH] } else { ctrlPosition _wc };
+					_cp params ["_cpx", "_cpy", "_cpw", "_cph"];
+					_x = _cpx + (_rect select 0) * _cpw;
+					_y = _cpy + (_rect select 1) * _cph;
+					_w = (_rect select 2) * _cpw;
+					_h = (_rect select 3) * _cph;
+				}
+				else
+				{
+					_x = safeZoneX + (safeZoneW - _w) / 2;
+					_y = safeZoneY + (safeZoneH - _h) / 2;
+				};
 
 				private _backdrop = _imgDisplay ctrlCreate ["RscText", -1];
 				_backdrop ctrlSetPosition [safeZoneX, safeZoneY, safeZoneW, safeZoneH];

@@ -488,7 +488,16 @@
           if (opts.native && opts.marker) {
             handed = true;
             img.style.display = "none"; load.style.display = "block"; load.textContent = "Opening in native viewer...";
-            A3.send("fs_open_media", { path: opts.vfsPath || srcPath, content: opts.marker });
+            // Pass this window's footprint (as viewport fractions) so the native viewer can be sized
+            // and positioned to overlay the in-OS Image Viewer window exactly.
+            var rect = [];
+            try {
+              var r = win.el.getBoundingClientRect();
+              var vw = window.innerWidth || document.documentElement.clientWidth || 1;
+              var vh = window.innerHeight || document.documentElement.clientHeight || 1;
+              if (r && r.width > 0 && r.height > 0) { rect = [r.left / vw, r.top / vh, r.width / vw, r.height / vh]; }
+            } catch (e) {}
+            A3.send("fs_open_media", { path: opts.vfsPath || srcPath, content: opts.marker, rect: rect });
           } else {
             img.style.display = "none"; load.style.display = "block"; load.textContent = "Cannot display this image.";
           }

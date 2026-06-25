@@ -136,7 +136,7 @@ switch (_command) do {
     // here as the native RscPicture fallback after the in-OS web viewer could not display them.
     case "fs_open_media": {
         if (AE3_DebugMode) then { diag_log format ["[AE3 DEBUG] [%1] fs_open_media native handoff: path=%2 content=%3", time, _data getOrDefault ["path", ""], _data getOrDefault ["content", ""]]; };
-        [_computer, _data getOrDefault ["path", ""], _data getOrDefault ["content", ""]] call FUNC(openFile);
+        [_computer, _data getOrDefault ["path", ""], _data getOrDefault ["content", ""], _data getOrDefault ["rect", []]] call FUNC(openFile);
     };
 
     // --- Network + system info. ---

@@ -245,8 +245,8 @@ class CfgVehicles
 			class AE3_ModuleIntel_Native: Checkbox
 			{
 				property = "AE3_ModuleIntel_Native";
-				displayName = "Native RscPicture fallback";
-				tooltip = "If the in-OS image viewer cannot display the file, retry with the native engine viewer.";
+				displayName = "Use Native RscPicture";
+				tooltip = "Check this box if the image is a '.jpg' file from the mission folder.";
 				typeName = "BOOL";
 				defaultValue = "false";
 			};

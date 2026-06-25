@@ -411,12 +411,12 @@
                 <Chinesesimp>来源为模组路径(关闭则为任务文件)</Chinesesimp>
             </Key>
             <Key ID="STR_AE3_Desktop_Intel_LabelNativeFallback">
-                <Original>Native RscPicture fallback</Original>
-                <English>Native RscPicture fallback</English>
+                <Original>Use Native RscPicture</Original>
+                <English>Use Native RscPicture</English>
                 <French>Repli RscPicture natif</French>
-                <Italian>Ripiego RscPicture nativo</Italian>
-                <Russian>Native RscPicture fallback</Russian>
-                <German>Natives RscPicture-Fallback</German>
+                <Italian>Use RscPicture nativo</Italian>
+                <Russian>Use Native RscPicture</Russian>
+                <German>Use Natives RscPicture</German>
                 <Chinesesimp>原生 RscPicture 回退</Chinesesimp>
             </Key>
             <Key ID="STR_AE3_Desktop_Intel_LabelOwner">
