@@ -612,14 +612,14 @@
                 <German>Zentrieren</German>
                 <Chinesesimp>重新居中</Chinesesimp>
             </Key>
-            <Key ID="STR_AE3_Desktop_Media_Playing">
-                <Original>Playing audio ...</Original>
-                <English>Playing audio ...</English>
-                <French>Lecture audio ...</French>
-                <Italian>Riproduzione audio ...</Italian>
-                <Russian>Playing audio ...</Russian>
-                <German>Audio wird abgespielt ...</German>
-                <Chinesesimp>正在播放音频 ...</Chinesesimp>
+            <Key ID="STR_AE3_Desktop_Media_Stop">
+                <Original>Stop</Original>
+                <English>Stop</English>
+                <French>Arrêter</French>
+                <Italian>Ferma</Italian>
+                <Russian>Stop</Russian>
+                <German>Stopp</German>
+                <Chinesesimp>停止</Chinesesimp>
             </Key>
             <Key ID="STR_AE3_Desktop_Media_Unknown">
                 <Original>Unknown media type: %1</Original>

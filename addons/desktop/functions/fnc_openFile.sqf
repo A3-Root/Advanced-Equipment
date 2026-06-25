@@ -48,13 +48,14 @@ if (!(_content isEqualType "")) exitWith {};
 
 if ((_content select [0, 10]) isEqualTo "AE3_MEDIA|") exitWith
 {
-	([_content] call AE3_desktop_fnc_parseMediaMarker) params ["", "_type", "", "", "_sourcePath"];
-	if (AE3_DebugMode) then { diag_log format ["[AE3 DEBUG] [%1] openFile native viewer: type=%2 src=%3", time, _type, _sourcePath]; };
+	([_content] call AE3_desktop_fnc_parseMediaMarker) params ["", "_type", "_scope", "", "_sourcePath"];
+	if (AE3_DebugMode) then { diag_log format ["[AE3 DEBUG] [%1] openFile native viewer: type=%2 scope=%3 src=%4", time, _type, _scope, _sourcePath]; };
 
 	switch (_type) do
 	{
 		case "image":
 		{
+			[_computer, "image", _sourcePath, _path, true] call AE3_desktop_fnc_mediaNotify;
 			// Native image viewer used as the fallback when the in-OS web viewer cannot display the
 			// source. The picture renders through the engine texture loader (which reliably handles
 			// mission and mod .jpg/.paa), in a child display of the desktop so it sits ON TOP of the
@@ -84,7 +85,12 @@ if ((_content select [0, 10]) isEqualTo "AE3_MEDIA|") exitWith
 				_closeBtn ctrlSetBackgroundColor (_theme getOrDefault ["accent", [0.2,0.5,0.8,1]]);
 				_closeBtn ctrlCommit 0;
 				_closeBtn setVariable ["AE3_group", _group];
-				_closeBtn ctrlAddEventHandler ["ButtonClick", { ctrlDelete ((_this select 0) getVariable "AE3_group"); }];
+				_closeBtn setVariable ["AE3_media", [_computer, "image", _sourcePath, _path]];
+				_closeBtn ctrlAddEventHandler ["ButtonClick", {
+					((_this select 0) getVariable ["AE3_media", []]) params [["_c", objNull], ["_t", ""], ["_s", ""], ["_v", ""]];
+					if (!isNull _c) then { [_c, _t, _s, _v, false] call AE3_desktop_fnc_mediaNotify; };
+					ctrlDelete ((_this select 0) getVariable "AE3_group");
+				}];
 			}
 			else
 			{
@@ -147,16 +153,61 @@ if ((_content select [0, 10]) isEqualTo "AE3_MEDIA|") exitWith
 					params ["_disp", "_key"];
 					if (_key isEqualTo 1) then { _disp closeDisplay 2; true } else { false }
 				}];
+
+				// Report the close once, however it was dismissed (button, Esc or otherwise).
+				_imgDisplay setVariable ["AE3_media", [_computer, "image", _sourcePath, _path]];
+				_imgDisplay displayAddEventHandler ["Unload", {
+					params ["_disp"];
+					(_disp getVariable ["AE3_media", []]) params [["_c", objNull], ["_t", ""], ["_s", ""], ["_v", ""]];
+					if (!isNull _c) then { [_c, _t, _s, _v, false] call AE3_desktop_fnc_mediaNotify; };
+				}];
 			};
 		};
 		case "video":
 		{
-			[_sourcePath] call BIS_fnc_playVideo;
+			[_computer, "video", _sourcePath, _path, true] call AE3_desktop_fnc_mediaNotify;
+			// BIS_fnc_playVideo renders on its own display, which sits BEHIND the web surface. Hide the
+			// web control for the duration so the video is visible without closing the laptop, and put a
+			// Stop control on top (its own child display, rendered above the web surface) so the player
+			// can end playback early with the button or Esc. The web surface is restored when the video
+			// stops or finishes.
+			private _webCtrl = uiNamespace getVariable [QGVAR(browserCtrl), controlNull];
+			if (!isNull _webCtrl) then { _webCtrl ctrlShow false; };
+
+			private _skipVar = format ["AE3_desktop_skipVideo_%1", round (diag_tickTime * 1000)];
+			missionNamespace setVariable [_skipVar, false];
+			private _vid = [_sourcePath, [safeZoneX, safeZoneY, safeZoneW, safeZoneH], [1, 1, 1, 1], _skipVar] spawn BIS_fnc_playVideo;
+
+			private _ctl = _display createDisplay "RscDisplayEmpty";
+			if (!isNull _ctl) then
+			{
+				_ctl setVariable ["AE3_skipVar", _skipVar];
+				private _stop = _ctl ctrlCreate ["RscButton", -1];
+				_stop ctrlSetPosition [safeZoneX + safeZoneW - 0.17, safeZoneY + 0.03, 0.15, 0.05];
+				_stop ctrlSetText (localize "STR_AE3_Desktop_Media_Stop");
+				_stop ctrlSetBackgroundColor (_theme getOrDefault ["accent", [0.2, 0.5, 0.8, 1]]);
+				_stop ctrlCommit 0;
+				_stop setVariable ["AE3_skipVar", _skipVar];
+				_stop ctrlAddEventHandler ["ButtonClick", { missionNamespace setVariable [(_this select 0) getVariable "AE3_skipVar", true]; }];
+				_ctl displayAddEventHandler ["KeyDown", {
+					params ["_disp", "_key"];
+					if (_key isEqualTo 1) then { missionNamespace setVariable [_disp getVariable "AE3_skipVar", true]; true } else { false }
+				}];
+			};
+
+			[_vid, _webCtrl, _ctl, _skipVar, _computer, _sourcePath, _path] spawn
+			{
+				params ["_vid", "_webCtrl", "_ctl", "_skipVar", "_computer", "_sourcePath", "_path"];
+				waitUntil { scriptDone _vid };
+				if (!isNull _ctl) then { _ctl closeDisplay 2; };
+				if (!isNull _webCtrl) then { _webCtrl ctrlShow true; };
+				missionNamespace setVariable [_skipVar, nil];
+				[_computer, "video", _sourcePath, _path, false] call AE3_desktop_fnc_mediaNotify;
+			};
 		};
 		case "audio":
 		{
-			playSound3D [_sourcePath, player, false, getPosASL player, 5, 1, 30, 0];
-			hintSilent (localize "STR_AE3_Desktop_Media_Playing");
+			[_computer, _sourcePath, _scope, _path] call AE3_desktop_fnc_audioPlayer;
 		};
 		default
 		{

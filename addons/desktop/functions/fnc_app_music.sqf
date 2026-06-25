@@ -87,8 +87,7 @@ _listCtrl ctrlAddEventHandler ["LBDblClick", {
 	if (_sourcePath isEqualTo "") exitWith {};
 
 	private _computer = _listCtrl getVariable "AE3_computer";
-	playSound3D [_sourcePath, _computer, false, getPosASL _computer, 5, 1, 30, 0];
-	hintSilent (localize "STR_AE3_Desktop_Media_Playing");
+	[_computer, _sourcePath, "auto", _listCtrl lbText _index] call AE3_desktop_fnc_audioPlayer;
 }];
 
 createHashMap

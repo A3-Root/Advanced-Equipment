@@ -70,6 +70,8 @@ PREP(app_sysinfo);
 /* Media + intel registries */
 PREP(registerMedia);
 PREP(parseMediaMarker);
+PREP(audioPlayer);
+PREP(mediaNotify);
 PREP(registerWebpage);
 PREP(addEmail);
 PREP(addHistoryEntry);
