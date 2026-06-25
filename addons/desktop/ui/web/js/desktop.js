@@ -251,12 +251,15 @@
       var content = (res && res.content) || "";
       if (content.indexOf("AE3_MEDIA|") === 0) {
         var media = A3.parseMedia(content);
-        if (media && media.type === "image") {
+        if (media && media.type === "image" && media.web) {
+          // Opt-in experimental web viewer: open the in-OS Image Viewer window (it falls back to the
+          // native viewer if the CEF texture sampler cannot render the image).
           Apps.launch("media", {
-            path: media.path, scope: media.scope, native: media.native,
+            path: media.path, scope: media.scope, web: media.web,
             vfsPath: path, marker: content, title: path.split("/").pop()
           });
         } else {
+          // Default: render through the native engine viewer (video/audio always use this too).
           A3.send("fs_open_media", { path: path, content: content });
         }
         return;

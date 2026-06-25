@@ -242,11 +242,11 @@ class CfgVehicles
 					class Mod { name = "Mod path"; value = "mod"; };
 				};
 			};
-			class AE3_ModuleIntel_Native: Checkbox
+			class AE3_ModuleIntel_Web: Checkbox
 			{
-				property = "AE3_ModuleIntel_Native";
-				displayName = "Use Native RscPicture";
-				tooltip = "Check this box if the image is a '.jpg' file from the mission folder.";
+				property = "AE3_ModuleIntel_Web";
+				displayName = "[EXPERIMENTAL] Try Web View";
+				tooltip = "Images open in the native viewer by default. Enable to try the in-OS web image viewer first; it only works on engine builds where the CEF texture sampler is functional and falls back to native otherwise.";
 				typeName = "BOOL";
 				defaultValue = "false";
 			};

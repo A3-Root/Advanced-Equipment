@@ -83,8 +83,8 @@ if (_event isEqualTo "onUnload") exitWith
 		default            { ctrlText (_display displayCtrl 1404) };
 	};
 
-	// Seventh dispatch field: email -> [receivedTime, createFrom, createTo]; media -> native
-	// RscPicture fallback toggle (IDC 1317); lockedfile/others -> the permission grid.
+	// Seventh dispatch field: email -> [receivedTime, createFrom, createTo]; media -> experimental
+	// "try web viewer" toggle (IDC 1317); lockedfile/others -> the permission grid.
 	private _f5 = switch (_type) do
 	{
 		case "email":

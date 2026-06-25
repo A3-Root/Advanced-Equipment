@@ -169,8 +169,8 @@
       return self.loadTexture(src, maxRes, extraRoots, scope).catch(fromB64);
     },
 
-    // Parse a media marker file's content into {type, scope, native, path}, or null if it is not a
-    // marker. Understands both the current "AE3_MEDIA|<type>|<scope>|<native>|<path>" form and the
+    // Parse a media marker file's content into {type, scope, web, path}, or null if it is not a
+    // marker. Understands both the current "AE3_MEDIA|<type>|<scope>|<web>|<path>" form and the
     // legacy "AE3_MEDIA|<type>|<path>" form.
     parseMedia: function (content) {
       var s = String(content || "");
@@ -180,9 +180,9 @@
       if (p.length >= 5) {
         var scope = (p[2] || "auto").toLowerCase();
         if (scope !== "mod" && scope !== "mission") scope = "auto";
-        return { type: type, scope: scope, native: p[3] === "1", path: p.slice(4).join("|") };
+        return { type: type, scope: scope, web: p[3] === "1", path: p.slice(4).join("|") };
       }
-      return { type: type, scope: "auto", native: false, path: p.slice(2).join("|") };
+      return { type: type, scope: "auto", web: false, path: p.slice(2).join("|") };
     },
 
     emit: emit

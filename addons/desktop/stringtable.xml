@@ -410,15 +410,6 @@
                 <German>Quelle ist ein Mod-Pfad (aus = Missionsdatei)</German>
                 <Chinesesimp>来源为模组路径(关闭则为任务文件)</Chinesesimp>
             </Key>
-            <Key ID="STR_AE3_Desktop_Intel_LabelNativeFallback">
-                <Original>Use Native RscPicture</Original>
-                <English>Use Native RscPicture</English>
-                <French>Repli RscPicture natif</French>
-                <Italian>Use RscPicture nativo</Italian>
-                <Russian>Use Native RscPicture</Russian>
-                <German>Use Natives RscPicture</German>
-                <Chinesesimp>原生 RscPicture 回退</Chinesesimp>
-            </Key>
             <Key ID="STR_AE3_Desktop_Intel_LabelOwner">
                 <Original>Owner</Original>
                 <English>Owner</English>
@@ -485,6 +476,15 @@
                 <Russian>To</Russian>
                 <German>To</German>
                 <Chinesesimp>To</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Intel_LabelTryWebView">
+                <Original>[EXPERIMENTAL] Try web view</Original>
+                <English>[EXPERIMENTAL] Try web view</English>
+                <French>[EXPÉRIMENTAL] Essayer la vue web</French>
+                <Italian>[SPERIMENTALE] Prova la vista web</Italian>
+                <Russian>[EXPERIMENTAL] Try web view</Russian>
+                <German>[EXPERIMENTELL] Web-Ansicht versuchen</German>
+                <Chinesesimp>[实验性] 尝试网页视图</Chinesesimp>
             </Key>
             <Key ID="STR_AE3_Desktop_Intel_LabelUrl">
                 <Original>URL</Original>

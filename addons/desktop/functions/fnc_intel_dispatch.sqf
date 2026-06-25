@@ -8,7 +8,8 @@
  *  "email"    - f1: From, f2: To, f3: Subject, f4: Body
  *  "webpage"  - f1: URL,  f2: Title,   f3: Content ("|" separates lines)
  *  "history"  - f1: URL,  f2: Time (optional, "HH:MM")
- *  "media"    - f1: Source path, f2: image|video|audio, f3: filesystem destination
+ *  "media"    - f1: Source path, f2: image|video|audio, f3: filesystem destination,
+ *               f4: path scope (mod|mission|auto), f5: try-web-viewer flag <BOOL>
  *  "lockedfile" - f1: filesystem path, f2: password, f3: content, f4: owner, f5: permissions
  *
  * Arguments:
@@ -72,10 +73,10 @@ switch (toLower _type) do
 				if (isNull _targetObject) then { [] } else { [_targetObject] };
 			};
 		};
-		// f4 carries the mod/mission path hint; f5 the native-RscPicture fallback toggle.
+		// f4 carries the mod/mission path hint; f5 the experimental "try web viewer" toggle.
 		private _scope = ["auto", _f4] select (_f4 isEqualType "");
-		private _mediaNative = _f5 isEqualTo true;
-		[_f1, _f2, _f3, _targets, _scope, _mediaNative] call AE3_desktop_fnc_registerMedia;
+		private _web = _f5 isEqualTo true;
+		[_f1, _f2, _f3, _targets, _scope, _web] call AE3_desktop_fnc_registerMedia;
 	};
 	case "lockedfile":
 	{

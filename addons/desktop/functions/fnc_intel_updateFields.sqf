@@ -117,7 +117,7 @@ if (_isLocked) then
 if (_isMedia) then
 {
 	// Relabel the two shared checkboxes for the media options and start them unchecked.
-	(1717 call _getCtrl) ctrlSetText (localize "STR_AE3_Desktop_Intel_LabelNativeFallback");
+	(1717 call _getCtrl) ctrlSetText (localize "STR_AE3_Desktop_Intel_LabelTryWebView");
 	(1718 call _getCtrl) ctrlSetText (localize "STR_AE3_Desktop_Intel_LabelModPath");
 	(1317 call _getCtrl) cbSetChecked false;
 	(1318 call _getCtrl) cbSetChecked false;

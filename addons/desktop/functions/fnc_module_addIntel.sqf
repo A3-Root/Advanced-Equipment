@@ -68,7 +68,7 @@ if (_activated) then
 			_f2 = _module getVariable ["AE3_ModuleIntel_MediaType", "image"];
 			_f3 = _module getVariable ["AE3_ModuleIntel_Dest", ""];
 			_arg6 = _module getVariable ["AE3_ModuleIntel_Scope", "mission"];
-			_f7 = _module getVariable ["AE3_ModuleIntel_Native", false];
+			_f7 = _module getVariable ["AE3_ModuleIntel_Web", false];
 		};
 		case "lockedfile":
 		{

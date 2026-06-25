@@ -449,9 +449,10 @@
   });
 
   // ---------------- Image Viewer ----------------
-  // Opens an image registered via AE3_desktop_fnc_registerMedia. The picture is rendered inside
-  // the desktop webview (A3.loadTexture -> base64 data URL), so it appears above the OS surface
-  // rather than behind it like a native control would.
+  // The EXPERIMENTAL in-OS web image viewer for media registered via AE3_desktop_fnc_registerMedia.
+  // Images open in the native viewer by default; this window is only used when the media was
+  // registered with the "web" flag. It renders inside the webview via A3.loadTexture (base64 data
+  // URL) where the CEF sampler supports it, and otherwise falls back to the native RscPicture viewer.
   Apps.register({
     id: "media", title: "Image Viewer", glyph: Icons.image, width: 720, height: 540,
     showInDock: true, singleton: false,
@@ -477,15 +478,16 @@
         win.el.querySelector(".title").textContent = "Image Viewer" + (name ? " - " + name : "");
         if (!srcPath) { img.style.display = "none"; load.style.display = "block"; load.textContent = 'No image open. Use "Open image…" to load one.'; return; }
 
-        // Any web-side failure funnels here. The engine can return a NON-empty but unusable texture
-        // for a format its CEF sampler refuses (raw mission .jpg), which "resolves" the promise and
-        // then either fails to decode or decodes to a 0x0 image - so reject, decode-error and empty
-        // pixels all route to the same place, and the native RscPicture fallback (if allowed) runs.
+        // Any web-side failure funnels here and hands off to the native RscPicture viewer (which
+        // renders through the engine texture loader and handles every image type). The CEF texture
+        // sampler is unavailable in many setups - it can reject the path outright or "resolve" with an
+        // unusable texture that then fails to decode or decodes to 0x0 - so reject, decode-error and
+        // empty pixels all route here, and so does an up-front "native forced" request.
         var handed = false;
         function failToNative(reason) {
           if (handed) return;
-          console.log("[AE3 media] web viewer failed (" + reason + ") for", srcPath, "native=", !!opts.native);
-          if (opts.native && opts.marker) {
+          console.log("[AE3 media] handing to native viewer (" + reason + ") for", srcPath);
+          if (opts.marker) {
             handed = true;
             img.style.display = "none"; load.style.display = "block"; load.textContent = "Opening in native viewer...";
             // Pass this window's footprint (as viewport fractions) so the native viewer can be sized
@@ -524,7 +526,7 @@
             var content = (res && res.content) || "";
             var media = A3.parseMedia(content);
             if (media && media.type === "image") {
-              showImage(media.path, p.split("/").pop(), { scope: media.scope, native: media.native, vfsPath: p, marker: content });
+              showImage(media.path, p.split("/").pop(), { scope: media.scope, web: media.web, vfsPath: p, marker: content });
               return;
             }
             Modal.alert("Open image", "That file is not an image.");
@@ -534,7 +536,7 @@
 
       showImage((args && args.path) || "",
         (args && args.title) || ((args && args.path) ? String(args.path).split("\\").pop().split("/").pop() : ""),
-        { scope: (args && args.scope), native: (args && args.native), vfsPath: (args && args.vfsPath), marker: (args && args.marker) });
+        { scope: (args && args.scope), web: (args && args.web), vfsPath: (args && args.vfsPath), marker: (args && args.marker) });
     }
   });
 
