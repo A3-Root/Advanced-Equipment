@@ -274,7 +274,7 @@ class AE3_UserInterface_Zeus_Asset_Details
         class RscText_1013: RscText
         {
             idc = 1013;
-            text = "Allowed Gateways";
+            text = "Allowed IPs";
             x = 10 * GUI_GRID_W + GUI_GRID_X;
             y = 18 * GUI_GRID_H + GUI_GRID_Y;
             w = 7 * GUI_GRID_W;

@@ -916,7 +916,7 @@
             '<label>Default Gateway</label><input id="rg" value="' + esc(String(r.gateway || "")) + '">' +
             '<label>Password (blank = open network)</label><input id="rp" value="' + esc(r.password || "") + '">' +
             '<label><input id="rx" type="checkbox" style="width:auto;margin-right:8px"' + (r.extSsh ? " checked" : "") + '>Allow External SSH (from other gateways)</label>' +
-            '<label>Allowed Gateways (regex, blank = any)</label><input id="ra" value="' + esc(String(r.extAllow || "")) + '">' +
+            '<label>Allowed IPs (regex, blank = any)</label><input id="ra" value="' + esc(String(r.extAllow || "")) + '">' +
             '<div><button id="rs">Apply</button><span class="ok" id="rstat"></span></div></div>' +
             '<script>document.getElementById("rs").addEventListener("click",function(){' +
             'parent.postMessage({__ae3router:{name:document.getElementById("rn").value,range:document.getElementById("rr").value,password:document.getElementById("rp").value,gateway:document.getElementById("rg").value,extSsh:document.getElementById("rx").checked,extAllow:document.getElementById("ra").value}},"*");' +

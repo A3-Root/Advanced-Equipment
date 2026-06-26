@@ -108,7 +108,7 @@ class AE3_RouterConfigDialog
 
 		class AE3_RC_LblExtAllow : RscText
 		{
-			idc = -1; text = "Allowed Gateways (blank = any)";
+			idc = -1; text = "Allowed IPs (blank = any)";
 			x = "0.31 * safezoneW + safezoneX"; y = "0.65 * safezoneH + safezoneY";
 			w = "0.16 * safezoneW"; h = "0.035 * safezoneH";
 		};

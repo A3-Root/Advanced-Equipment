@@ -75,7 +75,7 @@
 		class AE3_RouterAllowExternalSsh \
 		{ \
 			displayName = "Allow External SSH"; \
-			tooltip = "Allow laptops on other gateways to ping/SSH devices on this router. Leave the allowed gateways blank to permit any gateway."; \
+			tooltip = "Allow laptops on other gateways to ping/SSH devices on this router. Leave the allowed ips blank to permit any ip."; \
 			property = "AE3_RouterAllowExternalSsh"; \
 			control = "Checkbox"; \
 			expression = "[_this, 'extssh', _value] call AE3_network_fnc_attr_router;"; \
@@ -85,7 +85,7 @@
 		}; \
 		class AE3_RouterExternalAllow \
 		{ \
-			displayName = "External Allowed Gateways"; \
+			displayName = "External Allowed IPs"; \
 			tooltip = "Optional comma/space separated regex patterns of source gateways allowed external access. Blank means any gateway."; \
 			property = "AE3_RouterExternalAllow"; \
 			control = "Edit"; \
