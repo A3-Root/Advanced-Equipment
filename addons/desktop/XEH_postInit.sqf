@@ -33,13 +33,13 @@ if (hasInterface) then
 		// Threads: [[peerIp, [[dir,time,text], ...]], ...] -> structured payload for the Messenger app.
 		private _out = [];
 		{
-			_x params ["_peer", "_msgs"];
+			_x params ["_peer", "_msgs", ["_self", ""]];
 			private _jmsgs = [];
 			{
 				_x params ["_dir", "_time", "_text"];
 				_jmsgs pushBack createHashMapFromArray [["dir", _dir], ["time", _time], ["text", _text]];
 			} forEach _msgs;
-			_out pushBack createHashMapFromArray [["peer", _peer], ["messages", _jmsgs]];
+			_out pushBack createHashMapFromArray [["peer", _peer], ["messages", _jmsgs], ["self", _self]];
 		} forEach _threads;
 		["chat_data", createHashMapFromArray [["threads", _out]]] call AE3_desktop_fnc_jsSend;
 	}] call CBA_fnc_addEventHandler;
@@ -52,6 +52,13 @@ if (hasInterface) then
 	["ae3_desktop_msgNotify", {
 		params ["_peer"];
 		["msg_notify", createHashMapFromArray [["peer", _peer]]] call AE3_desktop_fnc_jsSend;
+	}] call CBA_fnc_addEventHandler;
+
+	// New mail delivered to the laptop in use (player send or Zeus/Eden intel): nudge the open
+	// web Mail app to re-pull its inbox and sent box. No-op when no desktop or Mail app is open.
+	["ae3_desktop_mailNotify", {
+		params ["_from"];
+		["mail_notify", createHashMapFromArray [["from", _from]]] call AE3_desktop_fnc_jsSend;
 	}] call CBA_fnc_addEventHandler;
 
 	// Calendar store changed on the server (Zeus/Eden module or in-app add/delete): nudge the open

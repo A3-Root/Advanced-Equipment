@@ -17,6 +17,10 @@
       .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
       .replace(/__([^_]+)__/g, "<strong>$1</strong>")
       .replace(/(^|[^*])\*([^*]+)\*/g, "$1<em>$2</em>")
+      // wiki-style links: [[target|label]] and the label-less [[target]]. Resolved before the
+      // standard [text](url) rule so they render as real anchors instead of literal brackets.
+      .replace(/\[\[([^\]|]+)\|([^\]]+)\]\]/g, function (_, href, t) { return '<a href="' + href.trim() + '">' + t.trim() + "</a>"; })
+      .replace(/\[\[([^\]|]+)\]\]/g, function (_, href) { return '<a href="' + href.trim() + '">' + href.trim() + "</a>"; })
       .replace(/\[([^\]]+)\]\(([^)]+)\)/g, function (_, t, href) {
         // wiki-internal links keep their .md target; the wiki app intercepts clicks.
         return '<a href="' + href + '">' + t + "</a>";

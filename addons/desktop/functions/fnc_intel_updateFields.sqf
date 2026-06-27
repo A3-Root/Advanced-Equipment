@@ -73,6 +73,19 @@ private _isMedia = _type isEqualTo "media";
 {
 	(_x call _getCtrl) ctrlShow _isLocked;
 } forEach [1715, 1716, 1301, 1302, 1303, 1304, 1305, 1306];
+// Keep Tab navigation on the visible input controls only. Static labels never take focus, and a
+// control hidden for the current type is also disabled so the engine skips it in the tab ring
+// (ctrlShow alone leaves a hidden control focusable). Visible inputs stay enabled.
+{
+	(_x call _getCtrl) ctrlEnable false;
+} forEach [1710, 1711, 1712, 1713, 1714, 1715, 1716, 1717, 1718];
+(1602 call _getCtrl) ctrlEnable _isMedia;
+(1402 call _getCtrl) ctrlEnable (!_isMedia);
+(1404 call _getCtrl) ctrlEnable _isEmail;
+(1405 call _getCtrl) ctrlEnable (_isEmail || _isLocked);
+{
+	(_x call _getCtrl) ctrlEnable _isLocked;
+} forEach [1301, 1302, 1303, 1304, 1305, 1306];
 if (_isEmail) then
 {
 	(1714 call _getCtrl) ctrlSetText (localize "STR_AE3_Desktop_Intel_LabelReceivedTime");

@@ -343,7 +343,7 @@ switch (_command) do {
     };
     case "chat_send": {
         if (isNull _computer) exitWith { [createHashMapFromArray [["error", "no_device"]]] call _reply; };
-        ["ae3_desktop_msgRoute", [clientOwner, _rid, netId _computer, _data getOrDefault ["to", ""], _data getOrDefault ["text", ""]]] call CBA_fnc_serverEvent;
+        ["ae3_desktop_msgRoute", [clientOwner, _rid, netId _computer, _data getOrDefault ["to", ""], _data getOrDefault ["text", ""], _data getOrDefault ["from", ""]]] call CBA_fnc_serverEvent;
     };
 
     // Router admin web page: view/edit the connected router's name/range/password.
@@ -446,6 +446,42 @@ switch (_command) do {
         private _state = [];
         if (!isNull _computer) then { _state = _computer getVariable [QGVAR(uiState), []]; };
         [createHashMapFromArray [["state", _state]]] call _reply;
+    };
+
+    // Ping/SSH connection history, stored per laptop and broadcast so it survives JIP/relocality.
+    // Each entry is a HashMap kept by the apps (key/ip/user/host/...); SSH entries only carry a
+    // password when the user chose to save credentials. Mirrors ui_save/ui_get.
+    case "hist_get": {
+        private _ph = [];
+        private _sh = [];
+        if (!isNull _computer) then {
+            _ph = _computer getVariable [QGVAR(pingHistory), []];
+            _sh = _computer getVariable [QGVAR(sshHistory), []];
+        };
+        [createHashMapFromArray [["ping", _ph], ["ssh", _sh]]] call _reply;
+    };
+    case "hist_add": {
+        if (!isNull _computer) then {
+            private _kind = _data getOrDefault ["kind", ""];
+            private _entry = _data getOrDefault ["entry", createHashMap];
+            private _var = [QGVAR(pingHistory), QGVAR(sshHistory)] select (_kind isEqualTo "ssh");
+            private _list = +(_computer getVariable [_var, []]);
+            // Move a repeat connection to the top instead of duplicating it.
+            private _key = _entry getOrDefault ["key", ""];
+            _list = _list select { (_x getOrDefault ["key", ""]) isNotEqualTo _key };
+            _list = [_entry] + _list;
+            if (count _list > 12) then { _list resize 12; };
+            _computer setVariable [_var, _list, true];
+        };
+        [createHashMapFromArray [["ok", true]]] call _reply;
+    };
+    case "hist_clear": {
+        if (!isNull _computer) then {
+            private _kind = _data getOrDefault ["kind", ""];
+            private _var = [QGVAR(pingHistory), QGVAR(sshHistory)] select (_kind isEqualTo "ssh");
+            _computer setVariable [_var, [], true];
+        };
+        [createHashMapFromArray [["ok", true]]] call _reply;
     };
 
     // Sign out: drop the session user; the JS side re-shows the login overlay. The display

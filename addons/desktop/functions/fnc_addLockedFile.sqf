@@ -50,6 +50,8 @@ private _locked = format ["AE3_LOCKED|%1|%2%3", count _password, _password, _con
 			try
 			{
 				[[], _filesystem, _path, _locked, _owner, "root", _permissions] call AE3_filesystem_fnc_ensureFile;
+					// Publish the updated filesystem so a laptop currently in use sees the new file.
+					_x setVariable ["AE3_filesystem", _filesystem, 2];
 			}
 			catch
 			{

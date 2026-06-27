@@ -2,7 +2,9 @@
  * Resolves a target IP to a device anywhere in the mission and enforces the per-router external
  * access policy. A target on the source's own gateway is always reachable. A target on a different
  * gateway is reachable only when its owning router has external access enabled, and (when that
- * router defines an allow list) only when the source gateway matches one of its regex patterns.
+ * router defines an allow list) only when the source matches one of its entries. Allow-list entries
+ * may be a router gateway IP (authorises every laptop on that router's subnet), a specific host IP
+ * (authorises just that one laptop) or a regex (matched against the source IP / gateway prefix).
  * The owning router is found from the global router registry by subnet, so two gateways do not need
  * a physical link to reach each other. Returns the matched device and the route length within the
  * target subnet, or objNull when unreachable or blocked.
@@ -40,12 +42,13 @@ private _srcSub = [_srcAddr select 0, _srcAddr select 1, _srcAddr select 2];
 private _tgtSub = [_target select 0, _target select 1, _target select 2];
 
 // Find the router that owns the target subnet.
+private _routers = missionNamespace getVariable ["AE3_network_routers", []];
 private _tgtRouter = objNull;
 {
 	if (isNull _x || {!alive _x}) then {continue};
 	private _ra = _x getVariable ["AE3_network_address", []];
 	if (count _ra == 4 && {[_ra select 0, _ra select 1, _ra select 2] isEqualTo _tgtSub}) exitWith {_tgtRouter = _x};
-} forEach (missionNamespace getVariable ["AE3_network_routers", []]);
+} forEach _routers;
 
 if (isNull _tgtRouter) exitWith
 {
@@ -69,10 +72,33 @@ if (_srcSub isNotEqualTo _tgtSub) then
 		private _srcGwStr = format ["%1.%2.%3.", _srcSub select 0, _srcSub select 1, _srcSub select 2];
 		private _ok = false;
 		{
-			private _pattern = trim _x;
-			if (_pattern isNotEqualTo "") then
+			private _entry = trim _x;
+			if (_entry isNotEqualTo "") then
 			{
-				try { if (_srcStr regexMatch _pattern || {_srcGwStr regexMatch _pattern}) then {_ok = true}; } catch {};
+				if (_entry regexMatch "\d{1,3}(\.\d{1,3}){3}") then
+				{
+					// Plain IPv4 entry. If it is a router gateway, authorise every laptop on that
+					// router's subnet; otherwise treat it as a single allowed host.
+					private _ip = (_entry splitString ".") apply {parseNumber _x};
+					private _isGateway = false;
+					{
+						if (isNull _x || {!alive _x}) then {continue};
+						if ((_x getVariable ["AE3_network_address", []]) isEqualTo _ip) exitWith {_isGateway = true};
+					} forEach _routers;
+					if (_isGateway) then
+					{
+						if (_srcSub isEqualTo [_ip select 0, _ip select 1, _ip select 2]) then {_ok = true};
+					}
+					else
+					{
+						if (_srcStr isEqualTo _entry) then {_ok = true};
+					};
+				}
+				else
+				{
+					// Anything else is a regex, matched against the source IP or its gateway prefix.
+					try { if (_srcStr regexMatch _entry || {_srcGwStr regexMatch _entry}) then {_ok = true}; } catch {};
+				};
 			};
 		} forEach (_allow splitString ", ");
 

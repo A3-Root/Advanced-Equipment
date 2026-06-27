@@ -50,6 +50,8 @@ switch (true) do
 			{
 				[[], _filesystem, "/var/log/browser_history", "", "root", "root", [[true, true, false], [true, false, false]]] call AE3_filesystem_fnc_ensureFile;
 				[[], _filesystem, "/var/log/browser_history", "root", format ["[%1] %2%3", _timeString, _url, endl], true] call AE3_filesystem_fnc_writeToFile;
+					// Publish the updated filesystem so a laptop currently in use sees the entry.
+					_x setVariable ["AE3_filesystem", _filesystem, 2];
 			}
 			catch
 			{

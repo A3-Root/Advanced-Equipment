@@ -67,6 +67,13 @@ if (!isNil "_sfs") then
 		[[], _sfs, "/var/sent", "root", "root", [[true, true, true], [true, false, true]]] call AE3_filesystem_fnc_ensureDir;
 		[[], _sfs, format ["/var/sent/%1", _sentFileName], _sentContent, "root", "root", [[true, true, false], [true, false, false]]] call AE3_filesystem_fnc_ensureFile;
 		_sender setVariable ["AE3_filesystem", _sfs, 2];
+		// Nudge the sender's open Mail app to re-pull so the message appears in its Sent box
+		// immediately, without relying on a manual refresh.
+		private _senderMutex = _sender getVariable ["AE3_computer_mutex", objNull];
+		if (!isNull _senderMutex && {_senderMutex isKindOf "CAManBase"}) then
+		{
+			["ae3_desktop_mailNotify", [_fromEntry param [1, _from]], _senderMutex] call CBA_fnc_targetEvent;
+		};
 	}
 	catch {};
 };

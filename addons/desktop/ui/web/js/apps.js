@@ -363,7 +363,11 @@
           var dir = apiRef ? apiRef.getCwd() : (opts.start || "/home");
           close(joinPath(dir, fn));
         } else {
-          if (lastFile) close(lastFile);
+          // Open mode: confirm the single-click selection (a double-click resolves on its own via
+          // onPick). Fall back to the last picked file if the browser exposes no current selection.
+          var s = apiRef && apiRef.getSel ? apiRef.getSel() : null;
+          if (s && !s.dir) { close(s.path); }
+          else if (lastFile) { close(lastFile); }
         }
       });
     });
@@ -916,7 +920,8 @@
             '<label>Default Gateway</label><input id="rg" value="' + esc(String(r.gateway || "")) + '">' +
             '<label>Password (blank = open network)</label><input id="rp" value="' + esc(r.password || "") + '">' +
             '<label><input id="rx" type="checkbox" style="width:auto;margin-right:8px"' + (r.extSsh ? " checked" : "") + '>Allow External SSH (from other gateways)</label>' +
-            '<label>Allowed IPs (regex, blank = any)</label><input id="ra" value="' + esc(String(r.extAllow || "")) + '">' +
+            '<label>Allowed sources (blank = any)</label><input id="ra" value="' + esc(String(r.extAllow || "")) + '">' +
+            '<p class="sub" style="margin:4px 0 0">Comma-separated. A router gateway IP (e.g. 192.168.0.1) allows every laptop on that router; a specific IP allows just that host; or use a regex.</p>' +
             '<div><button id="rs">Apply</button><span class="ok" id="rstat"></span></div></div>' +
             '<script>document.getElementById("rs").addEventListener("click",function(){' +
             'parent.postMessage({__ae3router:{name:document.getElementById("rn").value,range:document.getElementById("rr").value,password:document.getElementById("rp").value,gateway:document.getElementById("rg").value,extSsh:document.getElementById("rx").checked,extAllow:document.getElementById("ra").value}},"*");' +
@@ -1408,6 +1413,10 @@
       body.querySelector(".refresh").addEventListener("click", list);
       body.querySelector(".compose").addEventListener("click", compose);
       body.querySelector(".addresses").addEventListener("click", manageAddresses);
+      // Event-driven refresh: the server pushes mail_notify to the laptop in use when a new mail
+      // is delivered (incoming) or a sent copy is written (own send), so inbox/sent update live
+      // without polling. Re-lists whichever box is currently open.
+      A3.on("mail_notify", function () { list(); });
       list();
     }
   });
@@ -1424,22 +1433,37 @@
           '<ul class="list peers" style="width:34%;border-right:1px solid var(--line);overflow:auto"></ul>' +
           '<div style="flex:1;display:flex;flex-direction:column">' +
             '<div class="msgs" style="flex:1;overflow:auto;padding:12px;background:#262626"></div>' +
-            '<div class="toolbar"><input class="input text" placeholder="Message" style="flex:1"><button class="btn accent send">Send</button></div>' +
+            '<div class="toolbar"><select class="input sas" style="max-width:150px" title="Send as"></select><input class="input text" placeholder="Message" style="flex:1"><button class="btn accent send">Send</button></div>' +
           '</div>' +
         '</div>';
       var peersEl = body.querySelector(".peers");
       var msgs = body.querySelector(".msgs");
       var textEl = body.querySelector(".text");
       var searchEl = body.querySelector(".csearch");
-      var threads = [];      // [{peer, messages:[{dir,time,text}]}]
-      var active = null;     // active peer handle
+      var sasEl = body.querySelector(".sas");
+      var threads = [];      // [{self, peer, messages:[{dir,time,text}]}]
+      var active = null;     // composite key of the active thread (see tkey)
       var handles = [];
 
+      // A conversation is identified by (sending handle, peer handle), so the same laptop keeps
+      // separate boxes per identity. Empty self = the laptop's default/first handle.
+      var SEP = String.fromCharCode(1);
+      function tkey(self, peer) { return (self || "") + SEP + peer; }
+      function findThread(k) { return threads.filter(function (x) { return tkey(x.self, x.peer) === k; })[0]; }
+
+      function fillSas() {
+        var prev = sasEl.value;
+        sasEl.innerHTML = handles.map(function (hn) { return '<option value="' + esc(hn) + '">' + esc(hn) + "</option>"; }).join("");
+        if (handles.indexOf(prev) >= 0) sasEl.value = prev;
+        // Only worth showing the picker when there is an actual choice of identity.
+        sasEl.style.display = handles.length > 1 ? "" : "none";
+      }
       function loadHandles(cb) {
         A3.request("handle_list", {}).then(function (res) {
           handles = (res && res.handles) || [];
+          fillSas();
           if (cb) cb();
-        }).catch(function () { handles = []; if (cb) cb(); });
+        }).catch(function () { handles = []; fillSas(); if (cb) cb(); });
       }
 
       function renderPeers() {
@@ -1453,16 +1477,17 @@
         if (!shown.length) { peersEl.innerHTML = '<li class="muted pad">No conversations</li>'; return; }
         shown.forEach(function (t) {
           var last = t.messages.length ? t.messages[t.messages.length - 1] : null;
-          var li = h('<li style="flex-direction:column;align-items:flex-start' + (t.peer === active ? ';background:var(--surface-2)' : '') + '">' +
-            '<span>' + esc(t.peer) + '</span>' +
-            '<span class="muted" style="font-size:12px">' + esc(last ? (last.dir === "o" ? "You: " : "") + last.text : "") + '</span></li>');
-          li.addEventListener("click", function () { active = t.peer; renderThread(); renderPeers(); });
+          var asLine = (t.self && handles.length > 1) ? '<span class="muted" style="font-size:11px">as ' + esc(t.self) + "</span>" : "";
+          var li = h('<li style="flex-direction:column;align-items:flex-start' + (tkey(t.self, t.peer) === active ? ';background:var(--surface-2)' : '') + '">' +
+            "<span>" + esc(t.peer) + "</span>" + asLine +
+            '<span class="muted" style="font-size:12px">' + esc(last ? (last.dir === "o" ? "You: " : "") + last.text : "") + "</span></li>");
+          li.addEventListener("click", function () { active = tkey(t.self, t.peer); if (t.self) sasEl.value = t.self; renderThread(); renderPeers(); });
           peersEl.appendChild(li);
         });
       }
       function renderThread() {
         msgs.innerHTML = "";
-        var t = threads.filter(function (x) { return x.peer === active; })[0];
+        var t = findThread(active);
         if (!t) { msgs.innerHTML = '<p class="muted">Select or start a conversation.</p>'; return; }
         var q = (searchEl.value || "").toLowerCase();
         t.messages.forEach(function (m) {
@@ -1479,20 +1504,22 @@
         var incoming = (d && d.threads) || [];
         // Preserve an active pending thread the server doesn't know about yet (new conversation,
         // no messages sent — server won't return it until first message is exchanged).
-        var pending = active && !incoming.some(function (t) { return t.peer === active; })
-          ? threads.find(function (t) { return t.peer === active; })
+        var pending = active && !incoming.some(function (t) { return tkey(t.self, t.peer) === active; })
+          ? threads.find(function (t) { return tkey(t.self, t.peer) === active; })
           : null;
         threads = incoming;
         if (pending) threads.push(pending);
-        if (!active && threads.length) active = threads[0].peer;
+        if (!active && threads.length) active = tkey(threads[0].self, threads[0].peer);
         renderPeers(); renderThread();
       });
 
       function send() {
-        var to = active;
-        if (!to) { Modal.alert("Messenger", "Pick or start a conversation first."); return; }
+        var t = findThread(active);
+        if (!t) { Modal.alert("Messenger", "Pick or start a conversation first."); return; }
         if (textEl.value.trim() === "") return;
-        A3.request("chat_send", { to: to, text: textEl.value }).then(function (r) {
+        // Existing threads keep their own sending identity; a fresh thread uses the picker choice.
+        var from = t.self || (sasEl.value || "");
+        A3.request("chat_send", { to: t.peer, from: from, text: textEl.value }).then(function (r) {
           if (r.error && r.error !== "") { Modal.alert("Messenger", r.error === "unreachable" ? "Recipient unreachable." : ("Could not send: " + r.error)); return; }
           textEl.value = "";
           setTimeout(function () { A3.send("chat_pull", {}); }, 300);
@@ -1519,8 +1546,9 @@
           function startWith(handle) {
             if (!handle) return;
             if (handle.charAt(0) !== "@") handle = "@" + handle;
-            if (!threads.some(function (t) { return t.peer === handle; })) threads.push({ peer: handle, messages: [] });
-            active = handle; renderPeers(); renderThread(); ov.remove();
+            var self = sasEl.value || "";
+            if (!findThread(tkey(self, handle))) threads.push({ self: self, peer: handle, messages: [] });
+            active = tkey(self, handle); renderPeers(); renderThread(); ov.remove();
           }
           knownHandles.forEach(function (hnd) {
             var display = hnd.display || hnd.handle || hnd;
@@ -1536,8 +1564,9 @@
           Modal.prompt("Start conversation with handle", "@").then(function (handle) {
             if (!handle) return;
             if (handle.charAt(0) !== "@") handle = "@" + handle;
-            if (!threads.some(function (t) { return t.peer === handle; })) threads.push({ peer: handle, messages: [] });
-            active = handle; renderPeers(); renderThread();
+            var self = sasEl.value || "";
+            if (!findThread(tkey(self, handle))) threads.push({ self: self, peer: handle, messages: [] });
+            active = tkey(self, handle); renderPeers(); renderThread();
           });
         });
       });
@@ -1577,9 +1606,11 @@
         A3.send("chat_pull", {});
       });
 
+      // Fully event-driven: the initial pull seeds the conversation list, and msg_notify (pushed by
+      // the server to the recipient) plus the post-send pull (sender's own echo) keep it current.
+      // No interval polling, so an open Messenger generates no idle network traffic.
       A3.send("chat_pull", {});
-      win.timer = setInterval(function () { A3.send("chat_pull", {}); }, 3000);
-      win.app.onClose = function (w) { if (w.timer) clearInterval(w.timer); };
+      loadHandles();
     }
   });
 
@@ -1646,7 +1677,7 @@
     id: "calculator", title: "Calculator", glyph: (Icons.calculator || Icons.about), width: 280, height: 380,
     showInDock: true, singleton: true,
     render: function (body) {
-      var keys = ["C","(",")","/","7","8","9","*","4","5","6","-","1","2","3","+","0",".","=",""];
+      var keys = ["C","(",")","/","7","8","9","*","4","5","6","-","1","2","3","+","0",".","=","⌫"];
       body.innerHTML =
         '<div class="pad" style="display:flex;flex-direction:column;gap:8px;height:100%">' +
           '<input class="input cdisp" readonly style="text-align:right;font-size:20px;height:40px" value="0">' +
@@ -1659,6 +1690,7 @@
       function press(k) {
         if (k === "") return;
         if (k === "C") { expr = ""; setDisp(); return; }
+        if (k === "⌫") { expr = expr.slice(0, -1); setDisp(); return; }
         if (k === "=") {
           // Safe arithmetic only: digits, operators, parens, dot, spaces.
           if (!/^[0-9+\-*/().\s]+$/.test(expr)) { disp.value = "Error"; expr = ""; return; }
@@ -1700,10 +1732,36 @@
           '<h3>Ping</h3>' +
           '<input class="input pto" placeholder="Host IP" value="' + esc(ipPrefix.value) + '">' +
           '<div><button class="btn accent pgo">Ping</button></div>' +
+          '<div class="phist"></div>' +
           '<pre class="pout" style="min-height:76px;white-space:pre-wrap;background:#1e1e1e;padding:10px;border-radius:6px;margin:0;font-family:monospace;font-size:12px"></pre>' +
         '</div>';
       var input = body.querySelector(".pto");
       var out = body.querySelector(".pout");
+      var histEl = body.querySelector(".phist");
+      var hist = [];
+      function drawHist() {
+        histEl.innerHTML = "";
+        if (!hist.length) return;
+        var wrap = h('<div><div class="muted" style="font-size:12px;display:flex;align-items:center">Recent<button class="btn phclear" style="margin-left:auto;padding:0 6px">Clear</button></div><ul class="list precent" style="max-height:96px;overflow:auto"></ul></div>');
+        var ul = wrap.querySelector(".precent");
+        hist.forEach(function (e) {
+          var li = h('<li style="cursor:pointer"><span style="flex:1">' + esc(e.ip) + '</span><span class="muted" style="font-size:11px">' + esc(e.host || "") + '</span></li>');
+          li.addEventListener("click", function () { input.value = e.ip; });
+          ul.appendChild(li);
+        });
+        wrap.querySelector(".phclear").addEventListener("click", function () { A3.request("hist_clear", { kind: "ping" }).then(function () { hist = []; drawHist(); }); });
+        histEl.appendChild(wrap);
+      }
+      function loadHist() { A3.request("hist_get", {}).then(function (r) { hist = (r && r.ping) || []; drawHist(); }).catch(function () {}); }
+      // Offer to remember a host the first time it is pinged successfully; a click on a saved row
+      // refills the input.
+      function maybeSave(ip, host) {
+        if (hist.some(function (e) { return e.key === ip; })) return;
+        Modal.confirm("Ping", "Save " + ip + " to history?").then(function (ok) {
+          if (!ok) return;
+          A3.request("hist_add", { kind: "ping", entry: { key: ip, ip: ip, host: host } }).then(function () { loadHist(); });
+        });
+      }
       function run() {
         var ip = input.value.trim();
         if (ip === "") return;
@@ -1719,10 +1777,12 @@
           var routeLength = Math.round(Number(r.routeLength || 0));
           var ms = Math.round(routeLength / 1e5);
           out.textContent = "Reply from " + ip + " (" + (r.host || "remote") + ")\nroute=" + routeLength + "m time=" + ms + "ms";
+          maybeSave(ip, r.host || "remote");
         }).catch(function () { out.textContent = "Ping timed out."; });
       }
       body.querySelector(".pgo").addEventListener("click", run);
       input.addEventListener("keydown", function (e) { if (e.key === "Enter") run(); });
+      loadHist();
     }
   });
 
@@ -1736,6 +1796,41 @@
       var conn = null; // { to, user, pass }
       var ipPrefix = { value: "192.168.0." };
       seedIpPrefix(body, ".sto", ipPrefix);
+      var sshHist = [];
+      function drawSshHist() {
+        var histEl = body.querySelector(".shist");
+        if (!histEl) return;
+        histEl.innerHTML = "";
+        if (!sshHist.length) return;
+        var wrap = h('<div style="margin-top:6px"><div class="muted" style="font-size:12px;display:flex;align-items:center">Recent<button class="btn shclear" style="margin-left:auto;padding:0 6px">Clear</button></div><ul class="list srecent" style="max-height:120px;overflow:auto"></ul></div>');
+        var ul = wrap.querySelector(".srecent");
+        sshHist.forEach(function (e) {
+          var cred = e.savedPass ? " &middot; saved" : "";
+          var li = h('<li style="cursor:pointer"><span style="flex:1">' + esc(e.user) + "@" + esc(e.ip) + '</span><span class="muted" style="font-size:11px">' + esc(e.host || "") + cred + "</span></li>");
+          li.addEventListener("click", function () {
+            var sto = body.querySelector(".sto"), su = body.querySelector(".suser"), sp = body.querySelector(".spass");
+            if (sto) sto.value = e.ip;
+            if (su) su.value = e.user;
+            if (sp) sp.value = e.pass || "";
+          });
+          ul.appendChild(li);
+        });
+        wrap.querySelector(".shclear").addEventListener("click", function () { A3.request("hist_clear", { kind: "ssh" }).then(function () { sshHist = []; drawSshHist(); }); });
+        histEl.appendChild(wrap);
+      }
+      function loadSshHist() { A3.request("hist_get", {}).then(function (r) { sshHist = (r && r.ssh) || []; drawSshHist(); }).catch(function () {}); }
+      // First successful connect to a host/user offers to remember it, then (optionally) the password.
+      // A saved row refills the connect form; a password is only stored when explicitly chosen.
+      function maybeSaveSsh(c, host) {
+        var key = c.to + "|" + c.user;
+        if (sshHist.some(function (e) { return e.key === key; })) return;
+        Modal.confirm("SSH", "Save " + c.user + "@" + c.to + " to history?").then(function (ok) {
+          if (!ok) return;
+          Modal.confirm("SSH", "Also save the password for this connection?").then(function (savePass) {
+            A3.request("hist_add", { kind: "ssh", entry: { key: key, ip: c.to, user: c.user, host: host, savedPass: !!savePass, pass: savePass ? c.pass : "" } }).then(function () { loadSshHist(); });
+          });
+        });
+      }
       function showConnect(msg) {
         body.innerHTML =
           '<div class="pad" style="display:flex;flex-direction:column;gap:8px;max-width:360px">' +
@@ -1744,6 +1839,7 @@
             '<input class="input suser" placeholder="Username">' +
             '<input class="input spass" type="password" placeholder="Password">' +
             '<div><button class="btn accent sgo">Connect</button> <span class="muted smsg">' + (msg || "") + '</span></div>' +
+            '<div class="shist"></div>' +
           '</div>';
         body.querySelector(".sgo").addEventListener("click", function () {
           var c = { to: body.querySelector(".sto").value, user: body.querySelector(".suser").value, pass: body.querySelector(".spass").value };
@@ -1753,9 +1849,11 @@
               showConnect({ ssh_disabled: "SSH is disabled on that host.", auth_failed: "Wrong username or password.", no_route: "No route to host.", bad_addr: "Invalid address.", busy: "Remote host is busy.", offline: "Remote host is offline." }[r && r.error] || "Connection failed.");
               return;
             }
+            maybeSaveSsh(c, r.host || c.to);
             conn = c; showSession(r.host || c.to);
           }).catch(function () { showConnect("Connection timed out. Try again."); });
         });
+        drawSshHist();
       }
       function showSession(host) {
         body.innerHTML =
@@ -1821,6 +1919,7 @@
         rload();
       }
       showConnect();
+      loadSshHist();
     }
   });
 

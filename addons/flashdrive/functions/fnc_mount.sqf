@@ -76,3 +76,7 @@ _computer setVariable ["AE3_filesystem", _filesystem, [_computer] call AE3_armao
 
 _mountedList set [_index, true];
 _computer setVariable ["AE3_USB_Interfaces_mounted", _mountedList, 2];
+
+// Nudge any open "My Computer" view to re-list now that the mount has actually completed; the
+// mount runs asynchronously on the server, so the UI cannot rely on the request reply alone.
+["ae3_desktop_volChanged", []] call CBA_fnc_globalEvent;

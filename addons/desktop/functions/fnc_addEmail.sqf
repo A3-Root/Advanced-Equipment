@@ -61,17 +61,22 @@ private _fileName = format ["mail_%1", round (CBA_missionTime * 10)];
 			{
 				[[], _filesystem, "/var/mail", "root", "root", [[true, true, true], [true, false, true]]] call AE3_filesystem_fnc_ensureDir;
 				[[], _filesystem, format ["/var/mail/%1", _fileName], _content, "root", "root", [[true, true, false], [true, false, false]]] call AE3_filesystem_fnc_ensureFile;
+				// Publish the updated filesystem so a laptop currently in use receives the mail
+				// without exiting and re-entering the desktop.
+				_x setVariable ["AE3_filesystem", _filesystem, 2];
 			}
 			catch
 			{
 				WARNING_1("Could not deliver email: %1",_exception);
 			};
 
-			// Notify whoever is using the laptop right now
+			// Notify whoever is using the laptop right now: the terminal shell banner and the
+				// open web Mail app, so the new mail shows without polling or a manual refresh.
 			private _mutexHolder = _x getVariable ["AE3_computer_mutex", objNull];
 			if (!isNull _mutexHolder && {_mutexHolder isKindOf "CAManBase"}) then
 			{
 				["ae3_network_imNotify", [_x, _from], _mutexHolder] call CBA_fnc_targetEvent;
+				["ae3_desktop_mailNotify", [_from], _mutexHolder] call CBA_fnc_targetEvent;
 			};
 		};
 	};

@@ -42,7 +42,12 @@ if (_fs isNotEqualTo []) then {
                         _msgs pushBack [_x select [0, 1], _x select [2, 5], _x select [8]];
                     };
                 } forEach ((_entry select 0) splitString endl);
-                _threads pushBack [_x, _msgs];
+                // File name is "<ownHandle>+<peerHandle>"; legacy single-name files have no '+'.
+                private _parts = _x splitString "+";
+                private _self = "";
+                private _peer = _x;
+                if (count _parts >= 2) then { _self = _parts select 0; _peer = _parts select 1; };
+                _threads pushBack [_peer, _msgs, _self];
             };
         } forEach _peers;
     } catch {};
