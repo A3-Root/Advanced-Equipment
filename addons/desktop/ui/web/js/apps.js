@@ -578,18 +578,28 @@
       sshEl.addEventListener("change", function () {
         A3.request("ssh_config", { enabled: sshEl.checked });
       });
-      A3.request("sysinfo", {}).then(function (s) {
-        s = s || {};
-        if (sshEl) sshEl.checked = !!s.sshEnabled;
-        box.innerHTML =
-          "Hostname: " + esc(s.hostname || "?") + "<br>" +
-          "IP: " + esc(s.ip || "?") + " &nbsp; Gateway: " + esc(s.gateway || "?") + "<br>" +
-          "Power: " + esc(s.power || "?") + " &nbsp; Battery: " + (s.battery != null ? s.battery + "%" : "?") + "<br>" +
-          "Uptime: " + esc(s.uptime || "?");
-        if (hostEl) hostEl.value = s.hostname || "";
-        if (wallEl) wallEl.value = s.wallpaper || "";
-        if (sipEl) sipEl.value = s.ip || "";
-      }).catch(function () { box.textContent = "Unavailable"; });
+      // Reads laptop status into the System panel. On the first load the editable fields are seeded
+      // too; later live refreshes (Zeus/mission-maker changes pushed via "sys_changed") only repaint
+      // the read-only readout and the SSH state so a mid-edit value is not clobbered.
+      function loadSysinfo(initial) {
+        A3.request("sysinfo", {}).then(function (s) {
+          s = s || {};
+          if (sshEl) sshEl.checked = !!s.sshEnabled;
+          box.innerHTML =
+            "Hostname: " + esc(s.hostname || "?") + "<br>" +
+            "IP: " + esc(s.ip || "?") + " &nbsp; Gateway: " + esc(s.gateway || "?") + "<br>" +
+            "Power: " + esc(s.power || "?") + " &nbsp; Battery: " + (s.battery != null ? s.battery + "%" : "?") + "<br>" +
+            "Uptime: " + esc(s.uptime || "?");
+          if (initial) {
+            if (hostEl) hostEl.value = s.hostname || "";
+            if (wallEl) wallEl.value = s.wallpaper || "";
+            if (sipEl) sipEl.value = s.ip || "";
+          }
+        }).catch(function () { box.textContent = "Unavailable"; });
+      }
+      loadSysinfo(true);
+      // Live-update the panel when a curator/mission-maker changes battery, wifi, IP, hostname or SSH.
+      A3.on("sys_changed", function () { loadSysinfo(false); });
       body.querySelector(".sipapply").addEventListener("click", function () {
         var ip = sipEl.value.trim();
         A3.request("net_setip", { ip: ip }).then(function (r) {
@@ -799,7 +809,12 @@
         "wiki":    { type: "md",   path: "wiki/Home.md",            label: "wiki" }
       };
       var intelPages = []; // intel pages registered via Zeus/API
-      A3.request("web_pages", {}).then(function (res) { intelPages = (res && res.pages) || []; }).catch(function () {});
+      function reloadIntelPages() {
+        A3.request("web_pages", {}).then(function (res) { intelPages = (res && res.pages) || []; }).catch(function () {});
+      }
+      reloadIntelPages();
+      // Re-pull the page list when a webpage/intel is registered or removed while the Browser is open.
+      A3.on("web_changed", reloadIntelPages);
 
       // Injected into every page so in-page links drive the address bar instead of dead relative nav.
       // Arma's CEF renders iframe srcdoc with an opaque origin, so a direct parent.AE3_browserNav()
@@ -947,7 +962,9 @@
         if (t.router) { routerPage(); return; }
         addrEl.value = t.label;
         if (t.type === "intel") {
-          setDoc(wikiDoc("<h1>" + (t.title || t.label) + "</h1><pre style='white-space:pre-wrap;font-family:inherit'>" + (t.content || "") + "</pre>"));
+          // Run the body through the Markdown renderer so wiki-style [[url|label]] links and basic
+          // formatting become real anchors/markup instead of literal text in a raw <pre>.
+          setDoc(wikiDoc("<h1>" + esc(t.title || t.label) + "</h1>" + MD.render(t.content || "")));
           return;
         }
         curDir = dirOf(t.path); // base for any relative links on the page we are about to show
@@ -1376,7 +1393,8 @@
             }).then(function (r) {
               var err = r && r.error;
               st.textContent = err && err !== "" ? ("Failed: " + (err === "unreachable" ? "recipient unreachable" : err)) : "Sent.";
-              if (!err || err === "") setTimeout(list, 400);
+              // Jump to the Sent box so the just-sent copy is visible regardless of the active tab.
+              if (!err || err === "") setTimeout(function () { setActiveTab("sent"); }, 400);
             });
           });
         });
@@ -1426,70 +1444,98 @@
     id: "messenger", title: "Messenger", glyph: Icons.messenger, width: 720, height: 500,
     showInDock: true, singleton: true,
     render: function (body, win) {
+      // FB-Messenger-style 3-pane layout: a left nav rail (Message Center / Handles plus a
+      // "Reading as" identity selector), a chat list keyed by (own handle, peer), and a conversation
+      // pane. Each conversation is bound to one sending identity, so multiple handles on the same
+      // laptop keep separate boxes and a reply always goes out under the right handle.
       body.innerHTML =
-        '<div class="toolbar"><input class="input csearch" placeholder="Search conversations / messages" style="flex:1">' +
-          '<button class="btn handles" title="My handles">Handles</button><button class="btn newchat accent" title="New conversation">New</button></div>' +
-        '<div style="display:flex;height:calc(100% - 50px)">' +
-          '<ul class="list peers" style="width:34%;border-right:1px solid var(--line);overflow:auto"></ul>' +
-          '<div style="flex:1;display:flex;flex-direction:column">' +
-            '<div class="msgs" style="flex:1;overflow:auto;padding:12px;background:#262626"></div>' +
-            '<div class="toolbar"><select class="input sas" style="max-width:150px" title="Send as"></select><input class="input text" placeholder="Message" style="flex:1"><button class="btn accent send">Send</button></div>' +
+        '<div style="display:flex;height:100%">' +
+          '<div class="rail" style="width:150px;min-width:150px;border-right:1px solid var(--line);display:flex;flex-direction:column">' +
+            '<div class="pad" style="font-weight:700;font-size:15px">Messenger</div>' +
+            '<button class="btn nav-msgs" style="margin:2px 8px;text-align:left">Message Center</button>' +
+            '<button class="btn nav-handles" style="margin:2px 8px;text-align:left">Handles</button>' +
+            '<div style="flex:1"></div>' +
+            '<div class="muted" style="padding:6px 12px 2px;font-size:11px">Reading as</div>' +
+            '<button class="btn reading" style="margin:0 8px 10px;text-align:left">All handles</button>' +
           '</div>' +
+          '<div class="center" style="width:34%;min-width:200px;border-right:1px solid var(--line);display:flex;flex-direction:column"></div>' +
+          '<div class="convo" style="flex:1;display:flex;flex-direction:column;min-width:0"></div>' +
         '</div>';
-      var peersEl = body.querySelector(".peers");
-      var msgs = body.querySelector(".msgs");
-      var textEl = body.querySelector(".text");
-      var searchEl = body.querySelector(".csearch");
-      var sasEl = body.querySelector(".sas");
+      var centerEl = body.querySelector(".center");
+      var convoEl = body.querySelector(".convo");
+      var readingBtn = body.querySelector(".reading");
       var threads = [];      // [{self, peer, messages:[{dir,time,text}]}]
       var active = null;     // composite key of the active thread (see tkey)
-      var handles = [];
+      var handles = [];      // own handles on this laptop
+      var readingAs = "*";   // "*" = every identity, otherwise a specific own handle to filter by
+      var view = "chats";    // "chats" | "handles"
+      var searchEl = null;   // (re)created with the chat-list view
 
-      // A conversation is identified by (sending handle, peer handle), so the same laptop keeps
-      // separate boxes per identity. Empty self = the laptop's default/first handle.
       var SEP = String.fromCharCode(1);
       function tkey(self, peer) { return (self || "") + SEP + peer; }
       function findThread(k) { return threads.filter(function (x) { return tkey(x.self, x.peer) === k; })[0]; }
-
-      function fillSas() {
-        var prev = sasEl.value;
-        sasEl.innerHTML = handles.map(function (hn) { return '<option value="' + esc(hn) + '">' + esc(hn) + "</option>"; }).join("");
-        if (handles.indexOf(prev) >= 0) sasEl.value = prev;
-        // Only worth showing the picker when there is an actual choice of identity.
-        sasEl.style.display = handles.length > 1 ? "" : "none";
+      // Legacy threads may carry an empty self; treat that as the laptop's first handle so they still
+      // group under a concrete identity.
+      function selfOf(t) { return t.self || handles[0] || ""; }
+      // Stable colour per identity so each handle's chip is visually distinct.
+      function colorFor(s) {
+        var x = 0; s = String(s || "");
+        for (var i = 0; i < s.length; i++) { x = (x * 31 + s.charCodeAt(i)) | 0; }
+        return "hsl(" + (((x % 360) + 360) % 360) + ",50%,42%)";
       }
+      function chip(self) {
+        return '<span style="display:inline-block;font-size:10px;padding:1px 6px;border-radius:8px;color:#fff;white-space:nowrap;background:' +
+          colorFor(self) + '">' + esc(String(self || "?").replace(/^@/, "")) + "</span>";
+      }
+
       function loadHandles(cb) {
         A3.request("handle_list", {}).then(function (res) {
           handles = (res && res.handles) || [];
-          fillSas();
           if (cb) cb();
-        }).catch(function () { handles = []; fillSas(); if (cb) cb(); });
+        }).catch(function () { handles = []; if (cb) cb(); });
       }
 
-      function renderPeers() {
-        var q = (searchEl.value || "").toLowerCase();
-        peersEl.innerHTML = "";
-        var shown = threads.filter(function (t) {
+      // Threads visible for the current "Reading as" identity and search query.
+      function visibleThreads() {
+        var q = (searchEl && searchEl.value || "").toLowerCase();
+        return threads.filter(function (t) {
+          if (readingAs !== "*" && selfOf(t) !== readingAs) return false;
           if (!q) return true;
           if (t.peer.toLowerCase().indexOf(q) >= 0) return true;
+          if (selfOf(t).toLowerCase().indexOf(q) >= 0) return true;
           return t.messages.some(function (m) { return (m.text || "").toLowerCase().indexOf(q) >= 0; });
         });
-        if (!shown.length) { peersEl.innerHTML = '<li class="muted pad">No conversations</li>'; return; }
+      }
+      function renderReadingBtn() { readingBtn.textContent = readingAs === "*" ? "All handles" : readingAs; }
+
+      function renderPeers() {
+        var listEl = centerEl.querySelector(".peers");
+        if (!listEl) return;
+        listEl.innerHTML = "";
+        var shown = visibleThreads();
+        if (!shown.length) { listEl.innerHTML = '<li class="muted pad">No conversations</li>'; return; }
         shown.forEach(function (t) {
           var last = t.messages.length ? t.messages[t.messages.length - 1] : null;
-          var asLine = (t.self && handles.length > 1) ? '<span class="muted" style="font-size:11px">as ' + esc(t.self) + "</span>" : "";
-          var li = h('<li style="flex-direction:column;align-items:flex-start' + (tkey(t.self, t.peer) === active ? ';background:var(--surface-2)' : '') + '">' +
-            "<span>" + esc(t.peer) + "</span>" + asLine +
+          var li = h('<li style="flex-direction:column;align-items:stretch' + (tkey(t.self, t.peer) === active ? ';background:var(--surface-2)' : '') + '">' +
+            '<div style="display:flex;align-items:center;gap:6px"><span style="flex:1">' + esc(t.peer) + "</span>" + chip(selfOf(t)) + "</div>" +
             '<span class="muted" style="font-size:12px">' + esc(last ? (last.dir === "o" ? "You: " : "") + last.text : "") + "</span></li>");
-          li.addEventListener("click", function () { active = tkey(t.self, t.peer); if (t.self) sasEl.value = t.self; renderThread(); renderPeers(); });
-          peersEl.appendChild(li);
+          li.addEventListener("click", function () { active = tkey(t.self, t.peer); renderThread(); renderPeers(); });
+          listEl.appendChild(li);
         });
       }
       function renderThread() {
-        msgs.innerHTML = "";
+        if (view !== "chats") return;
         var t = findThread(active);
-        if (!t) { msgs.innerHTML = '<p class="muted">Select or start a conversation.</p>'; return; }
-        var q = (searchEl.value || "").toLowerCase();
+        if (!t || (readingAs !== "*" && selfOf(t) !== readingAs)) {
+          convoEl.innerHTML = '<p class="muted pad">Select or start a conversation.</p>';
+          return;
+        }
+        convoEl.innerHTML =
+          '<div class="toolbar" style="align-items:center"><span style="font-weight:600;flex:1">' + esc(t.peer) + "</span>" + chip(selfOf(t)) + "</div>" +
+          '<div class="cmsgs" style="flex:1;overflow:auto;padding:12px;background:#262626"></div>' +
+          '<div class="toolbar"><input class="input ctext" placeholder="Message" style="flex:1"><button class="btn accent csend">Send</button></div>';
+        var msgs = convoEl.querySelector(".cmsgs");
+        var q = (searchEl && searchEl.value || "").toLowerCase();
         t.messages.forEach(function (m) {
           if (q && (m.text || "").toLowerCase().indexOf(q) < 0) return;
           var out = m.dir === "o";
@@ -1498,7 +1544,142 @@
             esc(m.text) + '<div style="font-size:10px;opacity:.7;text-align:right">' + esc(m.time) + '</div></div></div>'));
         });
         msgs.scrollTop = msgs.scrollHeight;
+        var ctext = convoEl.querySelector(".ctext");
+        function doSend() { sendTo(t, ctext); }
+        convoEl.querySelector(".csend").addEventListener("click", doSend);
+        ctext.addEventListener("keydown", function (e) { if (e.key === "Enter") doSend(); });
       }
+      // Sends under the conversation's bound identity (selfOf), so the recipient always sees which
+      // handle the message came from.
+      function sendTo(t, ctext) {
+        if (ctext.value.trim() === "") return;
+        A3.request("chat_send", { to: t.peer, from: selfOf(t), text: ctext.value }).then(function (r) {
+          if (r.error && r.error !== "") { Modal.alert("Messenger", r.error === "unreachable" ? "Recipient unreachable." : ("Could not send: " + r.error)); return; }
+          ctext.value = "";
+          setTimeout(function () { A3.send("chat_pull", {}); }, 300);
+        });
+      }
+
+      // ---- Chat-list view (Message Center) ----
+      function renderChatList() {
+        centerEl.innerHTML =
+          '<div class="toolbar"><input class="input csearch" placeholder="Search handle / message" style="flex:1"><button class="btn accent newchat" title="New conversation">+</button></div>' +
+          '<ul class="list peers" style="flex:1;overflow:auto"></ul>';
+        searchEl = centerEl.querySelector(".csearch");
+        searchEl.addEventListener("input", function () { renderPeers(); renderThread(); });
+        centerEl.querySelector(".newchat").addEventListener("click", openNewChat);
+        renderPeers();
+      }
+
+      // ---- Handles view (create / delete identities) ----
+      function renderHandlesView() {
+        centerEl.innerHTML =
+          '<div class="pad" style="font-weight:600">Handles</div>' +
+          '<div style="display:flex;gap:8px;padding:0 12px 8px"><input class="input newhandle" placeholder="@handle" style="flex:1"><button class="btn accent addhandle">Create</button></div>' +
+          '<ul class="list handlelist" style="flex:1;overflow:auto"></ul>';
+        var listEl = centerEl.querySelector(".handlelist");
+        function draw() {
+          listEl.innerHTML = "";
+          if (!handles.length) { listEl.innerHTML = '<li class="muted pad">No handles</li>'; return; }
+          handles.forEach(function (hnd) {
+            var li = h('<li><span style="flex:1">' + esc(hnd) + '</span><button class="btn delhandle">Delete</button></li>');
+            li.querySelector(".delhandle").addEventListener("click", function () {
+              A3.request("handle_delete", { handle: hnd }).then(function () {
+                if (readingAs === hnd) readingAs = "*";
+                loadHandles(function () { draw(); renderReadingBtn(); });
+              });
+            });
+            listEl.appendChild(li);
+          });
+        }
+        centerEl.querySelector(".addhandle").addEventListener("click", function () {
+          var v = centerEl.querySelector(".newhandle").value;
+          A3.request("handle_create", { handle: v }).then(function (r) {
+            if (r.error && r.error !== "") { Modal.alert("Handles", r.error === "taken" ? "Handle already exists." : "Invalid handle."); return; }
+            centerEl.querySelector(".newhandle").value = "";
+            loadHandles(draw);
+          });
+        });
+        convoEl.innerHTML = '<p class="muted pad">Create or remove the identities used to send and receive messages on this laptop. Select <b>Message Center</b> to chat.</p>';
+        draw();
+      }
+
+      function setView(v) {
+        view = v;
+        body.querySelector(".nav-msgs").className = "btn nav-msgs" + (v === "chats" ? " accent" : "");
+        body.querySelector(".nav-handles").className = "btn nav-handles" + (v === "handles" ? " accent" : "");
+        if (v === "chats") { renderChatList(); renderThread(); } else { renderHandlesView(); }
+      }
+
+      // ---- New conversation dialog (with a From-handle picker) ----
+      function defaultSelf() { return (readingAs !== "*" && readingAs) ? readingAs : (handles[0] || ""); }
+      function startWith(self, handle) {
+        if (!handle) return;
+        if (handle.charAt(0) !== "@") handle = "@" + handle;
+        if (!self) { Modal.alert("Messenger", "Create a handle first (Handles)."); return; }
+        if (!findThread(tkey(self, handle))) threads.push({ self: self, peer: handle, messages: [] });
+        // Make sure the new conversation is visible under the current filter.
+        if (readingAs !== "*" && readingAs !== self) { readingAs = self; renderReadingBtn(); }
+        active = tkey(self, handle); renderPeers(); renderThread();
+      }
+      function showNewChat(knownHandles) {
+        var def = defaultSelf();
+        var fromOpts = handles.map(function (hn) { return '<option value="' + esc(hn) + '"' + (hn === def ? " selected" : "") + ">" + esc(hn) + "</option>"; }).join("");
+        var ov = h('<div class="pk-overlay"><div class="pk-dialog" style="width:380px;height:auto;min-height:0">' +
+          '<div class="pk-title">Start conversation</div>' +
+          '<div class="pad" style="display:flex;flex-direction:column;gap:8px">' +
+            '<label class="muted" style="font-size:12px">From (your handle)</label>' +
+            '<select class="input nfrom">' + (fromOpts || '<option value="">(no handles)</option>') + "</select>" +
+            '<label class="muted" style="font-size:12px">To</label>' +
+            '<ul class="list hpick" style="max-height:180px;overflow:auto"></ul>' +
+            '<div style="display:flex;gap:8px"><input class="input hnew" placeholder="or type a handle" style="flex:1"><button class="btn accent hgo">Start</button></div>' +
+            '<div style="text-align:right"><button class="btn hclose">Cancel</button></div>' +
+          "</div></div></div>");
+        document.body.appendChild(ov);
+        var pickEl = ov.querySelector(".hpick");
+        function go(handle) { startWith(ov.querySelector(".nfrom").value || def, handle); ov.remove(); }
+        if (!knownHandles || !knownHandles.length) {
+          pickEl.innerHTML = '<li class="muted pad">No known handles</li>';
+        } else {
+          knownHandles.forEach(function (hnd) {
+            var display = hnd.display || hnd.handle || hnd;
+            var handle = hnd.handle || hnd;
+            var li = h('<li><span style="flex:1">' + esc(display) + '</span><button class="btn pick">Chat</button></li>');
+            li.querySelector(".pick").addEventListener("click", function () { go(handle); });
+            pickEl.appendChild(li);
+          });
+        }
+        ov.querySelector(".hgo").addEventListener("click", function () { go(ov.querySelector(".hnew").value.trim()); });
+        ov.querySelector(".hnew").addEventListener("keydown", function (e) { if (e.key === "Enter") go(ov.querySelector(".hnew").value.trim()); });
+        ov.querySelector(".hclose").addEventListener("click", function () { ov.remove(); });
+      }
+      function openNewChat() {
+        A3.request("handles_all", {}).then(function (res) { showNewChat((res && res.handles) || []); }).catch(function () { showNewChat(null); });
+      }
+
+      // ---- "Reading as" identity selector ----
+      function openReading() {
+        var ov = h('<div class="pk-overlay"><div class="pk-dialog" style="width:260px;height:auto;min-height:0">' +
+          '<div class="pk-title">Reading as</div><div class="pad"><ul class="list rlist"></ul></div></div></div>');
+        document.body.appendChild(ov);
+        var rl = ov.querySelector(".rlist");
+        function pick(v) {
+          readingAs = v; renderReadingBtn();
+          var t = findThread(active);
+          if (t && readingAs !== "*" && selfOf(t) !== readingAs) active = null;
+          if (view === "chats") { renderPeers(); renderThread(); }
+          ov.remove();
+        }
+        var opts = [["*", "All handles"]].concat(handles.map(function (hn) { return [hn, hn]; }));
+        opts.forEach(function (o) {
+          var li = h('<li' + (readingAs === o[0] ? ' style="background:var(--surface-2)"' : "") + '><span style="flex:1">' + esc(o[1]) + (readingAs === o[0] ? " &#10003;" : "") + "</span></li>");
+          li.addEventListener("click", function () { pick(o[0]); });
+          rl.appendChild(li);
+        });
+      }
+      readingBtn.addEventListener("click", openReading);
+      body.querySelector(".nav-msgs").addEventListener("click", function () { setView("chats"); });
+      body.querySelector(".nav-handles").addEventListener("click", function () { setView("handles"); });
 
       A3.on("chat_data", function (d) {
         var incoming = (d && d.threads) || [];
@@ -1509,97 +1690,8 @@
           : null;
         threads = incoming;
         if (pending) threads.push(pending);
-        if (!active && threads.length) active = tkey(threads[0].self, threads[0].peer);
-        renderPeers(); renderThread();
-      });
-
-      function send() {
-        var t = findThread(active);
-        if (!t) { Modal.alert("Messenger", "Pick or start a conversation first."); return; }
-        if (textEl.value.trim() === "") return;
-        // Existing threads keep their own sending identity; a fresh thread uses the picker choice.
-        var from = t.self || (sasEl.value || "");
-        A3.request("chat_send", { to: t.peer, from: from, text: textEl.value }).then(function (r) {
-          if (r.error && r.error !== "") { Modal.alert("Messenger", r.error === "unreachable" ? "Recipient unreachable." : ("Could not send: " + r.error)); return; }
-          textEl.value = "";
-          setTimeout(function () { A3.send("chat_pull", {}); }, 300);
-        });
-      }
-      body.querySelector(".send").addEventListener("click", send);
-      textEl.addEventListener("keydown", function (e) { if (e.key === "Enter") send(); });
-      searchEl.addEventListener("input", function () { renderPeers(); renderThread(); });
-      body.querySelector(".newchat").addEventListener("click", function () {
-        A3.request("handles_all", {}).then(function (res) {
-          var knownHandles = (res && res.handles) || [];
-          var ov = h('<div class="pk-overlay"><div class="pk-dialog" style="width:360px;height:auto;min-height:0">' +
-            '<div class="pk-title">Start conversation</div>' +
-            '<div class="pad" style="display:flex;flex-direction:column;gap:8px">' +
-              '<ul class="list hpick" style="max-height:200px;overflow:auto"></ul>' +
-              '<div style="display:flex;gap:8px"><input class="input hnew" placeholder="or type a handle" style="flex:1"><button class="btn accent hgo">Start</button></div>' +
-              '<div style="text-align:right"><button class="btn hclose">Cancel</button></div>' +
-            '</div></div></div>');
-          document.body.appendChild(ov);
-          var pickEl = ov.querySelector(".hpick");
-          if (!knownHandles.length) {
-            pickEl.innerHTML = '<li class="muted pad">No known handles</li>';
-          }
-          function startWith(handle) {
-            if (!handle) return;
-            if (handle.charAt(0) !== "@") handle = "@" + handle;
-            var self = sasEl.value || "";
-            if (!findThread(tkey(self, handle))) threads.push({ self: self, peer: handle, messages: [] });
-            active = tkey(self, handle); renderPeers(); renderThread(); ov.remove();
-          }
-          knownHandles.forEach(function (hnd) {
-            var display = hnd.display || hnd.handle || hnd;
-            var handle = hnd.handle || hnd;
-            var li = h('<li><span style="flex:1">' + esc(display) + '</span><button class="btn pick">Chat</button></li>');
-            li.querySelector(".pick").addEventListener("click", function () { startWith(handle); });
-            pickEl.appendChild(li);
-          });
-          ov.querySelector(".hgo").addEventListener("click", function () { startWith(ov.querySelector(".hnew").value.trim()); });
-          ov.querySelector(".hnew").addEventListener("keydown", function (e) { if (e.key === "Enter") startWith(ov.querySelector(".hnew").value.trim()); });
-          ov.querySelector(".hclose").addEventListener("click", function () { ov.remove(); });
-        }).catch(function () {
-          Modal.prompt("Start conversation with handle", "@").then(function (handle) {
-            if (!handle) return;
-            if (handle.charAt(0) !== "@") handle = "@" + handle;
-            var self = sasEl.value || "";
-            if (!findThread(tkey(self, handle))) threads.push({ self: self, peer: handle, messages: [] });
-            active = tkey(self, handle); renderPeers(); renderThread();
-          });
-        });
-      });
-      body.querySelector(".handles").addEventListener("click", function () {
-        loadHandles(function () {
-          var ov = h('<div class="pk-overlay"><div class="pk-dialog" style="width:420px;height:auto;min-height:0">' +
-            '<div class="pk-title">My handles</div><div class="pad" style="display:flex;flex-direction:column;gap:10px">' +
-            '<div style="display:flex;gap:8px"><input class="input newhandle" placeholder="@handle" style="flex:1"><button class="btn accent addhandle">Create</button></div>' +
-            '<ul class="list handlelist"></ul><div style="text-align:right"><button class="btn close">Close</button></div></div></div></div>');
-          document.body.appendChild(ov);
-          var listEl = ov.querySelector(".handlelist");
-          function draw() {
-            listEl.innerHTML = "";
-            if (!handles.length) { listEl.innerHTML = '<li class="muted pad">No handles</li>'; return; }
-            handles.forEach(function (hnd) {
-              var li = h('<li><span style="flex:1">' + esc(hnd) + '</span><button class="btn delhandle">Delete</button></li>');
-              li.querySelector(".delhandle").addEventListener("click", function () {
-                A3.request("handle_delete", { handle: hnd }).then(function () { loadHandles(draw); });
-              });
-              listEl.appendChild(li);
-            });
-          }
-          ov.querySelector(".addhandle").addEventListener("click", function () {
-            var hnd = ov.querySelector(".newhandle").value;
-            A3.request("handle_create", { handle: hnd }).then(function (r) {
-              if (r.error && r.error !== "") { Modal.alert("Handles", r.error === "taken" ? "Handle already exists." : "Invalid handle."); return; }
-              ov.querySelector(".newhandle").value = "";
-              loadHandles(draw);
-            });
-          });
-          ov.querySelector(".close").addEventListener("click", function () { ov.remove(); });
-          draw();
-        });
+        if (!active) { var vis = visibleThreads(); if (vis.length) active = tkey(vis[0].self, vis[0].peer); }
+        if (view === "chats") { renderPeers(); renderThread(); }
       });
       A3.on("msg_notify", function (d) {
         if (window.AE3_toast) window.AE3_toast("New message from " + ((d && d.peer) || "unknown"), "ok");
@@ -1609,8 +1701,7 @@
       // Fully event-driven: the initial pull seeds the conversation list, and msg_notify (pushed by
       // the server to the recipient) plus the post-send pull (sender's own echo) keep it current.
       // No interval polling, so an open Messenger generates no idle network traffic.
-      A3.send("chat_pull", {});
-      loadHandles();
+      loadHandles(function () { renderReadingBtn(); setView("chats"); A3.send("chat_pull", {}); });
     }
   });
 
@@ -1667,6 +1758,10 @@
       body.querySelector(".mc-net").addEventListener("click", function () { Apps.launch("network"); });
       body.querySelector(".mc-sys").addEventListener("click", function () { Apps.launch("settings"); });
       A3.on("vol_changed", loadVols);
+      A3.on("vol_error", function (d) {
+        if (window.AE3_toast) window.AE3_toast("Mount failed: " + ((d && d.message) || "unknown error"), "error");
+        loadVols();
+      });
       openIn("/");
       loadVols();
     }
@@ -1677,7 +1772,7 @@
     id: "calculator", title: "Calculator", glyph: (Icons.calculator || Icons.about), width: 280, height: 380,
     showInDock: true, singleton: true,
     render: function (body) {
-      var keys = ["C","(",")","/","7","8","9","*","4","5","6","-","1","2","3","+","0",".","=","⌫"];
+      var keys = ["C","(",")","/","7","8","9","*","4","5","6","-","1","2","3","+","0",".","=","<-"];
       body.innerHTML =
         '<div class="pad" style="display:flex;flex-direction:column;gap:8px;height:100%">' +
           '<input class="input cdisp" readonly style="text-align:right;font-size:20px;height:40px" value="0">' +
@@ -1686,20 +1781,27 @@
       var disp = body.querySelector(".cdisp");
       var grid = body.querySelector(".ckeys");
       var expr = "";
+      var justEvaluated = false; // true right after "=", so the next digit starts a new calculation
       function setDisp() { disp.value = expr === "" ? "0" : expr; }
       function press(k) {
         if (k === "") return;
-        if (k === "C") { expr = ""; setDisp(); return; }
-        if (k === "⌫") { expr = expr.slice(0, -1); setDisp(); return; }
+        if (k === "C") { expr = ""; justEvaluated = false; setDisp(); return; }
+        if (k === "<-") { expr = expr.slice(0, -1); justEvaluated = false; setDisp(); return; }
         if (k === "=") {
           // Safe arithmetic only: digits, operators, parens, dot, spaces.
-          if (!/^[0-9+\-*/().\s]+$/.test(expr)) { disp.value = "Error"; expr = ""; return; }
+          if (!/^[0-9+\-*/().\s]+$/.test(expr)) { disp.value = "Error"; expr = ""; justEvaluated = false; return; }
           try {
             // eslint-disable-next-line no-new-func
             var r = Function('"use strict";return (' + expr + ")")();
             expr = (r == null || !isFinite(r)) ? "" : String(r);
-          } catch (e) { disp.value = "Error"; expr = ""; return; }
-          setDisp(); return;
+          } catch (e) { disp.value = "Error"; expr = ""; justEvaluated = false; return; }
+          justEvaluated = true; setDisp(); return;
+        }
+        // After a result, a number/decimal/open-paren begins a fresh expression while an operator
+        // continues the calculation from the displayed result.
+        if (justEvaluated) {
+          if (/[0-9.(]/.test(k)) expr = "";
+          justEvaluated = false;
         }
         expr += k; setDisp();
       }

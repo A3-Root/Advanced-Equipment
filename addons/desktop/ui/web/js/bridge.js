@@ -161,12 +161,19 @@
           return "data:" + mimeFor(src) + ";base64," + String(txt).replace(/\s/g, "");
         });
       }
+      function fromTexture() { return self.loadTexture(src, maxRes, extraRoots, scope); }
       console.log("[AE3 media] loadImage start:", src, "scope=" + scope);
       // A pre-encoded source skips the sampler entirely.
       if (/\.b64$/i.test(src)) return fromB64();
-      // Try the engine texture sampler (handles .paa and mod/mission images it can load), then fall
-      // back to a base64 sidecar for sources the sampler refuses (e.g. some raw mission .jpg).
-      return self.loadTexture(src, maxRes, extraRoots, scope).catch(fromB64);
+      // Mission-folder raster images (jpg/png/gif) ship as a base64 sidecar; the engine texture
+      // sampler cannot load them and logs an "Unknown sampler texture type" warning the moment it
+      // tries. Read the sidecar first for those so the sampler is never invoked, falling back to it
+      // only if no sidecar exists. Mod/addon assets (absolute \z\... paths, .paa, or scope "mod")
+      // sample cleanly, so those try the texture first and use the sidecar as fallback.
+      var isAbsolute = src.charAt(0) === "\\";
+      var isRaster = /\.(jpe?g|png|gif)$/i.test(src);
+      if (!isAbsolute && isRaster && scope !== "mod") return fromB64().catch(fromTexture);
+      return fromTexture().catch(fromB64);
     },
 
     // Parse a media marker file's content into {type, scope, web, path}, or null if it is not a

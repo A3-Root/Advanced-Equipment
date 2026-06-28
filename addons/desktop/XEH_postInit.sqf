@@ -79,6 +79,25 @@ if (hasInterface) then
 		["vol_changed", []] call AE3_desktop_fnc_jsSend;
 	}] call CBA_fnc_addEventHandler;
 
+	// USB mount failure: forward the reason to the open My Computer app so a failed mount is visible
+	// instead of the volume silently staying on "not mounted".
+	["ae3_desktop_volError", {
+		params ["_msg"];
+		["vol_error", createHashMapFromArray [["message", _msg]]] call AE3_desktop_fnc_jsSend;
+	}] call CBA_fnc_addEventHandler;
+
+	// Laptop status changed (Zeus/mission-maker battery, wifi, IP, hostname or SSH): nudge the open
+	// Settings System panel to re-read sysinfo so the change shows without closing the laptop.
+	["ae3_desktop_sysChanged", {
+		["sys_changed", []] call AE3_desktop_fnc_jsSend;
+	}] call CBA_fnc_addEventHandler;
+
+	// Browser page list changed (intel/webpage registered or removed): nudge the open Browser to
+	// re-pull its page list so the new page appears without reopening.
+	["ae3_desktop_webChanged", {
+		["web_changed", []] call AE3_desktop_fnc_jsSend;
+	}] call CBA_fnc_addEventHandler;
+
 	// Wireless connect result: forward the server's verdict (ok + message) to the Network app.
 	["ae3_desktop_netResult", {
 		params ["_ok", "_msg", ["_ip", ""], ["_gateway", ""]];

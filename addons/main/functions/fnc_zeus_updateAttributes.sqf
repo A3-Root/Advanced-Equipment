@@ -105,4 +105,8 @@ if (_exitCode == 1) then
     ["AE3 Asset Attributes changed", _message, 5] call BIS_fnc_curatorHint;
 
     /* ======================================== */
+
+    // Nudge any open desktop on the affected laptop to re-read its status so curator changes to
+    // hostname, SSH access, battery, wireless settings or IP show without closing and reopening it.
+    ["ae3_desktop_sysChanged", []] call CBA_fnc_globalEvent;
 };

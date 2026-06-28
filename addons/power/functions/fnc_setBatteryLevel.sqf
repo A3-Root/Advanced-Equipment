@@ -27,4 +27,7 @@ private _batteryLevel = _batteryCapacity * (_batteryLevelPercent / 100);
 
 _battery setVariable ["AE3_power_batteryLevel", _batteryLevel];
 
+// Nudge any open desktop System panel to re-read the new battery level live.
+["ae3_desktop_sysChanged", []] call CBA_fnc_globalEvent;
+
 true;

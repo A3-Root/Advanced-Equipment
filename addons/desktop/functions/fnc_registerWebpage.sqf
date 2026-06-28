@@ -58,3 +58,6 @@ else
 };
 
 INFO_2("Registered webpage %1 (%2)",_url,_title);
+
+// Nudge any open Browser to re-pull its page list so the new page appears without reopening.
+["ae3_desktop_webChanged", []] call CBA_fnc_globalEvent;

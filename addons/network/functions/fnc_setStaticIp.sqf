@@ -31,6 +31,8 @@ if (_ipStr isEqualTo "") exitWith
 	};
 	_res set ["ok", true];
 	_res set ["ip", [_device getVariable ["AE3_network_address", [127, 0, 0, 1]]] call AE3_network_fnc_ip2str];
+	// Nudge any open desktop System panel to re-read the address live.
+	["ae3_desktop_sysChanged", []] call CBA_fnc_globalEvent;
 	_res
 };
 
@@ -46,6 +48,9 @@ if (_parentKey isNotEqualTo "") then
 
 _device setVariable ["AE3_network_staticIp", _ipStr, true];
 _device setVariable ["AE3_network_address", _ip, true];
+
+// Nudge any open desktop System panel to re-read the address live.
+["ae3_desktop_sysChanged", []] call CBA_fnc_globalEvent;
 
 _res set ["ok", true];
 _res set ["ip", _ipStr];

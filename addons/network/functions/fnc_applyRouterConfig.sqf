@@ -43,3 +43,6 @@ if (_gateway isEqualType "") then {
 if (count _gw == 4 && {(_gw findIf { !(_x isEqualType 0) || {_x < 0} || {_x > 255} }) == -1}) then {
     _router setVariable ["AE3_network_address", _gw, true];
 };
+
+// Nudge any open desktop System/Network panel to re-read the updated wireless settings live.
+["ae3_desktop_sysChanged", []] call CBA_fnc_globalEvent;
