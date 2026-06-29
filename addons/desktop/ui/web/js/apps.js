@@ -994,8 +994,21 @@
       addrEl.addEventListener("keydown", function (e) { if (e.key === "Enter") nav(addrEl.value); });
       body.querySelector(".hist").addEventListener("click", function () {
         A3.request("web_history", {}).then(function (res) {
-          var text = (res && res.history) || "(no history)";
-          setDoc(wikiDoc("<h1>Browser History</h1><pre style='white-space:pre-wrap;font-family:inherit'>" + text + "</pre>"));
+          var text = (res && res.history) || "";
+          var rows = text.split(/\r?\n/).filter(function (l) { return l.trim() !== ""; });
+          var html;
+          if (!rows.length) { html = "<p>(no history)</p>"; }
+          else {
+            // Each logged line is "[HH:MM] <address>"; render the address as a live link that drives
+            // the address bar. The in-page click hook routes the <a> back through nav().
+            html = "<ul style='list-style:none;padding:0;line-height:1.9'>" + rows.map(function (l) {
+              var m = l.match(/^\s*(\[[^\]]*\])?\s*(.*)$/);
+              var ts = m && m[1] ? m[1] : "";
+              var url = (m ? m[2] : l).trim();
+              return "<li><span class='muted' style='margin-right:8px'>" + esc(ts) + "</span><a href='" + esc(url) + "'>" + esc(url) + "</a></li>";
+            }).join("") + "</ul>";
+          }
+          setDoc(wikiDoc("<h1>Browser History</h1>" + html));
           addrEl.value = "history";
         }).catch(function () { setDoc(wikiDoc("<h1>Browser History</h1><p>Unavailable.</p>")); });
       });
@@ -1772,7 +1785,7 @@
     id: "calculator", title: "Calculator", glyph: (Icons.calculator || Icons.about), width: 280, height: 380,
     showInDock: true, singleton: true,
     render: function (body) {
-      var keys = ["C","(",")","/","7","8","9","*","4","5","6","-","1","2","3","+","0",".","=","<-"];
+      var keys = ["C","(",")","/","7","8","9","*","4","5","6","-","1","2","3","+","0",".","=","<"];
       body.innerHTML =
         '<div class="pad" style="display:flex;flex-direction:column;gap:8px;height:100%">' +
           '<input class="input cdisp" readonly style="text-align:right;font-size:20px;height:40px" value="0">' +

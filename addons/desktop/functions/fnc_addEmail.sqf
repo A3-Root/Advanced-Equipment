@@ -63,7 +63,7 @@ private _fileName = format ["mail_%1", round (CBA_missionTime * 10)];
 				[[], _filesystem, format ["/var/mail/%1", _fileName], _content, "root", "root", [[true, true, false], [true, false, false]]] call AE3_filesystem_fnc_ensureFile;
 				// Publish the updated filesystem so a laptop currently in use receives the mail
 				// without exiting and re-entering the desktop.
-				_x setVariable ["AE3_filesystem", _filesystem, 2];
+				_x setVariable ["AE3_filesystem", _filesystem, [_x] call AE3_armaos_fnc_computer_getLocality];
 			}
 			catch
 			{

@@ -82,6 +82,19 @@
         i++; continue;
       }
 
+      // raw HTML block: a line that opens or closes an HTML tag passes through untouched, and so do
+      // the contiguous lines up to the next blank one. Markdown allows embedded HTML, so this lets
+      // authors write a page in plain HTML or drop HTML blocks (e.g. an intel webpage with <h2>/<p>
+      // markup) into otherwise-markdown content. Tag-like only ("<word"/"</word"), so prose such as
+      // "x < y" is still treated as a normal paragraph and escaped.
+      if (/^\s*<\/?\w+[^>]*>/.test(line)) {
+        closeList();
+        var hbuf = [];
+        while (i < lines.length && !/^\s*$/.test(lines[i])) { hbuf.push(lines[i]); i++; }
+        out.push(hbuf.join("\n"));
+        continue;
+      }
+
       // paragraph (merge consecutive non-empty lines)
       closeList();
       var pbuf = [];

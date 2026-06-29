@@ -80,7 +80,7 @@ try
 	_computer setVariable ["AE3_filesystem", _filesystem, [_computer] call AE3_armaos_fnc_computer_getLocality];
 
 	_mountedList set [_index, true];
-	_computer setVariable ["AE3_USB_Interfaces_mounted", _mountedList, 2];
+	_computer setVariable ["AE3_USB_Interfaces_mounted", _mountedList, [_computer] call AE3_armaos_fnc_computer_getLocality];
 
 	// Nudge any open "My Computer" view to re-list now that the mount has actually completed; the
 	// mount runs asynchronously on the server, so the UI cannot rely on the request reply alone.

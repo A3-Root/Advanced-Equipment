@@ -55,7 +55,7 @@ _flashdrive setVariable ["AE3_filesystem", _fdFilesystem, 2];
 _computer setVariable ["AE3_filesystem", _filesystem, [_computer] call AE3_armaos_fnc_computer_getLocality];
 
 _mountedList set [_index, false];
-_computer setVariable ["AE3_USB_Interfaces_mounted", _mountedList, 2];
+_computer setVariable ["AE3_USB_Interfaces_mounted", _mountedList, [_computer] call AE3_armaos_fnc_computer_getLocality];
 
 // Nudge any open "My Computer" view to re-list now that the unmount has completed on the server.
 ["ae3_desktop_volChanged", []] call CBA_fnc_globalEvent;

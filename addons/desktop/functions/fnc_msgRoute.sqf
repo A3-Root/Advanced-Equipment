@@ -82,7 +82,7 @@ private _deliver = {
 		[[], _filesystem, "/var/chat", "root", "root", [[true, true, true], [true, false, true]]] call AE3_filesystem_fnc_ensureDir;
 		[[], _filesystem, "/var/chat/" + _file, "", "root", "root", [[true, true, false], [true, false, false]]] call AE3_filesystem_fnc_ensureFile;
 		[[], _filesystem, "/var/chat/" + _file, "root", _line + endl, true] call AE3_filesystem_fnc_writeToFile;
-		_device setVariable ["AE3_filesystem", _filesystem, 2];
+		_device setVariable ["AE3_filesystem", _filesystem, [_device] call AE3_armaos_fnc_computer_getLocality];
 	} catch {
 		WARNING_1("Could not deliver message: %1",_exception);
 	};

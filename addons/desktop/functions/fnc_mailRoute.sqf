@@ -66,7 +66,7 @@ if (!isNil "_sfs") then
 	{
 		[[], _sfs, "/var/sent", "root", "root", [[true, true, true], [true, false, true]]] call AE3_filesystem_fnc_ensureDir;
 		[[], _sfs, format ["/var/sent/%1", _sentFileName], _sentContent, "root", "root", [[true, true, false], [true, false, false]]] call AE3_filesystem_fnc_ensureFile;
-		_sender setVariable ["AE3_filesystem", _sfs, 2];
+		_sender setVariable ["AE3_filesystem", _sfs, [_sender] call AE3_armaos_fnc_computer_getLocality];
 		// Nudge the sender's open Mail app to re-pull so the message appears in its Sent box
 		// immediately, without relying on a manual refresh.
 		private _senderMutex = _sender getVariable ["AE3_computer_mutex", objNull];
