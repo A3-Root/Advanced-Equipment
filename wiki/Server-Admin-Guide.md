@@ -43,7 +43,7 @@ For mission testing:
 - Test GUI and terminal access with at least one normal client.
 - Test Zeus modules with an actual curator.
 - Test reconnect/JIP if the mission depends on persistent laptop state.
-- Test power and network puzzles after mission start, not only in editor preview.
+- Test power and network puzzles after mission start and in editor preview.
 
 ## Performance Notes
 
@@ -77,7 +77,7 @@ Check:
 - Mission setup modules are synced correctly.
 - Required mods are loaded on the server.
 - File extension whitelist is configured.
-- The mission was tested from a client, not only in local preview.
+- The mission was tested from a client and in local preview.
 
 ### Network gameplay fails
 

@@ -110,7 +110,7 @@ Then install it on selected laptops:
 3. Confirm the command appears.
 4. Run the command with no arguments.
 5. Run each expected argument.
-6. Test as the intended user, not only as root/admin.
+6. Test as the intended user and as root/admin.
 7. Test over SSH if the command is meant to be SSH-compatible.
 8. Test on dedicated server if the command changes mission state.
 

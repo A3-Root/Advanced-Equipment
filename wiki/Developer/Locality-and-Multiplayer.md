@@ -140,7 +140,7 @@ If a laptop is in use, open/close/power actions may be blocked. Do not force-clo
 | UI code runs on server | Guard with `hasInterface`. |
 | Server script tries to create controls | Move display code to client. |
 | Client edits filesystem locally | Route edit to server or use public API. |
-| App icon missing for JIP client | Register runtime app in client init, not only during mission start on one client. |
+| App icon missing for JIP client | Register runtime app in client init instead of only during mission start on one client. |
 | Static IP works in editor but not dedicated | Ensure network connection and router init complete before setting IP. |
 | Flash drive state disappears | Mount/unmount on server-aware APIs and publish flash drive filesystem. |
 

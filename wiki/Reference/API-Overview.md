@@ -34,7 +34,7 @@ if (isServer) then {
 };
 ```
 
-This pattern is easiest to reason about because most durable state lives on objects with `setVariable` and is then broadcast or pulled by clients. Several Desktop, Power, and Network APIs can be called from clients and route work to the server internally, but the server remains the authoritative place for mission-created users, filesystem content, power links, and network links.
+This pattern keeps ownership clear because most durable state lives on objects with `setVariable` and is then broadcast or pulled by clients. Several Desktop, Power, and Network APIs can be called from clients and route work to the server internally, but the server remains the authoritative place for mission-created users, filesystem content, power links, and network links.
 
 Use client-side calls for local presentation or local registration:
 
@@ -103,7 +103,7 @@ AE3 paths are Unix-like:
 | `../logs` | Parent-relative path. |
 | `~` | User home directory where supported by the function/command. |
 
-When writing setup scripts, absolute paths are clearest and easiest to debug.
+When writing setup scripts, absolute paths are easier to debug.
 
 ## Error Handling
 

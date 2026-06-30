@@ -66,7 +66,7 @@ myMission_fnc_toolsApp = {
 };
 ```
 
-Because this is client-local, put registration in a client init path, not only in a server script.
+Because this is client-local, put registration in a client init path. A server script alone will not register the app for every player.
 
 ## Addon Config App Workflow
 

@@ -52,7 +52,7 @@ Use both when the laptop should feel like a full computer or when different play
 5. Sync each module to the laptop or target object it should affect.
 6. Use AE3 connection tools for power and network links.
 7. Preview the mission.
-8. Test as a player, not only as the editor camera.
+8. Test as a player slot as well as the editor camera.
 
 ## Recommended Laptop Setup Order
 

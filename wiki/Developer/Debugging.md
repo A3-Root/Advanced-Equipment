@@ -219,7 +219,7 @@ If files disappear after removing a drive, verify that the drive was unmounted b
 For Eden modules:
 
 - Module must be synced to the target laptop/object.
-- Attributes must be saved on the module, not only the target object.
+- Attributes must be saved on the module and the target object must be synced or selected correctly.
 - Module execution order can matter when content depends on users/directories.
 - Preview after saving the scenario to ensure attributes are serialized.
 

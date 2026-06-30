@@ -104,7 +104,7 @@ Then register:
 ["intel.root/convoys", "Convoy Board", _body, _laptop] call AE3_desktop_fnc_registerWebpage;
 ```
 
-Arrays are accepted by the function, but string content is easiest to maintain unless your extension intentionally stores structured content.
+Arrays are accepted by the function, but string content is simpler to maintain unless your extension intentionally stores structured content.
 
 ## Browser History
 
