@@ -15,7 +15,7 @@ releases/@ae3
 # =========================
 *.md
 *.txt
-**/*.json
+*.json
 !README*.md
 !wiki/*
 TODO
@@ -25,6 +25,14 @@ logs/**/*
 .code*
 .bak
 reference_files
+!graphify-out
+cache
+.graphify_python
+.graphify_root
+!.graphify_labels.json
+!cost.json
+!graph.json
+!manifest.json
 
 # =========================
 # Python
