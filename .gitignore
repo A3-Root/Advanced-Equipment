@@ -24,7 +24,7 @@ TODO
 !releases/CHANGELOG.md
 !NOTEPAD.txt
 logs/**/*
-.code*
+.codex
 !.code-wiki/
 !.code-wiki/**
 .bak
