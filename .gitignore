@@ -25,6 +25,8 @@ TODO
 !NOTEPAD.txt
 logs/**/*
 .code*
+!.code-wiki/
+!.code-wiki/**
 .bak
 reference_files
 !graphify-out
