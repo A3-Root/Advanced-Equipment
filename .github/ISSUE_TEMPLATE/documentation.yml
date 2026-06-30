@@ -1,0 +1,51 @@
+name: Documentation or API issue
+description: Report missing, wrong, unclear, or outdated documentation.
+title: "[Docs] "
+labels: ["documentation"]
+body:
+  - type: textarea
+    id: location
+    attributes:
+      label: Documentation location
+      description: Link the page, section, API reference, wiki file, or README section.
+      placeholder: "Example: wiki/Reference/Desktop-API.md"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: issue-type
+    attributes:
+      label: Issue type
+      options:
+        - Missing documentation
+        - Incorrect documentation
+        - Unclear example
+        - API signature mismatch
+        - Outdated behavior
+        - Broken link
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: current
+    attributes:
+      label: Current text or behavior
+      description: What does the documentation currently say, or what is missing?
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected documentation
+      description: What should it say or explain?
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Source or evidence
+      description: Link code, config, function headers, screenshots, or examples that show the correct behavior.
+

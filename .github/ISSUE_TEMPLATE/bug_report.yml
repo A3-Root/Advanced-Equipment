@@ -1,0 +1,106 @@
+name: Bug report
+description: Report a reproducible AE3 problem.
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form for reproducible bugs. Include enough detail for maintainers to reproduce the problem in Arma 3.
+
+  - type: input
+    id: ae3-version
+    attributes:
+      label: AE3 version
+      description: The Advanced Equipment Revamped version you are using.
+      placeholder: "Example: 1.0.0.8"
+    validations:
+      required: true
+
+  - type: input
+    id: arma-version
+    attributes:
+      label: Arma 3 version
+      placeholder: "Example: 2.20"
+    validations:
+      required: true
+
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: CBA_A3 and ACE3 versions
+      description: Include exact versions where possible.
+      placeholder: |
+        CBA_A3:
+        ACE3:
+    validations:
+      required: true
+
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Environment
+      options:
+        - Singleplayer
+        - Hosted multiplayer
+        - Dedicated server
+        - Zeus
+        - 3DEN Editor
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: mod-list
+    attributes:
+      label: Loaded mods
+      description: Provide the full mod list or the smallest mod list that reproduces the issue.
+      placeholder: |
+        CBA_A3
+        ACE3
+        Advanced Equipment Revamped
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What should have happened?
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: What happened instead?
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Provide a clear reproduction path.
+      placeholder: |
+        1. Place ...
+        2. Configure ...
+        3. Start mission ...
+        4. Observe ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs, screenshots, or clips
+      description: Attach RPT logs, screenshots, short clips, or mission snippets if relevant.
+      placeholder: "Drag files here or paste relevant log excerpts."
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
+      description: Include locality notes, affected GUI/TUI workflow, Zeus/3DEN setup, or server configuration details.
+

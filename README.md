@@ -20,6 +20,37 @@ Dependencies:
 - [CBA_A3](https://github.com/CBATeam/CBA_A3)
 - [ACE3](https://github.com/acemod/ACE3)
 
+Server configuration for GUI/Desktop content:
+
+```cpp
+allowedLoadFileExtensions[] = {"hpp", "sqs", "sqf", "fsm", "cpp", "paa", "txt", "xml", "inc", "ext", "sqm", "ods", "fxy", "lip", "csv", "kb", "bik", "bikb", "html", "htm", "biedi", "css", "js", "md"};
+```
+
+At minimum, dedicated servers that use the GUI/Desktop variant must allow loading `css`, `js`, and `md` files.
+
+## Installation
+
+### Steam Workshop
+
+Subscribe to the mod on Steam Workshop:
+
+- [Advanced Equipment Revamped](https://steamcommunity.com/sharedfiles/filedetails/?id=2888888564)
+
+Load it with CBA_A3 and ACE3.
+
+### Manual install
+
+1. Download the latest release from the repository release page.
+2. Extract the release archive into your Arma 3 installation or server mod directory.
+3. Ensure the mod folder is named consistently, for example `@ae3`.
+4. Start Arma 3 or the dedicated server with the mod loaded after CBA_A3 and ACE3:
+
+```text
+-mod=@CBA_A3;@ace;@ae3
+```
+
+5. On dedicated servers, update `allowedLoadFileExtensions[]` as shown above if using the GUI/Desktop interface.
+
 ## What It Adds
 
 ### Interactive laptops
@@ -75,6 +106,54 @@ Useful entry points:
 - [Terminal TUI](wiki/Systems/Terminal-TUI.md)
 - [Browser and Webpages](wiki/Systems/Browser-and-Webpages.md)
 - [API Overview](wiki/Reference/API-Overview.md)
+
+## Reporting Issues and Requesting Features
+
+Use GitHub issues for bugs, feature requests, compatibility reports, and documentation problems:
+
+- [Issue Tracker](https://github.com/y0014984/Advanced-Equipment/issues)
+
+When reporting a bug, include:
+
+- AE3 version.
+- Arma 3 version.
+- CBA_A3 and ACE3 versions.
+- Whether the issue happened in singleplayer, hosted multiplayer, or dedicated server.
+- Loaded mod list or a minimal reproduction mod list.
+- Steps to reproduce the issue.
+- Relevant RPT logs, screenshots, or short clips when available.
+
+For feature requests, describe the gameplay or mission-maker problem first, then the proposed behavior. This makes it easier to judge whether the feature belongs in AE3, a mission script, or a separate extension mod.
+
+## Contributing
+
+Contributions are welcome through pull requests. Before opening a PR:
+
+1. Check existing issues and pull requests to avoid duplicate work.
+2. Keep changes focused and scoped to one bug fix, feature, or documentation update.
+3. Follow the repository style for SQF, configs, stringtables, and documentation.
+4. Include documentation updates when behavior, public APIs, editor modules, Zeus workflows, or user-facing systems change.
+5. Validate with HEMTT before submitting.
+
+Required validation:
+
+```sh
+hemtt check -p -Lc14 -e
+```
+
+Gameplay changes should also be tested in Arma 3 with CBA_A3 and ACE3 loaded. Multiplayer, dedicated-server locality, GUI/TUI access, power, network, and Zeus behavior should be tested when relevant.
+
+## Development Builds
+
+Useful local commands:
+
+```sh
+hemtt dev
+hemtt check -p -Lc14 -e
+hemtt build
+```
+
+`hemtt dev` creates a development build and local symlink. `hemtt build` creates a release build. `hemtt check -p -Lc14 -e` is the final repository validation command.
 
 ## Links
 

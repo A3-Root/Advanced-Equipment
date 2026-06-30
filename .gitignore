@@ -19,6 +19,7 @@ releases/@ae3
 !README*.md
 !wiki/*
 !wiki/**/*.md
+!.github/PULL_REQUEST_TEMPLATE.md
 TODO
 !releases/CHANGELOG.md
 !NOTEPAD.txt
