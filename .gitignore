@@ -18,6 +18,7 @@ releases/@ae3
 *.json
 !README*.md
 !wiki/*
+!wiki/**/*.md
 TODO
 !releases/CHANGELOG.md
 !NOTEPAD.txt
