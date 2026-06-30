@@ -4,13 +4,14 @@ status: verified
 last-verified: 2026-06-30
 confidence_score: 1.0
 priority: core
+rank: 1
 tokens: ~890
 code-paths:
   - addons/desktop/
   - addons/desktop/functions/fnc_jsRouter.sqf
   - addons/desktop/functions/fnc_desktop_open.sqf
   - addons/desktop/CfgAE3Apps.hpp
-related-topics: [armaos-terminal, filesystem-model, network-routing-and-ssh, eden-zeus-tooling, desktop-intel-and-communications]
+related-topics: [armaos-terminal, filesystem-model, network-routing-and-ssh, eden-zeus-tooling, desktop-intel-and-communications, flashdrive-usb, multiplayer-locality-and-sync]
 related-docs:
   - wiki/Systems/Desktop-GUI.md
   - wiki/Systems/Browser.md

@@ -9,7 +9,7 @@ code-paths:
   - addons/flashdrive/
   - addons/filesystem/functions/fnc_mount.sqf
   - addons/desktop/functions/fnc_volHandle.sqf
-related-topics: [filesystem-model, armaos-terminal, desktop-gui-and-browser]
+related-topics: [filesystem-model, armaos-terminal, desktop-gui-and-browser, interaction-equipment]
 related-docs:
   - wiki/Systems/Flash-Drives.md
   - wiki/Reference/Flash-Drive-API.md

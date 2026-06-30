@@ -4,12 +4,13 @@ status: verified
 last-verified: 2026-06-30
 confidence_score: 1.0
 priority: core
+rank: 6
 tokens: ~740
 code-paths:
   - addons/power/
   - addons/armaos/functions/fnc_computer_*.sqf
-  - addons/main/Cfg3DEN.hpp
-related-topics: [network-routing-and-ssh, interaction-equipment, eden-zeus-tooling]
+  - addons/power/Cfg3DEN.hpp
+related-topics: [network-routing-and-ssh, interaction-equipment, eden-zeus-tooling, multiplayer-locality-and-sync]
 related-docs:
   - wiki/Systems/Power.md
   - wiki/Reference/Power-API.md

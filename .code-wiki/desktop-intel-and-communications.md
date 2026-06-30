@@ -4,7 +4,8 @@ status: verified
 last-verified: 2026-06-30
 confidence_score: 1.0
 priority: core
-tokens: ~700
+rank: 4
+tokens: ~1190
 code-paths:
   - addons/desktop/functions/fnc_intel_*.sqf
   - addons/desktop/functions/fnc_module_addIntel.sqf
@@ -16,7 +17,6 @@ code-paths:
   - addons/desktop/functions/fnc_openFile.sqf
   - addons/desktop/CfgVehicles.hpp
   - addons/desktop/XEH_preInit.sqf
-  - addons/desktop/XEH_postInit.sqf
 related-topics: [desktop-gui-and-browser, filesystem-model, multiplayer-locality-and-sync, eden-zeus-tooling]
 related-docs:
   - wiki/Systems/Desktop-GUI.md

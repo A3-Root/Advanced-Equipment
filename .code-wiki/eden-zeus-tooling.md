@@ -4,12 +4,17 @@ status: verified
 last-verified: 2026-06-30
 confidence_score: 1.0
 priority: core
+rank: 2
 tokens: ~810
 code-paths:
   - addons/main/Cfg3DEN.hpp
   - addons/main/CfgUserInterfaceZeus.hpp
   - addons/main/functions/fnc_zeus_*.sqf
-  - addons/*/CfgVehicles.hpp
+  - addons/main/CfgVehicles.hpp
+  - addons/armaos/CfgVehicles.hpp
+  - addons/filesystem/CfgVehicles.hpp
+  - addons/network/CfgVehicles.hpp
+  - addons/power/CfgVehicles.hpp
   - addons/*/functions/fnc_module_*.sqf
 related-topics: [filesystem-model, network-routing-and-ssh, power-model, desktop-gui-and-browser, desktop-intel-and-communications]
 related-docs:

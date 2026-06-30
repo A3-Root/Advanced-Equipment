@@ -4,6 +4,7 @@ status: verified
 last-verified: 2026-06-30
 confidence_score: 1.0
 priority: core
+rank: 8
 tokens: ~700
 code-paths:
   - addons/main/functions/fnc_getRemoteVar.sqf

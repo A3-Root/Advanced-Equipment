@@ -4,13 +4,13 @@ status: verified
 last-verified: 2026-06-30
 confidence_score: 1.0
 priority: core
+rank: 3
 tokens: ~850
 code-paths:
   - addons/network/
   - addons/armaos/functions/fnc_os_ssh.sqf
   - addons/desktop/functions/fnc_sshOpServer.sqf
-  - addons/desktop/functions/fnc_jsRouter.sqf
-related-topics: [armaos-terminal, desktop-gui-and-browser, power-model, eden-zeus-tooling]
+related-topics: [armaos-terminal, desktop-gui-and-browser, power-model, eden-zeus-tooling, multiplayer-locality-and-sync]
 related-docs:
   - wiki/Systems/Networking.md
   - wiki/Reference/Network-API.md

@@ -24,7 +24,7 @@ The public mod documentation starts at [wiki/Home.md](../wiki/Home.md). This ind
 | 1 | [desktop-gui-and-browser](desktop-gui-and-browser.md) | core | ~890 | VERIFIED |
 | 2 | [eden-zeus-tooling](eden-zeus-tooling.md) | core | ~810 | VERIFIED |
 | 3 | [network-routing-and-ssh](network-routing-and-ssh.md) | core | ~850 | VERIFIED |
-| 4 | [desktop-intel-and-communications](desktop-intel-and-communications.md) | core | ~700 | VERIFIED |
+| 4 | [desktop-intel-and-communications](desktop-intel-and-communications.md) | core | ~1190 | VERIFIED |
 | 5 | [armaos-terminal](armaos-terminal.md) | core | ~780 | VERIFIED |
 | 6 | [power-model](power-model.md) | core | ~740 | VERIFIED |
 | 7 | [filesystem-model](filesystem-model.md) | core | ~720 | VERIFIED |

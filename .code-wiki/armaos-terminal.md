@@ -4,13 +4,14 @@ status: verified
 last-verified: 2026-06-30
 confidence_score: 1.0
 priority: core
+rank: 5
 tokens: ~780
 code-paths:
   - addons/armaos/
   - addons/armaos/functions/fnc_os_*.sqf
   - addons/armaos/functions/fnc_shell_*.sqf
   - addons/armaos/functions/fnc_terminal_*.sqf
-related-topics: [desktop-gui-and-browser, filesystem-model, network-routing-and-ssh, flashdrive-usb]
+related-topics: [desktop-gui-and-browser, filesystem-model, network-routing-and-ssh, flashdrive-usb, interaction-equipment, multiplayer-locality-and-sync]
 related-docs:
   - wiki/Systems/Terminal-TUI.md
   - wiki/Reference/Terminal-API.md

@@ -7,7 +7,7 @@ priority: support
 tokens: ~590
 code-paths:
   - addons/interaction/
-  - addons/*/CfgVehicles.hpp
+  - addons/interaction/CfgVehicles.hpp
 related-topics: [power-model, armaos-terminal, flashdrive-usb]
 related-docs:
   - wiki/Systems/Interactions.md

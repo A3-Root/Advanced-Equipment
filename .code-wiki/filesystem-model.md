@@ -4,12 +4,12 @@ status: verified
 last-verified: 2026-06-30
 confidence_score: 1.0
 priority: core
+rank: 7
 tokens: ~720
 code-paths:
   - addons/filesystem/
-  - addons/armaos/functions/fnc_os_*.sqf
   - addons/desktop/functions/fnc_fsHandle.sqf
-related-topics: [armaos-terminal, desktop-gui-and-browser, flashdrive-usb, eden-zeus-tooling, desktop-intel-and-communications]
+related-topics: [armaos-terminal, desktop-gui-and-browser, flashdrive-usb, eden-zeus-tooling, desktop-intel-and-communications, multiplayer-locality-and-sync]
 related-docs:
   - wiki/Systems/Filesystem.md
   - wiki/Reference/Filesystem-API.md
