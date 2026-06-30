@@ -12,6 +12,8 @@
 
 Advanced Equipment Revamped (AE3) delivers a functional terminal laptop running ArmaOS and a range of connected equipment such as generators, batteries, flash drives, solar panels, and interactable objects. It is designed as a complete mod, ready to use in missions and scenarios while also providing APIs for developers.
 
+**REQUIRES SERVER ADMINS TO WHITELIST / ALLOW LOADING OF EXTENSIONS ".css", ".js", ".md" IN THE `server.cfg` FILE**
+
 ## What is AE3?
 
 AE3 is both a **gameplay mod** and a **framework**. Players can interact with fully functional laptops, manage power systems, operate equipment, and access data through an in-game terminal interface. Developers can extend AE3 through its API.
