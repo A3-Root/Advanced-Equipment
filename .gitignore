@@ -47,6 +47,7 @@ build/.env
 .vscode/**/*
 .env
 *.exe
+.agents
 
 # =========================
 # General / Miscellaneous
