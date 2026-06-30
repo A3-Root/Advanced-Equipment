@@ -1,37 +1,51 @@
 # Filesystem
 
-AE3 devices use a virtual filesystem stored on the object. It supports directories, files, owners, read/write/execute permissions, symbolic links, mounts, and flash drive filesystems.
+Every AE3 laptop has a virtual filesystem. It stores folders, files, logs, browser history, mail data, media markers, mounted flash drives, and command files.
 
-## Default Layout
+## Player View
 
-The base filesystem includes paths such as:
+Players can access the filesystem through:
 
-- `/tmp`
-- `/mnt`
-- `/var`
-- `/var/log`
-- `/etc`
-- `/home`
-- `/bin`
-- `/sbin`
-- `/root`
-- `/sys`
+- GUI Files app.
+- Terminal commands.
+- Desktop apps that read files, such as Browser or Mail.
+
+The same files are shared between GUI and terminal. If a mission maker adds a text file, players may be able to open it in Files or read it in the terminal depending on laptop access.
+
+## Common Folders
+
+Typical paths include:
+
+- `/home`: user folders.
+- `/home/admin`: a likely admin user folder.
+- `/var/log`: logs such as browser history.
+- `/tmp`: temporary files.
+- `/mnt`: mounted flash drives.
+- `/bin` and `/sbin`: terminal command locations.
+- `/root`: root/admin area.
+
+Mission makers can use any clear path, but should keep paths readable for players.
 
 ## Permissions
 
-Permissions are stored as:
+Files and folders can have owners and permissions. In editor modules, permissions are exposed as checkboxes for owner and everyone.
 
-```sqf
-[[ownerRead, ownerWrite, ownerExecute], [everyoneRead, everyoneWrite, everyoneExecute]]
-```
+Simple mission guidance:
 
-Example:
+- For a normal clue, allow owner read and everyone read.
+- For private content, restrict everyone read.
+- For folders, execute permission usually means players can enter or traverse the folder.
+- Do not overuse permissions unless permissions are part of the puzzle.
 
-```sqf
-private _readOnly = [[true, true, false], [true, false, false]];
-[[], _filesystem, "/home/admin/readme.txt", "Read this first.", "root", "admin", _readOnly] call AE3_filesystem_fnc_createFile;
-```
+## No-Code Setup
 
-## GUI and TUI
+Use `AE3: Add Directory` before adding files inside a new folder. Use `AE3: Add File` to create readable documents. Sync each module to the target laptop.
 
-The GUI Files app and TUI commands operate on the same filesystem. A file added for the terminal is visible in the desktop Files app, and a browser history file can be inspected with `cat /var/log/browser_history`.
+If a file does not appear, check:
+
+- Is the module synced?
+- Does the folder path exist?
+- Is the file path typed correctly?
+- Does the player have permission to read it?
+
+Direct filesystem function calls belong in [Filesystem API](../Reference/Filesystem-API.md).

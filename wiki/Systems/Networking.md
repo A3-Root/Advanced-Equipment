@@ -1,43 +1,53 @@
 # Networking
 
-AE3 networking gives routers and devices IP addresses, wireless connections, DHCP, static IPs, ping, SSH, messaging, gateway routing, and optional external access rules.
+AE3 networking lets laptops and routers communicate. Missions can use it for ping tests, SSH chains, chat, remote laptop access, and network-gated objectives.
 
-## Routers
+## Core Objects
 
-Routers have:
+- Router: creates a network and assigns addresses.
+- Laptop: connects to a router and uses network tools.
+- Parent router: can connect router networks together.
 
-- SSID
-- Gateway address
-- Wireless range
-- Optional password
-- External SSH/routing toggle
-- Optional external allow list
+## Router Settings
 
-```sqf
-[_router, "Depot Net", 80, "depot123", "10.0.0.1", true, "10\\.1\\.0\\..*"] call AE3_network_fnc_applyRouterConfig;
-```
+Configure routers in object attributes:
 
-## Connections
+- Network Name (SSID): visible network name.
+- Default Gateway: optional router address.
+- Wifi Range (m): connection range.
+- Network Password: required password, or blank for open network.
+- Powered On At Start: starts the router automatically.
+- Allow External SSH: allows access from other gateways.
+- External Allowed IPs: optional allow list for external routes.
 
-```sqf
-[_laptop, _router] call AE3_network_fnc_createNetworkConnection;
-[_router2, _router1] call AE3_network_fnc_createNetworkConnection;
-[_laptop] call AE3_network_fnc_removeNetworkConnection;
-```
+For simple missions, leave Default Gateway blank and let AE3 assign addresses.
 
-## Terminal Use
+## Editor Connections
 
-```text
-ip
-ping 10.0.0.5
-ssh admin@10.0.0.5
-msg 10.0.0.5 "status?"
-```
+Use `AE3: connect device to network router`.
 
-## Static IPs
+Common setups:
 
-Static leases are stored per connected router.
+- One laptop to one router.
+- Multiple laptops to one router.
+- Router to parent router for multi-network scenarios.
 
-```sqf
-private _result = [_laptop, "10.0.0.42"] call AE3_network_fnc_setStaticIp;
-```
+## Player Workflow
+
+When configured, players can:
+
+- Check their network information.
+- Ping another address.
+- Connect to remote systems through SSH.
+- Send messages.
+- Use network-aware desktop apps.
+
+## Good Network Design
+
+- Give players a reason to know or discover an IP address.
+- Avoid too many routers unless routing is part of the puzzle.
+- If a password is required, make it discoverable.
+- If external access is required, test it on a dedicated server.
+- Keep router names and addresses readable.
+
+Scripted network setup belongs in [Network API](../Reference/Network-API.md).

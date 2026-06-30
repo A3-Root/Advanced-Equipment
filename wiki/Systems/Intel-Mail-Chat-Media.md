@@ -1,39 +1,62 @@
 # Intel, Mail, Chat, and Media
 
-AE3 desktop systems can seed mission intel through email, browser pages, browser history, media files, chat, calendar entries, map data, CCTV cameras, and locked files.
+AE3 supports several ways to deliver information to players. Use the format that best matches how you want players to discover the clue.
+
+## Files
+
+Files are best for notes, logs, reports, passwords, and documents. Players can open them from the GUI Files app or terminal.
+
+## Webpages
+
+Webpages are best for intranet pages, public-looking sites, status boards, indexes, and browser-based trails.
+
+## Browser History
+
+Browser history is best for showing what a previous user looked at. It works well when paired with actual webpages.
 
 ## Email
 
-```sqf
-[
-    _laptop,
-    "informant@lan",
-    "Convoy route",
-    "They leave the depot at 0415.",
-    "admin@lan",
-    "03:20",
-    true,
-    true
-] call AE3_desktop_fnc_addEmail;
-```
+Email is best for communication between characters or organizations. Use sender, recipient, subject, and time to add context.
+
+Good email uses:
+
+- Orders from HQ.
+- Personal messages.
+- Suspicious forwarded mail.
+- Password hints.
+- Meeting details.
+
+## Calendar Events
+
+Calendar events are best for dates, appointments, meetings, delivery schedules, deadlines, and future objectives.
 
 ## Media
 
-```sqf
-[
-    "media\\images\\photo.jpg",
-    "image",
-    "/home/admin/Desktop/photo.jpg",
-    _laptop,
-    "mission",
-    false
-] call AE3_desktop_fnc_registerMedia;
-```
+Media is best for visual or audio evidence:
+
+- Photos.
+- Audio recordings.
+- Videos.
+- Mission-provided images.
+
+Keep media files reasonably sized and test them on the server.
 
 ## Locked Files
 
-```sqf
-[_laptop, "/home/admin/codes.txt", "river", "Code: 4812"] call AE3_desktop_fnc_addLockedFile;
-```
+Locked files are best when players need to find a password elsewhere. Avoid making passwords random guesses. Put the password in another clue, such as an email, browser page, note, or flash drive.
 
-Players can unlock from the GUI prompt or with the terminal `unlock` command.
+## Chat
+
+Chat is useful for network communication and live-feeling computer systems. It works best when players understand which devices can communicate.
+
+## Choosing the Right Intel Type
+
+- Use files for direct documents.
+- Use mail for social context.
+- Use browser pages for web/intranet clues.
+- Use browser history for trails.
+- Use media for evidence.
+- Use locked files for password puzzles.
+- Use calendar entries for time-sensitive clues.
+
+Script calls for adding intel belong in [Desktop API](../Reference/Desktop-API.md) and [Browser API](../Reference/Browser-API.md).

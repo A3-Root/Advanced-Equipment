@@ -1,39 +1,54 @@
 # Power
 
-AE3 power connects consumers to providers and tracks generator fuel, battery charge, solar output, device state, and overload conditions.
+AE3 power makes devices depend on generators, batteries, solar panels, internal batteries, and connection state.
 
-## Power States
+## Power Sources
 
-- `0`: off
-- `1`: on
-- `2`: standby
-- `3`: crashed
+Common power sources:
 
-## Connections
+- Generator: usually needs fuel.
+- Battery: uses stored charge.
+- Solar panel: output depends on configuration and sun behavior.
+- Internal battery: built into some devices such as routers or laptops.
 
-```sqf
-[_laptop, _generator] call AE3_power_fnc_createPowerConnection;
-[_router, _battery] call AE3_power_fnc_createPowerConnection;
-[_laptop] call AE3_power_fnc_removePowerConnection;
-```
+## Power Consumers
 
-## Device Control
+Common consumers:
 
-```sqf
-[_generator] call AE3_power_fnc_turnOnDevice;
-[_laptop] call AE3_power_fnc_standbyDevice;
-[_laptop] call AE3_power_fnc_turnOffDevice;
-[_laptop] call AE3_power_fnc_crashDevice;
-```
+- Laptops.
+- Routers.
+- Lights.
+- Batteries being charged.
 
-## Fuel and Battery Levels
+## Editor Setup
 
-```sqf
-[_generator, 0.75] call AE3_power_fnc_setFuelLevel;
-private _fuel = [_generator] call AE3_power_fnc_getFuelLevel;
+Use `AE3: connect device to power source`.
 
-[_battery, 0.5] call AE3_power_fnc_setBatteryLevel;
-private _charge = [_battery] call AE3_power_fnc_getBatteryLevel;
-```
+Typical setup:
 
-Generators, batteries, and solar panels update connected devices through provider handlers. Validate custom power layouts on a dedicated server.
+1. Place a laptop or router.
+2. Place a generator, battery, or solar panel.
+3. Configure fuel or power level in object attributes.
+4. Connect the consumer to the source.
+5. Preview and test turn-on behavior.
+
+## Player Workflow
+
+Players may need to:
+
+- Find a power source.
+- Turn on a generator.
+- Check fuel or charge.
+- Connect a device to power.
+- Turn on the laptop or router.
+- Restore power after a device crashes or shuts down.
+
+## Good Power Design
+
+- Use power when it creates a meaningful objective.
+- Do not hide critical intel behind too many unrelated power steps.
+- Make fuel, batteries, or generators discoverable.
+- Test whether players can physically reach and use the power objects.
+- If a laptop starts off, make that clear through mission context.
+
+Script power calls belong in [Power API](../Reference/Power-API.md).

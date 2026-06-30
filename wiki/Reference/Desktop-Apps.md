@@ -1,32 +1,195 @@
 # Desktop Apps
 
-The built-in GUI app registry is `CfgAE3Apps`.
+AE3 supports two app-extension models:
 
-| App Class | Entry Function | Purpose |
+| Model | Use when | Main API/config |
 | --- | --- | --- |
-| `Terminal` | `AE3_desktop_fnc_app_terminal` | Terminal in a desktop window. |
-| `Files` | `AE3_desktop_fnc_app_files` | Browse and open filesystem content. |
-| `Settings` | `AE3_desktop_fnc_app_settings` | Laptop/desktop settings. |
-| `Notepad` | `AE3_desktop_fnc_app_notepad` | Text note workflow. |
-| `Mail` | `AE3_desktop_fnc_app_mail` | Read seeded mail. |
-| `Chat` | `AE3_desktop_fnc_app_chat` | Network chat. |
-| `Browser` | `AE3_desktop_fnc_app_browser` | Browse registered webpages. |
-| `Calendar` | `AE3_desktop_fnc_app_calendar` | Show calendar events. |
-| `MapApp` | `AE3_desktop_fnc_app_map` | Map app. |
-| `Cctv` | `AE3_desktop_fnc_app_cctv` | Camera viewing. |
-| `Music` | `AE3_desktop_fnc_app_music` | Audio playback. |
-| `SysInfo` | `AE3_desktop_fnc_app_sysinfo` | Device and system data. |
+| Native SQF desktop app | You want to build controls directly in Arma UI. | `CfgAE3Apps` or `AE3_desktop_fnc_registerApp`. |
+| Web desktop extension | You want to extend the CEF/web desktop bridge with a JS-facing app template and SQF commands. | `AE3_desktop_fnc_registerExtApp`, `AE3_desktop_fnc_registerCmd`, `AE3_desktop_fnc_jsReply`. |
 
-## Runtime Registration
+Most new low-level AE3-native apps should use the native SQF model unless they specifically need the web desktop bridge.
 
-```sqf
-["my_app", "My App", "myTag_fnc_myDesktopApp", [0.6, 0.6], true, true] call AE3_desktop_fnc_registerApp;
+## Native Config Apps
+
+Apps can be defined in config:
+
+```cpp
+class CfgAE3Apps
+{
+    class myMod_tools
+    {
+        displayName = "Tools";
+        entry = "myMod_fnc_toolsApp";
+        icon = "";
+        defaultSize[] = {0.55, 0.5};
+        showOnDesktop = 1;
+        singleton = 1;
+        requiresFilesystem = 1;
+    };
+};
 ```
 
-The entry function is called with:
+Common properties:
+
+| Property | Type | Meaning |
+| --- | --- | --- |
+| `displayName` | String | Name shown to players. |
+| `entry` | String | SQF function called to build the window. |
+| `icon` | String | Optional icon path. |
+| `defaultSize[]` | Array | Window width/height as desktop fractions. |
+| `showOnDesktop` | Number/bool | Whether an icon appears on the desktop. |
+| `singleton` | Number/bool | Whether only one instance may be open. |
+| `requiresFilesystem` | Number/bool | Whether the app needs the laptop filesystem. |
+
+## Native Runtime Apps
+
+Use runtime registration for mission-specific apps or addon apps that should not require a config patch:
+
+```sqf
+if (hasInterface) then {
+    ["myMod_tools", "Tools", "myMod_fnc_toolsApp", [0.55, 0.5], true, true] call AE3_desktop_fnc_registerApp;
+};
+```
+
+Runtime registration is local. Run it on every client that should see the app.
+
+## Native App Entry Contract
+
+Native app entry functions receive:
 
 ```sqf
 params ["_winId", "_ctrlGroup", "_computer", "_args"];
 ```
 
-It may return a hashmap containing callbacks such as `onClose` or `onFocus`.
+| Parameter | Meaning |
+| --- | --- |
+| `_winId` | AE3 window id. Use it when calling window-manager functions. |
+| `_ctrlGroup` | Control group where the app should create its controls. |
+| `_computer` | Laptop object for this desktop session. |
+| `_args` | Optional arguments passed when the app is opened. |
+
+Return value may be a HashMap with callbacks:
+
+```sqf
+createHashMapFromArray [
+    ["onClose", {
+        // Cleanup code.
+    }]
+]
+```
+
+Minimal app:
+
+```sqf
+myMod_fnc_toolsApp = {
+    params ["_winId", "_ctrlGroup", "_computer", "_args"];
+
+    private _text = _ctrlGroup ctrlCreate ["RscText", -1];
+    _text ctrlSetPosition [0.02, 0.02, 0.5, 0.05];
+    _text ctrlSetText "Tools ready.";
+    _text ctrlCommit 0;
+
+    createHashMap
+};
+```
+
+## Opening Files from Apps
+
+Use:
+
+```sqf
+[_computer, _path, _user] call AE3_desktop_fnc_openFile;
+```
+
+This lets the desktop choose the correct viewer for text, media markers, locked files, and app launchers. Prefer it over duplicating file-open logic.
+
+## Window Manager Helpers
+
+The Desktop component exposes window manager functions used by built-in apps:
+
+| Function | Purpose |
+| --- | --- |
+| `AE3_desktop_fnc_wm_createWindow` | Creates a desktop app window. |
+| `AE3_desktop_fnc_wm_closeWindow` | Closes a window and runs cleanup. |
+| `AE3_desktop_fnc_wm_focusWindow` | Brings a window to the front. |
+| `AE3_desktop_fnc_wm_minimizeWindow` | Minimizes/restores a window. |
+| `AE3_desktop_fnc_wm_getTheme` | Reads active desktop theme. |
+| `AE3_desktop_fnc_wm_updateTaskbar` | Refreshes taskbar state. |
+
+These are framework-level functions. If you are writing a normal app, build controls inside the supplied `_ctrlGroup` and let AE3 manage the window shell.
+
+## Web Desktop Extension Apps
+
+Register a web desktop app template:
+
+```sqf
+if (hasInterface) then {
+    private _extra = createHashMapFromArray [
+        ["deviceType", "doorRelay"]
+    ];
+
+    ["myMod_doors", "Door Relays", "D", "deviceList", _extra] call AE3_desktop_fnc_registerExtApp;
+};
+```
+
+Register a JS-to-SQF command:
+
+```sqf
+if (hasInterface) then {
+    ["myMod_listDoors", {
+        params ["_computer", "_user", "_data", "_rid"];
+
+        private _doors = missionNamespace getVariable ["myMod_doors", []];
+        ["myMod_listDoors", _rid, _doors] call AE3_desktop_fnc_jsReply;
+    }] call AE3_desktop_fnc_registerCmd;
+};
+```
+
+Web command handlers receive:
+
+| Parameter | Meaning |
+| --- | --- |
+| `_computer` | Laptop bound to the web desktop session. |
+| `_user` | Logged-in desktop user. |
+| `_data` | Payload sent from JS. |
+| `_rid` | Request id used to resolve the JS promise. |
+
+Use `AE3_desktop_fnc_jsReply` for immediate replies. Use `AE3_desktop_fnc_jsSend` from internal/client code for asynchronous pushes when no request id is being resolved.
+
+## App Launcher Files
+
+Desktop icons can come from virtual filesystem launcher files. AE3 seeds app launchers under:
+
+```text
+/usr/share/applications/<appId>.app
+```
+
+A launcher file contains:
+
+```text
+app=<appId>
+```
+
+User desktops can then contain symlinks to those launchers:
+
+```text
+/home/admin/Desktop/terminal.app -> /usr/share/applications/terminal.app
+```
+
+This lets mission authors curate which tools appear for each user by changing the user's Desktop folder.
+
+## Checklist for New Native Apps
+
+1. Decide whether the app is config-level or runtime-only.
+2. Register the app on all clients that should see it.
+3. Build controls only inside the provided `_ctrlGroup`.
+4. Read laptop state from `_computer`; do not assume global variables identify the active laptop.
+5. Use public filesystem/Desktop APIs for file operations.
+6. Return an `onClose` callback if you create handlers, cameras, timers, or long-lived controls.
+7. Test with two clients so singleton, focus, and close behavior are correct.
+
+## Related Pages
+
+- [Desktop API](Desktop-API.md)
+- [Extending Desktop GUI](../Developer/Extending-Desktop-GUI.md)
+- [Extending Browser Webpages](../Developer/Extending-Browser-Webpages.md)

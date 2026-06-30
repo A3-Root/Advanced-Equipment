@@ -1,31 +1,21 @@
 # Advanced Equipment Wiki
 
-Advanced Equipment is a framework-style Arma 3 mod for interactive equipment. It exposes two laptop interfaces: a graphical desktop (GUI) and a terminal command line (TUI). The same laptop can support either interface or both, depending on configuration via 3DEN attributes, Zeus modules, script calls, or CBA settings.
+Advanced Equipment Revamped adds usable equipment to Arma 3 missions: laptops, desktop apps, terminal computers, routers, power devices, flash drives, lights, filesystems, browser intel, mail, media, Zeus tools, and 3DEN setup modules.
+
+This wiki is organized by audience first. If you do not write scripts, start with the guides below. If you are building missions through the editor, use the 3DEN and Mission Maker guides. If you are writing SQF or another addon, use the Reference and Developer sections.
 
 ## Start Here
 
-- [Getting Started](Getting-Started.md)
-- [Player Guide](Player-Guide.md)
-- [Zeus Guide](Zeus-Guide.md)
-- [Mission Maker Guide](Mission-Maker-Guide.md)
-- [Eden Editor Guide](Eden-Editor-Guide.md)
-- [Server Admin Guide](Server-Admin-Guide.md)
+- [Getting Started](Getting-Started.md): first mission setup and basic concepts.
+- [Player Guide](Player-Guide.md): what players see and how they use equipment in-game.
+- [Mission Maker Guide](Mission-Maker-Guide.md): planning laptop, power, network, and intel gameplay without scripting.
+- [Eden Editor Guide](Eden-Editor-Guide.md): placing objects, opening attributes, using modules, syncing modules, and editor connections.
+- [Zeus Guide](Zeus-Guide.md): live curator operations during a mission.
+- [Server Admin Guide](Server-Admin-Guide.md): dependencies, server file extension settings, dedicated server notes, and troubleshooting.
 
-## Systems
+## Mission Recipes
 
-- [Laptops and Interfaces](Systems/Laptops-and-Interfaces.md)
-- [Desktop GUI](Systems/Desktop-GUI.md)
-- [Terminal TUI](Systems/Terminal-TUI.md)
-- [Browser and Webpages](Systems/Browser-and-Webpages.md)
-- [Filesystem](Systems/Filesystem.md)
-- [Networking](Systems/Networking.md)
-- [Power](Systems/Power.md)
-- [Flash Drives](Systems/Flash-Drives.md)
-- [Lights and Interaction](Systems/Lights-and-Interaction.md)
-- [Intel, Mail, Chat, and Media](Systems/Intel-Mail-Chat-Media.md)
-- [Encryption and Security](Systems/Encryption-and-Security.md)
-
-## Examples
+Each recipe separates the Eden Editor workflow, Zeus live workflow, and API/script workflow where the feature supports all three. If a feature does not have a true no-code path, the recipe says that directly and points to the correct Reference or Developer page.
 
 - [Create a Laptop](Examples/Create-a-Laptop.md)
 - [Configure GUI vs TUI Access](Examples/Configure-GUI-vs-TUI-Access.md)
@@ -40,7 +30,23 @@ Advanced Equipment is a framework-style Arma 3 mod for interactive equipment. It
 - [Add Intel, Mail, Chat, or Media](Examples/Add-Intel-Mail-Chat-or-Media.md)
 - [Zeus Live Operations](Examples/Zeus-Live-Operations.md)
 
-## Reference
+## System Guides
+
+- [Laptops and Interfaces](Systems/Laptops-and-Interfaces.md)
+- [Desktop GUI](Systems/Desktop-GUI.md)
+- [Terminal TUI](Systems/Terminal-TUI.md)
+- [Browser and Webpages](Systems/Browser-and-Webpages.md)
+- [Filesystem](Systems/Filesystem.md)
+- [Networking](Systems/Networking.md)
+- [Power](Systems/Power.md)
+- [Flash Drives](Systems/Flash-Drives.md)
+- [Lights and Interaction](Systems/Lights-and-Interaction.md)
+- [Intel, Mail, Chat, and Media](Systems/Intel-Mail-Chat-Media.md)
+- [Encryption and Security](Systems/Encryption-and-Security.md)
+
+## Script and API Reference
+
+Use these pages when you are writing SQF, configuring addon classes, or building another mod on top of AE3.
 
 - [API Overview](Reference/API-Overview.md)
 - [ArmaOS API](Reference/ArmaOS-API.md)

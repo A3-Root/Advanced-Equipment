@@ -1,39 +1,56 @@
 # Laptops and Interfaces
 
-AE3 laptops are interactive ACE equipment with power, filesystem, user, USB, network, GUI desktop, and TUI terminal behavior.
+AE3 laptops are the main interactive computer objects. They can be carried or loaded when allowed, opened or closed, powered on or off, connected to routers, connected to power sources, and filled with mission content.
 
 ## Interface Modes
 
-The desktop addon stores the active interface mode in `AE3_interfaceMode`.
+A laptop can offer one of these access modes:
 
-- `cli`: terminal/TUI only.
-- `gui`: graphical desktop only.
-- `both`: exposes both access actions when allowed.
+- Default: uses the mission or server default.
+- CLI: terminal command-line interface only.
+- GUI: graphical desktop interface only.
+- Both: players can choose between terminal and desktop actions.
 
-```sqf
-[_laptop, "cli"] call AE3_desktop_fnc_setInterfaceMode;
-[_laptop, "gui"] call AE3_desktop_fnc_setInterfaceMode;
-[_laptop, "both"] call AE3_desktop_fnc_setInterfaceMode;
-```
+Set this in the laptop's 3DEN object attributes. Zeus can also manage interface access during live play when the relevant module is available.
 
-## Access Conditions
+## GUI Desktop
 
-GUI and TUI can have separate access conditions.
+The GUI desktop is best for readable, visual, and app-based gameplay:
 
-```sqf
-[_laptop, "gui", [west]] call AE3_desktop_fnc_setInterfaceAccess;
-[_laptop, "cli", ["76561198000000000"]] call AE3_desktop_fnc_setInterfaceAccess;
-[_laptop, "gui", {(_this select 1) getVariable ["hasKeycard", false]}] call AE3_desktop_fnc_setInterfaceAccess;
-```
+- Browsing folders.
+- Reading mail.
+- Opening webpages.
+- Inspecting browser history.
+- Reading notes.
+- Viewing images, audio, video, maps, CCTV, calendar entries, and system information.
 
-The access hook is:
+Use GUI when players should interact like they are using a normal computer.
 
-```sqf
-if ([_laptop, player, "gui"] call AE3_desktop_fnc_canAccessInterface) then {
-    // show or open GUI-specific behavior
-};
-```
+## Terminal
 
-## Choosing GUI or TUI
+The terminal is best for command-line gameplay:
 
-Use GUI desktop for document review, browser pages, media, mail, calendar entries, app workflows, and non-command-line players. Use TUI terminal for hacking-style gameplay, commands, SSH, logs, USB mounting, file permissions, custom command puzzles, and compact interactions.
+- Checking folders and logs.
+- Discovering network addresses.
+- Connecting through SSH.
+- Mounting flash drives.
+- Unlocking files.
+- Using security or mission-specific commands.
+
+Use terminal when the mission should feel like a technical investigation or hacking task.
+
+## Access Restrictions
+
+GUI and terminal access can be restricted separately. This lets a mission maker allow one group to use the desktop while another group can use the terminal, or require a player-specific condition set by Zeus or mission logic.
+
+For no-code setup, use laptop attributes and Zeus interface tools. For scripted or addon-controlled access, use the Desktop API reference.
+
+## Typical Laptop Build
+
+1. Place a laptop.
+2. Choose its interface mode.
+3. Add at least one user.
+4. Add the content players need.
+5. Decide whether it needs power.
+6. Decide whether it needs network access.
+7. Test the laptop as a normal player.

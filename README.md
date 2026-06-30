@@ -24,6 +24,7 @@ Server configuration for GUI/Desktop content:
 
 ```cpp
 allowedLoadFileExtensions[] = {"hpp", "sqs", "sqf", "fsm", "cpp", "paa", "txt", "xml", "inc", "ext", "sqm", "ods", "fxy", "lip", "csv", "kb", "bik", "bikb", "html", "htm", "biedi", "css", "js", "md"};
+allowedHTMLLoadExtensions[] = {"htm","html","xml","txt", "css", "js", "md"};
 ```
 
 At minimum, dedicated servers that use the GUI/Desktop variant must allow loading `css`, `js`, and `md` files.
@@ -49,7 +50,7 @@ Load it with CBA_A3 and ACE3.
 -mod=@CBA_A3;@ace;@ae3
 ```
 
-5. On dedicated servers, update `allowedLoadFileExtensions[]` as shown above if using the GUI/Desktop interface.
+5. On dedicated servers, update `allowedLoadFileExtensions[]` and `allowedHTMLLoadExtensions[]` as shown above if using the GUI/Desktop interface.
 
 ## What It Adds
 

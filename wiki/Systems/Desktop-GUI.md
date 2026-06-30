@@ -1,40 +1,52 @@
 # Desktop GUI
 
-The desktop GUI is the graphical operating system for AE3 laptops. It provides a window manager, app launcher, taskbar behavior, authentication, filesystem access, network-aware apps, browser pages, media viewers, settings, and app extension points.
+The Desktop GUI is the graphical operating system for AE3 laptops. It gives players windows, app icons, and familiar computer workflows.
 
 ## Built-In Apps
 
-- Terminal
-- Files
-- Settings
-- Notepad
-- Mail
-- Chat
-- Browser
-- Calendar
-- Map
-- CCTV
-- Music
-- SysInfo
+The desktop can include:
 
-The app registry is defined in `CfgAE3Apps` and can be extended through config or runtime registration.
+- Terminal: command line inside the desktop.
+- Files: folder and file browsing.
+- Settings: desktop and system settings.
+- Notepad: text note workflow.
+- Mail: inbox and message reading.
+- Chat: network chat.
+- Browser: mission webpages.
+- Calendar: scheduled events.
+- Map: map-focused information.
+- CCTV: registered camera feeds.
+- Music: audio playback.
+- SysInfo: system and device information.
 
-## Access
+The exact apps available depend on the laptop configuration and mission setup.
 
-GUI access is controlled separately from TUI access:
+## How Players Use It
 
-```sqf
-[_laptop, "gui"] call AE3_desktop_fnc_setInterfaceMode;
-[_laptop, "gui", [west, "76561198000000000"]] call AE3_desktop_fnc_setInterfaceAccess;
-```
+Players open the laptop through ACE, choose the desktop action if available, log in if required, and use apps. The mission maker decides whether the desktop is the only interface or whether players can also use the terminal.
 
-## Files and Locked Files
+## Good GUI Mission Content
 
-The Files app reads the AE3 filesystem. Passworded files can be unlocked through the GUI prompt or through the TUI `unlock` command.
+Use the GUI desktop for:
 
-## Extension Points
+- Emails with sender/recipient context.
+- Browser pages with readable clues.
+- Browser history trails.
+- Documents and folders.
+- Images or audio/video evidence.
+- Calendar schedules.
+- CCTV feeds.
 
-- Add apps with `CfgAE3Apps` or `AE3_desktop_fnc_registerApp`.
-- Add web-desktop command handlers with `AE3_desktop_fnc_registerCmd`.
-- Register browser pages with `AE3_desktop_fnc_registerWebpage`.
-- Seed mail, media, history, and locked files through the desktop API.
+Avoid requiring terminal-only knowledge if a laptop is configured as GUI-only.
+
+## Mission-Maker Setup
+
+In 3DEN:
+
+1. Set laptop Interface Mode to GUI or Both.
+2. Add a user if login should be required.
+3. Add desktop content modules such as Email, Webpage, Browser History, Media, Calendar Event, File, Directory, or Passworded File.
+4. Sync each module to the laptop.
+5. Preview and open the desktop as a player.
+
+Script and addon app registration details are in [Desktop API](../Reference/Desktop-API.md) and [Extending Desktop GUI](../Developer/Extending-Desktop-GUI.md).

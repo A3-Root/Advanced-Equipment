@@ -1,34 +1,47 @@
 # Browser and Webpages
 
-The Browser app displays in-game webpages registered by mission scripts, modules, or addon code. Browser pages are useful for investigation, intranet sites, objective chains, fake public websites, and search-history intel.
+The Browser app displays in-game webpages created for the mission. Browser content is useful for intranet pages, fake public websites, objective boards, status pages, reports, and searchable clues.
 
-## Register a Page
+## What a Webpage Contains
 
-```sqf
-[
-    "intel.root/convoys",
-    "Convoy Board",
-    "North convoy departs at 0415." + endl + "Escort: two MRAPs.",
-    _laptop
-] call AE3_desktop_fnc_registerWebpage;
-```
+A browser page has:
 
-Targets may be one laptop, an array of laptops, or `"all"`.
+- URL: the address players type or open from history.
+- Title: the page heading.
+- Content: the text players read.
 
-## Add Browser History
+Pages are text-focused. Use media modules for images, video, or audio.
 
-Browser history is stored as `/var/log/browser_history` on the laptop filesystem.
+## Browser History
 
-```sqf
-[_laptop, "intel.root/convoys", "02:47"] call AE3_desktop_fnc_addHistoryEntry;
-```
+Browser history is a separate clue trail. It shows that someone visited a URL. A history entry does not automatically create the webpage.
 
-Use history to point players toward relevant pages without putting the link directly in a briefing.
+For a complete browser clue, add both:
 
-## 3DEN and Zeus
+1. A webpage.
+2. A browser history entry pointing to that webpage's URL.
 
-Use the Add Webpage and Add Browser History modules to seed pages and history without scripting. Zeus can add these during play for live intel drops.
+## No-Code Setup
 
-## Content Limits
+In 3DEN:
 
-Pages are text-focused mission content. Keep pages concise and readable in the in-game browser window. Use media registration when the intel is an image, video, or audio file.
+1. Place a laptop.
+2. Set Interface Mode to GUI or Both.
+3. Place `AE3: Add Webpage`.
+4. Fill in URL, title, and content.
+5. Sync it to the laptop.
+6. Place `AE3: Add Browser History`.
+7. Use the same URL.
+8. Set the displayed time if desired.
+9. Sync it to the laptop.
+10. Preview and open the Browser app.
+
+## Good Browser Design
+
+- Keep URLs short and memorable.
+- Make history entries point to useful content.
+- Use page titles that tell players what they found.
+- Put long background lore in files or mail, not one giant page.
+- Use multiple small pages when players should follow a trail.
+
+Script registration belongs in [Browser API](../Reference/Browser-API.md).

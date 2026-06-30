@@ -1,24 +1,37 @@
 # Lights and Interaction
 
-AE3 interaction wraps equipment behavior in ACE actions. Laptops, desks, lights, generators, batteries, solar panels, routers, and flash drives use this layer for opening, closing, carrying, dragging, cargo, turning on, and use-state restrictions.
+AE3 uses ACE interactions for equipment. Players interact with laptops, lights, desks, routers, generators, batteries, solar panels, and flash drives through ACE menus.
+
+## What Interaction Controls
+
+The interaction system handles:
+
+- Opening and closing laptops.
+- Opening and closing desks.
+- Turning lights on and off.
+- Turning power devices on and off.
+- Carrying, dragging, and loading objects into cargo when allowed.
+- Blocking movement or use while a device is connected, powered, open, or already in use.
 
 ## Lights
 
-AE3 light classes integrate with the power system. They can be turned on and off through ACE actions or script:
+AE3 light variants can be placed in 3DEN or Zeus. They can be tied into power gameplay when configured as AE3 powered devices.
 
-```sqf
-[_lamp] call AE3_interaction_fnc_lamp_turnOn;
-[_lamp] call AE3_interaction_fnc_lamp_turnOff;
-```
+Player flow:
 
-## Equipment State
+1. Find the light.
+2. Ensure it has power if the mission requires it.
+3. Use ACE interaction to turn it on or off.
 
-The interaction manager can block ACE carrying, dragging, or cargo while equipment is connected, open, turned on, or in use.
+## Laptops and Desks
 
-```sqf
-[_laptop, "inUse", true] remoteExecCall ["AE3_interaction_fnc_manageAce3Interactions", 2];
-```
+Laptops and desks can have open/close interactions. A laptop may not close while someone is using it. This prevents interrupting active GUI or terminal sessions.
 
-## Custom Equipment
+## Mission-Maker Tips
 
-Addon developers can use `AE3_Equipment`, animation points, and ACE interaction config classes to make equipment behave like native AE3 objects.
+- Do not place important equipment where players cannot access the ACE interaction point.
+- If players need to carry an object, test carrying and cargo behavior in preview.
+- If an object refuses to move, check whether it is powered, connected, open, or in use.
+- Use lights to signal power state, objective areas, or player progress.
+
+Script interaction calls belong in [Interaction API](../Reference/Interaction-API.md).

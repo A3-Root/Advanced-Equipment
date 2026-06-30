@@ -1,28 +1,114 @@
 # Player Guide
 
-Advanced Equipment devices are used through ACE interactions.
+This page explains what players can do with AE3 equipment in a mission. Mission makers decide which systems are available, so not every mission will use every feature.
+
+## Using AE3 Equipment
+
+AE3 equipment is normally used through ACE interactions. Look at the object, open the ACE interaction menu, and choose the available action.
+
+Common actions include:
+
+- Open or close a laptop.
+- Use a terminal.
+- Use a desktop.
+- Turn a device on, off, or standby.
+- Connect or disconnect a flash drive.
+- Mount or unmount USB storage.
+- Check power, battery, or fuel state.
+- Configure or connect to a network when allowed by the mission.
+
+Some actions disappear when the object is in use, connected, powered on, inside cargo, or otherwise unavailable.
 
 ## Laptops
 
-Laptops may expose a terminal interface, a graphical desktop, or both.
+Laptops can expose one or two computer interfaces.
 
-- Terminal/TUI: type commands such as `help`, `ls`, `cat`, `ip`, `ping`, `ssh`, `msg`, `mount`, and `unlock`.
-- Desktop/GUI: open apps such as Files, Browser, Mail, Chat, Calendar, Map, Music, Settings, Terminal, and SysInfo.
+### Desktop GUI
 
-Some laptops require a username and password. Some laptops allow only certain sides or players to use GUI or TUI access.
+The graphical desktop is used like an in-game computer. Depending on the mission, you may see apps such as:
 
-## Power and Network
+- Files: browse folders and open documents.
+- Browser: open mission webpages and follow clues.
+- Mail: read emails planted by the mission maker or Zeus.
+- Chat: communicate through AE3 network systems.
+- Calendar: inspect scheduled events.
+- Map: view map-related information.
+- CCTV: view registered cameras.
+- Music: play audio media.
+- SysInfo: inspect system information.
+- Terminal: use a command line inside the desktop.
 
-Devices may need power before they work. Generators, batteries, and solar panels can feed laptops, routers, and lights. Routers provide network access for ping, SSH, chat, and network-aware desktop apps.
+### Terminal TUI
+
+The terminal is a text interface. It is used for command-line style gameplay: listing files, reading logs, changing directories, checking network state, pinging other devices, using SSH, mounting flash drives, and unlocking passworded files.
+
+Useful commands to try if they are installed:
+
+- `help`: show commands available on this laptop.
+- `man <command>`: show help for one command.
+- `ls`: list files.
+- `cd`: change folders.
+- `cat`: read a file.
+- `ip`: show network information.
+- `ping`: test a remote address.
+- `ssh`: connect to a remote laptop.
+- `lsusb`: list USB interfaces.
+- `mount`: mount a flash drive.
+- `umount`: safely unmount a flash drive.
+- `unlock`: open a passworded file.
+
+If a command does not work, the mission maker may not have installed it on that laptop.
+
+## User Accounts
+
+Some laptops require a username and password. Credentials may be given in the briefing, found in a note, hidden in an email, recovered from browser history, or provided by Zeus during play.
+
+If you log in but cannot read a file, the file may belong to a different user or require a password.
+
+## Power
+
+Some devices must be powered before they work.
+
+- Generators may need fuel.
+- Batteries may need charge.
+- Solar panels may depend on sunlight and orientation.
+- Routers and laptops may have internal batteries but still run out or start off.
+
+If a laptop will not turn on, look for a power source or ask whether the mission includes a power puzzle.
+
+## Networking
+
+Networks allow laptops to communicate. A router usually defines the local network. If the laptop has network access, you may be able to:
+
+- View its current address.
+- Ping another device.
+- Connect to another laptop through SSH.
+- Use chat or messaging.
+- Access network-based mission clues.
+
+Network range, router passwords, static addresses, and external access rules are controlled by the mission.
 
 ## Flash Drives
 
-Flash drives can be carried as inventory items, connected to laptop USB interfaces, mounted from the terminal, and browsed through the filesystem.
+Flash drives can hold files and clues.
 
-```text
-lsusb
-mount usb0
-ls /mnt/usb0
-cat /mnt/usb0/readme.txt
-umount usb0
-```
+Typical flow:
+
+1. Pick up or receive a flash drive.
+2. Use ACE to connect it to a laptop USB port.
+3. Use the terminal to list USB devices.
+4. Mount the flash drive.
+5. Open its files through the terminal or desktop Files app.
+6. Unmount it before disconnecting when the mission expects careful handling.
+
+## If Something Seems Broken
+
+Check these first:
+
+- Is the device powered?
+- Is someone else already using the laptop?
+- Are you using the correct interface, GUI or terminal?
+- Do you have the right username and password?
+- Is the flash drive mounted?
+- Is the router powered and within range?
+- Did Zeus or the mission maker restrict access to your side or player?

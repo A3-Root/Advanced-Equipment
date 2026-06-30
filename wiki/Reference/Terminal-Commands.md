@@ -1,49 +1,181 @@
 # Terminal Commands
 
-Commands are provided by `CfgOsFunctions`, optional `CfgSecurityCommands`, game config, and runtime custom command registration.
+This page documents the commands available in the AE3 terminal/TUI when they are installed on a laptop. A command must exist as a link on that laptop before a player can run it. Mission makers can install all base commands, a selected subset, optional security commands, optional games, and runtime custom commands.
+
+For script APIs that install commands, see [ArmaOS API](ArmaOS-API.md).
+
+## Installing Commands
+
+All base commands:
+
+```sqf
+[_laptop, ["all"], false, false, []] call AE3_armaos_fnc_computer_initWithCommands;
+```
+
+Selected base commands:
+
+```sqf
+[_laptop, ["help", "man", "ls", "cd", "cat", "exit"], false, false, []] call AE3_armaos_fnc_computer_initWithCommands;
+```
+
+Security commands:
+
+```sqf
+[_laptop, true, true] call AE3_armaos_fnc_computer_addSecurityCommands;
+```
+
+Games:
+
+```sqf
+[_laptop, true] call AE3_armaos_fnc_computer_addGames;
+```
 
 ## Base Commands
 
-| Command | Use |
-| --- | --- |
-| `help` | List available commands. |
-| `man` | Show command manual text. |
-| `ls` | List directory contents. |
-| `cd` | Change directory. |
-| `cat` | Print file content. |
-| `date` | Print date/time. |
-| `history` | Show command history. |
-| `clear` | Clear terminal output. |
-| `rm` | Remove file or directory. |
-| `mv` | Move or rename. |
-| `cp` | Copy. |
-| `whoami` | Show current user. |
-| `mkdir` | Create directory. |
-| `touch` | Create file. |
-| `find` | Search filesystem. |
-| `grep` | Search text. |
-| `chown` | Change owner. |
-| `sudo` | Run privileged command where permitted. |
+| Command | Path | Purpose |
+| --- | --- | --- |
+| `help` | `/bin/help` | Lists available commands and descriptions. |
+| `man` | `/bin/man` | Shows manual/help text for a command. |
+| `ls` | `/bin/ls` | Lists directory contents. |
+| `cd` | `/bin/cd` | Changes current directory. |
+| `cat` | `/bin/cat` | Reads a file. Also opens readable content such as text intel. |
+| `date` | `/bin/date` | Prints current mission date/time. |
+| `history` | `/bin/history` | Shows command history. |
+| `clear` | `/bin/clear` | Clears terminal output. |
+| `rm` | `/bin/rm` | Removes a file or directory. |
+| `mv` | `/bin/mv` | Moves or renames a file or directory. |
+| `cp` | `/bin/cp` | Copies a file or directory. |
+| `whoami` | `/bin/whoami` | Prints current logged-in user. |
+| `mkdir` | `/bin/mkdir` | Creates a directory. |
+| `touch` | `/bin/touch` | Creates an empty file. |
+| `echo` | `/bin/echo` | Prints text. |
+| `find` | `/bin/find` | Searches the filesystem by object name. |
+| `grep` | `/bin/grep` | Searches text content. |
+| `sudo` | `/bin/sudo` | Runs commands with elevated permissions when the user/password allows it. |
 
 ## System and Network Commands
 
-| Command | Use |
-| --- | --- |
-| `ip` / `ifconfig` | Show IP/network state. |
-| `ping` | Test route to an IP. |
-| `ssh` | Open remote shell. |
-| `msg` | Send network message. |
-| `exit` | Exit local or SSH session. |
-| `shutdown` | Turn off laptop. |
-| `standby` | Put laptop in standby. |
+| Command | Path | Purpose |
+| --- | --- | --- |
+| `ping` | `/sbin/ping` | Tests reachability to an IP. |
+| `ip` | `/sbin/ip` | Shows or configures network/IP information. |
+| `ifconfig` | `/sbin/ifconfig` | Alias using the same backend as `ip`. |
+| `ssh` | `/sbin/ssh` | Opens a remote shell session when route and credentials allow it. |
+| `msg` | `/sbin/msg` | Sends a message to another reachable device. |
+| `exit` | `/sbin/exit` | Logs out or exits an SSH session. |
+| `shutdown` | `/sbin/shutdown` | Turns the computer off. |
+| `standby` | `/sbin/standby` | Puts the computer in standby. |
 
-## USB and Security Commands
+Network commands depend on power and routing. If a laptop or router is off, route checks may fail even when the physical connection exists.
 
-| Command | Use |
+## USB Commands
+
+| Command | Path | Purpose |
+| --- | --- | --- |
+| `lsusb` | `/bin/lsusb` | Lists USB interfaces and attached flash drives. |
+| `mount` | `/bin/mount` | Mounts an attached flash drive into `/mnt/<interface>`. |
+| `umount` | `/bin/umount` | Unmounts an attached flash drive and saves its filesystem back to the drive. |
+| `chown` | `/bin/chown` | Changes owner of files/directories. Often useful after mounting. |
+
+Typical player sequence:
+
+```text
+lsusb
+mount usb0
+ls /mnt/usb0
+cat /mnt/usb0/brief.txt
+umount usb0
+```
+
+## Security Commands
+
+Security commands are optional and are not installed unless the mission maker enables them.
+
+| Command | Path | Purpose |
+| --- | --- | --- |
+| `crypto` | `/bin/crypto` | Encrypts or decrypts text using supported algorithms. |
+| `crack` | `/bin/crack` | Attempts password cracking behavior provided by AE3 security tooling. |
+
+These commands are useful for puzzle laptops and intelligence workflows. Install only on laptops meant to provide those tools.
+
+## Games
+
+| Command | Path | Purpose |
+| --- | --- | --- |
+| `snake` | `/games/snake` | Starts the Snake game. |
+
+`snake` is interactive and is not SSH-compatible.
+
+## SSH Compatibility
+
+Some commands can run through SSH sessions. Interactive or graphical commands are blocked over SSH when their config marks `sshCompatible = 0`.
+
+Known blocked commands:
+
+| Command | Reason |
 | --- | --- |
-| `lsusb` | List USB interfaces. |
-| `mount` | Mount flash drive. |
-| `umount` | Unmount flash drive. |
-| `unlock` | Unlock passworded file. |
-| `crypto` | Encryption/decryption command when installed. |
-| `crack` | Password/security cracking command when installed. |
+| `ssh` | Nested SSH is blocked. |
+| `snake` | Interactive game. |
+
+When writing custom commands, avoid opening displays or requiring local-only UI if the command might run during SSH. If your addon defines config commands, mark interactive commands as not SSH-compatible.
+
+## Custom Runtime Command Example
+
+```sqf
+[
+    _laptop,
+    "relay",
+    "/bin/relay",
+    {
+        params ["_computer", "_options", "_commandName"];
+        private _mode = _options param [0, "status"];
+
+        switch (_mode) do {
+            case "open": {
+                missionNamespace setVariable ["myMission_relayOpen", true, true];
+                [_computer, "Relay opened."] call AE3_armaos_fnc_shell_stdout;
+            };
+            case "close": {
+                missionNamespace setVariable ["myMission_relayOpen", false, true];
+                [_computer, "Relay closed."] call AE3_armaos_fnc_shell_stdout;
+            };
+            default {
+                private _state = ["closed", "open"] select (missionNamespace getVariable ["myMission_relayOpen", false]);
+                [_computer, format ["Relay is %1.", _state]] call AE3_armaos_fnc_shell_stdout;
+            };
+        };
+    },
+    "Control relay",
+    "relay [status|open|close]"
+] call AE3_armaos_fnc_computer_addCustomCommand;
+```
+
+## Config Command Shape
+
+Addon-provided terminal commands are defined in config using `CfgOsFunctions`, `CfgSecurityCommands`, or `CfgGames` style classes.
+
+```cpp
+class CfgOsFunctions
+{
+    class myCommand
+    {
+        path = "/bin/myCommand";
+        description = "Runs my command.";
+        man = "myCommand: detailed help text.";
+        code = "call myTag_fnc_myCommand";
+        sshCompatible = 1;
+    };
+};
+```
+
+The target function receives the normal command arguments used by AE3 shell execution.
+
+## Troubleshooting
+
+| Symptom | Check |
+| --- | --- |
+| `help` does not list a command | The command was not installed on that laptop. |
+| Command file exists but cannot run | Execute permission may be missing. |
+| Command prints nothing | Use `AE3_armaos_fnc_shell_stdout`; do not use `hint` for terminal output. |
+| Command works locally but not over SSH | It may be blocked by `sshCompatible = 0`, route policy, credentials, or power state. |
+| Custom command fails during mission start | Wait until the laptop filesystem exists before adding the command. |

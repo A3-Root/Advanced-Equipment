@@ -1,38 +1,50 @@
 # Terminal TUI
 
-The terminal is AE3's command-line laptop interface. It runs ArmaOS commands from the laptop filesystem and command link registry.
+The Terminal TUI is AE3's command-line computer interface. It is intended for missions where players inspect files, use network tools, mount USB drives, unlock files, or operate a laptop through typed commands.
 
-## Common Commands
+## Common Player Commands
 
-```text
-help
-man ls
-ls /home/admin
-cd /var/log
-cat browser_history
-ip
-ping 10.0.0.4
-ssh admin@10.0.0.4
-msg 10.0.0.5 "open the gate"
-lsusb
-mount usb0
-umount usb0
-unlock /home/admin/locked.txt
-```
+The exact command list depends on the laptop. Players should start with:
 
-## Command Sources
+- `help`: list available commands.
+- `man`: show manual text for a command.
+- `ls`: list files and folders.
+- `cd`: change folder.
+- `cat`: read a file.
+- `ip`: show network information.
+- `ping`: check whether another address is reachable.
+- `ssh`: connect to a remote laptop.
+- `msg`: send a network message.
+- `lsusb`: list connected USB interfaces.
+- `mount`: mount a flash drive.
+- `umount`: unmount a flash drive.
+- `unlock`: open a passworded file.
 
-Base commands are configured in `CfgOsFunctions`. Security commands such as `crypto` and `crack` are configured in `CfgSecurityCommands`. Games are configured in `CfgGames`.
+Not every laptop has every command. Mission makers can choose command sets.
 
-Mission makers can add commands at runtime:
+## Good Terminal Mission Content
 
-```sqf
-[_laptop, "status", "/bin/status", {
-    params ["_computer", "_options", "_commandName"];
-    [_computer, "Generator online"] call AE3_armaos_fnc_shell_stdout;
-}, "Print site status", "status: prints mission status"] call AE3_armaos_fnc_computer_addCustomCommand;
-```
+Use terminal gameplay for:
 
-## GUI Relationship
+- Log inspection.
+- Finding hidden files.
+- Network discovery.
+- SSH chains.
+- Flash drive handling.
+- Passworded or encrypted file puzzles.
+- Minimalist terminals where players must infer what to do.
 
-The desktop includes a Terminal app, but a laptop can also expose the classic terminal directly. Configure `cli`, `gui`, or `both` depending on the intended player experience.
+Avoid placing all clues in GUI-only apps if the laptop is configured as CLI-only.
+
+## Mission-Maker Setup
+
+In 3DEN:
+
+1. Set laptop Interface Mode to CLI or Both.
+2. Add a user.
+3. Add folders and files.
+4. Add security commands or custom command setup if the laptop attributes/modules expose them.
+5. Add network and flash drive gameplay only if players have enough clues to use it.
+6. Preview and test with the same interface players will use.
+
+Script command creation belongs in [ArmaOS API](../Reference/ArmaOS-API.md) and [Extending Terminal TUI](../Developer/Extending-Terminal-TUI.md).
