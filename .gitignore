@@ -37,6 +37,10 @@ cache
 !cost.json
 !graph.json
 !manifest.json
+!gallery.md
+!brief.md
+!feed.md
+
 
 # =========================
 # Python

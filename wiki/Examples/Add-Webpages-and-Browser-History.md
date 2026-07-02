@@ -93,6 +93,17 @@ if (isServer) then {
 - Use email to tell players which URL matters.
 - Use files for long reports; use browser pages for short, navigable intel.
 
+## Full-Scale Sample Pages
+
+If you want larger examples instead of only short intel snippets, start with the public sample set:
+
+- [Browser Sample Pages](Browser-Sample-Pages.md)
+- [Browser Sample Portal](Browser-Sample-Portal.md)
+- [Browser Sample Regret](Browser-Sample-Regret.md)
+- [Browser Sample Image Gallery](Browser-Sample-Gallery.md)
+
+The sample files live in [`sample_files/`](../../sample_files/README.md) in this repository. They are split into HTML, Markdown, CSS, JS, and SVG source so you can copy pieces into your own mission or mod content.
+
 ## Common Mistakes
 
 | Problem | Fix |
@@ -108,3 +119,4 @@ if (isServer) then {
 - [Browser and Webpages](../Systems/Browser-and-Webpages.md)
 - [Browser API](../Reference/Browser-API.md)
 - [Desktop API](../Reference/Desktop-API.md)
+- [Browser Sample Pages](Browser-Sample-Pages.md)

@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Regret</title>
+<style>
+:root {
+  color-scheme: dark;
+  --bg: #0b1020;
+  --bg2: #101a33;
+  --panel: rgba(20, 29, 55, 0.9);
+  --panel2: rgba(27, 38, 69, 0.94);
+  --line: rgba(157, 181, 255, 0.14);
+  --text: #eaf0ff;
+  --muted: #9ba9cf;
+  --accent: #89b4ff;
+  --accent2: #73d6c9;
+  --hot: #ff7a90;
+  --shadow: 0 22px 60px rgba(0, 0, 0, 0.36);
+  --radius: 22px;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  font: 15px/1.5 "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at top left, rgba(137, 180, 255, 0.12), transparent 30%),
+    radial-gradient(circle at 80% 14%, rgba(115, 214, 201, 0.11), transparent 26%),
+    linear-gradient(180deg, var(--bg), var(--bg2));
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.shell {
+  max-width: 1380px;
+  margin: 0 auto;
+  padding: 16px;
+}
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 18px;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: rgba(12, 18, 36, 0.76);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(12px);
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 180px;
+}
+.logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  background: linear-gradient(145deg, #89b4ff, #73d6c9);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+}
+.brand h1 {
+  margin: 0;
+  font-size: 22px;
+}
+.search {
+  flex: 1;
+  padding: 11px 14px;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 999px;
+  background: rgba(255,255,255,0.05);
+  color: var(--text);
+}
+.topactions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.chip, .pill {
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,0.03);
+  color: var(--text);
+  border-radius: 999px;
+  padding: 9px 12px;
+  cursor: pointer;
+}
+.chip.active {
+  background: rgba(137, 180, 255, 0.18);
+  border-color: rgba(137, 180, 255, 0.28);
+}
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--hot);
+  display: inline-block;
+  margin-right: 8px;
+}
+.layout {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr) 320px;
+  gap: 18px;
+  margin-top: 18px;
+}
+.panel {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, var(--panel), rgba(10, 16, 34, 0.96));
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.panel.pad { padding: 18px; }
+.section-title {
+  margin: 0 0 12px;
+  font-size: 15px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--muted);
+}
+.profile {
+  display: grid;
+  gap: 14px;
+}
+.avatar {
+  width: 68px;
+  height: 68px;
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 28% 30%, rgba(255,255,255,0.28), transparent 22%),
+    linear-gradient(145deg, #89b4ff, #73d6c9);
+}
+.muted { color: var(--muted); }
+.menu { display: grid; gap: 8px; }
+.menu a {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 12px;
+  color: var(--text);
+  background: rgba(255,255,255,0.03);
+}
+.storybar {
+  display: flex;
+  gap: 10px;
+  overflow: auto;
+  padding-bottom: 4px;
+  margin-bottom: 16px;
+}
+.story {
+  min-width: 104px;
+  height: 146px;
+  border-radius: 18px;
+  padding: 12px;
+  display: flex;
+  align-items: flex-end;
+  background:
+    linear-gradient(180deg, rgba(0,0,0,0.08), rgba(0,0,0,0.55)),
+    radial-gradient(circle at top, rgba(137,180,255,0.55), transparent 48%),
+    linear-gradient(145deg, #243863, #1f325a);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: #fff;
+  font-weight: 600;
+}
+.composer {
+  padding: 16px;
+  background: var(--panel2);
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.composer textarea {
+  width: 100%;
+  min-height: 90px;
+  resize: vertical;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+}
+.composer-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+}
+.postfeed {
+  display: grid;
+  gap: 16px;
+  margin-top: 16px;
+}
+.post {
+  padding: 18px;
+  border-radius: 20px;
+  background: linear-gradient(180deg, rgba(28, 39, 70, 0.96), rgba(20, 29, 55, 0.96));
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.posthead {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.mini {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  background: linear-gradient(145deg, #ff7a90, #89b4ff);
+}
+.postmeta {
+  display: flex;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 13px;
+}
+.post p { margin: 12px 0; }
+.postimg {
+  height: 190px;
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(137,180,255,0.75), transparent 28%),
+    radial-gradient(circle at 80% 30%, rgba(115,214,201,0.62), transparent 22%),
+    linear-gradient(145deg, #1c2b4d, #243863);
+  border: 1px solid rgba(255,255,255,0.08);
+  margin-top: 10px;
+}
+.actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+.actions button {
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.06);
+  color: var(--text);
+  cursor: pointer;
+}
+.actions button:hover { background: rgba(255,255,255,0.12); }
+.rail {
+  display: grid;
+  gap: 16px;
+}
+.list {
+  display: grid;
+  gap: 10px;
+}
+.list-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.list-item:last-child { border-bottom: 0; }
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(137, 180, 255, 0.14);
+  color: #cfe0ff;
+}
+.footer {
+  margin: 16px 4px 28px;
+  color: var(--muted);
+  font-size: 13px;
+}
+@media (max-width: 1180px) {
+  .layout { grid-template-columns: 240px minmax(0, 1fr); }
+  .rail { grid-column: 1 / -1; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 760px) {
+  .topbar { flex-wrap: wrap; }
+  .brand { min-width: 0; }
+  .layout, .rail { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="shell">
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo" aria-hidden="true"></div>
+      <div>
+        <h1>Regret</h1>
+        <div class="muted"><span class="dot"></span>3 new posts since 02:40</div>
+      </div>
+    </div>
+    <input class="search" value="Search people, posts, groups" aria-label="Search">
+    <div class="topactions">
+      <button class="pill">Home</button>
+      <button class="pill">Messages</button>
+      <button class="pill">Alerts <strong id="alertCount">2</strong></button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="panel pad">
+      <div class="profile">
+        <div class="avatar"></div>
+        <div>
+          <div class="section-title">Profile</div>
+          <strong>Northwatch Office</strong>
+          <div class="muted">Pinned community page</div>
+        </div>
+        <div class="menu">
+          <a href="feed.md">Feed notes <span>Markdown</span></a>
+          <a href="#trending">Trending <span>4</span></a>
+          <a href="#groups">Groups <span>7</span></a>
+          <a href="#saved">Saved <span>12</span></a>
+        </div>
+      </div>
+    </aside>
+
+    <main>
+      <section class="panel pad">
+        <div class="section-title">Stories</div>
+        <div class="storybar" aria-label="Stories">
+          <div class="story">Depot Run</div>
+          <div class="story">Shift Swap</div>
+          <div class="story">Photo Drop</div>
+          <div class="story">Watch List</div>
+          <div class="story">Blue Route</div>
+        </div>
+
+        <div class="composer">
+          <textarea placeholder="What's happening in the district?"></textarea>
+          <div class="composer-actions">
+            <div class="muted" id="composerHint">Public feed, local network only</div>
+            <div>
+              <button class="chip active" data-filter="all">All</button>
+              <button class="chip" data-filter="friends">Friends</button>
+              <button class="chip" data-filter="groups">Groups</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="postfeed" id="feed">
+          <article class="post" data-kind="friends">
+            <div class="posthead">
+              <div class="mini"></div>
+              <div>
+                <strong>Mira Vale</strong>
+                <div class="postmeta"><span>15 min</span><span>Public</span></div>
+              </div>
+            </div>
+            <p>Long shift. If anyone sees the courier truck, do not stop it near the south fence. We already moved the handoff point.</p>
+            <div class="postimg"></div>
+            <div class="actions">
+              <button>Like <span class="count">8</span></button>
+              <button>Comment</button>
+              <button>Share</button>
+            </div>
+          </article>
+
+          <article class="post" data-kind="groups">
+            <div class="posthead">
+              <div class="mini"></div>
+              <div>
+                <strong>Harbor Watch</strong>
+                <div class="postmeta"><span>42 min</span><span>Group</span></div>
+              </div>
+            </div>
+            <p>Reminder: the waterfront photo thread has been pinned. Upload any night images to the album before noon.</p>
+            <div class="actions">
+              <button>Like <span class="count">14</span></button>
+              <button>Comment</button>
+              <button>Save</button>
+            </div>
+          </article>
+
+          <article class="post" data-kind="friends">
+            <div class="posthead">
+              <div class="mini"></div>
+              <div>
+                <strong>System Notice</strong>
+                <div class="postmeta"><span>2 h</span><span>Friends</span></div>
+              </div>
+            </div>
+            <p>Someone tried to reset the account recovery phone number. If that was not you, check the security inbox.</p>
+            <div class="actions">
+              <button>Like <span class="count">3</span></button>
+              <button>Comment</button>
+              <button>Report</button>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <aside class="rail">
+      <section class="panel pad" id="trending">
+        <div class="section-title">People you may know</div>
+        <div class="list">
+          <div class="list-item"><span>Jules Rowe</span><span class="muted">Mutual 4</span></div>
+          <div class="list-item"><span>Casey Holt</span><span class="muted">Mutual 2</span></div>
+          <div class="list-item"><span>North Dock Ops</span><span class="muted">Page</span></div>
+        </div>
+      </section>
+
+      <section class="panel pad" id="groups">
+        <div class="section-title">Groups</div>
+        <div class="list">
+          <div class="list-item"><span>Harbor Watch</span><span class="muted">18 posts</span></div>
+          <div class="list-item"><span>Shift Traders</span><span class="muted">24 posts</span></div>
+          <div class="list-item"><span>Lost & Found</span><span class="muted">9 posts</span></div>
+        </div>
+      </section>
+
+      <section class="panel pad" id="saved">
+        <div class="section-title">Reminders</div>
+        <div class="list">
+          <div class="list-item"><span>Check photo album</span><span class="muted">Tonight</span></div>
+          <div class="list-item"><span>Reply to the courier</span><span class="muted">Soon</span></div>
+          <div class="list-item"><span>Read feed.md</span><span class="muted">Open</span></div>
+        </div>
+      </section>
+    </aside>
+  </div>
+
+  <p class="footer">
+    This sample keeps the social-feed feel while staying fictional. The companion source files are
+    <code>styles.css</code> and <code>app.js</code> in the same folder.
+  </p>
+</div>
+
+<script>
+(function () {
+  var feed = document.getElementById("feed");
+  var chips = document.querySelectorAll(".chip");
+  var alertCount = document.getElementById("alertCount");
+  var current = "all";
+
+  function setFilter(kind) {
+    current = kind;
+    chips.forEach(function (chip) { chip.classList.toggle("active", chip.dataset.filter === kind); });
+    feed.querySelectorAll(".post").forEach(function (post) {
+      var ok = kind === "all" || post.dataset.kind === kind;
+      post.style.display = ok ? "" : "none";
+    });
+  }
+
+  chips.forEach(function (chip) {
+    chip.addEventListener("click", function () {
+      setFilter(chip.dataset.filter);
+    });
+  });
+
+  feed.addEventListener("click", function (e) {
+    var btn = e.target.closest("button");
+    if (!btn || !btn.textContent.trim().toLowerCase().startsWith("like")) return;
+    var count = btn.querySelector(".count");
+    if (count) count.textContent = String(Number(count.textContent) + 1);
+    alertCount.textContent = String(Number(alertCount.textContent) + 1);
+  });
+
+  setFilter(current);
+})();
+</script>
+</body>
+</html>

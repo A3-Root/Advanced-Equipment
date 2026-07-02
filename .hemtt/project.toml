@@ -13,6 +13,7 @@ include = [
     "logo_ae3_ca_hover.paa",
     "logo_ae3_ca_font.paa",
     "README*.md",
+    "sample_files",
 ]
 exclude = [
     ".gitignore",

@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Archive Gallery</title>
+<style>
+:root {
+  color-scheme: dark;
+  --bg: #11101b;
+  --bg2: #181624;
+  --panel: rgba(27, 26, 42, 0.94);
+  --panel2: rgba(34, 32, 54, 0.96);
+  --line: rgba(255,255,255,0.08);
+  --text: #f4f0ff;
+  --muted: #a5a0bc;
+  --accent: #f6c177;
+  --accent2: #88d7ff;
+  --shadow: 0 24px 68px rgba(0, 0, 0, 0.42);
+  --radius: 22px;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--text);
+  font: 15px/1.5 "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  background:
+    radial-gradient(circle at 10% 10%, rgba(246, 193, 119, 0.16), transparent 26%),
+    radial-gradient(circle at 80% 0%, rgba(136, 215, 255, 0.12), transparent 24%),
+    linear-gradient(180deg, var(--bg), var(--bg2));
+}
+a { color: var(--accent2); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.wrap {
+  max-width: 1260px;
+  margin: 0 auto;
+  padding: 18px;
+}
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 20px;
+  border-radius: 22px;
+  background: rgba(17, 16, 27, 0.8);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(12px);
+}
+.title {
+  display: grid;
+  gap: 4px;
+}
+.title h1 {
+  margin: 0;
+  font-size: clamp(28px, 4vw, 40px);
+}
+.title .muted {
+  color: var(--muted);
+}
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.filter {
+  padding: 9px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,0.03);
+  color: var(--text);
+  cursor: pointer;
+}
+.filter.active {
+  background: rgba(246, 193, 119, 0.16);
+  border-color: rgba(246, 193, 119, 0.35);
+}
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(320px, 0.9fr);
+  gap: 18px;
+  margin-top: 18px;
+}
+.panel {
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: linear-gradient(180deg, var(--panel), rgba(19, 18, 32, 0.96));
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.heroimg {
+  min-height: 360px;
+  position: relative;
+  background:
+    linear-gradient(180deg, rgba(0,0,0,0.06), rgba(0,0,0,0.4)),
+    radial-gradient(circle at 24% 26%, rgba(136, 215, 255, 0.7), transparent 26%),
+    radial-gradient(circle at 82% 20%, rgba(246, 193, 119, 0.56), transparent 22%),
+    linear-gradient(145deg, #34314f, #1f1d31);
+}
+.heroimg svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.heroCaption {
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  bottom: 18px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: rgba(17,16,27,0.74);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.heroCaption h2 {
+  margin: 0 0 4px;
+  font-size: 20px;
+}
+.heroCaption p {
+  margin: 0;
+  color: var(--muted);
+}
+.notes {
+  padding: 18px;
+}
+.notes h3 {
+  margin: 0 0 10px;
+  font-size: 18px;
+}
+.notes p {
+  color: var(--muted);
+}
+.statrow {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+}
+.stat {
+  padding: 14px;
+  border-radius: 18px;
+  background: var(--panel2);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+.stat strong {
+  display: block;
+  font-size: 24px;
+}
+.thumbs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 18px;
+}
+.thumb {
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  overflow: hidden;
+  background: rgba(255,255,255,0.03);
+  cursor: pointer;
+}
+.thumb img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  background: #1d1b2d;
+}
+.thumb .cap {
+  padding: 12px;
+}
+.thumb .cap strong {
+  display: block;
+  margin-bottom: 2px;
+}
+.thumb .cap span {
+  color: var(--muted);
+  font-size: 13px;
+}
+.footer {
+  margin: 16px 4px 28px;
+  color: var(--muted);
+  font-size: 13px;
+}
+.modal {
+  position: fixed;
+  inset: 0;
+  display: none;
+  place-items: center;
+  background: rgba(0,0,0,0.72);
+  padding: 18px;
+  z-index: 10;
+}
+.modal.open { display: grid; }
+.modalCard {
+  width: min(980px, 100%);
+  border-radius: 24px;
+  background: rgba(13, 12, 20, 0.98);
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.modalTop {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.modalTop button {
+  border: 0;
+  background: rgba(255,255,255,0.08);
+  color: var(--text);
+  border-radius: 999px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+.modalBody {
+  display: grid;
+  grid-template-columns: 1.4fr 0.8fr;
+  gap: 0;
+}
+.modalBody .preview {
+  min-height: 520px;
+  background: linear-gradient(145deg, #2c2942, #171527);
+}
+.modalBody .preview svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.modalBody .details {
+  padding: 18px;
+}
+@media (max-width: 980px) {
+  .hero, .modalBody { grid-template-columns: 1fr; }
+  .thumbs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 680px) {
+  .header { flex-direction: column; align-items: stretch; }
+  .thumbs, .statrow { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="header">
+    <div class="title">
+      <div class="muted">Image gallery sample</div>
+      <h1>Archive Gallery</h1>
+      <div class="muted">A visual page with filters, captions, and preview behavior.</div>
+    </div>
+    <div class="filters" id="filters">
+      <button class="filter active" data-tag="all">All</button>
+      <button class="filter" data-tag="night">Night</button>
+      <button class="filter" data-tag="terrain">Terrain</button>
+      <button class="filter" data-tag="interior">Interior</button>
+    </div>
+  </header>
+
+  <section class="hero">
+    <article class="panel heroimg">
+      <svg viewBox="0 0 1200 800" aria-hidden="true">
+        <defs>
+          <linearGradient id="g1" x1="0" x2="1">
+            <stop offset="0" stop-color="#3b3658"/>
+            <stop offset="1" stop-color="#1c1a2e"/>
+          </linearGradient>
+          <radialGradient id="sun" cx="30%" cy="26%" r="40%">
+            <stop offset="0" stop-color="#88d7ff" stop-opacity="0.9"/>
+            <stop offset="1" stop-color="#88d7ff" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+        <rect width="1200" height="800" fill="url(#g1)"/>
+        <circle cx="330" cy="210" r="160" fill="url(#sun)"/>
+        <circle cx="860" cy="165" r="110" fill="#f6c177" opacity="0.68"/>
+        <path d="M0 580 C180 520, 300 520, 460 560 S820 690, 1200 600 L1200 800 L0 800 Z" fill="#10131f"/>
+        <path d="M160 590 L260 410 L355 590 Z" fill="#2b2f48"/>
+        <path d="M420 590 L560 360 L700 590 Z" fill="#23283f"/>
+        <path d="M760 590 L885 430 L1015 590 Z" fill="#282d46"/>
+      </svg>
+      <div class="heroCaption">
+        <h2 id="heroTitle">Night relay over the ridge</h2>
+        <p id="heroBody">Select a thumbnail below to swap the featured image and read the matching note.</p>
+      </div>
+    </article>
+
+    <aside class="panel notes">
+      <h3>Gallery Notes</h3>
+      <p>
+        The sample is designed to feel like a media archive or evidence wall. Use it for photo
+        sets, surveillance stills, reconnaissance boards, or a curator-curated reference wall.
+      </p>
+      <div class="statrow">
+        <div class="stat"><strong id="countAll">6</strong><span class="muted">images</span></div>
+        <div class="stat"><strong id="countTag">6</strong><span class="muted">visible</span></div>
+        <div class="stat"><strong>SVG</strong><span class="muted">source art</span></div>
+      </div>
+      <p>
+        A matching Markdown note lives in <a href="gallery.md">gallery.md</a>. The split CSS/JS and
+        SVG source assets in this folder show how to keep the page organized.
+      </p>
+    </aside>
+  </section>
+
+  <section class="thumbs" id="thumbs" aria-label="Gallery thumbnails"></section>
+
+  <p class="footer">
+    This sample keeps the visuals self-contained. The source SVG files in <code>assets/</code>
+    mirror the inline art used by the page.
+  </p>
+</div>
+
+<div class="modal" id="modal" aria-hidden="true">
+  <div class="modalCard">
+    <div class="modalTop">
+      <strong id="modalTitle">Preview</strong>
+      <button id="closeModal">Close</button>
+    </div>
+    <div class="modalBody">
+      <div class="preview" id="modalPreview"></div>
+      <div class="details">
+        <h3 id="modalCaption">Caption</h3>
+        <p id="modalText">Text</p>
+        <p class="muted"><a href="gallery.md">Open gallery.md</a></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  function svgData(svg) {
+    return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg.trim());
+  }
+  var items = [
+    {
+      tag: "night",
+      title: "Night relay over the ridge",
+      caption: "Observation ridge",
+      text: "A moonlit hill shot used as the hero image for the archive.",
+      svg: '<svg viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg"><rect width="600" height="600" fill="#1f2032"/><circle cx="180" cy="150" r="84" fill="#88d7ff" fill-opacity=".35"/><path d="M0 430 L150 340 L260 420 L380 280 L600 430 L600 600 L0 600 Z" fill="#10131f"/><path d="M95 430 L175 270 L260 430 Z" fill="#2e3250"/><path d="M250 430 L360 240 L470 430 Z" fill="#242943"/><path d="M430 430 L510 330 L600 430 Z" fill="#2a2f49"/></svg>'
+    },
+    {
+      tag: "terrain",
+      title: "Survey line at dawn",
+      caption: "Terrain scan",
+      text: "A terrain image that can stand in for route recon or horizon planning.",
+      svg: '<svg viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg"><rect width="600" height="600" fill="#25263a"/><rect width="600" height="600" fill="url(#g)"/><defs><linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="#2d334d"/><stop offset="1" stop-color="#171a28"/></linearGradient></defs><circle cx="420" cy="140" r="70" fill="#f6c177" fill-opacity=".62"/><path d="M0 470 C120 430, 210 400, 320 430 S520 540, 600 500 L600 600 L0 600 Z" fill="#10131f"/><path d="M70 500 L190 320 L300 500 Z" fill="#2d334d"/><path d="M260 500 L380 280 L500 500 Z" fill="#20253b"/></svg>'
+    },
+    {
+      tag: "interior",
+      title: "Evidence wall",
+      caption: "Interior photo",
+      text: "A warmer interior frame suitable for rooms, maps, or briefing board photos.",
+      svg: '<svg viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg"><rect width="600" height="600" fill="#2a2230"/><rect x="110" y="100" width="380" height="400" rx="18" fill="#40324b"/><rect x="145" y="135" width="310" height="330" rx="12" fill="#241d2c"/><circle cx="300" cy="250" r="76" fill="#f6c177" fill-opacity=".65"/><rect x="180" y="370" width="240" height="18" rx="9" fill="#88d7ff" fill-opacity=".52"/><rect x="180" y="402" width="180" height="18" rx="9" fill="#88d7ff" fill-opacity=".38"/></svg>'
+    },
+    {
+      tag: "night",
+      title: "Dock lights",
+      caption: "Night port",
+      text: "A darker harbor view for surveillance or harbor-watch missions.",
+      svg: '<svg viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg"><rect width="600" height="600" fill="#1a1730"/><circle cx="130" cy="130" r="100" fill="#88d7ff" fill-opacity=".28"/><path d="M0 420 L120 360 L240 420 L360 300 L480 390 L600 330 L600 600 L0 600 Z" fill="#0f1220"/><rect x="90" y="260" width="60" height="150" rx="8" fill="#302b46"/><rect x="210" y="220" width="60" height="190" rx="8" fill="#2b2740"/><rect x="330" y="260" width="60" height="150" rx="8" fill="#403558"/><rect x="450" y="190" width="60" height="220" rx="8" fill="#4b3e61"/></svg>'
+    },
+    {
+      tag: "terrain",
+      title: "Route markers",
+      caption: "Map detail",
+      text: "An overhead map-style image for patrol routes and checkpoints.",
+      svg: '<svg viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg"><rect width="600" height="600" fill="#1f2b23"/><path d="M0 500 L110 420 L220 450 L330 340 L460 390 L600 280 L600 600 L0 600 Z" fill="#121b17"/><circle cx="140" cy="270" r="44" fill="#73d6c9" fill-opacity=".55"/><circle cx="290" cy="230" r="44" fill="#f6c177" fill-opacity=".55"/><circle cx="440" cy="180" r="44" fill="#88d7ff" fill-opacity=".55"/><path d="M140 270 L290 230 L440 180" stroke="#d8e8ff" stroke-width="8" stroke-linecap="round" stroke-dasharray="10 8" fill="none"/></svg>'
+    },
+    {
+      tag: "interior",
+      title: "Briefing board",
+      caption: "Planning room",
+      text: "A cleaner room shot for intel, planning, or investigation galleries.",
+      svg: '<svg viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg"><rect width="600" height="600" fill="#2a2230"/><rect x="120" y="80" width="360" height="440" rx="20" fill="#3b3346"/><rect x="150" y="110" width="300" height="380" rx="14" fill="#191722"/><rect x="182" y="140" width="240" height="30" rx="10" fill="#88d7ff" fill-opacity=".6"/><rect x="182" y="190" width="180" height="18" rx="9" fill="#f6c177" fill-opacity=".66"/><rect x="182" y="220" width="220" height="18" rx="9" fill="#f6c177" fill-opacity=".46"/><rect x="182" y="250" width="200" height="18" rx="9" fill="#73d6c9" fill-opacity=".46"/></svg>'
+    }
+  ];
+
+  var filters = document.getElementById("filters");
+  var thumbs = document.getElementById("thumbs");
+  var heroTitle = document.getElementById("heroTitle");
+  var heroBody = document.getElementById("heroBody");
+  var countAll = document.getElementById("countAll");
+  var countTag = document.getElementById("countTag");
+  var modal = document.getElementById("modal");
+  var modalTitle = document.getElementById("modalTitle");
+  var modalCaption = document.getElementById("modalCaption");
+  var modalText = document.getElementById("modalText");
+  var modalPreview = document.getElementById("modalPreview");
+  var closeModal = document.getElementById("closeModal");
+  var activeTag = "all";
+  var currentItems = items.slice();
+
+  function render() {
+    thumbs.innerHTML = "";
+    currentItems.forEach(function (item) {
+      var el = document.createElement("button");
+      el.className = "thumb";
+      el.dataset.tag = item.tag;
+      el.innerHTML =
+        '<img alt="' + item.caption + '" src="' + svgData(item.svg) + '">' +
+        '<div class="cap"><strong>' + item.title + '</strong><span>' + item.caption + '</span></div>';
+      el.addEventListener("click", function () { openItem(item); });
+      thumbs.appendChild(el);
+    });
+    countTag.textContent = String(currentItems.length);
+  }
+  function openItem(item) {
+    heroTitle.textContent = item.title;
+    heroBody.textContent = item.text;
+    modalTitle.textContent = item.title;
+    modalCaption.textContent = item.caption;
+    modalText.textContent = item.text;
+    modalPreview.innerHTML = item.svg;
+    modal.classList.add("open");
+    modal.setAttribute("aria-hidden", "false");
+  }
+  function applyFilter(tag) {
+    activeTag = tag;
+    filters.querySelectorAll(".filter").forEach(function (btn) {
+      btn.classList.toggle("active", btn.dataset.tag === tag);
+    });
+    currentItems = tag === "all" ? items.slice() : items.filter(function (item) { return item.tag === tag; });
+    render();
+  }
+
+  filters.addEventListener("click", function (e) {
+    var btn = e.target.closest(".filter");
+    if (!btn) return;
+    applyFilter(btn.dataset.tag);
+  });
+  closeModal.addEventListener("click", function () {
+    modal.classList.remove("open");
+    modal.setAttribute("aria-hidden", "true");
+  });
+  modal.addEventListener("click", function (e) {
+    if (e.target === modal) closeModal.click();
+  });
+
+  countAll.textContent = String(items.length);
+  applyFilter(activeTag);
+})();
+</script>
+</body>
+</html>

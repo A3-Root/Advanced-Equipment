@@ -24,6 +24,7 @@ Each recipe separates the Eden Editor workflow, Zeus live workflow, and API/scri
 - [Add Custom Terminal Commands](Examples/Add-Custom-Terminal-Commands.md)
 - [Register Desktop Apps](Examples/Register-Desktop-Apps.md)
 - [Add Webpages and Browser History](Examples/Add-Webpages-and-Browser-History.md)
+- [Browser Sample Pages](Examples/Browser-Sample-Pages.md)
 - [Build a Network](Examples/Build-a-Network.md)
 - [Configure Power](Examples/Configure-Power.md)
 - [Use Flash Drives](Examples/Use-Flash-Drives.md)
