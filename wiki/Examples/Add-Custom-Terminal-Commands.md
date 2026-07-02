@@ -32,6 +32,34 @@ There is no pure no-code Eden module for defining a brand-new terminal command. 
 
 For a truly custom command in Eden, use the API workflow from `initServer.sqf`, an object init that runs safely on the server, or an addon.
 
+## Copy-Paste Command Template
+
+Use this when you want a command that only exposes a controlled mission action:
+
+```sqf
+if (isServer) then {
+    [
+        _laptop,
+        "relay",
+        "/bin/relay",
+        {
+            params ["_computer", "_options", "_commandName"];
+
+            private _mode = _options param [0, "status"];
+            switch (_mode) do {
+                case "open": { [_computer, "Relay opened."] call AE3_armaos_fnc_shell_stdout; };
+                case "close": { [_computer, "Relay closed."] call AE3_armaos_fnc_shell_stdout; };
+                default { [_computer, "Relay is closed."] call AE3_armaos_fnc_shell_stdout; };
+            };
+        },
+        "Control relay",
+        "relay [status|open|close]"
+    ] call AE3_armaos_fnc_computer_addCustomCommand;
+};
+```
+
+If the command is only there to reveal information, a file, email, webpage, or browser history entry is usually easier for mission makers to maintain.
+
 ## Zeus Workflow
 
 There is no safe live Zeus dialog for creating arbitrary executable terminal commands. During a live mission, use one of these instead:
@@ -129,3 +157,4 @@ Then install it on selected laptops:
 - [ArmaOS API](../Reference/ArmaOS-API.md)
 - [Terminal Commands](../Reference/Terminal-Commands.md)
 - [Extending Terminal TUI](../Developer/Extending-Terminal-TUI.md)
+- [Examples Library](README.md)

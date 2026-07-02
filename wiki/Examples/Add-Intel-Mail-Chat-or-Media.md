@@ -64,6 +64,25 @@ Use this before mission start.
 
 Use `AE3: Add Webpage` and `AE3: Add Browser History`. See [Add Webpages and Browser History](Add-Webpages-and-Browser-History.md).
 
+## Copy-Paste Intel Bundle
+
+Use this when you want a full clue chain in one mission seed:
+
+```sqf
+if (isServer) then {
+    [_laptop, "handler@lan", "Before dawn", "Open the depot page, then check the gallery and the social feed.", "admin@lan", "01:58", true, true] call AE3_desktop_fnc_addEmail;
+    [_laptop, "2026-06-30", "Courier handoff", "Pier 4", "Encrypted drive transfer."] call AE3_armaos_fnc_computer_addCalendarEvent;
+
+    ["intel.root/depot", "Depot Page", "Crates moved to safehouse Bravo.", _laptop] call AE3_desktop_fnc_registerWebpage;
+    [_laptop, "intel.root/depot", "02:47"] call AE3_desktop_fnc_addHistoryEntry;
+
+    ["media\\images\\safehouse.jpg", "image", "/home/admin/Desktop/safehouse.jpg", [_laptop], "mission"] call AE3_desktop_fnc_registerMedia;
+    [_laptop, "/home/admin/Desktop/archive.txt", "orchard", "Fallback route: Blue tunnel.", "admin"] call AE3_desktop_fnc_addLockedFile;
+};
+```
+
+Use the browser sample pages when you want the webpage itself to be a richer landing page rather than a short intel card.
+
 ## Zeus Workflow
 
 Use this during live play.
@@ -179,3 +198,5 @@ Terminal:
 - [Intel, Mail, Chat, and Media](../Systems/Intel-Mail-Chat-Media.md)
 - [Desktop API](../Reference/Desktop-API.md)
 - [Browser API](../Reference/Browser-API.md)
+- [Browser Sample Pages](Browser-Sample-Pages.md)
+- [Examples Library](README.md)

@@ -23,6 +23,21 @@ Zeus is not ideal for:
 
 Use Eden or API setup for planned complexity.
 
+## Copy-Paste Live Bundle
+
+Use this when you need a live emergency intel chain without rebuilding the whole mission:
+
+```sqf
+if (isServer) then {
+    [_laptop, "admin", "orchard"] call AE3_armaos_fnc_computer_addUser;
+    [_laptop, "handler@lan", "New tasking", "Check intel.root/live.", "admin@lan"] call AE3_desktop_fnc_addEmail;
+    ["intel.root/live", "Live Update", "Move to fallback site Bravo.", _laptop] call AE3_desktop_fnc_registerWebpage;
+    [_laptop, "intel.root/live", "03:12"] call AE3_desktop_fnc_addHistoryEntry;
+};
+```
+
+If the live clue needs to look like a full page rather than a short intel card, use the browser sample pages as the starting point and register the live URL on top of them.
+
 ## Add a Live Clue
 
 ### Zeus Workflow
@@ -189,3 +204,5 @@ Zeus should be the live operations tool, not the substitute for planned setup.
 - [Zeus Guide](../Zeus-Guide.md)
 - [Zeus API](../Reference/Zeus-API.md)
 - [Debugging](../Developer/Debugging.md)
+- [Browser Sample Pages](Browser-Sample-Pages.md)
+- [Examples Library](README.md)

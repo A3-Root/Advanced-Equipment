@@ -41,6 +41,29 @@ Use this before mission start.
 6. Set initial charge levels.
 7. Preview in daylight and verify the setup sustains the intended device.
 
+## Copy-Paste Power Bundle
+
+Use this when you want the mission to show the full power chain:
+
+```sqf
+if (isServer) then {
+    [_generator, 100] call AE3_power_fnc_setFuelLevel;
+    [_battery, 80] call AE3_power_fnc_setBatteryLevel;
+
+    [_battery, _solarPanel] call AE3_power_fnc_createPowerConnection;
+    [_laptop, _battery] call AE3_power_fnc_createPowerConnection;
+    [_router, _generator] call AE3_power_fnc_createPowerConnection;
+
+    [_solarPanel] call AE3_power_fnc_turnOnDevice;
+    [_generator] call AE3_power_fnc_turnOnDevice;
+    [_battery] call AE3_power_fnc_turnOnDevice;
+    [_laptop] call AE3_power_fnc_turnOnDevice;
+    [_router] call AE3_power_fnc_turnOnDevice;
+};
+```
+
+This bundle gives you a powered laptop and router, plus a battery fallback and a solar option for missions that need moving parts.
+
 ## Zeus Workflow
 
 Use this during live play.
@@ -132,3 +155,4 @@ private _fuel = [_generator] call AE3_power_fnc_getFuelLevel;
 - [Power System](../Systems/Power.md)
 - [Power API](../Reference/Power-API.md)
 - [Network API](../Reference/Network-API.md)
+- [Examples Library](README.md)

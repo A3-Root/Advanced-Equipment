@@ -36,6 +36,27 @@ Use this before mission start.
 
 When the user is added, AE3 creates `/home/<username>` for non-root users and seeds the user's Desktop with app launchers where applicable.
 
+## Copy-Paste User Bundle
+
+Use this when you want a decoy account and a real account on the same laptop:
+
+```sqf
+if (isServer) then {
+    [_laptop, "guest", "guest"] call AE3_armaos_fnc_computer_addUser;
+    [_laptop, "admin", "orchard"] call AE3_armaos_fnc_computer_addUser;
+
+    private _fs = _laptop getVariable "AE3_filesystem";
+    [[], _fs, "/home/guest/Desktop/readme.txt", "Nothing useful here.", "root", "guest"] call AE3_filesystem_fnc_ensureFile;
+    [[], _fs, "/home/admin/Desktop/orders.txt", "Move convoy at 0415." + endl + "Check intel.root/depot.", "root", "admin"] call AE3_filesystem_fnc_ensureFile;
+    _laptop setVariable ["AE3_filesystem", _fs, true];
+
+    ["intel.root/depot", "Depot Page", "Crates moved at 0415.", _laptop] call AE3_desktop_fnc_registerWebpage;
+    [_laptop, "intel.root/depot", "02:47"] call AE3_desktop_fnc_addHistoryEntry;
+};
+```
+
+The guest account is a decoy path. The admin account is where the useful browser and filesystem clues usually live.
+
 ## Zeus Workflow
 
 Use this during a live mission.
@@ -117,3 +138,5 @@ if (isServer) then {
 - [ArmaOS API](../Reference/ArmaOS-API.md)
 - [Filesystem API](../Reference/Filesystem-API.md)
 - [Player Guide](../Player-Guide.md)
+- [Create a Laptop](Create-a-Laptop.md)
+- [Examples Library](README.md)

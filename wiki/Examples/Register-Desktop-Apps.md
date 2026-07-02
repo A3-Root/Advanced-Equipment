@@ -28,6 +28,31 @@ Eden cannot define a brand-new desktop app without addon/script support. It can 
 
 If an addon already registered a desktop app, Eden can expose it indirectly by giving the right user a launcher file or by using the addon's documented module.
 
+## Copy-Paste App Skeleton
+
+Use this when you are turning a mission-specific tool into a desktop app:
+
+```sqf
+if (hasInterface) then {
+    ["myMission_tools", "Tools", "myMission_fnc_toolsApp", [0.55, 0.5], true, true] call AE3_desktop_fnc_registerApp;
+};
+```
+
+```sqf
+myMission_fnc_toolsApp = {
+    params ["_winId", "_ctrlGroup", "_computer", "_args"];
+
+    private _text = _ctrlGroup ctrlCreate ["RscText", -1];
+    _text ctrlSetPosition [0.02, 0.02, 0.5, 0.05];
+    _text ctrlSetText "Tools ready.";
+    _text ctrlCommit 0;
+
+    createHashMap
+};
+```
+
+For browser-heavy interfaces, keep the app simple and push the content into registered webpages or the browser sample pages instead of hard-coding it into the app.
+
 ## Zeus Workflow
 
 Zeus cannot safely create arbitrary new desktop application code during live play. Use live content instead:
@@ -130,3 +155,5 @@ if (hasInterface) then {
 - [Desktop Apps](../Reference/Desktop-Apps.md)
 - [Desktop API](../Reference/Desktop-API.md)
 - [Extending Desktop GUI](../Developer/Extending-Desktop-GUI.md)
+- [Browser Sample Pages](Browser-Sample-Pages.md)
+- [Examples Library](README.md)

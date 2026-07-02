@@ -120,3 +120,4 @@ The sample files live in [`sample_files/`](../../sample_files/README.md) in this
 - [Browser API](../Reference/Browser-API.md)
 - [Desktop API](../Reference/Desktop-API.md)
 - [Browser Sample Pages](Browser-Sample-Pages.md)
+- [Examples Library](README.md)

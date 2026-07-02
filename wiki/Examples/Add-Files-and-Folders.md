@@ -74,6 +74,29 @@ Use this before the mission starts.
 
 If you add both a folder and a file inside that folder, place both modules and sync both to the laptop. The directory module has earlier priority than the file module, so the folder should be created before the file during mission start.
 
+## Copy-Paste Bundle
+
+Use this when the folder structure itself should be part of the clue:
+
+```sqf
+if (isServer) then {
+    private _fs = _laptop getVariable "AE3_filesystem";
+    private _dirPerms = [[true, true, true], [true, false, true]];
+    private _filePerms = [[true, true, false], [true, false, false]];
+
+    [[], _fs, "/home/admin/intel", "root", "admin", _dirPerms] call AE3_filesystem_fnc_ensureDir;
+    [[], _fs, "/home/admin/intel/notes", "root", "admin", _dirPerms] call AE3_filesystem_fnc_ensureDir;
+    [[], _fs, "/home/admin/intel/orders.txt", "Move at dawn." + endl + "Check the relay before departure.", "root", "admin", _filePerms] call AE3_filesystem_fnc_ensureFile;
+    [[], _fs, "/home/admin/intel/notes/route.txt", "Route Red is primary." + endl + "Blue tunnel is fallback.", "root", "admin", _filePerms] call AE3_filesystem_fnc_ensureFile;
+    [[], _fs, "/var/log/site.log", "", "root"] call AE3_filesystem_fnc_ensureFile;
+    [[], _fs, "/var/log/site.log", "root", "02:17 motion detected" + endl, true] call AE3_filesystem_fnc_writeToFile;
+
+    _laptop setVariable ["AE3_filesystem", _fs, true];
+};
+```
+
+Pair it with a browser page or email when you want players to discover the path instead of being handed the whole tree.
+
 ## Zeus Workflow
 
 Use this during a live mission.
@@ -187,3 +210,4 @@ Permission test:
 - [Filesystem API](../Reference/Filesystem-API.md)
 - [Eden Editor Guide](../Eden-Editor-Guide.md)
 - [Zeus Guide](../Zeus-Guide.md)
+- [Examples Library](README.md)

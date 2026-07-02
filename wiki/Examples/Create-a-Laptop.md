@@ -12,6 +12,26 @@ A useful first laptop normally needs:
 4. At least one user account.
 5. At least one clue: file, email, webpage, browser history, media, calendar event, or locked file.
 
+## Copy-Paste Starter Bundle
+
+If you want one laptop that shows the full loop, start here:
+
+```sqf
+if (isServer) then {
+    [_laptop, "both"] call AE3_desktop_fnc_setInterfaceMode;
+    [_laptop, "admin", "swordfish"] call AE3_armaos_fnc_computer_addUser;
+
+    private _fs = _laptop getVariable "AE3_filesystem";
+    [[], _fs, "/home/admin/Desktop/brief.txt", "Check intel.root/depot and the browser history.", "root", "admin"] call AE3_filesystem_fnc_ensureFile;
+    _laptop setVariable ["AE3_filesystem", _fs, true];
+
+    ["intel.root/depot", "Depot Page", "Crates moved at 0415." + endl + "[[intel.root/radio|Check the relay note]]", _laptop] call AE3_desktop_fnc_registerWebpage;
+    [_laptop, "intel.root/depot", "02:47"] call AE3_desktop_fnc_addHistoryEntry;
+};
+```
+
+Then add power, network, or flash-drive gameplay only if the mission actually needs it.
+
 ## Eden Editor Workflow
 
 Use this for planned mission content.
@@ -107,3 +127,6 @@ if (isServer) then {
 - [Getting Started](../Getting-Started.md)
 - [Eden Editor Guide](../Eden-Editor-Guide.md)
 - [Zeus Guide](../Zeus-Guide.md)
+- [Add Files and Folders](Add-Files-and-Folders.md)
+- [Add Webpages and Browser History](Add-Webpages-and-Browser-History.md)
+- [Examples Library](README.md)

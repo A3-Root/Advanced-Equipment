@@ -31,6 +31,19 @@ Use object attributes before mission start.
 
 Eden is the best place to set the default interface for planned mission laptops.
 
+## Copy-Paste Role Sets
+
+Use these patterns when you want the interface model to define the mission structure:
+
+| Pattern | Result |
+| --- | --- |
+| `GUI` for intel officers, `CLI` for technicians | Forces different roles to use different clue surfaces. |
+| `Both` on a primary laptop, `CLI` on backups | Lets one machine handle full desktop clues while another becomes a terminal fallback. |
+| `GUI` gated by a keycard or custom condition | Creates a locked workspace players must earn. |
+| `Default` on disposable laptops | Lets mission settings decide the final mode. |
+
+If the mission also uses browser pages or media, pair GUI access with the browser sample pages so the desktop side has something meaningful to show.
+
 ## Zeus Workflow
 
 Use this during live play when access needs to change.
@@ -124,3 +137,4 @@ private _canUseGui = [_laptop, player, "gui"] call AE3_desktop_fnc_canAccessInte
 - [Laptops and Interfaces](../Systems/Laptops-and-Interfaces.md)
 - [Desktop API](../Reference/Desktop-API.md)
 - [Eden Attributes](../Reference/Eden-Attributes.md)
+- [Examples Library](README.md)

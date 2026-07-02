@@ -17,6 +17,26 @@ msg 10.0.0.12 hello
 
 Exact commands depend on which terminal commands are installed and whether the mission provides credentials.
 
+## Copy-Paste Network Bundle
+
+Use this when the network itself is the clue chain:
+
+```sqf
+if (isServer) then {
+    [_routerA, "HQ Net", 150, "hq-pass", "10.0.0.1", false, ""] call AE3_network_fnc_applyRouterConfig;
+    [_routerB, "Depot Net", 100, "depot-pass", "10.0.1.1", true, "10\\.0\\.0\\..*"] call AE3_network_fnc_applyRouterConfig;
+
+    [_routerB, _routerA] call AE3_network_fnc_createNetworkConnection;
+    [_hqLaptop, _routerA] call AE3_network_fnc_createNetworkConnection;
+    [_depotLaptop, _routerB] call AE3_network_fnc_createNetworkConnection;
+
+    ["intel.root/home", "Operations Index", "See intel.root/depot and intel.root/radio.", _hqLaptop] call AE3_desktop_fnc_registerWebpage;
+    [_hqLaptop, "intel.root/home", "02:03"] call AE3_desktop_fnc_addHistoryEntry;
+};
+```
+
+Pair it with the browser sample pages when the network should lead players into a richer webpage rather than a plain terminal result.
+
 ## Eden Editor Workflow
 
 Use this before mission start.
@@ -156,3 +176,5 @@ Also test:
 - [Networking System](../Systems/Networking.md)
 - [Network API](../Reference/Network-API.md)
 - [Terminal Commands](../Reference/Terminal-Commands.md)
+- [Browser Sample Pages](Browser-Sample-Pages.md)
+- [Examples Library](README.md)

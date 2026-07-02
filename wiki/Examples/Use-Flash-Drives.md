@@ -38,6 +38,25 @@ Use this before mission start.
 
 If your Eden workflow cannot directly pre-seed the drive content, use the API workflow below during mission init.
 
+## Copy-Paste Courier Bundle
+
+Use this when the drive is only one piece of the delivery chain:
+
+```sqf
+if (isServer) then {
+    private _driveFs = [createHashMap, "root", [[true, true, true], [true, true, true]]];
+    [[], _driveFs, "/brief.txt", "The relay code is 52.7.", "root", "root"] call AE3_filesystem_fnc_ensureFile;
+    _drive setVariable ["AE3_filesystem", _driveFs, 2];
+
+    [_laptop, "admin", "orchard"] call AE3_armaos_fnc_computer_addUser;
+    [[], _laptop getVariable "AE3_filesystem", "/home/admin/Desktop/drive-note.txt", "Check the flash drive and the browser page.", "root", "admin"] call AE3_filesystem_fnc_ensureFile;
+    ["intel.root/drive", "Drive Note", "The drive carries the relay code.", _laptop] call AE3_desktop_fnc_registerWebpage;
+    [_laptop, "intel.root/drive", "02:11"] call AE3_desktop_fnc_addHistoryEntry;
+};
+```
+
+This works well with a browser page when the drive should unlock the final step rather than carry the entire answer by itself.
+
 ## Zeus Workflow
 
 Use this during live play.
@@ -121,3 +140,5 @@ if (isServer) then {
 - [Flash Drives](../Systems/Flash-Drives.md)
 - [Flashdrive API](../Reference/Flashdrive-API.md)
 - [Filesystem API](../Reference/Filesystem-API.md)
+- [Browser Sample Pages](Browser-Sample-Pages.md)
+- [Examples Library](README.md)
