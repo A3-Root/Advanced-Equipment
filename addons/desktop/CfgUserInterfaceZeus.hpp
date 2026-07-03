@@ -78,8 +78,20 @@ class AE3_UserInterface_Zeus_Module_AddIntel
 			idc = 1401;
 			x = 0.5 * GUI_GRID_W + GUI_GRID_X;
 			y = 5 * GUI_GRID_H + GUI_GRID_Y;
-			w = 39 * GUI_GRID_W;
+			w = 32.5 * GUI_GRID_W;
 			h = 1 * GUI_GRID_H;
+		};
+		// Opens the filesystem browser as a path picker for the linked laptop; shown only for the
+		// filesystem-path types (media source / locked-file destination) by AE3_desktop_fnc_intel_updateFields.
+		class RscButton_1720: RscButton
+		{
+			idc = 1720;
+			text = "$STR_AE3_Desktop_Intel_Browse";
+			x = 33.5 * GUI_GRID_W + GUI_GRID_X;
+			y = 5 * GUI_GRID_H + GUI_GRID_Y;
+			w = 6 * GUI_GRID_W;
+			h = 1 * GUI_GRID_H;
+			onButtonClick = "[ctrlParent (_this select 0)] call AE3_desktop_fnc_intel_browsePath;";
 		};
 
 		class RscText_1711: RscText

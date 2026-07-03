@@ -26,5 +26,24 @@ private _pointer = [];
 _display setVariable ["AE3_entity", _entity];
 _display setVariable ["AE3_pointer", _pointer];
 
+// The "Select Path" button is only relevant when the browser is opened as a path picker.
+(_display displayCtrl 2900) ctrlShow (uiNamespace getVariable ["AE3_zeus_fsBrowser_pickMode", false]);
+
+// On a dedicated server the curator does not hold the entity's filesystem copy. Pull the
+// authoritative copy from the server and refresh once it arrives; the first refresh may show an
+// empty tree until the transfer completes.
+if (isMultiplayer && {isNil {_entity getVariable "AE3_filesystem"}}) then
+{
+	[_display, _entity] spawn
+	{
+		params ["_display", "_entity"];
+		[_entity, "AE3_filesystem"] call AE3_main_fnc_getRemoteVar;
+		if (!isNull _display) then
+		{
+			[_display] call AE3_main_fnc_zeus_filesystemBrowser_refresh;
+		};
+	};
+};
+
 // Update the file list
 [_display] call AE3_main_fnc_zeus_filesystemBrowser_refresh;

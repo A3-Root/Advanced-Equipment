@@ -2345,6 +2345,10 @@
                 <German>Laptop nehmen</German>
                 <Chinesesimp>拿走笔记本电脑</Chinesesimp>
             </Key>
+            <Key ID="STR_AE3_ArmaOS_Laptop_Use">
+                <Original>Use laptop</Original>
+                <English>Use laptop</English>
+            </Key>
             <Key ID="STR_AE3_ArmaOS_Result_Bitten">
                 <Original>Bitten. Game over!</Original>
                 <English>Bitten. Game over!</English>

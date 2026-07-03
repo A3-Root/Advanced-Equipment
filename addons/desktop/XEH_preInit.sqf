@@ -20,6 +20,21 @@
 ] call CBA_fnc_addSetting;
 
 [
+	"AE3_Desktop_Size",
+	"LIST",
+	["Desktop window size", "Size of the laptop desktop (GUI) window. Fullscreen fills the screen; the smaller options show the desktop as a centred window - useful when using a laptop from inside a vehicle. Per-player preference."],
+	"AE3 Desktop",
+	[
+		[0, 1, 2, 3],
+		[["Fullscreen", "Fullscreen"], ["Large", "Large"], ["Medium", "Medium"], ["Small", "Small"]],
+		0
+	],
+	0,
+	{ params ["_value"]; },
+	false
+] call CBA_fnc_addSetting;
+
+[
 	"AE3_Desktop_EnableDragDrop",
 	"CHECKBOX",
 	["Window dragging", "Allow moving desktop windows by dragging their titlebar."],

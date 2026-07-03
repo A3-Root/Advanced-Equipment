@@ -52,6 +52,9 @@ private _isLocked = _type isEqualTo "lockedfile";
 private _isMedia = _type isEqualTo "media";
 (1602 call _getCtrl) ctrlShow _isMedia;
 (1402 call _getCtrl) ctrlShow (!_isMedia);
+	// The filesystem-path picker button (beside field 1401) only makes sense for the two types whose
+	// first field is a filesystem path: media source and locked-file destination.
+	(1720 call _getCtrl) ctrlShow (_isLocked || _isMedia);
 (1713 call _getCtrl) ctrlSetText (localize "STR_AE3_Desktop_Intel_LabelBody");
 // email-only: body field
 {

@@ -550,6 +550,107 @@ if (!isDedicated) then {
 			] call ace_interact_menu_fnc_createAction;
 
 			["CAManBase", 1, ["ACE_SelfActions", "ACE_Equipment"], _deployAction, true] call ace_interact_menu_fnc_addActionToClass;
+
+			// Self-action to use a laptop straight from the inventory, without deploying it into the
+			// world - useful when a player cannot place a laptop (e.g. seated in a vehicle). Only
+			// available in stable deployment mode, where the packed laptop still has a live (hidden)
+			// object carrying its state in AE3_LAPTOP_STABLE_TRACKER.
+			private _useFromInventory = {
+				params ["_itemClass", "_mode"];
+				private _tracker = missionNamespace getVariable ["AE3_LAPTOP_STABLE_TRACKER", createHashMap];
+				private _laptop = _tracker getOrDefault [_itemClass, objNull];
+				if (isNull _laptop) exitWith {};
+
+				// Respect the same access model as the world "Use" actions.
+				if (!isNil "AE3_desktop_fnc_canAccessInterface" && {!([_laptop, player, _mode] call AE3_desktop_fnc_canAccessInterface)}) exitWith {};
+				if (!isNull (_laptop getVariable ["AE3_computer_mutex", objNull])) exitWith {};
+
+				// A laptop packed while switched off is powered on before opening the interface.
+				if ((_laptop getVariable ["AE3_power_powerState", 0]) != 1) then {
+					[_laptop] remoteExecCall ["AE3_power_fnc_turnOnDevice", 2];
+					private _timeout = time + 5;
+					waitUntil { (_laptop getVariable ["AE3_power_powerState", 0]) == 1 || {!alive _laptop} || {time > _timeout} };
+				};
+				if ((_laptop getVariable ["AE3_power_powerState", 0]) != 1) exitWith {};
+
+				_laptop setVariable ["AE3_computer_mutex", player, true];
+				if (_mode isEqualTo "cli") then {
+					[_laptop] spawn AE3_armaos_fnc_terminal_init;
+				} else {
+					[_laptop] spawn AE3_desktop_fnc_desktop_openWeb;
+				};
+			};
+
+			private _useAction =
+			[
+				"AE3_UseLaptopAction",
+				localize "STR_AE3_ArmaOS_Laptop_Use",
+				"",
+				{},
+				{
+					// condition - stable mode + a held laptop that has a tracked object
+					params ["_player"];
+					if ((missionNamespace getVariable ["AE3_DeploymentType", 0]) != 0) exitWith { false };
+					private _tracker = missionNamespace getVariable ["AE3_LAPTOP_STABLE_TRACKER", createHashMap];
+					private _has = false;
+					{
+						if (_x find "Item_Laptop_AE3_ID_" == 0 && {!isNull (_tracker getOrDefault [_x, objNull])}) exitWith { _has = true; };
+					} forEach (items _player);
+					_has
+				},
+				{
+					// children - a Terminal and (when the desktop addon is present) a Desktop entry per laptop
+					params ["_player"];
+					private _tracker = missionNamespace getVariable ["AE3_LAPTOP_STABLE_TRACKER", createHashMap];
+					private _hasDesktop = !isNil "AE3_desktop_fnc_desktop_openWeb";
+					private _actions = [];
+
+					{
+						private _itemClass = _x;
+						private _laptopObj = _tracker getOrDefault [_itemClass, objNull];
+						if ((_itemClass find "Item_Laptop_AE3_ID_" == 0) && {!isNull _laptopObj}) then {
+							private _idStr = _itemClass select [19];
+							private _customName = _laptopObj getVariable ["AE3_laptop_customName", ""];
+							private _laptopName = if (_customName != "") then {
+								format ["%1 (RootBook %2)", _customName, _idStr]
+							} else {
+								format ["RootBook %1", _idStr]
+							};
+
+							private _cliChild = [
+								format ["AE3_UseLaptopCli_%1", _itemClass],
+								format ["%1 - %2", _laptopName, localize "STR_AE3_ArmaOS_Config_UseDisplayName"],
+								"",
+								{ params ["_target", "_player", "_params"]; _params spawn (missionNamespace getVariable ["AE3_armaos_useFromInventory", {}]); },
+								{true},
+								{},
+								[_itemClass, "cli"]
+							] call ace_interact_menu_fnc_createAction;
+							_actions pushBack [_cliChild, [], _player];
+
+							if (_hasDesktop) then {
+								private _guiChild = [
+									format ["AE3_UseLaptopGui_%1", _itemClass],
+									format ["%1 - %2", _laptopName, localize "STR_AE3_Interaction_UseDesktop"],
+									"",
+									{ params ["_target", "_player", "_params"]; _params spawn (missionNamespace getVariable ["AE3_armaos_useFromInventory", {}]); },
+									{true},
+									{},
+									[_itemClass, "gui"]
+								] call ace_interact_menu_fnc_createAction;
+								_actions pushBack [_guiChild, [], _player];
+							};
+						};
+					} forEach (items _player);
+
+					_actions
+				}
+			] call ace_interact_menu_fnc_createAction;
+
+			// Expose the shared open routine to the per-laptop child statements.
+			missionNamespace setVariable ["AE3_armaos_useFromInventory", _useFromInventory];
+
+			["CAManBase", 1, ["ACE_SelfActions", "ACE_Equipment"], _useAction, true] call ace_interact_menu_fnc_addActionToClass;
 		},
 		[],
 		0.5 // Delay to ensure ACE is fully loaded

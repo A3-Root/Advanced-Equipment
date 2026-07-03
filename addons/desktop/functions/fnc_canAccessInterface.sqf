@@ -47,4 +47,18 @@ if (_condition isEqualType []) exitWith
 
 if (!(_condition isEqualType {})) exitWith { true };
 
-[_laptop, _player] call _condition
+// Evaluate the mission-maker-supplied condition defensively: this runs inside the ACE interaction
+// hover condition, where a thrown error would disable the whole interaction menu. A malformed or
+// non-boolean result is treated as "no access" rather than allowed to propagate.
+private _result = false;
+try
+{
+	_result = [_laptop, _player] call _condition;
+	if (!(_result isEqualType false)) then { _result = false };
+}
+catch
+{
+	_result = false;
+};
+
+_result

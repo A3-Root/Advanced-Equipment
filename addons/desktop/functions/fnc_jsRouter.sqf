@@ -91,25 +91,47 @@ switch (_command) do {
         };
     };
 
-    // Login against the synced user list. Replies synchronously through the browser bridge.
-    // authUser kicks a non-blocking userlist re-pull and returns "retry" when the account has not
-    // reached this client yet (MP race right after a Zeus "Add User"); the JS side retries once.
-    // The userlist is normally already cached by the open-time background sync (desktop_openWeb), so
-    // the common case takes a single round-trip.
+    // Login against the synced user list. The common case (account already cached by the open-time
+    // background sync in desktop_openWeb) is answered immediately. When the account is not yet in
+    // this client's cached userlist - a Zeus "Add User" or a Restore Laptop applied after this
+    // client synced - the verdict is resolved off-thread: the userlist is pulled authoritatively
+    // (a blocking round-trip in the scheduled context) and re-checked with a definitive answer, so
+    // login never loops on "retry" indefinitely.
     case "login": {
         private _user = _data getOrDefault ["user", ""];
         private _pass = _data getOrDefault ["pass", ""];
-        private _res = [_computer, _user, _pass] call FUNC(authUser);
-        if (_res getOrDefault ["ok", false]) then {
-            _display setVariable [QGVAR(user), _user];
-            // Persist the session on the laptop so closing/reopening resumes without re-login - but
-            // tag it with this player so only they get the seamless re-entry (see "ready").
-            if (!isNull _computer) then {
-                _computer setVariable [QGVAR(sessionUser), _user, true];
-                _computer setVariable [QGVAR(sessionOwner), getPlayerUID player, true];
+
+        // Persists a successful session on the laptop so closing/reopening resumes without re-login,
+        // tagged with this player so only they get the seamless re-entry (see "ready").
+        private _persistSession = {
+            params ["_res"];
+            if (_res getOrDefault ["ok", false]) then {
+                _display setVariable [QGVAR(user), _user];
+                if (!isNull _computer) then {
+                    _computer setVariable [QGVAR(sessionUser), _user, true];
+                    _computer setVariable [QGVAR(sessionOwner), getPlayerUID player, true];
+                };
             };
         };
-        [_res] call _reply;
+
+        private _res = [_computer, _user, _pass] call FUNC(authUser);
+        if (_res getOrDefault ["retry", false]) then {
+            // Cache miss: resolve authoritatively in a scheduled thread, then reply.
+            [_computer, _user, _pass, _rid, _command, _persistSession] spawn {
+                params ["_computer", "_user", "_pass", "_rid", "_command", "_persistSession"];
+                if (isMultiplayer && {!isNull _computer}) then {
+                    [_computer, "AE3_Userlist"] call AE3_main_fnc_getRemoteVar; // blocks until synced
+                };
+                private _res = [_computer, _user, _pass, true] call AE3_desktop_fnc_authUser;
+                [_res] call _persistSession;
+                if (_rid isNotEqualTo "") then {
+                    [_command, createHashMapFromArray [["_rid", _rid], ["data", _res]]] call AE3_desktop_fnc_jsSend;
+                };
+            };
+        } else {
+            [_res] call _persistSession;
+            [_res] call _reply;
+        };
     };
 
     // --- Filesystem (Files + Notepad), permission-scoped per logged-in user. ---

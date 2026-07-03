@@ -27,3 +27,4 @@ class RscText;
 class RscEdit;
 class RscButton;
 #include "ui\RscRouterConfig.hpp"
+#include "ui\RscNetworkPassword.hpp"

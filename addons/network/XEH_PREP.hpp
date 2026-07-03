@@ -13,6 +13,8 @@ PREP(router_applyConfigDialog);
 /* Backend */
 PREP(connect_router2router);
 PREP(connect_device2router);
+PREP(promptConnect);
+PREP(connectSubmitPassword);
 PREP(connect_isCyclic);
 PREP(disconnect);
 

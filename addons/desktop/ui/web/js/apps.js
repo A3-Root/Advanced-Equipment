@@ -1543,6 +1543,12 @@
           convoEl.innerHTML = '<p class="muted pad">Select or start a conversation.</p>';
           return;
         }
+        // Preserve any message the user is currently typing: an incoming message triggers a full
+        // re-render of this pane, which would otherwise discard the unsent text and caret position.
+        var prevInput = convoEl.querySelector(".ctext");
+        var savedText = prevInput ? prevInput.value : null;
+        var savedStart = prevInput ? prevInput.selectionStart : null;
+        var savedEnd = prevInput ? prevInput.selectionEnd : null;
         convoEl.innerHTML =
           '<div class="toolbar" style="align-items:center"><span style="font-weight:600;flex:1">' + esc(t.peer) + "</span>" + chip(selfOf(t)) + "</div>" +
           '<div class="cmsgs" style="flex:1;overflow:auto;padding:12px;background:#262626"></div>' +
@@ -1558,6 +1564,11 @@
         });
         msgs.scrollTop = msgs.scrollHeight;
         var ctext = convoEl.querySelector(".ctext");
+        // Restore the in-progress message (and caret) that was present before this re-render.
+        if (savedText !== null) {
+          ctext.value = savedText;
+          if (savedStart !== null) { try { ctext.setSelectionRange(savedStart, savedEnd); } catch (e) {} }
+        }
         function doSend() { sendTo(t, ctext); }
         convoEl.querySelector(".csend").addEventListener("click", doSend);
         ctext.addEventListener("keydown", function (e) { if (e.key === "Enter") doSend(); });

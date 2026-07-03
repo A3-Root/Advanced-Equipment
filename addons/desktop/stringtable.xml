@@ -321,6 +321,10 @@
                 <German>Dies ist eine ausführbare Datei - im Terminal ausführen</German>
                 <Chinesesimp>这是可执行文件 - 请在终端应用中运行</Chinesesimp>
             </Key>
+            <Key ID="STR_AE3_Desktop_Intel_Browse">
+                <Original>Browse</Original>
+                <English>Browse</English>
+            </Key>
             <Key ID="STR_AE3_Desktop_Intel_Email">
                 <Original>Email</Original>
                 <English>Email</English>

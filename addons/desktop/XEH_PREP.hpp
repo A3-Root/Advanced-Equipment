@@ -82,6 +82,7 @@ PREP(addLockedFile);
 PREP(promptUnlock);
 PREP(intel_initFields);
 PREP(intel_updateFields);
+PREP(intel_browsePath);
 PREP(intel_3denLoad);
 PREP(intel_3denSave);
 

@@ -54,6 +54,7 @@ PREP(zeus_isConnectionAllowed);
 PREP(zeus_openFilesystemBrowser);
 PREP(zeus_filesystemBrowser_init);
 PREP(zeus_filesystemBrowser_refresh);
+PREP(zeus_filesystemBrowser_pickPath);
 PREP(zeus_filesystemBrowser_onSelect);
 PREP(zeus_filesystemBrowser_onDblClick);
 PREP(zeus_filesystemBrowser_goBack);

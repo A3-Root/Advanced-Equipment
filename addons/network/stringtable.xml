@@ -33,6 +33,10 @@
             </Key>
         </Container>
         <Container name="Interaction">
+            <Key ID="STR_AE3_Network_Interaction_Cancel">
+                <Original>Cancel</Original>
+                <English>Cancel</English>
+            </Key>
             <Key ID="STR_AE3_Network_Interaction_ConfigureRouter">
                 <Original>Configure router</Original>
                 <English>Configure router</English>
@@ -59,6 +63,14 @@
                 <Russian>Отключить от роутера</Russian>
                 <German>Trenne von Router</German>
                 <Chinesesimp>断开路由器.</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Network_Interaction_EnterPassword">
+                <Original>Enter router password</Original>
+                <English>Enter router password</English>
+            </Key>
+            <Key ID="STR_AE3_Network_Interaction_WrongPassword">
+                <Original>Incorrect router password</Original>
+                <English>Incorrect router password</English>
             </Key>
         </Container>
     </Package>

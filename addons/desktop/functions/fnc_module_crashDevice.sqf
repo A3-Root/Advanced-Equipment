@@ -22,7 +22,11 @@ if (!isServer) exitWith {};
 
 if (_activated) then
 {
-	private _objs = (synchronizedObjects _module) select { isClass (configOf _x >> "AE3_Device") };
+	// Detect AE3 laptops the same way the intel modules do: by USB terminal config class or the
+	// runtime terminal capability flag. The device does not declare an "AE3_Device" config subclass,
+	// so filtering on that matched nothing and the module appeared to do nothing.
+	private _isLaptop = { isClass (configOf _this >> "AE3_USB_Interface") || {_this getVariable ["AE3_cap_hasTerminal", false]} };
+	private _objs = (synchronizedObjects _module) select { _x call _isLaptop };
 
 	{
 		[_x] call AE3_power_fnc_crashDevice;

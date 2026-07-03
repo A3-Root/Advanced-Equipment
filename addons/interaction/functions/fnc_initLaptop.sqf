@@ -125,7 +125,7 @@ if(!isDedicated) then
 
                 _allowed &&
                 {alive _target} &&
-                {_target getVariable "AE3_power_powerState" == 1} &&
+                {(_target getVariable ["AE3_power_powerState", 0]) == 1} &&
                 {isNull (_target getVariable ["AE3_computer_mutex", objNull])}
             }
         ] call ace_interact_menu_fnc_createAction;
@@ -152,7 +152,7 @@ if(!isDedicated) then
                 !isNil "AE3_desktop_fnc_canAccessInterface" &&
                 {[_target, _player, "gui"] call AE3_desktop_fnc_canAccessInterface} &&
                 {alive _target} &&
-                {_target getVariable "AE3_power_powerState" == 1} &&
+                {(_target getVariable ["AE3_power_powerState", 0]) == 1} &&
                 {isNull (_target getVariable ["AE3_computer_mutex", objNull])}
             }
         ] call ace_interact_menu_fnc_createAction;

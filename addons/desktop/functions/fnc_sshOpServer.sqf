@@ -41,6 +41,14 @@ if (_debug) then {
     diag_log text format ["[AE3 desktop] sshOpServer enter op=%1 target=%2 user=%3 rid=%4", _op, _targetIp, _user, _rid];
 };
 
+// The cross-device copy ops (pull/push) mutate the filesystem owned by the machine currently using
+// the laptop. When a player is on the laptop their client holds the authoritative AE3_filesystem
+// copy, so the work is done in a scheduled thread: the owning copy is fetched first (getRemoteVar
+// suspends), the file is written, and the result is pushed back to the owner so its cached browser
+// view reflects the change. Everything runs off-thread so exactly one reply is still sent.
+[_clientOwner, _rid, _localNetId, _targetIp, _user, _pass, _op, _opArgs, _argPath, _argDest, _argContent, _debug, _reply] spawn {
+    params ["_clientOwner", "_rid", "_localNetId", "_targetIp", "_user", "_pass", "_op", "_opArgs", "_argPath", "_argDest", "_argContent", "_debug", "_reply"];
+
 private _res = createHashMapFromArray [["error", ""]];
 
 // Validation failures raise a tagged error code (caught below); the engine-level exceptions are
@@ -99,26 +107,31 @@ try {
             } catch { _res set ["error", "denied"]; };
         };
 
-        // Copy a remote file down to the local laptop.
+        // Copy a remote file down to the local laptop. The local laptop's authoritative filesystem
+        // lives on whichever machine is using it (the SSH client), so its current copy is fetched
+        // before writing and the result is pushed straight back to that machine's cached view.
         case "pull": {
             try {
                 private _content = [[], _tfs, _argPath, _fsUser, 0] call AE3_filesystem_fnc_getFile;
+                [_local, "AE3_filesystem", _clientOwner] call AE3_main_fnc_getRemoteVar;
                 private _lfs = _local getVariable ["AE3_filesystem", []];
                 [[], _lfs, _argDest, "", "root", "root", [[true, true, false], [true, false, false]]] call AE3_filesystem_fnc_ensureFile;
                 [[], _lfs, _argDest, "root", _content, false] call AE3_filesystem_fnc_writeToFile;
-                _local setVariable ["AE3_filesystem", _lfs, 2];
+                _local setVariable ["AE3_filesystem", _lfs, _clientOwner];
                 _res set ["ok", true];
             } catch { _res set ["error", "denied"]; };
         };
 
-        // Copy a local file up to the remote device.
+        // Copy a local file up to the remote device. The local file content is read from the SSH
+        // client's authoritative filesystem copy, then written into the remote device's filesystem.
         case "push": {
             try {
+                [_local, "AE3_filesystem", _clientOwner] call AE3_main_fnc_getRemoteVar;
                 private _lfs = _local getVariable ["AE3_filesystem", []];
                 private _content = [[], _lfs, _argPath, "root", 0] call AE3_filesystem_fnc_getFile;
                 [[], _tfs, _argDest, "", _fsUser, _fsUser, [[true, true, false], [true, false, false]]] call AE3_filesystem_fnc_ensureFile;
                 [[], _tfs, _argDest, _fsUser, _content, false] call AE3_filesystem_fnc_writeToFile;
-                _target setVariable ["AE3_filesystem", _tfs, 2];
+                _target setVariable ["AE3_filesystem", _tfs, [_target] call AE3_armaos_fnc_computer_getLocality];
                 _res set ["ok", true];
             } catch { _res set ["error", "denied"]; };
         };
@@ -139,3 +152,4 @@ if (_debug) then {
 };
 
 ["ssh_" + _op, _res] call _reply;
+};

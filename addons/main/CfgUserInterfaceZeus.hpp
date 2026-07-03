@@ -816,6 +816,19 @@ class AE3_UserInterface_Zeus_FilesystemBrowser
 			onButtonClick = "[] call AE3_main_fnc_zeus_filesystemBrowser_applyChanges;";
 		};
 
+		// Select-path button: only shown when the browser is opened as a path picker (pick mode),
+		// toggled by AE3_main_fnc_zeus_filesystemBrowser_init. Returns the chosen path to the caller.
+		class RscButton_2900: RscButton
+		{
+			idc = 2900;
+			x = 39 * GUI_GRID_W + GUI_GRID_X;
+			y = 3.5 * GUI_GRID_H + GUI_GRID_Y;
+			w = 10.5 * GUI_GRID_W;
+			h = 1.5 * GUI_GRID_H;
+			text = "$STR_AE3_Main_Zeus_SelectPath";
+			onButtonClick = "[] call AE3_main_fnc_zeus_filesystemBrowser_pickPath;";
+		};
+
 		// Rename button
 		class RscButton_2700: RscButton
 		{

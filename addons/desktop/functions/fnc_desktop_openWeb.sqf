@@ -34,6 +34,23 @@ if (isNull _display) exitWith { displayNull };
 
 _display setVariable [QGVAR(computer), _computer];
 
+// Apply the player's desktop size preference. The display class is fullscreen by default; the
+// smaller options render it as a centred window (handy when using a laptop inside a vehicle).
+private _sizeIdx = ["AE3_Desktop_Size"] call CBA_settings_fnc_get;
+if (!isNil "_sizeIdx" && {_sizeIdx isEqualType 0} && {_sizeIdx > 0}) then
+{
+	private _frac = [1, 0.85, 0.65, 0.45] select _sizeIdx;
+	private _w = safeZoneW * _frac;
+	private _h = safeZoneH * _frac;
+	private _px = safeZoneX + (safeZoneW - _w) / 2;
+	private _py = safeZoneY + (safeZoneH - _h) / 2;
+	{
+		private _ctrl = _display displayCtrl _x;
+		_ctrl ctrlSetPosition [_px, _py, _w, _h];
+		_ctrl ctrlCommit 0;
+	} forEach [17011, 1337];
+};
+
 // Pull the authoritative per-laptop state onto the laptop object (object-as-namespace), exactly
 // as the native desktop does (AE3_desktop_fnc_desktop_open). The filesystem and userlist are
 // server-only (initFilesystem / computer_addUser run with isServer), so the web login (authUser)
