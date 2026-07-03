@@ -1191,7 +1191,7 @@
       function step() {
         if (over) return;
         var head = { x: (snake[0].x + dir.x + N) % N, y: (snake[0].y + dir.y + N) % N };
-        if (snake.some(function (s) { return s.x === head.x && s.y === head.y; })) { over = true; stat.textContent = "Game over — score " + score; return; }
+        if (snake.some(function (s) { return s.x === head.x && s.y === head.y; })) { over = true; stat.textContent = "Game over! Score: " + score; return; }
         snake.unshift(head);
         if (head.x === food.x && head.y === food.y) { score++; stat.textContent = "Score: " + score; place(); } else { snake.pop(); }
         draw();
