@@ -7,7 +7,17 @@
   var registry = [];
 
   var Apps = {
-    register: function (app) { registry.push(app); },
+    register: function (app) {
+      var idx = registry.findIndex(function (a) { return a.id === app.id; });
+      if (idx >= 0) registry[idx] = app;
+      else registry.push(app);
+    },
+    unregister: function (id) {
+      var app = Apps.get(id);
+      if (!app) return;
+      if (window.WM && typeof WM.closeApp === "function") WM.closeApp(id);
+      registry = registry.filter(function (a) { return a.id !== id; });
+    },
     all: function () { return registry; },
     get: function (id) { return registry.filter(function (a) { return a.id === id; })[0]; },
     launch: function (id, args) {

@@ -326,7 +326,7 @@ Arguments:
 | `1` | String | Required | Display title. |
 | `2` | String | Required | Glyph/icon text passed to JS. |
 | `3` | String | `"deviceList"` | Template kind. |
-| `4` | HashMap | Empty | Extra data passed to JS. Optional `requiresVar` filter. |
+| `4` | HashMap | Empty | Extra data passed to JS. Optional filters: `requiresVar` or `requiresFunction`. |
 
 Example:
 
@@ -334,12 +334,33 @@ Example:
 if (hasInterface) then {
     private _extra = createHashMapFromArray [
         ["deviceType", "doorRelay"],
-        ["requiresVar", ["myMod_hasDoorTools", true]]
+        ["requiresFunction", "myMod_fnc_canShowDoorTools"]
     ];
 
     ["myMod_doors", "Door Relays", "D", "deviceList", _extra] call AE3_desktop_fnc_registerExtApp;
 };
 ```
+
+
+External app filters are evaluated when the web desktop boots. `requiresVar` checks a variable on the bound computer object. `requiresFunction` names a client-side SQF function that receives `[_computer]` and returns a boolean. Addons can push a refreshed filtered list with `AE3_desktop_fnc_jsSend` on state changes; the web desktop removes external apps that are no longer present in the pushed list.
+
+Supported web app template kinds:
+
+| Kind | Purpose |
+| --- | --- |
+| `deviceList` | Generic device list with per-device actions and optional global actions. |
+| `launcher` | Desktop/menu launcher that opens other registered apps and can call an optional `openCommand` once when opened. |
+
+Common `_extra` keys:
+
+| Key | Meaning |
+| --- | --- |
+| `menu` | Applications menu category path. |
+| `showOnDesktop` | Shows the external app as a desktop icon when true. |
+| `showInDock` | Shows the external app in the dock when true. |
+| `showInMenu` | Set false to hide from the Applications menu. |
+| `launchApps` | For `launcher`: array of `[appId, label]` entries to show as buttons. |
+| `openCommand` | For `launcher`: custom JS command requested when the launcher opens. |
 
 ### `AE3_desktop_fnc_registerCmd`
 

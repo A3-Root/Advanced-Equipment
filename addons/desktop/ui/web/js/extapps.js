@@ -29,10 +29,9 @@
     return {
       id: desc.id, title: desc.title, glyph: glyph,
       kind: "deviceList", width: 620, height: 440,
-      // Ext apps live in the Applications menu (extra.menu, e.g. "Tools/Hack"), NOT the desktop or
-      // dock (Root Cyberwarfare #1/#10). The desktop is fixed to My Computer / Recycle Bin / Files.
-      showOnDesktop: false, showInDock: false, singleton: true,
-      menu: extra.menu || "Tools",
+      showOnDesktop: !!extra.showOnDesktop, showInDock: !!extra.showInDock,
+      showInMenu: extra.showInMenu !== false, singleton: true,
+      menu: extra.menu || "Tools", external: true,
       render: function (body, win) {
         body.innerHTML =
           '<div class="toolbar"><span class="muted" style="flex:1">' + esc(desc.title) + '</span>' +
@@ -213,11 +212,68 @@
     };
   }
 
+
+  function makeLauncherApp(desc) {
+    var extra = desc.extra || {};
+    var glyph = glyphFor(desc);
+    var launchApps = extra.launchApps || [];
+    return {
+      id: desc.id, title: desc.title, glyph: glyph,
+      kind: "launcher", width: extra.width || 430, height: extra.height || 330,
+      showOnDesktop: !!extra.showOnDesktop, showInDock: !!extra.showInDock,
+      showInMenu: extra.showInMenu !== false, singleton: true,
+      menu: extra.menu || "Tools", external: true,
+      render: function (body) {
+        body.innerHTML =
+          '<div class="toolbar"><span class="muted" style="flex:1">' + esc(extra.subtitle || desc.title) + '</span></div>' +
+          '<ul class="list launcher-list"></ul>' +
+          '<div class="dev-status" style="min-height:22px;padding:8px 12px;font-weight:600"></div>';
+        var list = body.querySelector(".launcher-list");
+        var status = body.querySelector(".dev-status");
+        function setStatus(msg, ok) {
+          status.textContent = msg || "";
+          status.style.color = (ok === false) ? "#ff7a4d" : (ok === true ? "var(--good)" : "var(--muted)");
+        }
+        if (extra.openCommand) {
+          A3.request(extra.openCommand, { app: desc.id }).then(function (res) {
+            if (res && res.ok === false) setStatus("Unavailable", false);
+          }).catch(function () {});
+        }
+        var visible = launchApps.filter(function (entry) {
+          var id = Array.isArray(entry) ? entry[0] : entry.id;
+          return !!Apps.get(id);
+        });
+        if (!visible.length) {
+          list.innerHTML = '<li class="muted pad">No tools available</li>';
+          return;
+        }
+        visible.forEach(function (entry) {
+          var id = Array.isArray(entry) ? entry[0] : entry.id;
+          var label = Array.isArray(entry) ? (entry[1] || id) : (entry.label || id);
+          var app = Apps.get(id);
+          var li = document.createElement("li");
+          li.innerHTML = '<span class="ico">' + ((app && app.glyph) || glyph) + '</span><span style="flex:1">' + esc(label) + '</span>';
+          var b = document.createElement("button");
+          b.className = "btn"; b.textContent = "Open"; b.style.marginLeft = "6px";
+          b.addEventListener("click", function () { Apps.launch(id); setStatus(label + " opened.", true); });
+          li.appendChild(b);
+          list.appendChild(li);
+        });
+      }
+    };
+  }
+
   A3.on("ext_apps", function (list) {
-    console.log("[AE3] ext_apps received:", (list || []).length, "app(s)");
-    (list || []).forEach(function (desc) {
-      if (Apps.get(desc.id)) return;
+    list = list || [];
+    console.log("[AE3] ext_apps received:", list.length, "app(s)");
+    var incoming = {};
+    list.forEach(function (desc) { incoming[desc.id] = true; });
+    Apps.all().slice().forEach(function (app) {
+      if (app.external && !incoming[app.id]) Apps.unregister(app.id);
+    });
+    list.forEach(function (desc) {
       if (desc.kind === "deviceList") Apps.register(makeDeviceApp(desc));
+      else if (desc.kind === "launcher") Apps.register(makeLauncherApp(desc));
     });
     if (window.Desktop) Desktop.refresh();
   });

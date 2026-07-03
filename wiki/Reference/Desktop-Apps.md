@@ -120,17 +120,35 @@ These are framework-level functions. If you are writing a normal app, build cont
 
 ## Web Desktop Extension Apps
 
-Register a web desktop app template:
+Register a web desktop device-list app template:
 
 ```sqf
 if (hasInterface) then {
     private _extra = createHashMapFromArray [
-        ["deviceType", "doorRelay"]
+        ["deviceType", "doorRelay"],
+        ["requiresFunction", "myMod_fnc_canShowDoorTools"]
     ];
 
     ["myMod_doors", "Door Relays", "D", "deviceList", _extra] call AE3_desktop_fnc_registerExtApp;
 };
 ```
+
+Register a desktop-visible launcher for existing apps:
+
+```sqf
+if (hasInterface) then {
+    private _extra = createHashMapFromArray [
+        ["showOnDesktop", true],
+        ["menu", "Tools"],
+        ["launchApps", [["myMod_doors", "Door Relays"]]],
+        ["openCommand", "myMod_launcherOpened"]
+    ];
+
+    ["myMod_tools", "Tools.exe", "T", "launcher", _extra] call AE3_desktop_fnc_registerExtApp;
+};
+```
+
+The web desktop replaces existing external app registrations with the same id and removes external apps that are absent from a later `ext_apps` push. This lets addons hide USB- or state-dependent apps while the desktop is already open.
 
 Register a JS-to-SQF command:
 

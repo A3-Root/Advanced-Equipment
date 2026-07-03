@@ -67,10 +67,16 @@ switch (_command) do {
             private _filtered = _ext select {
                 private _extra = _x getOrDefault ["extra", createHashMap];
                 private _requires = _extra getOrDefault ["requiresVar", []];
-                (_requires isEqualTo []) || {
+                private _varOk = (_requires isEqualTo []) || {
                     _requires params [["_varName", ""], ["_expected", true]];
                     _varName isNotEqualTo "" && {(_computer getVariable [_varName, "__AE3_missing__"]) isEqualTo _expected}
-                }
+                };
+                private _requiresFunction = _extra getOrDefault ["requiresFunction", ""];
+                private _fnOk = (_requiresFunction isEqualTo "") || {
+                    private _fn = missionNamespace getVariable [_requiresFunction, {}];
+                    (_fn isEqualType {}) && {[_computer] call _fn}
+                };
+                _varOk && _fnOk
             };
             ["ext_apps", _filtered] call FUNC(jsSend);
         };

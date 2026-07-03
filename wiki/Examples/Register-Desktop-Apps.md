@@ -117,7 +117,7 @@ Then implement the entry function in your addon and compile it normally.
 
 ## Web Desktop Extension Workflow
 
-For web desktop integrations, register an external app and command handlers on clients:
+For web desktop integrations, register an external app and command handlers on clients. Use `requiresFunction` for state-dependent apps, and push a refreshed `ext_apps` list when that state changes:
 
 ```sqf
 if (hasInterface) then {
