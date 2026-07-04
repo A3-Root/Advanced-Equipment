@@ -582,7 +582,7 @@ if (!isDedicated) then {
 				private _propModel = (getModelInfo _laptop) select 1;
 				if (_propModel isNotEqualTo "") then {
 					private _prop = createSimpleObject [_propModel, [0, 0, 0], true];
-					_prop attachTo [player, [0, 0.5, 0.9]];
+					_prop attachTo [player, [0, 0.5, 0.5]];
 					[_prop, _laptop] spawn {
 						params ["_prop", "_laptop"];
 						waitUntil {
