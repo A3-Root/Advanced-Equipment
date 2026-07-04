@@ -32,21 +32,43 @@ if (!isServer) exitWith
 private _powerState = _computer getVariable ["AE3_power_powerState", 0];
 if !(_powerState in [1, 2]) exitWith { false };
 
-// Force-close an open terminal session on the using player's machine
+// Mark the device crashed up front so the interaction/power conditions block any further use and
+// the forced UI-close handlers can tell a crash apart from a normal close.
+_computer setVariable ["AE3_power_powerState", 3, true];
+
+// Force-close any open session (CLI terminal or web desktop) on the using player's machine and kick
+// them out of the interface.
 private _mutexHolder = _computer getVariable ["AE3_computer_mutex", objNull];
 if (!isNull _mutexHolder) then
 {
 	["ae3_armaos_forceCloseTerminal", [_computer], _mutexHolder] call CBA_fnc_targetEvent;
+	["ae3_desktop_forceCloseDesktop", [_computer], _mutexHolder] call CBA_fnc_targetEvent;
 };
 _computer setVariable ["AE3_computer_mutex", objNull, true];
 
-_computer setVariable ["AE3_power_powerState", 3, true];
-
-// Crash screen (procedural blue screen) - setObjectTextureGlobal must run where the object is local
-[_computer, [1, "#(argb,8,8,3)color(0,0.05,0.4,1,co)"]] remoteExecCall ["setObjectTextureGlobal", _computer];
+// Sever the device from its network: a crashed device can neither be reached nor route traffic.
+[_computer] call AE3_network_fnc_disconnect;
 
 // A crashed device draws no power
 [_computer, 0] call AE3_power_fnc_updateSelfPower;
+
+// Crash screen (procedural blue screen) - setObjectTextureGlobal must run where the object is local.
+// Applied now and re-asserted a moment later so it wins over any idle-screen texture a closing
+// terminal/desktop unload handler may set on the owning client.
+private _crashTexture = "#(argb,8,8,3)color(0,0.05,0.4,1,co)";
+[_computer, [1, _crashTexture]] remoteExecCall ["setObjectTextureGlobal", _computer];
+[
+	{
+		params ["_computer", "_crashTexture"];
+		if (isNull _computer) exitWith {};
+		if ((_computer getVariable ["AE3_power_powerState", 0]) == 3) then
+		{
+			[_computer, [1, _crashTexture]] remoteExecCall ["setObjectTextureGlobal", _computer];
+		};
+	},
+	[_computer, _crashTexture],
+	0.5
+] call CBA_fnc_waitAndExecute;
 
 INFO_1("Device crashed: %1",typeOf _computer);
 

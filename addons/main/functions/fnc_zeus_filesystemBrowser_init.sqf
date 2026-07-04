@@ -29,10 +29,13 @@ _display setVariable ["AE3_pointer", _pointer];
 // The "Select Path" button is only relevant when the browser is opened as a path picker.
 (_display displayCtrl 2900) ctrlShow (uiNamespace getVariable ["AE3_zeus_fsBrowser_pickMode", false]);
 
-// On a dedicated server the curator does not hold the entity's filesystem copy. Pull the
-// authoritative copy from the server and refresh once it arrives; the first refresh may show an
-// empty tree until the transfer completes.
-if (isMultiplayer && {isNil {_entity getVariable "AE3_filesystem"}}) then
+// On a dedicated server the curator does not hold the entity's filesystem copy (init keeps it
+// server-local). Pull the authoritative copy from the server and refresh once it arrives whenever the
+// local value is missing or not the expected [content, owner, permissions] triple; the first refresh
+// renders an empty tree until the transfer completes.
+private _localFs = _entity getVariable ["AE3_filesystem", []];
+private _fsValid = (_localFs isEqualType []) && {(count _localFs) >= 1} && {(_localFs select 0) isEqualType createHashMap};
+if (isMultiplayer && {!_fsValid}) then
 {
 	[_display, _entity] spawn
 	{

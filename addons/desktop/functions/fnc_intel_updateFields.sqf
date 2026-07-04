@@ -55,6 +55,34 @@ private _isMedia = _type isEqualTo "media";
 	// The filesystem-path picker button (beside field 1401) only makes sense for the two types whose
 	// first field is a filesystem path: media source and locked-file destination.
 	(1720 call _getCtrl) ctrlShow (_isLocked || _isMedia);
+	// Place the Browse button next to whichever field carries the laptop filesystem path: the first
+	// field (1401) for locked files, the third field (1403, the save-to path) for media. The other
+	// path-capable field is restored to full width. Geometry only applies to the Zeus dialog; the
+	// 3DEN attribute control group has no Browse button. Full-width reference comes from label 1710.
+	if (!(_container isEqualType controlNull)) then
+	{
+		private _pRef = ctrlPosition (1710 call _getCtrl);
+		private _fullX = _pRef select 0;
+		private _fullW = _pRef select 2;
+		{
+			private _pe = ctrlPosition (_x call _getCtrl);
+			(_x call _getCtrl) ctrlSetPosition [_fullX, _pe select 1, _fullW, _pe select 3];
+			(_x call _getCtrl) ctrlCommit 0;
+		} forEach [1401, 1403];
+
+		if (_isLocked || _isMedia) then
+		{
+			private _fsIdc = [1401, 1403] select _isMedia;
+			private _pe = ctrlPosition (_fsIdc call _getCtrl);
+			private _bw = (ctrlPosition (1720 call _getCtrl)) select 2;
+			private _gap = _bw * 0.15;
+			private _editW = (_pe select 2) - _bw - _gap;
+			(_fsIdc call _getCtrl) ctrlSetPosition [_pe select 0, _pe select 1, _editW, _pe select 3];
+			(_fsIdc call _getCtrl) ctrlCommit 0;
+			(1720 call _getCtrl) ctrlSetPosition [(_pe select 0) + _editW + _gap, _pe select 1, _bw, _pe select 3];
+			(1720 call _getCtrl) ctrlCommit 0;
+		};
+	};
 (1713 call _getCtrl) ctrlSetText (localize "STR_AE3_Desktop_Intel_LabelBody");
 // email-only: body field
 {

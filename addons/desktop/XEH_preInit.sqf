@@ -125,3 +125,21 @@ if (isServer) then
 	["ae3_desktop_addrRelease", { _this call AE3_desktop_fnc_addrRelease }] call CBA_fnc_addEventHandler;
 	["ae3_desktop_mailRoute", { _this call AE3_desktop_fnc_mailRoute }] call CBA_fnc_addEventHandler;
 };
+
+/* ================================================================================ */
+/* Client: kick the local player out of an open web desktop when its laptop crashes */
+
+if (hasInterface) then
+{
+	["ae3_desktop_forceCloseDesktop", {
+		params ["_computer"];
+
+		private _display = findDisplay 17010;
+		if (isNull _display) exitWith {};
+
+		if ((_display getVariable [QGVAR(computer), objNull]) isEqualTo _computer) then
+		{
+			_display closeDisplay 2;
+		};
+	}] call CBA_fnc_addEventHandler;
+};

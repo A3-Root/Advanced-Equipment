@@ -40,23 +40,42 @@ switch (true) do
 	default                             { _computers = [objectFromNetId _target]; };
 };
 
+// Writes the history entry into a laptop's filesystem. When the laptop is in use, the authoritative
+// filesystem lives on the user's client, so its current copy is pulled first and the result pushed
+// back to that client - otherwise the write lands on the server's stale copy (and pushing that copy
+// back would clobber the user's live session). Runs in a scheduled thread so getRemoteVar can wait.
+private _deliver = {
+	params ["_computer", "_url", "_timeString"];
+	private _holder = _computer getVariable ["AE3_computer_mutex", objNull];
+	private _ownerId = if (isNull _holder) then { 2 } else { owner _holder };
+
+	if (isMultiplayer && {_ownerId != 2}) then
+	{
+		[_computer, "AE3_filesystem", _ownerId] call AE3_main_fnc_getRemoteVar; // authoritative copy
+	};
+
+	private _filesystem = _computer getVariable ["AE3_filesystem", nil];
+	if (isNil "_filesystem") exitWith {};
+
+	try
+	{
+		[[], _filesystem, "/var/log/browser_history", "", "root", "root", [[true, true, false], [true, false, false]]] call AE3_filesystem_fnc_ensureFile;
+		[[], _filesystem, "/var/log/browser_history", "root", format ["[%1] %2%3", _timeString, _url, endl], true] call AE3_filesystem_fnc_writeToFile;
+		// Publish the updated filesystem so a laptop currently in use sees the entry.
+		_computer setVariable ["AE3_filesystem", _filesystem, _ownerId];
+	}
+	catch
+	{
+		WARNING_1("Could not seed browser history: %1",_exception);
+	};
+};
+
 {
 	if (!isNull _x && {_x getVariable ["AE3_cap_hasFilesystem", false]}) then
 	{
-		private _filesystem = _x getVariable ["AE3_filesystem", nil];
-		if (!isNil "_filesystem") then
-		{
-			try
-			{
-				[[], _filesystem, "/var/log/browser_history", "", "root", "root", [[true, true, false], [true, false, false]]] call AE3_filesystem_fnc_ensureFile;
-				[[], _filesystem, "/var/log/browser_history", "root", format ["[%1] %2%3", _timeString, _url, endl], true] call AE3_filesystem_fnc_writeToFile;
-					// Publish the updated filesystem so a laptop currently in use sees the entry.
-					_x setVariable ["AE3_filesystem", _filesystem, [_x] call AE3_armaos_fnc_computer_getLocality];
-			}
-			catch
-			{
-				WARNING_1("Could not seed browser history: %1",_exception);
-			};
-		};
+		[_x, _url, _timeString] spawn _deliver;
 	};
 } forEach _computers;
+
+// Nudge any open Browser to re-read its history so a new entry shows without reopening the app.
+["ae3_desktop_webChanged", []] call CBA_fnc_globalEvent;

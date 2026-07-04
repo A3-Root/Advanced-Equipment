@@ -2027,7 +2027,10 @@
                 var full = joinPath(rcwd, it.name);
                 window.AE3_ctxMenu(e.clientX, e.clientY, [
                   { label: "Download to this computer", action: function () {
-                    var dest = joinPath(window.AE3_HOME || "/home", it.name);
+                    // Save into the directory currently open in the local pane, not a fixed home path,
+                    // so the file lands where the user is looking and appears on reload.
+                    var localCwd = (localApi && localApi.getCwd) ? localApi.getCwd() : (window.AE3_HOME || "/home");
+                    var dest = joinPath(localCwd, it.name);
                     A3.request("ssh_pull", { to: conn.to, user: conn.user, pass: conn.pass, path: full, dest: dest }).then(function (r) {
                       Modal.alert("SSH", (r.error && r.error !== "") ? "Download failed." : "Downloaded to " + dest);
                       if (localApi) localApi.reload();
