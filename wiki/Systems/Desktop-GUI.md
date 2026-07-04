@@ -1,52 +1,55 @@
 # Desktop GUI
 
-The Desktop GUI is the graphical operating system for AE3 laptops. It gives players windows, app icons, and familiar computer workflows.
+The Desktop GUI is the graphical operating system for AE3 laptops. It gives players windows, app icons, and familiar computer workflows — mouse-driven rather than typed.
 
 ## Built-In Apps
 
-The desktop can include:
+| App | Purpose |
+| --- | --- |
+| Terminal | Command line inside the desktop. |
+| Files | Folder and file browsing. |
+| Settings | Desktop and system settings. |
+| Notepad | Text note workflow. |
+| Mail | Inbox and message reading. |
+| Chat | Network chat. |
+| Browser | Mission webpages and history. |
+| Calendar | Scheduled events. |
+| Map | Map-focused information. |
+| CCTV | Registered camera feeds. |
+| Music | Audio playback. |
+| SysInfo | System and device information. |
 
-- Terminal: command line inside the desktop.
-- Files: folder and file browsing.
-- Settings: desktop and system settings.
-- Notepad: text note workflow.
-- Mail: inbox and message reading.
-- Chat: network chat.
-- Browser: mission webpages.
-- Calendar: scheduled events.
-- Map: map-focused information.
-- CCTV: registered camera feeds.
-- Music: audio playback.
-- SysInfo: system and device information.
-
-The exact apps available depend on the laptop configuration and mission setup.
+The exact apps available depend on laptop configuration and mission setup — see [Desktop Apps](../Reference/Desktop-Apps.md) for the full per-app reference and [Register Desktop Apps](../Examples/Register-Desktop-Apps.md) if you're adding a custom app from another addon.
 
 ## How Players Use It
 
-Players open the laptop through ACE, choose the desktop action if available, log in if required, and use apps. The mission maker decides whether the desktop is the only interface or whether players can also use the terminal.
+Players open the laptop through ACE, choose the desktop action if available, log in if required, and use apps. The mission maker decides whether the desktop is the only interface (Interface Mode `gui`) or whether players can also use the terminal (`both`).
 
 ## Good GUI Mission Content
 
 Use the GUI desktop for:
 
-- Emails with sender/recipient context.
-- Browser pages with readable clues.
-- Browser history trails.
-- Documents and folders.
-- Images or audio/video evidence.
-- Calendar schedules.
-- CCTV feeds.
+- Emails with sender/recipient context (Mail app).
+- Browser pages with readable clues and history trails (Browser app).
+- Documents and folders (Files app).
+- Images or audio/video evidence (Media, via Files/Browser).
+- Calendar schedules (Calendar app).
+- CCTV feeds (CCTV app).
 
-Avoid requiring terminal-only knowledge if a laptop is configured as GUI-only.
+Avoid requiring terminal-only knowledge if a laptop is configured as GUI-only — a clue that only exists as a hidden file with no Files-app entry point is effectively invisible on a `gui`-mode laptop unless it's reachable through Files navigation.
 
 ## Mission-Maker Setup
 
 In 3DEN:
 
-1. Set laptop Interface Mode to GUI or Both.
-2. Add a user if login should be required.
-3. Add desktop content modules such as Email, Webpage, Browser History, Media, Calendar Event, File, Directory, or Passworded File.
+1. Set laptop Interface Mode to `gui` or `both`.
+2. Add a user if login should be required (`AE3: Add User`).
+3. Add desktop content modules such as `AE3: Add Email`, `AE3: Add Webpage`, `AE3: Add Browser History`, `AE3: Add Media`, `AE3: Add File`, `AE3: Add Directory`, or `AE3: Add Passworded File`.
 4. Sync each module to the laptop.
 5. Preview and open the desktop as a player.
 
-Script and addon app registration details are in [Desktop API](../Reference/Desktop-API.md) and [Extending Desktop GUI](../Developer/Extending-Desktop-GUI.md).
+## Related Pages
+
+- [Desktop API](../Reference/Desktop-API.md) — scripted app registration, content, and JS-bridge details.
+- [Desktop Apps](../Reference/Desktop-Apps.md) — per-app field reference.
+- [Extending Desktop GUI](../Developer/Extending-Desktop-GUI.md) — building a new app as an addon developer.

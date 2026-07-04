@@ -148,6 +148,46 @@ Use these defaults unless a function page says otherwise:
 
 For dedicated servers, do not assume a player client and server share local object state immediately. If a function already routes to the server, prefer calling that function over setting the variable yourself.
 
+## Main Component Helpers
+
+A handful of `AE3_main_fnc_*` functions are generally useful and don't fit under a bigger component page:
+
+### `AE3_main_fnc_hasCapability`
+
+Checks a capability flag set during device init, instead of probing object variables directly to guess a device's type.
+
+```sqf
+if ([_object, "hasTerminal"] call AE3_main_fnc_hasCapability) then { ... };
+```
+
+Capabilities: `"hasTerminal"`, `"hasFilesystem"`, `"isNetworkClient"`, `"isRouter"`, `"hasUsb"`, `"hasBattery"`, `"hasFuelTank"`.
+
+### `AE3_main_fnc_terminateDevice`
+
+Turns a device off and removes all its power and network connections (both directions), then cleans up flash-drive tracking. Triggered automatically when Zeus deletes an asset; call it manually when your own script deletes an AE3 device.
+
+```sqf
+[_laptop] call AE3_main_fnc_terminateDevice;
+```
+
+Call this before `deleteVehicle`-ing an AE3 device so connected power/network devices don't keep a dangling reference.
+
+### `AE3_main_fnc_getPlayersInRange`
+
+Returns players within a radius of an object. Used internally for UI-on-texture viewer-count throttling; useful if your own addon needs the same "who's near this laptop" check.
+
+```sqf
+private _nearby = [50, _laptop] call AE3_main_fnc_getPlayersInRange;
+```
+
+### `AE3_main_fnc_waitForFilesystem`
+
+Deprecated — kept for external API compatibility. Prefer `AE3_armaos_fnc_device_ensureInit`, which doesn't block a scheduled thread waiting on a variable.
+
+```sqf
+private _ready = [_computer, 15] call AE3_main_fnc_waitForFilesystem;
+```
+
 ## Reference Index
 
 - [ArmaOS API](ArmaOS-API.md)

@@ -236,6 +236,72 @@ Example:
 
 The protected content may itself be a media marker if you want a locked image/video/audio file.
 
+## Unified Intel Dispatch
+
+### `AE3_desktop_fnc_intel_dispatch`
+
+Dispatches one intel entry to whichever registry/API matches its type. This is what the Zeus and 3DEN `AddIntel` module handlers call internally, and it's a convenient single entry point if your addon wants to feed intel from data instead of calling five different functions.
+
+```sqf
+[_type, _target, _f1, _f2, _f3, _f4, _f5] call AE3_desktop_fnc_intel_dispatch;
+```
+
+| Type | f1 | f2 | f3 | f4 | f5 |
+| --- | --- | --- | --- | --- | --- |
+| `"email"` | From | To | Subject | Body | — |
+| `"webpage"` | URL | Title | Content (`\|` separates lines) | — | — |
+| `"history"` | URL | Time (optional `HH:MM`) | — | — | — |
+| `"media"` | Source path | `image`\|`video`\|`audio` | Filesystem destination | Path scope (`mod`\|`mission`\|`auto`) | Try-web-viewer flag `<BOOL>` |
+| `"lockedfile"` | Filesystem path | Password | Content | Owner | Permissions |
+
+Return value: `true` if the type was recognized, `false` otherwise.
+
+Example — driving it from a data table instead of five separate calls:
+
+```sqf
+{
+    _x params ["_type", "_f1", "_f2", "_f3", "_f4", "_f5"];
+    [_type, _laptop, _f1, _f2, _f3, _f4, _f5] call AE3_desktop_fnc_intel_dispatch;
+} forEach [
+    ["webpage", "intel.root/home", "Operations Index", "convoys - convoy schedule", "", []],
+    ["history", "intel.root/home", "02:03", "", "", []],
+    ["email", "handler@lan", "admin@lan", "Check the board", "See intel.root/home before dawn.", []]
+];
+```
+
+## Media View Tracking
+
+### `AE3_desktop_fnc_mediaNotify`
+
+Records that a media item (image/video/audio) was opened or closed on a laptop, so mission scripts can react — e.g. advance an objective once a player has watched a video. Media playback is client-local, so this state and its events live only on the viewing client; nothing is broadcast.
+
+```sqf
+[_computer, _type, _sourcePath, _vfsPath, _opened] call AE3_desktop_fnc_mediaNotify;
+```
+
+Arguments:
+
+| Index | Type | Default | Meaning |
+| --- | --- | --- | --- |
+| `0` | Object | Required | The laptop. |
+| `1` | String | Required | `"image"`, `"video"`, or `"audio"`. |
+| `2` | String | Required | Real media source path. |
+| `3` | String | `""` | Virtual filesystem path that was opened. |
+| `4` | Bool | `true` | `true` = opened, `false` = closed. |
+
+Built-in viewers call this for you; you only need it if you're building a custom media viewer app. It raises the local CBA event `ae3_desktop_mediaOpened`/`ae3_desktop_mediaClosed` with payload `[_computer, _type, _sourcePath, _vfsPath]`, and tracks `AE3_desktop_mediaOpen` (currently open) and `AE3_desktop_mediaSeen` (ever opened) on the laptop object.
+
+Example — react once a specific briefing video has been watched:
+
+```sqf
+["ae3_desktop_mediaOpened", {
+    params ["_computer", "_type", "_sourcePath"];
+    if (_type isEqualTo "video" && {_sourcePath isEqualTo "media\videos\briefing.ogv"}) then {
+        ["myMod_briefingWatched", []] call CBA_fnc_serverEvent;
+    };
+}] call CBA_fnc_addEventHandler;
+```
+
 ## CCTV
 
 ### `AE3_desktop_fnc_registerCamera`

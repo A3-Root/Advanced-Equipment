@@ -192,6 +192,7 @@ AE3 modules are normal `Module_F` classes. Current module classes include:
 | `AE3_AddConnection` | Zeus connection workflow. |
 | `AE3_InterfaceAccess` | Zeus interface access workflow. |
 | `AE3_CrashDevice` | Crash device workflow. |
+| `AE3_AddIntel` | Zeus dialog for planting one intel item (email, webpage, history, media, or locked file) on the laptop under the module. |
 
 Module config uses attributes such as `function`, `isGlobal`, `isTriggerActivated`, `isDisposable`, `curatorInfoType`, and `ModuleDescription`.
 
@@ -221,20 +222,78 @@ These execute on mission start and create the runtime links.
 
 ## CBA Settings
 
-Several components expose CBA settings. Important ones include:
+All CBA settings AE3 registers, by component. All are configurable from the in-game CBA Settings menu (mission-side, doesn't require a script). Prefer CBA settings for mission/server policy and object attributes for per-object behavior.
 
-| Setting | Component | Meaning |
+### Main
+
+| Setting | Type | Meaning |
 | --- | --- | --- |
-| `AE3_Desktop_DefaultMode` | Desktop | Default laptop interface mode when Eden does not override it. |
-| `AE3_Desktop_EnableDragDrop` | Desktop | Enables desktop drag/drop behavior. |
-| `AE3_Desktop_EnableFileBrowsing` | Desktop | Enables GUI file browsing behavior. |
-| `AE3_Desktop_DefaultTheme` | Desktop | Default GUI theme. |
-| `AE3_Filesystem_SyncMode` | Filesystem | Filesystem sync behavior. |
-| `AE3_Power_ChangeThreshold` | Power | Power update threshold. |
-| `AE3_Power_EnableStateSync` | Power | Power state sync behavior. |
-| `AE3_Power_UpdateInterval` | Power | Power update cadence. |
+| `AE3_DebugMode` | Checkbox, default off | Extra internal-structure diagnostics. |
+| `AE3_NetworkDebug` | Checkbox, default off | Logs AE3 `remoteExec` traffic to `diag_log`. Verbose — troubleshooting only. |
+| `AE3_DeploymentType` | List, default Stable, **requires restart** | How laptop pickup/deployment works: **Stable** = simple hide/show with vanilla laptop items; **Experimental** = full state preservation with custom items. |
 
-Prefer CBA settings for mission/server policy and object attributes for per-object behavior.
+### ArmaOS (Terminal)
+
+| Setting | Type | Meaning |
+| --- | --- | --- |
+| `AE3_AllowRootLogin` | Checkbox, default off | Allow logging in directly as `root`. When off, use a regular user + `sudo` (see `/etc/sudoers`). |
+| `AE3_EnableErrorSound` | Checkbox, default on | Play an error sound on failed commands. |
+| `AE3_TransferSpeedLocal` | Slider, default 20480 KB/s | Simulated local copy speed. `0` disables the simulated delay. |
+| `AE3_TransferSpeedUsb` | Slider, default 2048 KB/s | Simulated USB flash drive transfer speed. |
+| `AE3_TransferSpeedNetwork` | Slider, default 512 KB/s | Simulated network transfer speed (`ssh`, downloads). |
+| `AE3_KeyboardLayout` | List, default US | Terminal keyboard layout: AR/DE/FR/HE/HU/IT/RU/TR/US. |
+| `AE3_TerminalDesign` | List, default Light Mode | One of 20 terminal color schemes (C64, Apple II, Amber, Midnight Blue, Retro Red, TealTerm, Neon Violet, and more). |
+| `AE3_TerminalScrollSpeed` | List, default 1 line | Lines scrolled per input tick. |
+| `AE3_TerminalDefaultSize` | Slider, default 0.75 | Terminal font size (0.5-1.0). Players can also adjust with Ctrl+Plus/Minus in-game. |
+| `AE3_StartupTime` | Slider, default 15s | Cold-boot animation duration (3-15s). Warm boot from standby is always 3s. |
+| `AE3_ShutdownTime` | Slider, default 15s | Shutdown animation duration (1-15s). |
+| `AE3_TerminalDialogTitle` | Editbox | Terminal window title text. Default `"SHITE™ COMPUTING"` — change this for mission immersion. |
+| `AE3_TerminalBiosVersion` | Editbox | BIOS version line shown in the terminal header. |
+| `AE3_TerminalCopyright` | Editbox | Copyright line shown in the terminal header. |
+| `AE3_TerminalBootMessage` | Editbox | Boot message shown in the terminal header. |
+| `AE3_TerminalTipMessage` | Editbox | Tip line shown in the terminal header. |
+| `AE3_TerminalTagline` | Editbox | Tagline shown after the ASCII art. |
+| `AE3_TerminalShowAsciiArt` | Checkbox, default on | Show ASCII art in the terminal header. |
+
+The `AE3_Terminal*` text fields default to a placeholder in-joke branding ("SHITE™ Technologies") — override them per mission if you want a different in-universe computer brand, or leave them if the tone fits.
+
+### UI-on-Texture (Terminal Rendering, ArmaOS)
+
+Terminal content renders as text/array buffers synced to nearby clients and drawn locally — these settings tune that sync, and matter most on populated dedicated servers:
+
+| Setting | Type | Meaning |
+| --- | --- | --- |
+| `AE3_UiOnTexture` | Checkbox, default off | Master enable for UI-on-Texture rendering. |
+| `AE3_UiPlayerRange` | Slider, default 2m | Max range for a player to receive live UI updates while near a laptop. |
+| `AE3_armaos_uiOnTexUpdateInterval` | Slider, default 1.0s | Update cadence. `0` = real-time; 0.1-2.0 = throttled hybrid mode. |
+| `AE3_UiMaxConcurrentViewers` | Slider, default 3 | Max simultaneous viewers per laptop (`-1` = unlimited; not recommended on populated servers). |
+| `AE3_UiMaxTransmitLines` | Slider, default 64 | Max terminal lines transmitted per update. |
+| `AE3_UiKeystrokeSyncInterval` | Slider, default 0.3s | Min interval between keystroke syncs. `0` = per-keystroke (high network usage). |
+| `AE3_UiEnableChangeDetection` | Checkbox, default on | Only send updates when content actually changed. Keep on unless debugging. |
+
+### Desktop
+
+| Setting | Type | Meaning |
+| --- | --- | --- |
+| `AE3_Desktop_DefaultMode` | List, default Both | Default laptop interface mode when Eden doesn't override it: CLI, GUI, or Both. |
+| `AE3_Desktop_Size` | List, default Fullscreen | Per-player desktop window size: Fullscreen, Large, Medium, Small — useful for using a laptop from inside a vehicle. |
+| `AE3_Desktop_EnableDragDrop` | Checkbox, default on | Allow moving desktop windows by their titlebar. |
+| `AE3_Desktop_EnableFileBrowsing` | Checkbox, default on | Allow browsing the laptop filesystem in the Files app. |
+| `AE3_Desktop_DefaultTheme` | List, default Dark | Default GUI theme: Dark, Light, or Olive. |
+
+### Filesystem
+
+| Setting | Type | Meaning |
+| --- | --- | --- |
+| `AE3_Filesystem_SyncMode` | List, default Server Only | **Server Only** = filesystem changes sent to server only (recommended, lowest network usage); **Global** = broadcast to all clients (debugging/experimenting only, high network usage). |
+
+### Power
+
+| Setting | Type | Meaning |
+| --- | --- | --- |
+| `AE3_Power_ChangeThreshold` | Slider, default 1% | Minimum power-level change required before syncing over the network. |
+| `AE3_Power_EnableStateSync` | Checkbox, default on | Enable power state network sync. |
+| `AE3_Power_UpdateInterval` | Slider, default 1.0s | How often power states (batteries, solar, generators) are recalculated. |
 
 ## Related Pages
 

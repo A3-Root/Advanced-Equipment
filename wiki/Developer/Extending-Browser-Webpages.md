@@ -2,6 +2,11 @@
 
 AE3's Browser is an in-game clue and intel system. It is not a real internet browser. Developers register fictional webpages and optional browser history entries, then players discover them through the GUI Browser, files, emails, terminal commands, or other mission clues.
 
+There are two distinct content models:
+
+- **Registered text pages** (this page's focus) — `AE3_desktop_fnc_registerWebpage` stores a title/content string in a shared registry, rendered as simple formatted text. Best for short, scripted, or dynamically-generated intel.
+- **File-based HTML pages** — the Browser can also load a real `.html` (or `.md`) file by path (mission-relative, e.g. `sites/portal/index.html`, or an absolute mod path) and render it as-is, inline `<style>`/`<script>` included. Best for a fully designed page. See [Browser Sample Pages](../Examples/Browser-Sample-Pages.md) for the mechanism and drop-in examples under `sample_files/`.
+
 ## When to Use Browser Pages
 
 Use Browser pages for:

@@ -59,6 +59,12 @@ Useful commands to try if they are installed:
 
 If a command does not work, the mission maker may not have installed it on that laptop.
 
+## Carrying a Laptop
+
+Some laptops can be picked up as an inventory item ("Take Laptop" ACE interaction) and carried, then placed back down later with a "Deploy laptop" ACE self-action from your inventory. Picking one up preserves its content (users, files, mail, browser pages) — only its power state resets, so a deployed laptop starts off and needs to be turned on again. When deploying, you may be prompted to give the laptop a custom name, which then shows next to its item name (e.g. "Command Board (RootBook 3)") so you can tell multiple carried laptops apart.
+
+If a laptop can't be picked up, someone else may be using its terminal/desktop, or the mission maker may have disabled portability for that one.
+
 ## User Accounts
 
 Some laptops require a username and password. Credentials may be given in the briefing, found in a note, hidden in an email, recovered from browser history, or provided by Zeus during play.

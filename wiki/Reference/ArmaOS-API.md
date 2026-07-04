@@ -17,6 +17,26 @@ if (isServer) then {
 
 Terminal output functions run where the terminal display exists. A custom command normally runs in the terminal context and can call `AE3_armaos_fnc_shell_stdout` directly.
 
+## Device Initialization
+
+### `AE3_armaos_fnc_device_ensureInit`
+
+Ensures a computer's filesystem is initialized, running init on demand if it hasn't happened yet. Returns `false` for objects that aren't AE3 devices at all (e.g. a vanilla laptop prop placed in Zeus).
+
+```sqf
+private _ready = [_computer] call AE3_armaos_fnc_device_ensureInit;
+```
+
+Server-only. Useful before running any of the setup calls below against an object that may have been spawned dynamically (Zeus-placed, `createVehicle`, dynamic respawn) rather than initialized through the normal mission-start flow, where init timing is already guaranteed.
+
+```sqf
+if (isServer) then {
+    if ([_spawnedLaptop] call AE3_armaos_fnc_device_ensureInit) then {
+        [_spawnedLaptop, "admin", "swordfish"] call AE3_armaos_fnc_computer_addUser;
+    };
+};
+```
+
 ## Users
 
 ### `AE3_armaos_fnc_computer_addUser`

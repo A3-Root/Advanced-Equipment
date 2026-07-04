@@ -268,6 +268,102 @@ Unmounts a filesystem from a mount point.
 
 Mission scripts rarely need these directly. Prefer `AE3_flashdrive_fnc_mount` and `AE3_flashdrive_fnc_unmount` for USB devices because those functions also update laptop and flash drive object state.
 
+## Device-Level Content Helpers
+
+These are what `AE3: Add File`/`AE3: Add Directory` call under the hood. Unlike the low-level calls above, they take the device object directly (not a filesystem array + pointer), run server-only, skip re-creating an existing path instead of throwing, and publish the filesystem back for you — closer to what a mission script actually wants for one-off content.
+
+### `AE3_filesystem_fnc_device_addDir`
+
+```sqf
+[_device, _path, _owner, _permissions] call AE3_filesystem_fnc_device_addDir;
+```
+
+```sqf
+[_laptop, "/tmp/logs", "root", [[true, true, true], [false, false, false]]] call AE3_filesystem_fnc_device_addDir;
+```
+
+### `AE3_filesystem_fnc_device_addFile`
+
+```sqf
+[_computer, _path, _content, _isCode, _owner, _permissions, _isEncrypted, _encryptionAlgorithm, _encryptionKey] call AE3_filesystem_fnc_device_addFile;
+```
+
+Arguments:
+
+| Index | Type | Default | Meaning |
+| --- | --- | --- | --- |
+| `0` | Object | Required | Laptop or flash drive. |
+| `1` | String | Required | File path. |
+| `2` | String | Required | Content. Plain text, or SQF source if `_isCode`. |
+| `3` | Bool | Required | If `true`, content is compiled to `CODE` (for command files under `/bin`, `/sbin`). |
+| `4` | String | Required | Owner. |
+| `5` | Array | Required | Permissions `[[ownerR,W,X],[everyoneR,W,X]]`. |
+| `6` | Bool | `false` | Pre-encrypt the content (see below). Ignored/forced off for code files. |
+| `7` | String | — | `"caesar"` or `"columnar"`, when `_isEncrypted`. |
+| `8` | String | — | Encryption key: caesar wants a number 1-25 as a string (clamped if out of range); columnar wants a string of length ≥2 (padded with `_` if shorter). |
+
+Plain example:
+
+```sqf
+[_laptop, "/tmp/test.txt", "Hello World", false, "root", [[false,true,true],[false,true,false]]] call AE3_filesystem_fnc_device_addFile;
+```
+
+Command file example:
+
+```sqf
+[_laptop, "/bin/relay", "call myMod_fnc_relayCommand", true, "root", [[true,false,false],[true,false,false]]] call AE3_filesystem_fnc_device_addFile;
+```
+
+**Pre-encrypted content** (distinct from [locked files](../Systems/Encryption-and-Security.md) — this stores actual ciphertext with no password prompt; a player must run terminal `crypto -m decrypt` themselves to read it):
+
+```sqf
+[_laptop, "/home/admin/orders.enc", "MEET AT DAWN", false, "root", [[true,true,false],[true,false,false]], true, "caesar", "13"] call AE3_filesystem_fnc_device_addFile;
+```
+
+The file created on disk contains the *encrypted* text (`ZRRG NG QNJA` for the example above), so `cat` shows ciphertext and the player needs `crypto -m decrypt -a caesar -k 13 /home/admin/orders.enc` to recover it. See [Encryption and Security](../Systems/Encryption-and-Security.md) for puzzle design guidance and the difference from locked files.
+
+## Low-Level Helpers
+
+These are used internally by the terminal/desktop and are most useful when building custom commands, apps, or a framework extension.
+
+### `AE3_filesystem_fnc_fsObjExists`
+
+Checks whether a file or directory exists at a path, without throwing.
+
+```sqf
+private _exists = [[], _fs, "/tmp/test.txt", "root"] call AE3_filesystem_fnc_fsObjExists;
+```
+
+Use this to branch (`ensureFile`/`createFile`) without a try/catch.
+
+### `AE3_filesystem_fnc_hasPermission`
+
+Checks a permission on an already-resolved filesystem object and throws if denied; root and empty-owner objects always pass.
+
+```sqf
+[_fileObj, "root", 0] call AE3_filesystem_fnc_hasPermission;
+```
+
+Most of the time you don't call this directly — `getFile`/`writeToFile`/etc. already do the check — but it's useful when writing a custom command that needs the same permission semantics.
+
+### `AE3_filesystem_fnc_resolvePntr`
+
+Resolves a directory pointer (array of directory names) to its filesystem object, throwing if any segment doesn't exist.
+
+```sqf
+private _homeDir = [["home", "admin"], _fs] call AE3_filesystem_fnc_resolvePntr;
+```
+
+### `AE3_filesystem_fnc_symlinkTarget`
+
+Given a filesystem object's content slot, returns the absolute target path if it's a symlink, or `""` otherwise.
+
+```sqf
+private _target = [(_obj select 0)] call AE3_filesystem_fnc_symlinkTarget;
+```
+
+Used to follow links transparently when reading/copying and to expose link targets to the web desktop.
+
 ## Idempotent Laptop Content Example
 
 This example creates a repeatable setup block for one laptop:

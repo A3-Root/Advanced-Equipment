@@ -117,6 +117,36 @@ private _interfaces = _laptop getVariable ["AE3_USB_Interfaces", createHashMap];
 
 If the drive is mounted, the function unmounts it before converting the world object back to an inventory item.
 
+## Item/Object Conversion
+
+`connectFlashDrive`/`disconnectFlashDrive` call these internally; use them directly only when you're building a custom spawn/pickup flow that bypasses the normal USB interaction (e.g. a Zeus "give player a drive already docked" script, or converting a drive found in a container without going through a USB port).
+
+### `AE3_flashdrive_fnc_item2obj`
+
+Converts an inventory item to a world object, preserving all variables from the item's namespace (including its filesystem) and removing the item from the player's inventory.
+
+```sqf
+private _driveObj = [_player, _item, _pos] call AE3_flashdrive_fnc_item2obj;
+```
+
+Arguments:
+
+| Index | Type | Default | Meaning |
+| --- | --- | --- | --- |
+| `0` | Object | Required | Player who has the item. |
+| `1` | String | Required | Flash drive item class name, e.g. `"Item_FlashDisk_AE3_ID_1"`. |
+| `2` | Array | `[0,0,0]` | World position for the created object. |
+
+Returns the created object, or `objNull` if the item wasn't found in the player's inventory.
+
+### `AE3_flashdrive_fnc_obj2item`
+
+Converts a world flash drive object back to an inventory item on a player, preserving its variables (including filesystem), and deletes the object.
+
+```sqf
+[_driveObj, _player] call AE3_flashdrive_fnc_obj2item;
+```
+
 ## Inspecting Interfaces
 
 ### `AE3_flashdrive_fnc_lsInterfaces`

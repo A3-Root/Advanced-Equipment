@@ -21,6 +21,13 @@ Load dependencies first:
 3. Advanced Equipment Revamped
 4. Mission-specific AE3 extension mods, if any
 
+## CBA Settings Worth Reviewing
+
+AE3 exposes ~28 CBA settings (server/mission-wide, no scripting needed) covering debug logging, terminal branding/appearance, network-sync bandwidth tuning, and the laptop deployment model. See [Config Classes](Reference/Config-Classes.md#cba-settings) for the full list. Two are worth deciding on before a populated dedicated server session:
+
+- `AE3_DeploymentType` — **Stable** (simple hide/show, vanilla laptop items) vs **Experimental** (full state preservation, custom items). Changing this requires a mission restart; pick one before launch rather than mid-session.
+- The UI-on-Texture sync settings (`AE3_UiPlayerRange`, `AE3_UiMaxConcurrentViewers`, `AE3_UiMaxTransmitLines`, `AE3_armaos_uiOnTexUpdateInterval`) — defaults are tuned for normal play; lower viewer/line limits if a mission has many players clustered around laptops.
+
 ## GUI/Desktop File Extensions
 
 The GUI/Desktop interface uses files such as CSS, JavaScript, and Markdown. Dedicated servers that restrict loadable file types must allow these extensions.

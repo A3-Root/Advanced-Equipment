@@ -87,16 +87,68 @@ cat /mnt/usb0/brief.txt
 umount usb0
 ```
 
-## Security Commands
-
-Security commands are optional and are not installed unless the mission maker enables them.
+## Locked Files
 
 | Command | Path | Purpose |
 | --- | --- | --- |
-| `crypto` | `/bin/crypto` | Encrypts or decrypts text using supported algorithms. |
-| `crack` | `/bin/crack` | Attempts password cracking behavior provided by AE3 security tooling. |
+| `unlock` | `/bin/unlock` | Opens a passworded file and prints its content if the password is correct. |
 
-These commands are useful for puzzle laptops and intelligence workflows. Install only on laptops meant to provide those tools.
+```text
+unlock /home/admin/secret.txt hunter2
+unlock -p /home/admin/secret.txt hunter2
+```
+
+`-p` permanently unlocks the file (rewrites it as plain content) if the user has write permission. Wrong passwords are logged to `/var/log/auth.log` and play an error sound — mission makers can use that log as its own clue trail (repeated failed attempts, brute-force detection, etc). Locked file content is stored as `AE3_LOCKED|<passwordLength>|<password><payload>`; see [Encryption and Security](../Systems/Encryption-and-Security.md).
+
+## Security Commands
+
+Security commands are optional and are not installed unless the mission maker enables them (per-laptop Crypto/Crack object attributes, or `AE3_armaos_fnc_computer_addSecurityCommands`).
+
+| Command | Path | Purpose |
+| --- | --- | --- |
+| `crypto` | `/bin/crypto` | Encrypts or decrypts text or a file using a chosen algorithm and key. |
+| `crack` | `/bin/crack` | Attempts to break `crypto` output without the key (bruteforce/statistics/key-length analysis). |
+
+Both commands support `caesar` (shift cipher) and `columnar` (transposition cipher) algorithms, and `-h`/`--help` for full in-terminal help text.
+
+### `crypto`
+
+```text
+crypto -m encrypt -a caesar -k 3 "MEET AT DAWN"
+crypto -m decrypt -a caesar -k 3 "PHHW DW GDZQ"
+crypto -m encrypt -a columnar -k KEY "MEET AT DAWN"
+crypto -m encrypt -a caesar -k 3 -o /home/admin/message.enc "MEET AT DAWN"
+crypto -m decrypt -a caesar -k 3 /home/admin/message.enc
+```
+
+| Option | Meaning |
+| --- | --- |
+| `-m encrypt\|decrypt` | Required. Direction. |
+| `-a caesar\|columnar` | Algorithm, defaults to `caesar`. |
+| `-k <key>` | Required. Caesar: a positive integer shift. Columnar: a string whose length is the column count. |
+| `-o <path>` | Optional. Write output to a file instead of stdout (creates the file if missing). |
+| Last argument | A quoted string, or a file path to read as input. |
+
+For columnar mode, spaces in the message are replaced with `_` before encryption so the transposition round-trips cleanly.
+
+### `crack`
+
+```text
+crack -m bruteforce -a caesar "PHHW DW GDZQ"
+crack -m statistics -a caesar "PHHW DW GDZQ"
+crack -m key -a columnar "encrypted text here"
+crack -m bruteforce -a columnar "encrypted text here"
+```
+
+| Mode | Caesar | Columnar |
+| --- | --- | --- |
+| `bruteforce` | Prints all 26 shift attempts. | Prints every candidate key length's grid layout. |
+| `statistics` | Frequency analysis, guesses shift assuming `E` is the most common letter. | Not available. |
+| `key` | Not available. | Lists candidate key lengths (divisors of the message length). |
+
+`crack` cannot recover a `columnar` key string directly — it narrows down key *length* by factoring the message length, then a player reconstructs the grid from the `bruteforce` layout output. This makes columnar puzzles naturally harder than caesar puzzles, which `crack -m statistics` can often solve outright on real English text.
+
+These commands are useful for puzzle laptops and intelligence workflows. Install only on laptops meant to provide those tools — see [Encryption and Security](../Systems/Encryption-and-Security.md) for mission design guidance.
 
 ## Games
 

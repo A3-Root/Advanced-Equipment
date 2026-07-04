@@ -4,53 +4,51 @@ AE3 laptops are the main interactive computer objects. They can be carried or lo
 
 ## Interface Modes
 
-A laptop can offer one of these access modes:
+Set via the laptop's Interface Mode object attribute (`AE3_interfaceMode`):
 
-- Default: uses the mission or server default.
-- CLI: terminal command-line interface only.
-- GUI: graphical desktop interface only.
-- Both: players can choose between terminal and desktop actions.
+| Value | Meaning |
+| --- | --- |
+| `default` | Uses the mission/CBA default. |
+| `cli` | Terminal command-line interface only. |
+| `gui` | Graphical desktop interface only. |
+| `both` | Players can choose between terminal and desktop actions. |
 
-Set this in the laptop's 3DEN object attributes. Zeus can also manage interface access during live play when the relevant module is available.
+Zeus can also manage interface access live during play through the `AE3_InterfaceAccess` module. Getting this wrong is a common cause of "invisible" content — a clue placed as a GUI-only Browser page is unreachable on a `cli`-only laptop.
 
 ## GUI Desktop
 
-The GUI desktop is best for readable, visual, and app-based gameplay:
-
-- Browsing folders.
-- Reading mail.
-- Opening webpages.
-- Inspecting browser history.
-- Reading notes.
-- Viewing images, audio, video, maps, CCTV, calendar entries, and system information.
-
-Use GUI when players should interact like they are using a normal computer.
+Best for readable, visual, and app-based gameplay: browsing folders, reading mail, opening webpages, inspecting browser history, reading notes, viewing images/audio/video/maps/CCTV/calendar/system info. Use GUI when players should interact like they are using a normal computer. See [Desktop GUI](Desktop-GUI.md).
 
 ## Terminal
 
-The terminal is best for command-line gameplay:
+Best for command-line gameplay: checking folders and logs, discovering network addresses, connecting through SSH, mounting flash drives, unlocking files, using security or mission-specific commands. Use terminal when the mission should feel like a technical investigation or hacking task. See [Terminal TUI](Terminal-TUI.md).
 
-- Checking folders and logs.
-- Discovering network addresses.
-- Connecting through SSH.
-- Mounting flash drives.
-- Unlocking files.
-- Using security or mission-specific commands.
+## Carry and Deploy
 
-Use terminal when the mission should feel like a technical investigation or hacking task.
+Laptops can be picked up into inventory ("Take Laptop" ACE interaction) and placed back down elsewhere ("Deploy laptop" ACE self-action), with content preserved across the conversion (power state does not carry over — a deployed laptop starts off). This is controlled by the `AE3_DeploymentType` CBA setting (see [Config Classes](../Reference/Config-Classes.md#cba-settings)):
+
+- **Stable** (default) — simple hide/show using vanilla laptop item classes.
+- **Experimental** — full state preservation using custom item classes; supports the deploy-time custom naming prompt so players can label which physical laptop is which while carrying more than one.
+
+Use this for courier/relocation objectives ("get the laptop out of the compound"), or simply to let players stage laptops where they want them during a mission rather than only where you placed them in Eden. For scripted control, see `AE3_armaos_fnc_laptop_pickup`/`laptop_deploy` in [ArmaOS API](../Reference/ArmaOS-API.md#laptop-state-helpers) — treat those as framework-level, not normal mission-setup calls.
 
 ## Access Restrictions
 
-GUI and terminal access can be restricted separately. This lets a mission maker allow one group to use the desktop while another group can use the terminal, or require a player-specific condition set by Zeus or mission logic.
-
-For no-code setup, use laptop attributes and Zeus interface tools. For scripted or addon-controlled access, use the Desktop API reference.
+GUI and terminal access can be restricted separately from Interface Mode — this lets a mission maker allow one group to use the desktop while another group can use the terminal, or gate access behind a player-specific condition set by Zeus or mission logic (`AE3_InterfaceAccess` module, or the Desktop API for scripted control).
 
 ## Typical Laptop Build
 
 1. Place a laptop.
-2. Choose its interface mode.
-3. Add at least one user.
-4. Add the content players need.
-5. Decide whether it needs power.
-6. Decide whether it needs network access.
-7. Test the laptop as a normal player.
+2. Choose its Interface Mode.
+3. Add at least one user (`AE3: Add User`).
+4. Add the content players need (files, mail, webpages, calendar events, media — see [Intel, Mail, Chat, and Media](Intel-Mail-Chat-Media.md)).
+5. Decide whether it needs power (see [Power](Power.md)) — a laptop with no power connection defaults to off.
+6. Decide whether it needs network access (see [Networking](Networking.md)).
+7. Test the laptop as a normal player, using whatever Interface Mode you configured — don't test GUI-only content through a debug console that bypasses the mode restriction.
+
+## Related Pages
+
+- [Eden Attributes](../Reference/Eden-Attributes.md) — full laptop attribute table.
+- [Create a Laptop](../Examples/Create-a-Laptop.md) — step-by-step tutorial.
+- [Configure GUI vs TUI Access](../Examples/Configure-GUI-vs-TUI-Access.md) — worked example of interface restriction.
+- [Desktop API](../Reference/Desktop-API.md) / [ArmaOS API](../Reference/ArmaOS-API.md) — scripted setup.

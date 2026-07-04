@@ -4,7 +4,7 @@
 // AE3_desktop_fnc_registerApp). The entry function is called as:
 //   [_winId, _ctrlGroup, _computer, _args] call (missionNamespace getVariable entry);
 // and may return a HASHMAP with optional "onClose" / "onFocus" CODE callbacks.
-// See wiki/App-Framework.md for the full developer documentation.
+// See wiki/Developer/Extending-Desktop-GUI.md for the full developer documentation.
 
 class AE3_DesktopApp
 {

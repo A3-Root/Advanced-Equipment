@@ -4,50 +4,61 @@ AE3 networking lets laptops and routers communicate. Missions can use it for pin
 
 ## Core Objects
 
-- Router: creates a network and assigns addresses.
-- Laptop: connects to a router and uses network tools.
-- Parent router: can connect router networks together.
+- **Router** — creates a network and assigns addresses (a gateway + DHCP subnet).
+- **Laptop** — connects to a router and uses network tools.
+- **Parent router** — a router-to-router connection joins two subnets together for multi-network scenarios.
 
 ## Router Settings
 
 Configure routers in object attributes:
 
-- Network Name (SSID): visible network name.
-- Default Gateway: optional router address.
-- Wifi Range (m): connection range.
-- Network Password: required password, or blank for open network.
-- Powered On At Start: starts the router automatically.
-- Allow External SSH: allows access from other gateways.
-- External Allowed IPs: optional allow list for external routes.
+| Attribute | Meaning |
+| --- | --- |
+| Network Name (SSID) | Visible network name. |
+| Default Gateway | Optional router address, e.g. `10.0.0.1`. Leave blank for AE3 to assign one. |
+| Wifi Range (m) | Connection range. |
+| Network Password | Required password, or blank for open network. |
+| Powered On At Start | Starts the router automatically. |
+| Allow External SSH | Allows access from other gateways/subnets. |
+| External Allowed IPs | Optional allow-list (comma/space separated gateway, host, or regex) for external routes. |
 
-For simple missions, leave Default Gateway blank and let AE3 assign addresses.
+For simple missions, leave Default Gateway blank and let AE3 assign addresses via DHCP.
 
 ## Editor Connections
 
-Use `AE3: connect device to network router`.
+Use `AE3: connect device to network router` (right-click connection in Eden). Scripted equivalent:
+
+```sqf
+[_laptop, _router] call AE3_network_fnc_createNetworkConnection;
+[_routerA, _routerB] call AE3_network_fnc_createNetworkConnection;
+```
 
 Common setups:
 
 - One laptop to one router.
-- Multiple laptops to one router.
-- Router to parent router for multi-network scenarios.
+- Multiple laptops to one router (shared subnet, laptops can `ping`/`msg`/`ssh` each other).
+- Router to parent router for multi-network scenarios — set Allow External SSH + External Allowed IPs if players should be able to reach across.
 
 ## Player Workflow
 
 When configured, players can:
 
-- Check their network information.
-- Ping another address.
-- Connect to remote systems through SSH.
-- Send messages.
-- Use network-aware desktop apps.
+- Check their network information (`ip`).
+- Ping another address (`ping <ip>`).
+- Connect to remote systems through SSH (`ssh <ip>`).
+- Send messages (`msg <ip> <text>`).
+- Use network-aware desktop apps (Chat).
 
 ## Good Network Design
 
-- Give players a reason to know or discover an IP address.
-- Avoid too many routers unless routing is part of the puzzle.
-- If a password is required, make it discoverable.
-- If external access is required, test it on a dedicated server.
-- Keep router names and addresses readable.
+- Give players a reason to know or discover an IP address (a note, a config file, a `ping` sweep result) rather than expecting them to guess.
+- Avoid too many routers unless routing itself is part of the puzzle.
+- If a network password is required, make it discoverable.
+- If external access across routers is required, test it on a dedicated server — client-hosted previews can mask locality issues.
+- Keep router names and addresses readable and consistent (`HQ-Router` / `10.0.0.1`, not arbitrary strings).
 
-Scripted network setup belongs in [Network API](../Reference/Network-API.md).
+## Related Pages
+
+- [Network API](../Reference/Network-API.md) — `createNetworkConnection`, `applyRouterConfig`, static IPs, SSH/resolve behavior.
+- [Build a Network](../Examples/Build-a-Network.md) — worked multi-laptop/router example.
+- [Terminal Commands](../Reference/Terminal-Commands.md) — `ip`, `ping`, `ssh`, `msg`.
