@@ -22,7 +22,11 @@
     get: function (id) { return registry.filter(function (a) { return a.id === id; })[0]; },
     launch: function (id, args) {
       var app = Apps.get(id);
-      if (app) return WM.open(app, args);
+      if (!app) return;
+      // Action apps (e.g. "Terminal" switching to the CLI) run a one-shot handler instead of
+      // opening a window.
+      if (typeof app.action === "function") return app.action(args);
+      return WM.open(app, args);
     }
   };
 
@@ -30,6 +34,7 @@
   // app.menu (a "Parent/Child" path under "Tools"). "/" nests submenus. Apps absent here fall back to
   // "Other". CATEGORY_ORDER fixes the category sequence; APP_ORDER fixes the within-category order.
   var CATEGORY = {
+    terminal: "System & Core Utilities",
     settings: "System & Core Utilities", network: "System & Core Utilities",
     ping: "System & Core Utilities", ssh: "System & Core Utilities", about: "System & Core Utilities",
     notepad: "Productivity & Files", calculator: "Productivity & Files", calendar: "Productivity & Files",
@@ -41,7 +46,7 @@
   // Root Cyberwarfare apps carry app.menu = "Hacking Tools" (set in fn_gui_registerApps.sqf), which is
   // the last category here. My Computer is intentionally not menu-listed (it lives on the desktop/dock).
   var CATEGORY_ORDER = ["System & Core Utilities", "Productivity & Files", "Communication & Web", "Games & Entertainment", "Cryptography", "Hacking Tools"];
-  var APP_ORDER = ["settings", "network", "ping", "ssh", "about",
+  var APP_ORDER = ["terminal", "settings", "network", "ping", "ssh", "about",
     "notepad", "calculator", "calendar", "files", "recyclebin", "media",
     "browser", "mail", "messenger", "map", "snake", "crypto", "crack"];
   function appRank(app) { var i = APP_ORDER.indexOf(app.id); return i < 0 ? 999 : i; }
@@ -230,7 +235,10 @@
             var m = String((res2 && res2.content) || "").match(/app\s*=\s*([\w-]+)/i);
             var target = m && Apps.get(m[1]);
             var g = icon.querySelector(".glyph");
-            if (target && target.glyph && g) g.innerHTML = target.glyph;
+            if (target && target.glyph && g) {
+              g.innerHTML = target.glyph;
+              if (window.AE3_hydrateAppImages) window.AE3_hydrateAppImages(g);
+            }
           }).catch(function () {});
         }
       });
@@ -355,6 +363,7 @@
 
   function itemRow(app) {
     var row = el("div", "am-item", '<span class="am-ico">' + (app.glyph || "") + '</span><span>' + app.title + "</span>");
+    if (window.AE3_hydrateAppImages) window.AE3_hydrateAppImages(row);
     row.addEventListener("click", function (e) { e.stopPropagation(); closeAppsMenu(); Apps.launch(app.id); });
     return row;
   }

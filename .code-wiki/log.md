@@ -32,3 +32,5 @@ Append-only log for code-wiki maintenance actions. Actions: created, updated, re
 2026-06-30 | verified | interaction-equipment | wiki-bootstrap: maintainer approved draft
 2026-06-30 | lint | wiki-topics | fixed reciprocal links, token estimate, rank metadata, and duplicate trigger paths
 2026-07-04 | updated | eden-zeus-tooling | documented optional ZEN (Zeus Enhanced) Dynamic Dialog compat for all 10 Zeus modules
+2026-07-05 | updated | eden-zeus-tooling | Add Intel split into standalone per-type Zeus modules; Add User ZEN defaults admin/admin123
+2026-07-05 | updated | desktop-gui-and-browser | Terminal app + desktop<->CLI switching (sys_switch_cli / desktop command); executable file green tint + run (fs_list exec flag, sys_run_file)

@@ -66,3 +66,4 @@ if (_username isNotEqualTo "root") then
 
 // Sync filesystem
 _computer setVariable ["AE3_filesystem", _filesystem];
+["ae3_computer_userAdded", [_computer, _username]] call CBA_fnc_globalEvent;

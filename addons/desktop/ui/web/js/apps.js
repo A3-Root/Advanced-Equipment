@@ -125,8 +125,9 @@
       var link = it.link ? ' <span class="muted" title="Link &#8594; ' + esc(it.link) + '">&#8631;</span>' : "";
       // Row class drives the CSS tint by type: folders, .app programs/executables, plain files.
       var isApp = /\.app$/i.test(it.name);
-      var cls = it.dir ? "isdir" : (isApp ? "isapp" : "isfile");
-      var glyph = it.dir ? Icons.folder : (isApp ? Icons.app : Icons.file);
+      // Executable files (code payload, reported by fs_list) are tinted green and run on double-click.
+      var cls = it.dir ? "isdir" : (isApp ? "isapp" : (it.exec ? "isexec" : "isfile"));
+      var glyph = it.dir ? Icons.folder : ((isApp || it.exec) ? Icons.app : Icons.file);
       var li = h('<li class="' + cls + '"><span class="ico">' + glyph + '</span><span>' + esc(it.name) + link + "</span></li>");
       li.addEventListener("click", function () {
         entries.querySelectorAll("li").forEach(function (n) { n.classList.remove("sel"); });
@@ -153,6 +154,8 @@
       // Picker mode: a file double-click resolves the picker instead of opening it.
       if (opts.onPick) { opts.onPick(it, full); return; }
       if (/\.app$/i.test(it.name)) { launchLauncher(full); return; }
+      // Executable: run it like an .app (switches to the CLI terminal and executes it there).
+      if (it.exec) { A3.send("sys_run_file", { path: it.link && it.link !== "" ? it.link : full }); return; }
       openFile(it.link && it.link !== "" ? it.link : full);
     }
 
@@ -542,6 +545,16 @@
         (args && args.title) || ((args && args.path) ? String(args.path).split("\\").pop().split("/").pop() : ""),
         { scope: (args && args.scope), web: (args && args.web), vfsPath: (args && args.vfsPath), marker: (args && args.marker) });
     }
+  });
+
+  // ---------------- Terminal ----------------
+  // Action app (no window): switches this laptop from the GUI desktop to the CLI terminal. The SQF
+  // side (jsRouter "sys_switch_cli") closes the web desktop and opens the classic terminal, gated by
+  // the laptop's CLI interface-access rules. The `desktop` terminal command switches back.
+  Apps.register({
+    id: "terminal", title: "Terminal", glyph: (Icons.terminal || ">_"),
+    showOnDesktop: false, showInDock: true, singleton: true,
+    action: function () { A3.send("sys_switch_cli", {}); }
   });
 
   // ---------------- Settings ----------------

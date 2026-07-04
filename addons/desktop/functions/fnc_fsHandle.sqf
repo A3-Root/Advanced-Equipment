@@ -94,10 +94,14 @@ switch (_op) do {
                         _isDir = (_ld select 0) isEqualType createHashMap;
                     } catch {};
                 };
+                // An executable file carries a code payload (the programs under /bin etc.); the GUI
+                // tints these green and runs them on double-click via the terminal.
+                private _isExec = !_isDir && {(_child select 0) isEqualType {}};
                 _entries pushBack createHashMapFromArray [
                     ["name", _x],
                     ["dir", _isDir],
-                    ["link", _link]
+                    ["link", _link],
+                    ["exec", _isExec]
                 ];
             } forEach _names;
             _res set ["entries", _entries];

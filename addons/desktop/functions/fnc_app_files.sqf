@@ -100,6 +100,11 @@ private _refresh = {
 		}
 		else
 		{
+			// Executable files (code payload) are tinted green and run on double-click, like an .app.
+			if ((_obj select 0) isEqualType {}) then
+			{
+				_listCtrl lbSetColor [_index, [0.3, 0.85, 0.4, 1]];
+			};
 			_listCtrl lbSetPicture [_index, "\z\ae3\addons\filesystem\ui\AE3_Module_Icons_addFile.paa"];
 		};
 	} forEach _names;

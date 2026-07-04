@@ -13,11 +13,13 @@ class CfgVehicles
 		class ModuleDescription {};
 	};
 
-	// MODULE ADD INTEL - Zeus dialog for planting one intel entry on the laptop under the module.
+	// MODULE ADD INTEL - superseded in Zeus by the standalone per-type modules below (Add Email,
+	// Add Webpage, Add Browser History, Add Media, Add Passworded File). Kept hidden so its shared
+	// curator dialog (AE3_UserInterface_Zeus_Module_AddIntel) and 3DEN wiring stay defined.
 	class AE3_AddIntel: Module_F
 	{
 		scope = 1;
-		scopeCurator = 2;
+		scopeCurator = 0;
 		displayName = "$STR_AE3_Desktop_Config_AddIntelDisplayName";
 		icon = "\z\ae3\addons\armaos\ui\AE3_Module_Icons_addUser.paa";
 		category = "AE3_armaosModules";
@@ -41,7 +43,7 @@ class CfgVehicles
 	class AE3_AddEmail: Module_F
 	{
 		scope = 2;
-		scopeCurator = 0;
+		scopeCurator = 2;
 		displayName = "AE3: Add Email";
 		icon = "\z\ae3\addons\armaos\ui\AE3_Module_Icons_addUser.paa";
 		category = "AE3_armaosModules";
@@ -52,6 +54,7 @@ class CfgVehicles
 		isDisposable = 1;
 		is3DEN = 0;
 		ae3_intelType = "email";
+		curatorInfoType = "AE3_UserInterface_Zeus_Module_AddIntel";
 
 		class Attributes: AttributesBase
 		{
@@ -111,7 +114,7 @@ class CfgVehicles
 	class AE3_AddWebpage: Module_F
 	{
 		scope = 2;
-		scopeCurator = 0;
+		scopeCurator = 2;
 		displayName = "AE3: Add Webpage";
 		icon = "\z\ae3\addons\armaos\ui\AE3_Module_Icons_addUser.paa";
 		category = "AE3_armaosModules";
@@ -122,6 +125,7 @@ class CfgVehicles
 		isDisposable = 1;
 		is3DEN = 0;
 		ae3_intelType = "webpage";
+		curatorInfoType = "AE3_UserInterface_Zeus_Module_AddIntel";
 
 		class Attributes: AttributesBase
 		{
@@ -153,7 +157,7 @@ class CfgVehicles
 	class AE3_AddBrowserHistory: Module_F
 	{
 		scope = 2;
-		scopeCurator = 0;
+		scopeCurator = 2;
 		displayName = "AE3: Add Browser History";
 		icon = "\z\ae3\addons\armaos\ui\AE3_Module_Icons_addUser.paa";
 		category = "AE3_armaosModules";
@@ -164,6 +168,7 @@ class CfgVehicles
 		isDisposable = 1;
 		is3DEN = 0;
 		ae3_intelType = "history";
+		curatorInfoType = "AE3_UserInterface_Zeus_Module_AddIntel";
 
 		class Attributes: AttributesBase
 		{
@@ -188,7 +193,7 @@ class CfgVehicles
 	class AE3_AddMedia: Module_F
 	{
 		scope = 2;
-		scopeCurator = 0;
+		scopeCurator = 2;
 		displayName = "AE3: Add Media";
 		icon = "\z\ae3\addons\armaos\ui\AE3_Module_Icons_addUser.paa";
 		category = "AE3_armaosModules";
@@ -199,6 +204,7 @@ class CfgVehicles
 		isDisposable = 1;
 		is3DEN = 0;
 		ae3_intelType = "media";
+		curatorInfoType = "AE3_UserInterface_Zeus_Module_AddIntel";
 
 		class Attributes: AttributesBase
 		{
@@ -257,7 +263,7 @@ class CfgVehicles
 	class AE3_AddPasswordedFile: Module_F
 	{
 		scope = 2;
-		scopeCurator = 0;
+		scopeCurator = 2;
 		displayName = "AE3: Add Passworded File";
 		icon = "\z\ae3\addons\armaos\ui\AE3_Module_Icons_addUser.paa";
 		category = "AE3_armaosModules";
@@ -268,6 +274,7 @@ class CfgVehicles
 		isDisposable = 1;
 		is3DEN = 0;
 		ae3_intelType = "lockedfile";
+		curatorInfoType = "AE3_UserInterface_Zeus_Module_AddIntel";
 
 		class Attributes: AttributesBase
 		{

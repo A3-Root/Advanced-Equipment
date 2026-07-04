@@ -148,7 +148,7 @@ if (hasInterface) then {
 };
 ```
 
-The web desktop replaces existing external app registrations with the same id and removes external apps that are absent from a later `ext_apps` push. This lets addons hide USB- or state-dependent apps while the desktop is already open. Files in a user Desktop folder launch apps when their resolved file content is `app=<id>`, so addons can create visible filenames such as `Tools.exe` while still targeting a registered app id.
+The web desktop replaces existing external app registrations with the same id and removes external apps that are absent from a later `ext_apps` push. This lets addons hide USB- or state-dependent apps while the desktop is already open. Files in a user Desktop folder launch apps when their resolved file content is `app=<id>`, so addons can create visible filenames such as `Tools.exe` while still targeting a registered app id. `iconPath` values are loaded through the AE3 texture bridge, which supports PAA mod textures in the web desktop.
 
 Register a JS-to-SQF command:
 

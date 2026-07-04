@@ -392,7 +392,7 @@ Arguments:
 | `1` | String | Required | Display title. |
 | `2` | String | Required | Glyph/icon text passed to JS. |
 | `3` | String | `"deviceList"` | Template kind. |
-| `4` | HashMap | Empty | Extra data passed to JS. Optional filters: `requiresVar` or `requiresFunction`. Launchers may also provide `iconPath`. |
+| `4` | HashMap | Empty | Extra data passed to JS. Optional filters: `requiresVar` or `requiresFunction`. Launchers may also provide `iconPath`; web icons are resolved through AE3 texture loading so PAA mod textures can display in CEF. |
 
 Example:
 
@@ -423,10 +423,11 @@ Common `_extra` keys:
 | --- | --- |
 | `menu` | Applications menu category path. |
 | `showOnDesktop` | Shows the external app as a registry-provided desktop icon when true; filesystem desktop files remain the preferred way to expose per-user launchers. |
-| `iconPath` | Optional image path used by web launcher icons when the browser can render the format. |
+| `iconPath` | Optional image path used by web launcher icons. The web desktop loads it through AE3 texture loading, including PAA mod textures. |
 | `showInDock` | Shows the external app in the dock when true. |
 | `showInMenu` | Set false to hide from the Applications menu. |
 | `launchApps` | For `launcher`: array of `[appId, label]` entries to show as buttons. |
+| `openCommand` | For `launcher`: optional JS-to-SQF command called when the launcher opens. |
 | `openCommand` | For `launcher`: custom JS command requested when the launcher opens. |
 
 ### `AE3_desktop_fnc_registerCmd`

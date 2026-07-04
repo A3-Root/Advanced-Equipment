@@ -162,6 +162,14 @@ class CfgOsFunctions
 		code = "call AE3_armaos_fnc_os_shutdown";
 	};
 
+	class desktop : OsFunction
+	{
+		path = "/bin/desktop";
+		description = "Switch from the terminal to the GUI desktop interface.";
+		man = "Usage: desktop\n\nCloses the terminal and opens the graphical desktop on this device. Requires the desktop addon and GUI interface access.";
+		code = "call AE3_armaos_fnc_os_desktop";
+	};
+
 	class standby : OsFunction
 	{
 		path = "/sbin/standby";

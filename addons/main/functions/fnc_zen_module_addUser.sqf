@@ -51,8 +51,8 @@ private _onCancel = {
 [
     "STR_AE3_ArmaOS_Config_AddUserDisplayName",
     [
-        ["EDIT", "Username", [""]],
-        ["EDIT", "Password", [""]]
+        ["EDIT", "Username", ["admin"]],
+        ["EDIT", "Password", ["admin123"]]
     ],
     _onConfirm,
     _onCancel,

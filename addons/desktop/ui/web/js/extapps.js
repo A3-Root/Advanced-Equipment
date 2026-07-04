@@ -14,11 +14,28 @@
   A3.on("dev_list", function (p) { if (p && listSubs[p.type] != null) listSubs[p.type](p.items || []); });
   A3.on("dev_result", function (p) { if (p && resultSubs[p.type] != null) resultSubs[p.type](p); });
 
-  // Prefer a named SVG icon (desc.icon or desc.extra.icon), fall back to a glyph string, then a
-  // default device icon. Lets ext apps opt into the SVG set without changing registerExtApp's API.
+  function iconMarkup(path) {
+    return '<span class="app-img" data-icon-path="' + escAttr(path) + '"></span>';
+  }
+
+  function hydrateAppImages(root) {
+    root = root || document;
+    if (!window.A3 || typeof A3.loadImage !== "function") return;
+    Array.prototype.slice.call(root.querySelectorAll(".app-img[data-icon-path]")).forEach(function (node) {
+      var path = node.getAttribute("data-icon-path");
+      if (!path || node.dataset.loaded === "1") return;
+      node.dataset.loaded = "1";
+      A3.loadImage(path, 128, [], "mod").then(function (src) {
+        node.style.backgroundImage = 'url("' + src + '")';
+      }).catch(function () { node.classList.add("missing"); });
+    });
+  }
+  window.AE3_hydrateAppImages = hydrateAppImages;
+
+  // Prefer a web-loadable image path, then a named SVG icon, then a glyph string.
   function glyphFor(desc) {
     var iconPath = desc.iconPath || (desc.extra && desc.extra.iconPath);
-    if (iconPath) return '<img class="app-img" src="' + escAttr(iconPath) + '">';
+    if (iconPath) return iconMarkup(iconPath);
     var iconName = desc.icon || (desc.extra && desc.extra.icon);
     if (window.Icons && iconName && Icons[iconName]) return Icons[iconName];
     if (desc.glyph) return desc.glyph;
@@ -279,5 +296,6 @@
       else if (desc.kind === "launcher") Apps.register(makeLauncherApp(desc));
     });
     if (window.Desktop) Desktop.refresh();
+    setTimeout(function () { hydrateAppImages(document); }, 0);
   });
 })();

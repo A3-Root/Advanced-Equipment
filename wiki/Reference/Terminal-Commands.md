@@ -65,6 +65,7 @@ Games:
 | `exit` | `/sbin/exit` | Logs out or exits an SSH session. |
 | `shutdown` | `/sbin/shutdown` | Turns the computer off. |
 | `standby` | `/sbin/standby` | Puts the computer in standby. |
+| `desktop` | `/bin/desktop` | Switches from the terminal to the GUI desktop (requires the desktop addon and GUI interface access). |
 
 Network commands depend on power and routing. If a laptop or router is off, route checks may fail even when the physical connection exists.
 

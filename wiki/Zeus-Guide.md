@@ -77,7 +77,7 @@ Browser history alone is only a trail. The webpage module creates the page conte
 
 ## Adding Email
 
-Use email when intel should feel like communication between people or organizations. In Zeus, email may be added through the live Add Intel workflow rather than a separate editor-style Add Email module.
+Use email when intel should feel like communication between people or organizations. In Zeus, use the standalone **Add Email** module (the former unified Add Intel module has been split into per-type modules: Add Email, Add Webpage, Add Browser History, Add Media, Add Passworded File).
 
 Useful fields:
 
@@ -92,7 +92,7 @@ Players read emails in the Mail app or through laptop files if the mission expos
 
 ## Adding Media
 
-Use media for images, audio, or video clues. In Zeus, media may be added through the live Add Intel workflow rather than a separate editor-style Add Media module.
+Use media for images, audio, or video clues. In Zeus, use the standalone **Add Media** module.
 
 Important fields:
 

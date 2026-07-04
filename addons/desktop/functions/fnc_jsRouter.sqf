@@ -53,6 +53,54 @@ private _reply = {
 
 switch (_command) do {
 
+    // Switch this laptop from the GUI desktop to the CLI terminal (the "Terminal" dock/menu app).
+    // Gated by the same interface-access model as the ACE "Use Terminal" action; when CLI access is
+    // denied the request is a no-op. Closes the web desktop and opens the terminal holding the mutex.
+    case "sys_switch_cli": {
+        if (isNull _computer) exitWith {};
+        private _allowed = if (isNil "AE3_desktop_fnc_canAccessInterface") then { true } else {
+            [_computer, player, "cli"] call FUNC(canAccessInterface)
+        };
+        if (!_allowed) exitWith {};
+
+        _display closeDisplay 0;
+        [{
+            params ["_computer"];
+            _computer setVariable ["AE3_computer_mutex", player, true];
+            [_computer] spawn AE3_armaos_fnc_terminal_init;
+        }, [_computer]] call CBA_fnc_execNextFrame;
+    };
+
+    // Run an executable file (double-clicked in the Files app / desktop) as an .app would: CLI
+    // programs need a terminal, so switch to the CLI and execute the file once a session is active.
+    // Gated by CLI access; if the terminal is never authenticated the run quietly times out.
+    case "sys_run_file": {
+        if (isNull _computer) exitWith {};
+        private _path = _data getOrDefault ["path", ""];
+        if (_path isEqualTo "") exitWith {};
+        private _allowed = if (isNil "AE3_desktop_fnc_canAccessInterface") then { true } else {
+            [_computer, player, "cli"] call FUNC(canAccessInterface)
+        };
+        if (!_allowed) exitWith {};
+
+        _display closeDisplay 0;
+        [{
+            params ["_computer", "_path"];
+            _computer setVariable ["AE3_computer_mutex", player, true];
+            [_computer] spawn AE3_armaos_fnc_terminal_init;
+            [
+                {
+                    params ["_computer", "_path"];
+                    private _terminal = _computer getVariable ["AE3_terminal", nil];
+                    !isNil "_terminal" && {(_terminal getOrDefault ["AE3_terminalLoginUser", ""]) isNotEqualTo ""}
+                },
+                { params ["_computer", "_path"]; [_computer, _path, []] spawn AE3_armaos_fnc_shell_executeFile; },
+                [_computer, _path],
+                10
+            ] call CBA_fnc_waitUntilAndExecute;
+        }, [_computer, _path]] call CBA_fnc_execNextFrame;
+    };
+
     // UI is up: seed the hostname only (does NOT skip login - the user still authenticates via
     // "login"). Auto-login, when wanted, is a separate explicit "boot" push.
     case "ready": {

@@ -97,6 +97,7 @@ PREP(os_cp);
 PREP(os_ping);
 PREP(os_rm);
 PREP(os_shutdown);
+PREP(os_desktop);
 PREP(os_standby);
 PREP(os_whoami);
 PREP(os_crypto);

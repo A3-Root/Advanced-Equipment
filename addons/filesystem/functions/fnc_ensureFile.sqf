@@ -34,7 +34,7 @@ catch
 	private _normalizedException = _exception regexReplace ["'(.+)'", "'%1'"];
 	if (_normalizedException isEqualTo (localize "STR_AE3_Filesystem_Exception_AlreadyExists")) then
 	{
-		INFO_1("File already exists, skipping: %1",_exception);
+		// Idempotent by design: an existing file is the expected no-op, not worth logging.
 		_created = false;
 	}
 	else

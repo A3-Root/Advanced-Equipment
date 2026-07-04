@@ -11,6 +11,7 @@
  * 2: _content <STRING|CODE> - File content
  * 3: _rect <ARRAY> (Optional, default: []) - [x, y, w, h] as viewport fractions of the in-OS window
  *    that requested the open, used to position the native image viewer to overlay it
+ * 4: _options <HASHMAP> (Optional, default: empty) - Media playback options
  *
  * Return Value:
  * None
@@ -21,7 +22,8 @@
  * Public: Yes
  */
 
-params ["_computer", "_path", "_content", ["_rect", []]];
+params ["_computer", "_path", "_content", ["_rect", []], ["_options", createHashMap]];
+if !(_options isEqualType createHashMap) then { _options = createHashMap; };
 
 private _session = uiNamespace getVariable ["AE3_desktop_session", createHashMap];
 private _display = _session getOrDefault ["display", displayNull];
@@ -166,13 +168,19 @@ if ((_content select [0, 10]) isEqualTo "AE3_MEDIA|") exitWith
 		case "video":
 		{
 			[_computer, "video", _sourcePath, _path, true] call AE3_desktop_fnc_mediaNotify;
-			// BIS_fnc_playVideo renders on its own display, which sits BEHIND the web surface. Hide the
-			// web control for the duration so the video is visible without closing the laptop, and put a
-			// Stop control on top (its own child display, rendered above the web surface) so the player
-			// can end playback early with the button or Esc. The web surface is restored when the video
-			// stops or finishes.
+			// BIS_fnc_playVideo renders on its own display, which sits behind the web surface. The
+			// browser is hidden while the video is active and restored when playback finishes.
 			private _webCtrl = uiNamespace getVariable [QGVAR(browserCtrl), controlNull];
 			if (!isNull _webCtrl) then { _webCtrl ctrlShow false; };
+
+			private _allowStop = _options getOrDefault ["allowStop", true];
+			private _volumeScale = (_options getOrDefault ["volume", 1]) max 0;
+			private _oldSoundVolume = soundVolume;
+			private _oldMusicVolume = musicVolume;
+			if (_volumeScale isNotEqualTo 1) then {
+				0 fadeSound (_oldSoundVolume * _volumeScale);
+				0 fadeMusic (_oldMusicVolume * _volumeScale);
+			};
 
 			private _skipVar = format ["AE3_desktop_skipVideo_%1", round (diag_tickTime * 1000)];
 			missionNamespace setVariable [_skipVar, false];
@@ -182,25 +190,36 @@ if ((_content select [0, 10]) isEqualTo "AE3_MEDIA|") exitWith
 			if (!isNull _ctl) then
 			{
 				_ctl setVariable ["AE3_skipVar", _skipVar];
-				private _stop = _ctl ctrlCreate ["RscButton", -1];
-				_stop ctrlSetPosition [safeZoneX + safeZoneW - 0.17, safeZoneY + 0.03, 0.15, 0.05];
-				_stop ctrlSetText (localize "STR_AE3_Desktop_Media_Stop");
-				_stop ctrlSetBackgroundColor (_theme getOrDefault ["accent", [0.2, 0.5, 0.8, 1]]);
-				_stop ctrlCommit 0;
-				_stop setVariable ["AE3_skipVar", _skipVar];
-				_stop ctrlAddEventHandler ["ButtonClick", { missionNamespace setVariable [(_this select 0) getVariable "AE3_skipVar", true]; }];
+				if (_allowStop) then {
+					private _stop = _ctl ctrlCreate ["RscButton", -1];
+					_stop ctrlSetPosition [safeZoneX + safeZoneW - 0.17, safeZoneY + 0.03, 0.15, 0.05];
+					_stop ctrlSetText (localize "STR_AE3_Desktop_Media_Stop");
+					_stop ctrlSetBackgroundColor (_theme getOrDefault ["accent", [0.2, 0.5, 0.8, 1]]);
+					_stop ctrlCommit 0;
+					_stop setVariable ["AE3_skipVar", _skipVar];
+					_stop ctrlAddEventHandler ["ButtonClick", { missionNamespace setVariable [(_this select 0) getVariable "AE3_skipVar", true]; }];
+				};
 				_ctl displayAddEventHandler ["KeyDown", {
 					params ["_disp", "_key"];
-					if (_key isEqualTo 1) then { missionNamespace setVariable [_disp getVariable "AE3_skipVar", true]; true } else { false }
+					private _skip = _disp getVariable ["AE3_allowSkip", true];
+					if (_key isEqualTo 1) then {
+						if (_skip) then { missionNamespace setVariable [_disp getVariable "AE3_skipVar", true]; };
+						true
+					} else { !_skip }
 				}];
+				_ctl setVariable ["AE3_allowSkip", _allowStop];
 			};
 
-			[_vid, _webCtrl, _ctl, _skipVar, _computer, _sourcePath, _path] spawn
+			[_vid, _webCtrl, _ctl, _skipVar, _computer, _sourcePath, _path, _volumeScale, _oldSoundVolume, _oldMusicVolume] spawn
 			{
-				params ["_vid", "_webCtrl", "_ctl", "_skipVar", "_computer", "_sourcePath", "_path"];
+				params ["_vid", "_webCtrl", "_ctl", "_skipVar", "_computer", "_sourcePath", "_path", "_volumeScale", "_oldSoundVolume", "_oldMusicVolume"];
 				waitUntil { scriptDone _vid };
 				if (!isNull _ctl) then { _ctl closeDisplay 2; };
 				if (!isNull _webCtrl) then { _webCtrl ctrlShow true; };
+				if (_volumeScale isNotEqualTo 1) then {
+					0 fadeSound _oldSoundVolume;
+					0 fadeMusic _oldMusicVolume;
+				};
 				missionNamespace setVariable [_skipVar, nil];
 				[_computer, "video", _sourcePath, _path, false] call AE3_desktop_fnc_mediaNotify;
 			};

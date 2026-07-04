@@ -29,7 +29,7 @@ The desktop component provides the graphical laptop desktop, native app registry
 
 - `AE3_desktop_fnc_desktop_open` opens the native GUI desktop for a laptop, pulls filesystem/user state, claims the laptop as in use, creates desktop icons, and restores previous window state.
 - Native desktop apps are declared in `CfgAE3Apps` or registered at runtime with `AE3_desktop_fnc_registerApp`.
-- Web external apps are registered with `AE3_desktop_fnc_registerExtApp`; the web desktop replaces same-id external apps, removes absent external apps from later `ext_apps` pushes, and supports `deviceList` plus `launcher` template kinds. Desktop files with resolved content `app=<id>` launch that app even when the visible filename is not `.app`.
+- Web external apps are registered with `AE3_desktop_fnc_registerExtApp`; the web desktop replaces same-id external apps, removes absent external apps from later `ext_apps` pushes, and supports `deviceList` plus `launcher` template kinds. Desktop files with resolved content `app=<id>` launch that app even when the visible filename is not `.app`; launcher `iconPath` values are hydrated through the web texture bridge so PAA mod textures can render in CEF.
 - The built-in app set includes Terminal, Files, Settings, Notepad, Mail, Chat, Browser, Calendar, Map, CCTV, Music, and SysInfo.
 - The web desktop uses a browser control bridge. JavaScript sends JSON messages with `command`, `rid`, and `data`; `AE3_desktop_fnc_jsRouter` dispatches those messages to SQF handlers and replies through `AE3_desktop_fnc_jsSend`.
 - Files and Notepad route through `AE3_desktop_fnc_fsHandle`, which calls the same virtual filesystem functions used by CLI commands.
@@ -37,6 +37,8 @@ The desktop component provides the graphical laptop desktop, native app registry
 - Browser history is stored in the laptop filesystem at `/var/log/browser_history`.
 - Post-init seeds a default RootNet page and registers client events that notify open web apps about mail, chat, calendar, SSH, USB volume, system, network, and browser page changes.
 - Desktop auth mirrors terminal auth, including direct-root restrictions through `AE3_AllowRootLogin`.
+- Desktop <-> CLI switching: the web desktop's "Terminal" app (dock + Applications menu; an action-app in `js/apps.js` that calls `A3.send("sys_switch_cli")`) triggers `jsRouter` case `sys_switch_cli`, which closes the web desktop and opens the classic terminal (`AE3_armaos_fnc_terminal_init`) holding the mutex, gated by `AE3_desktop_fnc_canAccessInterface` "cli". The reverse is the terminal command `desktop` (`/bin/desktop` -> `AE3_armaos_fnc_os_desktop`), which closes the terminal and reopens the web desktop, gated by "gui" access and a no-op if the desktop addon is absent.
+- Executable files (code payload) are reported by `fs_list` with an `exec` flag; the web file browser tints them green (`.isexec`) and double-clicking one runs it via `jsRouter` case `sys_run_file` (switch to CLI, then execute once a session is authenticated). The legacy native Files app applies the same green tint and run-on-double-click.
 
 ## decisions
 
@@ -54,7 +56,7 @@ The desktop component provides the graphical laptop desktop, native app registry
 - Browser history writes require the laptop filesystem to exist and silently fail inside `try/catch` if the history file cannot be created.
 - Session resume is tied to player UID; `ready` auto-resumes only when `AE3_desktop_sessionOwner` matches `getPlayerUID player`.
 - Runtime app registration is local effect. Call it on every client that should see the app.
-- External app removal only applies to apps marked by the web extension registry (`external: true`); built-in apps are not removed by `ext_apps` refreshes. Registry icons can carry `iconPath`, but browser rendering depends on the image format supported by CEF.
+- External app removal only applies to apps marked by the web extension registry (`external: true`); built-in apps are not removed by `ext_apps` refreshes. Registry icons can carry `iconPath`; the desktop resolves those paths with `A3.loadImage` instead of direct `<img src>`, so PAA mod textures become web-renderable data URLs.
 
 ## re-verify when
 

@@ -176,7 +176,8 @@ html, body {
 .desktop-icon:hover, .desktop-icon.sel { background: rgba(233,84,32,0.22); }
 .desktop-icon .glyph { font-size: 34px; line-height: 1; }
 
-.desktop-icon .glyph .app-img, .dock-item .app-img, .am-ico .app-img { width: 34px; height: 34px; object-fit: contain; display: block; }
+.desktop-icon .glyph .app-img, .dock-item .app-img, .am-ico .app-img { width: 34px; height: 34px; display: block; background-position: center; background-repeat: no-repeat; background-size: contain; }
+.desktop-icon .glyph .app-img.missing, .dock-item .app-img.missing, .am-ico .app-img.missing { border: 0; }
 .desktop-icon .label { font-size: 12px; max-width: 88px; overflow: hidden; text-overflow: ellipsis; }
 
 /* ---------- windows ---------- */
@@ -238,6 +239,9 @@ html, body {
 .list li.isapp .ico svg { color: #5da8e8; }
 .list li.isapp > span:last-child { color: #a0c4ff; font-weight: 600; }
 .list li.isfile > span:last-child { color: #ffffff; }
+.list li.isexec .ico { color: #4fd66c; }
+.list li.isexec .ico svg { color: #4fd66c; }
+.list li.isexec > span:last-child { color: #6be585; font-weight: 600; }
 .muted { color: var(--muted); }
 .pad { padding: 14px; }
 

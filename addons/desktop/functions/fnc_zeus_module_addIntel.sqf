@@ -27,8 +27,12 @@ if (_event isEqualTo "onLoad") exitWith
 	private _isLaptop = { isClass (configOf _this >> "AE3_USB_Interface") || {_this getVariable ["AE3_cap_hasTerminal", false]} };
 	private _override = uiNamespace getVariable ["AE3_desktop_intelZenOverride", []];
 
-	// ZEN path: hand the whole module to the two-step ZEN dialog, unless we are being reopened by
-	// that dialog for a media/lockedfile type, which still needs the legacy filesystem Browse UI.
+	// Standalone per-type modules (AE3_AddEmail/AddWebpage/... - see CfgVehicles) carry an
+	// ae3_intelType; the unified module leaves it empty and shows the type picker instead.
+	private _forcedType = getText (configOf _module >> "ae3_intelType");
+
+	// ZEN path: hand the module to the ZEN dialog, unless we are being reopened by that dialog for a
+	// media/lockedfile type, which still needs the legacy filesystem Browse UI.
 	if (_override isEqualTo [] && EGVAR(main,hasZenDialog)) exitWith
 	{
 		private _mouseOver = missionNamespace getVariable ["BIS_fnc_curatorObjectPlaced_mouseOver", [""]];
@@ -38,13 +42,37 @@ if (_event isEqualTo "onLoad") exitWith
 
 		_module setVariable [QGVAR(zenHandled), true];
 		_display closeDisplay 2;
-		[FUNC(zen_module_addIntel), [_module, _computer]] call CBA_fnc_execNextFrame;
+
+		switch (true) do
+		{
+			// media/lockedfile keep the legacy Browse dialog (reopened preset+locked to their type)
+			case (_forcedType in ["media", "lockedfile"]):
+			{
+				[{
+					params ["_module", "_computer"];
+					missionNamespace setVariable ["BIS_fnc_initCuratorAttributes_target", _module];
+					uiNamespace setVariable ["AE3_desktop_intelZenOverride", [_module, _computer]];
+					_module setVariable [QGVAR(zenHandled), false];
+					createDialog "AE3_UserInterface_Zeus_Module_AddIntel";
+				}, [_module, _computer]] call CBA_fnc_execNextFrame;
+			};
+			// a fixed email/webpage/history type skips the picker and opens step 2 directly
+			case (_forcedType isNotEqualTo ""):
+			{
+				[FUNC(zen_module_addIntel_step2), [_module, _computer, _forcedType]] call CBA_fnc_execNextFrame;
+			};
+			// unified module: the two-step ZEN flow starting at the type picker
+			default
+			{
+				[FUNC(zen_module_addIntel), [_module, _computer]] call CBA_fnc_execNextFrame;
+			};
+		};
 	};
 
 	private _computer = objNull;
 	if (_override isNotEqualTo []) then
 	{
-		// Reopened from ZEN step 1: use the laptop it already resolved and consume the override.
+		// Reopened from the ZEN dialog: use the laptop it already resolved and consume the override.
 		_computer = _override select 1;
 		uiNamespace setVariable ["AE3_desktop_intelZenOverride", []];
 	}
@@ -65,6 +93,18 @@ if (_event isEqualTo "onLoad") exitWith
 		params ["_combo"];
 		[ctrlParent _combo] call AE3_desktop_fnc_intel_updateFields;
 	}];
+
+	// Standalone module: lock the type picker to this module's fixed intel type.
+	if (_forcedType isNotEqualTo "") then
+	{
+		private _combo = _display displayCtrl 1702;
+		for "_i" from 0 to (lbSize _combo - 1) do
+		{
+			if ((_combo lbData _i) isEqualTo _forcedType) exitWith { _combo lbSetCurSel _i; };
+		};
+		[_display] call AE3_desktop_fnc_intel_updateFields;
+		_combo ctrlEnable false;
+	};
 };
 
 /* ---------------------------------------- */
