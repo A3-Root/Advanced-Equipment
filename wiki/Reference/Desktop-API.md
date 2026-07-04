@@ -326,7 +326,7 @@ Arguments:
 | `1` | String | Required | Display title. |
 | `2` | String | Required | Glyph/icon text passed to JS. |
 | `3` | String | `"deviceList"` | Template kind. |
-| `4` | HashMap | Empty | Extra data passed to JS. Optional filters: `requiresVar` or `requiresFunction`. |
+| `4` | HashMap | Empty | Extra data passed to JS. Optional filters: `requiresVar` or `requiresFunction`. Launchers may also provide `iconPath`. |
 
 Example:
 
@@ -342,7 +342,7 @@ if (hasInterface) then {
 ```
 
 
-External app filters are evaluated when the web desktop boots. `requiresVar` checks a variable on the bound computer object. `requiresFunction` names a client-side SQF function that receives `[_computer]` and returns a boolean. Addons can push a refreshed filtered list with `AE3_desktop_fnc_jsSend` on state changes; the web desktop removes external apps that are no longer present in the pushed list.
+External app filters are evaluated when the web desktop boots. `requiresVar` checks a variable on the bound computer object. `requiresFunction` names a client-side SQF function that receives `[_computer]` and returns a boolean. The desktop emits `ae3_desktop_ready` locally after the browser is ready so addons can pull authoritative state and push a refreshed filtered list with `AE3_desktop_fnc_jsSend`; the web desktop removes external apps that are no longer present in the pushed list.
 
 Supported web app template kinds:
 
@@ -356,7 +356,8 @@ Common `_extra` keys:
 | Key | Meaning |
 | --- | --- |
 | `menu` | Applications menu category path. |
-| `showOnDesktop` | Shows the external app as a desktop icon when true. |
+| `showOnDesktop` | Shows the external app as a registry-provided desktop icon when true; filesystem desktop files remain the preferred way to expose per-user launchers. |
+| `iconPath` | Optional image path used by web launcher icons when the browser can render the format. |
 | `showInDock` | Shows the external app in the dock when true. |
 | `showInMenu` | Set false to hide from the Applications menu. |
 | `launchApps` | For `launcher`: array of `[appId, label]` entries to show as buttons. |

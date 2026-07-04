@@ -175,6 +175,8 @@ html, body {
 }
 .desktop-icon:hover, .desktop-icon.sel { background: rgba(233,84,32,0.22); }
 .desktop-icon .glyph { font-size: 34px; line-height: 1; }
+
+.desktop-icon .glyph .app-img, .dock-item .app-img, .am-ico .app-img { width: 34px; height: 34px; object-fit: contain; display: block; }
 .desktop-icon .label { font-size: 12px; max-width: 88px; overflow: hidden; text-overflow: ellipsis; }
 
 /* ---------- windows ---------- */

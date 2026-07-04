@@ -117,7 +117,7 @@ Then implement the entry function in your addon and compile it normally.
 
 ## Web Desktop Extension Workflow
 
-For web desktop integrations, register an external app and command handlers on clients. Use `requiresFunction` for state-dependent apps, and push a refreshed `ext_apps` list when that state changes:
+For web desktop integrations, register an external app and command handlers on clients. Use `requiresFunction` for state-dependent apps, then push a refreshed `ext_apps` list from `ae3_desktop_ready` or after the state changes:
 
 ```sqf
 if (hasInterface) then {
@@ -145,7 +145,7 @@ if (hasInterface) then {
 | Problem | Fix |
 | --- | --- |
 | App appears only for host | Register on every client. |
-| App icon missing | Check launcher/Desktop setup and `showOnDesktop`. |
+| App icon missing | Check launcher/Desktop setup, `iconPath`, and whether the browser can render the chosen image format. |
 | App state changes only locally | Route state-changing actions to the server. |
 | App crashes when laptop has no filesystem | Require or wait for filesystem state. |
 | No-code mission does not need an app | Use built-in content apps instead. |

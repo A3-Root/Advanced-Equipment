@@ -6,6 +6,7 @@
  */
 (function () {
   function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+  function escAttr(s) { return esc(s).replace(/"/g, "&quot;"); }
 
   // Route pushed results to the interested open windows, keyed by device type.
   var listSubs = {};   // type -> fn(items)
@@ -16,6 +17,8 @@
   // Prefer a named SVG icon (desc.icon or desc.extra.icon), fall back to a glyph string, then a
   // default device icon. Lets ext apps opt into the SVG set without changing registerExtApp's API.
   function glyphFor(desc) {
+    var iconPath = desc.iconPath || (desc.extra && desc.extra.iconPath);
+    if (iconPath) return '<img class="app-img" src="' + escAttr(iconPath) + '">';
     var iconName = desc.icon || (desc.extra && desc.extra.icon);
     if (window.Icons && iconName && Icons[iconName]) return Icons[iconName];
     if (desc.glyph) return desc.glyph;

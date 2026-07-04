@@ -216,8 +216,7 @@
       }
       (res.entries || []).forEach(function (it) {
         var full = (path + "/" + it.name).replace(/\/+/g, "/");
-        var isApp = /\.app$/i.test(it.name);
-        var glyph = it.dir ? Icons.folder : (isApp ? Icons.app : Icons.file);
+        var glyph = it.dir ? Icons.folder : Icons.file;
         var open = function () { openDesktopEntry(it, full); };
         var icon = makeIcon(desk, it.name.replace(/\.app$/i, ""), glyph, open, {
           path: full,
@@ -225,9 +224,8 @@
           open: open,
           dirPath: it.dir ? ((it.link && it.link !== "") ? it.link : full) : ""
         });
-        // A .app launcher holds "app=<id>"; show the *target* app's real glyph (Mail/Browser/Files/
-        // Calculator etc.) instead of a generic/terminal icon.
-        if (isApp) {
+        // Launcher files hold "app=<id>" and can use any visible filename, including .exe names.
+        if (!it.dir) {
           A3.request("fs_read", { path: (it.link && it.link !== "") ? it.link : full }).then(function (res2) {
             var m = String((res2 && res2.content) || "").match(/app\s*=\s*([\w-]+)/i);
             var target = m && Apps.get(m[1]);
@@ -279,15 +277,14 @@
   };
 
   function openDesktopEntry(it, full) {
-    if (it.dir) { Apps.launch("files", { path: (it.link && it.link !== "") ? it.link : full }); return; }
-    if (/\.app$/i.test(it.name)) {
-      A3.request("fs_read", { path: full }).then(function (res) {
-        var m = String((res && res.content) || "").match(/app\s*=\s*([\w-]+)/i);
-        if (m) Apps.launch(m[1]); else Apps.launch("notepad", { path: full, content: (res && res.content) || "" });
-      });
-      return;
-    }
-    window.AE3_openFile((it.link && it.link !== "") ? it.link : full);
+    var readPath = (it.link && it.link !== "") ? it.link : full;
+    if (it.dir) { Apps.launch("files", { path: readPath }); return; }
+    A3.request("fs_read", { path: readPath }).then(function (res) {
+      var content = String((res && res.content) || "");
+      var m = content.match(/app\s*=\s*([\w-]+)/i);
+      if (m) { Apps.launch(m[1]); return; }
+      window.AE3_openFile(readPath);
+    }).catch(function () { window.AE3_openFile(readPath); });
   }
 
   function buildDesktopIcons() {

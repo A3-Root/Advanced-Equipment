@@ -59,6 +59,7 @@ switch (_command) do {
         if (!isNull _computer) then {
             private _host = _computer getVariable ["ace_cargo_customName", "armaOS"];
             ["hostname", createHashMapFromArray [["hostname", _host]]] call FUNC(jsSend);
+            ["ae3_desktop_ready", [_computer]] call CBA_fnc_localEvent;
         };
         // Push apps registered by other addons into the launcher. Apps can require a laptop object
         // variable so addon-specific tools only appear where they were installed.
