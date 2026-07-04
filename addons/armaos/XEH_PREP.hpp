@@ -4,6 +4,12 @@ PREP(module_addCalendarEvent);
 PREP(module_saveLaptop);
 PREP(module_restoreLaptop);
 
+/* Optional ZEN (Zeus Enhanced) Dynamic Dialog compat */
+PREP(module_saveLaptopApply);
+PREP(module_restoreLaptopApply);
+PREP(zen_module_saveLaptop);
+PREP(zen_module_restoreLaptop);
+
 /* Calendar */
 PREP(computer_addCalendarEvent);
 PREP(computer_removeCalendarEvent);

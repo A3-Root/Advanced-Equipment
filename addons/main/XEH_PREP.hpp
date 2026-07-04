@@ -44,6 +44,15 @@ PREP(zeus_module_addFile);
 PREP(zeus_module_addDir);
 PREP(zeus_module_addConnection);
 
+/* Optional ZEN (Zeus Enhanced) Dynamic Dialog compat */
+PREP(zen_createDialog);
+PREP(zen_module_addUser);
+PREP(zen_module_addCalendarEvent);
+PREP(zen_module_addFile);
+PREP(zen_module_addDir);
+PREP(zen_module_addConnection);
+PREP(zeus_applyConnection);
+
 PREP(zeus_checkForComputer);
 
 PREP(zeus_deviceOpServer);

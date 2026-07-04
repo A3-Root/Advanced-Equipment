@@ -92,3 +92,9 @@ PREP(module_addIntel);
 PREP(zeus_module_interfaceAccess);
 PREP(module_interfaceAccess);
 PREP(module_crashDevice);
+
+/* Optional ZEN (Zeus Enhanced) Dynamic Dialog compat */
+PREP(zen_module_addIntel);
+PREP(zen_module_addIntel_step2);
+PREP(zen_module_interfaceAccess);
+PREP(zen_module_crashDevice);

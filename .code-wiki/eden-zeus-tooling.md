@@ -16,6 +16,9 @@ code-paths:
   - addons/network/CfgVehicles.hpp
   - addons/power/CfgVehicles.hpp
   - addons/*/functions/fnc_module_*.sqf
+  - addons/main/functions/fnc_zen_createDialog.sqf
+  - addons/*/functions/fnc_zen_module_*.sqf
+  - addons/main/functions/fnc_zeus_applyConnection.sqf
 related-topics: [filesystem-model, network-routing-and-ssh, power-model, desktop-gui-and-browser, desktop-intel-and-communications]
 related-docs:
   - wiki/Eden-Editor-Guide.md
@@ -38,6 +41,10 @@ Editor tooling is split between 3DEN attributes/connections, Eden modules, Zeus 
 - The Zeus Add Connection module validates exactly two synced objects and then creates either a power or network connection.
 - Zeus filesystem browser operations are a larger sub-system: open, refresh, populate tree, create, save, delete, rename, move, apply changes, and close.
 - Some module classes are intentionally Eden-only or Zeus-only through `scope` and `scopeCurator`.
+- Optional ZEN (Zeus Enhanced) compat: when the `zen_dialog` addon is loaded, the Zeus modules present ZEN's Dynamic Dialog (`zen_dialog_fnc_create`) instead of the built-in `CfgUserInterfaceZeus` dialogs. Detection is cached once in `addons/main/XEH_preInit.sqf` as `AE3_main_hasZenDialog` (`EGVAR(main,hasZenDialog)`); ZEN is never a required addon and is referenced only from guarded SQF (never config). All ZEN builders route through the guarded wrapper `AE3_main_fnc_zen_createDialog`.
+  - Dialog modules (AddUser/AddCalendarEvent/AddFile/AddDir/AddConnection/AddIntel/InterfaceAccess): the legacy `curatorInfoType` handler still opens, but its `onLoad` bails when `hasZenDialog` - it captures the target laptop, sets `AE3_<component>_zenHandled` on the module (so the legacy `onUnload` skips its cleanup), `closeDisplay 2`, then opens the ZEN builder one frame later via `CBA_fnc_execNextFrame`. The ZEN `onConfirm`/`onCancel` funnel into the exact same apply layer (`intel_dispatch`, the `ae3_main_zeusDeviceOp` serverEvent, `setInterfaceMode`/`setInterfaceAccess`, and the extracted `AE3_main_fnc_zeus_applyConnection`) and own the module lifecycle.
+  - AddIntel is a two-step ZEN dialog (type combo, then type-specific fields). Media and lockedfile keep the legacy dialog for its filesystem Browse picker: step 1 reopens `AE3_UserInterface_Zeus_Module_AddIntel` with `uiNamespace` override `AE3_desktop_intelZenOverride = [module, computer]` and clears `zenHandled` so the legacy handler runs normally.
+  - No-dialog modules (CrashDevice/SaveLaptop/RestoreLaptop) gain a curator prompt only under ZEN: the server module function `remoteExec`s a ZEN-prompt fn onto `owner _module`; the curator's `onConfirm` sends the decision back to the server (`remoteExec [..., 2]`) which runs the existing crash/capture/apply logic (Save/Restore extracted into `AE3_armaos_fnc_module_saveLaptopApply` / `_restoreLaptopApply`). Save/Restore let the curator name/pick a slot they previously could not set in Zeus.
 
 ## decisions
 
@@ -51,7 +58,9 @@ Editor tooling is split between 3DEN attributes/connections, Eden modules, Zeus 
 - Zeus module functions often run locally on the curator machine first, then call server-authoritative operations.
 - Synchronized-object order matters for connection modules. Add Connection stores first synced object as `entity1` and second as `entity2`, with an optional switch flag.
 - `scope` and `scopeCurator` must be checked separately when documenting modules. Some module classes use `scope = 2` with `scopeCurator = 0`, while `AE3_AddIntel` is curator-visible but hidden in Eden.
-- Class validation for Zeus network connections is currently a fixed class-name list in `fnc_zeus_module_addConnection.sqf`.
+- Class validation for Zeus network connections is currently a fixed class-name list, now living in the shared `fnc_zeus_applyConnection.sqf` (extracted from `fnc_zeus_module_addConnection.sqf` so both the legacy dialog and the ZEN dialog reuse it).
+- ZEN builders run on the curator's machine. For the dialog modules the module logic is curator-local (same as the legacy handlers, which `deleteVehicle` on the curator). For the no-dialog modules the effect stays server-authoritative and the module is deleted server-side via `remoteExec [..., 2]`. ZEN's `zen_dialog_fnc_create` no-ops on headless (`!hasInterface`), so `owner _module` must resolve to a real curator client.
+- ZEN row labels use literal English strings (not stringtable keys) to avoid stringtable churn; titles reuse the existing `STR_AE3_*` module display-name keys (ZEN auto-localizes localized keys and uppercases titles).
 
 ## re-verify when
 

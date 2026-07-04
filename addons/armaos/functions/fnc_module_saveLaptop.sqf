@@ -27,32 +27,17 @@ params ["_module", "_syncedUnits", "_activated"];
 if (!_activated) exitWith { true };
 if (!isServer) exitWith {};
 
+// When Zeus Enhanced is present, ask the placing curator for the save slot name through a ZEN dialog,
+// then let its confirm callback drive the same server-side snapshot via AE3_armaos_fnc_module_saveLaptopApply.
+if (EGVAR(main,hasZenDialog)) exitWith
+{
+    [netId _module, _syncedUnits apply { netId _x }] remoteExec [QFUNC(zen_module_saveLaptop), owner _module];
+    true
+};
+
 private _slot = _module getVariable ["AE3_ModuleSaveSlot", ""];
 if (_slot isEqualTo "") then { _slot = "slot1"; };
 
-[_module, _syncedUnits, _slot] spawn {
-    params ["_module", "_syncedUnits", "_slot"];
-
-    waitUntil { !isNil "BIS_fnc_init" };
-
-    private _saves = missionNamespace getVariable ["AE3_LAPTOP_SAVES", createHashMap];
-
-    {
-        private _computer = _x;
-        if (!isNull _computer) then {
-            // Snapshot only once the device has finished initializing, so its data is complete.
-            waitUntil {
-                sleep 0.1;
-                _computer getVariable ["AE3_filesystemReady", false]
-            };
-            _saves set [_slot, [_computer] call AE3_armaos_fnc_laptop_captureState];
-        };
-    } forEach _syncedUnits;
-
-    // Server-side buffer only - the snapshot holds HashMaps that must not be broadcast.
-    missionNamespace setVariable ["AE3_LAPTOP_SAVES", _saves, false];
-
-    deleteVehicle _module;
-};
+[_module, _syncedUnits, _slot] call FUNC(module_saveLaptopApply);
 
 true

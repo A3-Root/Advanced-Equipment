@@ -25,13 +25,34 @@ private _module = missionNamespace getVariable ["BIS_fnc_initCuratorAttributes_t
 if (_event isEqualTo "onLoad") exitWith
 {
 	private _isLaptop = { isClass (configOf _this >> "AE3_USB_Interface") || {_this getVariable ["AE3_cap_hasTerminal", false]} };
-	private _mouseOver = missionNamespace getVariable ["BIS_fnc_curatorObjectPlaced_mouseOver", [""]];
-	_mouseOver params ["_mouseOverType", "_mouseOverUnit"];
+	private _override = uiNamespace getVariable ["AE3_desktop_intelZenOverride", []];
+
+	// ZEN path: hand the whole module to the two-step ZEN dialog, unless we are being reopened by
+	// that dialog for a media/lockedfile type, which still needs the legacy filesystem Browse UI.
+	if (_override isEqualTo [] && EGVAR(main,hasZenDialog)) exitWith
+	{
+		private _mouseOver = missionNamespace getVariable ["BIS_fnc_curatorObjectPlaced_mouseOver", [""]];
+		_mouseOver params ["_mouseOverType", "_mouseOverUnit"];
+		private _computer = objNull;
+		if (_mouseOverType isEqualTo "OBJECT" && {_mouseOverUnit call _isLaptop}) then { _computer = _mouseOverUnit; };
+
+		_module setVariable [QGVAR(zenHandled), true];
+		_display closeDisplay 2;
+		[FUNC(zen_module_addIntel), [_module, _computer]] call CBA_fnc_execNextFrame;
+	};
 
 	private _computer = objNull;
-	if (_mouseOverType isEqualTo "OBJECT" && {_mouseOverUnit call _isLaptop}) then
+	if (_override isNotEqualTo []) then
 	{
-		_computer = _mouseOverUnit;
+		// Reopened from ZEN step 1: use the laptop it already resolved and consume the override.
+		_computer = _override select 1;
+		uiNamespace setVariable ["AE3_desktop_intelZenOverride", []];
+	}
+	else
+	{
+		private _mouseOver = missionNamespace getVariable ["BIS_fnc_curatorObjectPlaced_mouseOver", [""]];
+		_mouseOver params ["_mouseOverType", "_mouseOverUnit"];
+		if (_mouseOverType isEqualTo "OBJECT" && {_mouseOverUnit call _isLaptop}) then { _computer = _mouseOverUnit; };
 	};
 	_display setVariable ["AE3_linkedComputer", _computer];
 
@@ -50,6 +71,7 @@ if (_event isEqualTo "onLoad") exitWith
 
 if (_event isEqualTo "onUnload") exitWith
 {
+	if (_module getVariable [QGVAR(zenHandled), false]) exitWith {}; // ZEN owns the lifecycle
 	if (_exitCode == 2) exitWith { deleteVehicle _module; };
 
 	private _computer = _display getVariable ["AE3_linkedComputer", objNull];

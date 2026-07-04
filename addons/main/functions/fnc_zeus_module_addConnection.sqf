@@ -1,9 +1,11 @@
+#include "..\script_component.hpp"
 /*
  * Author: Root, y0014984
  * Description: Handles the Zeus "Add Connection" module interface events (onLoad and onUnload). On load, populates the UI with
  * synced objects and validates that exactly two objects are connected. On unload, creates the selected connection type
  * (power or network) between the two synced objects after validation. Runs locally on the curator's machine and deletes the
- * module after successful processing.
+ * module after successful processing. When Zeus Enhanced is loaded, the input is gathered through a ZEN Dynamic Dialog
+ * instead of the built-in dialog.
  *
  * Arguments:
  * 0: _display <DISPLAY> - The Zeus module interface display
@@ -41,6 +43,19 @@ if (_event isEqualTo "onLoad") then
         private _connectionsToDelete = _syncedObjects select [2, (count _syncedObjects) - 2];
         _syncedObjects deleteRange [2, (count _syncedObjects) - 2];
         _module synchronizeObjectsRemove _connectionsToDelete;
+    };
+
+    // Route through ZEN's Dynamic Dialog when Zeus Enhanced is present; needs two synced endpoints.
+    if (EGVAR(main,hasZenDialog)) exitWith
+    {
+        _module setVariable [QGVAR(zenHandled), true];
+        _display closeDisplay 2;
+        if ((count _syncedObjects) < 2) exitWith
+        {
+            [objNull, localize "STR_AE3_Main_Zeus_ToMissing"] call BIS_fnc_showCuratorFeedbackMessage;
+            deleteVehicle _module;
+        };
+        [FUNC(zen_module_addConnection), [_module, _syncedObjects select 0, _syncedObjects select 1]] call CBA_fnc_execNextFrame;
     };
 
     // set ok button state
@@ -98,109 +113,7 @@ if (_event isEqualTo "onUnload") then
     private _to = _display getVariable ["entity2", objNull];
     private _switch = _display getVariable ['switch', false];
 
-    // check for empty but mandatory input fields
-    // module is still there an could be opened and filled in with valid input
-    // but currently, this case will be catched by UI logic, defined directly in config
-    if(isNull _from) exitWith { [objNull, localize "STR_AE3_Main_Zeus_FromMissing"] call BIS_fnc_showCuratorFeedbackMessage; };
-    if(isNull _to) exitWith { [objNull, localize "STR_AE3_Main_Zeus_ToMissing"] call BIS_fnc_showCuratorFeedbackMessage; };
-
-    if (_switch) then
-    {
-        private _tmpFrom = _from;
-        private _tmpTo = _to;
-        _from = _tmpTo;
-        _to = _tmpFrom;
-    };
-
-    private _fromNameWithAceCargoName = [_from, true] call ace_cargo_fnc_getNameItem;
-    private _toNameWithAceCargoName = [_to, true] call ace_cargo_fnc_getNameItem;
-
-    private _message = format ["'%1': %2 '%3': %4", localize "STR_AE3_Main_Zeus_From", _fromNameWithAceCargoName, localize "STR_AE3_Main_Zeus_To", _toNameWithAceCargoName];
-
-    // add connection: type == 0 is power connection and type == 1 is network connection
-    if (_type isEqualTo "AE3_PowerConnection") then
-    {
-        // get all classes defined in CfgVehicles
-        private _config = configFile >> "CfgVehicles";
-
-        // filter classes to those, that contain AE3_Device and AE3_Consumer or AE_Battery config
-        private _powerConsumers =
-        "
-            isClass (_x >> 'AE3_Device' >> 'AE3_Consumer') ||
-            isClass (_x >> 'AE3_Device' >> 'AE3_Battery')
-        " configClasses _config;
-
-        // convert configs to class names
-        {
-            _powerConsumers set [_forEachIndex, configName _x];
-        } forEach _powerConsumers;
-
-        // filter classes to those, that contain AE3_Device and AE3_Generator or AE3_SolarGenerator or AE3_Battery config
-        private _powerProducers = 
-        "
-            isClass (_x >> 'AE3_Device' >> 'AE3_Generator') || 
-            isClass (_x >> 'AE3_Device' >> 'AE3_SolarGenerator') ||
-            isClass (_x >> 'AE3_Device' >> 'AE3_Battery')
-            
-        " configClasses _config;
-
-        // convert configs to class names
-        {
-            _powerProducers set [_forEachIndex, configName _x];
-        } forEach _powerProducers;
-
-        // unnecessary assignment but easier to read
-        private _allowedPowerFromClasses = _powerConsumers;
-        private _allowedPowerToClasses = _powerProducers;
-
-        if ([_type, _from, _to, _allowedPowerFromClasses, _allowedPowerToClasses] call AE3_main_fnc_zeus_isConnectionAllowed) then
-        {
-            [_from, _to] call AE3_power_fnc_createPowerConnection;
-            [localize "STR_AE3_Main_Zeus_PowerConnectionAdded", _message, 5] call BIS_fnc_curatorHint;
-
-            // delete module if dialog cancelled or computer not linked to module
-            deleteVehicle _module;
-        }
-        else
-        {
-            // remove connections
-            _module synchronizeObjectsRemove [_from, _to];
-        };
-    };
-
-    if (_type isEqualTo "AE3_NetworkConnection") then
-    {
-        private _allowedNetworkFromClasses =
-        [
-            "Land_Laptop_03_sand_F_AE3",
-            "Land_Laptop_03_black_F_AE3",
-            "Land_Laptop_03_olive_F_AE3",
-            "Land_Router_01_sand_F_AE3",
-            "Land_Router_01_black_F_AE3",
-            "Land_Router_01_olive_F_AE3"
-        ];
-
-        private _allowedNetworkToClasses =
-        [
-            "Land_Router_01_sand_F_AE3",
-            "Land_Router_01_black_F_AE3",
-            "Land_Router_01_olive_F_AE3"
-        ];
-
-        if ([_type, _from, _to, _allowedNetworkFromClasses, _allowedNetworkToClasses] call AE3_main_fnc_zeus_isConnectionAllowed) then
-        {
-            [_from, _to] call AE3_network_fnc_createNetworkConnection;
-            [localize "STR_AE3_Main_Zeus_NetworkConnectionAdded", _message, 5] call BIS_fnc_curatorHint;
-
-            // delete module if dialog cancelled or computer not linked to module
-            deleteVehicle _module;
-        }
-        else
-        {
-            // remove connections
-            _module synchronizeObjectsRemove [_from, _to];
-        };
-    };
+    [_from, _to, _type, _switch, _module] call FUNC(zeus_applyConnection);
 };
 
 /* ---------------------------------------- */

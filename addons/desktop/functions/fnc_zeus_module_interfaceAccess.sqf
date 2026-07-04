@@ -51,6 +51,19 @@ if (_event isEqualTo "onLoad") exitWith
 	};
 	_display setVariable ["AE3_linkedComputer", _computer];
 
+	// Hand off to ZEN's Dynamic Dialog when Zeus Enhanced is present.
+	if (EGVAR(main,hasZenDialog)) exitWith
+	{
+		_module setVariable [QGVAR(zenHandled), true];
+		_display closeDisplay 2;
+		if (isNull _computer) exitWith
+		{
+			[localize "STR_AE3_Desktop_Config_InterfaceAccessDisplayName", localize "STR_AE3_Desktop_Access_NoLaptop", 5] call BIS_fnc_curatorHint;
+			deleteVehicle _module;
+		};
+		[FUNC(zen_module_interfaceAccess), [_module, _computer]] call CBA_fnc_execNextFrame;
+	};
+
 	_display setVariable ["AE3_access", createHashMap];
 	_display setVariable ["AE3_names", createHashMap];
 
@@ -114,6 +127,7 @@ if (_event isEqualTo "onLoad") exitWith
 
 if (_event isEqualTo "onUnload") exitWith
 {
+	if (_module getVariable [QGVAR(zenHandled), false]) exitWith {}; // ZEN owns the lifecycle
 	if (_exitCode == 2) exitWith { deleteVehicle _module; };
 
 	private _computer = _display getVariable ["AE3_linkedComputer", objNull];

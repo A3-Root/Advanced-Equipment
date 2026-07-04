@@ -1,8 +1,10 @@
+#include "..\script_component.hpp"
 /*
  * Author: Root, y0014984
  * Description: Handles the Zeus 'Add File' module interface events (onLoad/onUnload). Runs locally on the Zeus curator's machine.
  * Creates a new file on the target computer's filesystem with specified content, permissions, and optional encryption.
- * The module must be placed on an object with a filesystem and will be deleted after processing.
+ * The module must be placed on an object with a filesystem and will be deleted after processing. When Zeus Enhanced is loaded,
+ * the input is gathered through a ZEN Dynamic Dialog instead of the built-in dialog.
  *
  * Arguments:
  * 0: _display <DISPLAY> - The Zeus module display
@@ -30,22 +32,26 @@ if (_event isEqualTo "onLoad") exitWith
     private _result = [_display] call AE3_main_fnc_zeus_checkForComputer;
     _result params ["_status", "_computer"];
 
-    if (_status isEqualTo "SUCCESS") then
+    if (_status isNotEqualTo "SUCCESS") exitWith { _display closeDisplay 2; }; // 2 = cancel
+
+    // Hand off to ZEN's Dynamic Dialog when Zeus Enhanced is present.
+    if (EGVAR(main,hasZenDialog)) exitWith
     {
-        // add computer variable to display namespace
-        _display setVariable ["AE3_linkedComputer", _computer];
-    }
-    else
-    {
-        // close display
-        _display closeDisplay 2; // 2 = cancel
+        _module setVariable [QGVAR(zenHandled), true];
+        _display closeDisplay 2;
+        [FUNC(zen_module_addFile), [_module, _computer]] call CBA_fnc_execNextFrame;
     };
+
+    // add computer variable to display namespace
+    _display setVariable ["AE3_linkedComputer", _computer];
 };
 
 /* ---------------------------------------- */
 
 if (_event isEqualTo "onUnload") exitWith
 {
+    if (_module getVariable [QGVAR(zenHandled), false]) exitWith {}; // ZEN owns the lifecycle
+
     private _computer = _display getVariable ["AE3_linkedComputer", objNull];
     if ((isNull _computer) || (_exitCode == 2)) exitWith
     {
