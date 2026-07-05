@@ -836,13 +836,23 @@
       // into any loaded mod (\z\othermod\...\page.html) or a mission-relative path
       // (sites/intel/report.md), both resolved through A3.loadFile's root search.
       var sites = {
-        "home":    { type: "html", path: "sites/portal/index.html", label: "home" },
-        "rootnet": { type: "html", path: "sites/portal/index.html", label: "rootnet" },
         "wiki":    { type: "md",   path: "wiki/Home.md",            label: "wiki" }
       };
       var intelPages = []; // intel pages registered via Zeus/API
       function reloadIntelPages() {
         A3.request("web_pages", {}).then(function (res) { intelPages = (res && res.pages) || []; }).catch(function () {});
+      }
+      // The laptop's actual homepage is the seeded RootNet index (or any page registered as
+      // home.root / rootnet.root), NOT the bundled Portal sample. Fall back to the sample only when
+      // no home page is registered.
+      function homeTarget() {
+        for (var hi = 0; hi < intelPages.length; hi++) {
+          var u = (intelPages[hi].url || "").toLowerCase();
+          if (u === "rootnet.root" || u === "home.root") {
+            return { type: "intel", title: intelPages[hi].title, content: intelPages[hi].content, label: "home" };
+          }
+        }
+        return { type: "html", path: "sites/portal/index.html", label: "home" };
       }
       reloadIntelPages();
       // Registered custom domains -> mission site-root folders (AE3_desktop_fnc_registerSite).
@@ -890,6 +900,7 @@
       }
 
       body.innerHTML =
+        '<div class="tabbar" style="display:flex;align-items:center;gap:2px;padding:3px 4px 0;overflow-x:auto;background:var(--surface-2)"></div>' +
         '<div class="toolbar">' +
           '<button class="btn back" title="Back">&#8592;</button><button class="btn fwd" title="Forward">&#8594;</button>' +
           '<button class="btn home" title="Home">&#8962;</button>' +
@@ -897,11 +908,67 @@
           '<button class="btn accent go">Go</button>' +
           '<button class="btn hist" title="History" style="margin-left:4px">&#9776;</button>' +
         '</div>' +
-        '<iframe class="page" style="width:100%;height:calc(100% - 50px);border:none;background:#fff"></iframe>';
+        '<iframe class="page" style="width:100%;height:calc(100% - 82px);border:none;background:#fff"></iframe>';
       var frame = body.querySelector(".page");
       var addrEl = body.querySelector(".addr");
+      var tabBar = body.querySelector(".tabbar");
+      // Multiple tabs share one iframe. Each tab keeps its own history, current directory, address and
+      // last-rendered document; switching a tab saves the live state and restores the target's.
+      var tabs = [], active = -1;
       var history = [], hi = -1;
       var curDir = ""; // directory of the page currently shown, so relative in-page links resolve
+
+      function saveTab() {
+        if (active < 0) return;
+        var T = tabs[active];
+        T.history = history; T.hi = hi; T.curDir = curDir; T.label = addrEl.value; T.doc = frame.srcdoc;
+      }
+      function applyTab(i) {
+        active = i; var T = tabs[i];
+        history = T.history; hi = T.hi; curDir = T.curDir; addrEl.value = T.label; frame.srcdoc = T.doc || "";
+        window.AE3_browserNav = function (href) { nav(href); };
+        renderTabs();
+      }
+      function renderTabs() {
+        tabBar.innerHTML = "";
+        tabs.forEach(function (T, i) {
+          var tab = document.createElement("div");
+          tab.style.cssText = "display:flex;align-items:center;gap:6px;max-width:170px;padding:4px 8px;border-radius:6px 6px 0 0;cursor:pointer;font-size:12px;white-space:nowrap;" +
+            (i === active ? "background:var(--surface);color:var(--text)" : "background:transparent;color:var(--muted)");
+          var name = document.createElement("span");
+          name.textContent = (i === active ? addrEl.value : T.label) || "home";
+          name.style.cssText = "overflow:hidden;text-overflow:ellipsis";
+          tab.appendChild(name);
+          if (tabs.length > 1) {
+            var x = document.createElement("span");
+            x.textContent = "×"; x.style.cssText = "opacity:.7";
+            x.addEventListener("click", function (e) { e.stopPropagation(); closeTab(i); });
+            tab.appendChild(x);
+          }
+          tab.addEventListener("click", function () { if (i !== active) { saveTab(); applyTab(i); } });
+          tabBar.appendChild(tab);
+        });
+        var add = document.createElement("div");
+        add.textContent = "+"; add.title = "New tab";
+        add.style.cssText = "padding:4px 9px;cursor:pointer;font-size:15px;color:var(--muted)";
+        add.addEventListener("click", function () { newTab(); });
+        tabBar.appendChild(add);
+      }
+      function newTab() {
+        saveTab();
+        tabs.push({ history: [], hi: -1, curDir: "", label: "home", doc: "" });
+        active = tabs.length - 1;
+        history = []; hi = -1; curDir = "";
+        renderTabs();
+        nav("home");
+      }
+      function closeTab(i) {
+        if (tabs.length <= 1) return;
+        if (i === active) saveTab();
+        tabs.splice(i, 1);
+        if (active > i) active -= 1; else if (active >= tabs.length) active = tabs.length - 1;
+        applyTab(active);
+      }
 
       function setDoc(htmlText) { frame.srcdoc = htmlText + HOOK; }
 
@@ -939,9 +1006,14 @@
         var hasPath = addr.charAt(0) === "\\" || /^[a-z]:/i.test(addr) || addr.indexOf("/") >= 0 || addr.indexOf("\\") >= 0;
         var mdName = addr.match(/([^\/\\]+\.md)(?:[#?].*)?$/i); // keep original case for the VFS lookup
 
-        // Explicit .md: a bare filename is a wiki page; a pathed .md (mod/mission) loads as given.
+        // Explicit .md: a bare filename normally means a wiki page, BUT when we are inside a mission
+        // site (curDir under sites/) a bare .md link is page-relative to that site (e.g. the gallery
+        // page's "gallery.md"). A pathed .md (mod/mission) loads as given.
         if (/\.md($|[#?])/i.test(addr)) {
-          if (mdName && !hasPath) return { type: "md", path: "wiki/" + mdName[1], label: mdName[1] };
+          if (mdName && !hasPath) {
+            var inSite = curDir && /^sites\//i.test(curDir);
+            return { type: "md", path: (inSite ? (curDir + mdName[1]) : ("wiki/" + mdName[1])), label: mdName[1] };
+          }
           return { type: "md", path: addr, label: addr };
         }
         // Explicit .html / any pathed address: load through the root search (mod or mission). A
@@ -953,6 +1025,7 @@
         }
 
         var lower = addr.toLowerCase().replace(/^https?:\/\//, "").replace(/\/+$/, "");
+        if (lower === "home" || lower === "rootnet") return homeTarget();
         if (sites[lower]) return sites[lower];
         for (var pi = 0; pi < intelPages.length; pi++) {
           if ((intelPages[pi].url || "").toLowerCase() === lower) {
@@ -960,7 +1033,7 @@
           }
         }
         if (lower.indexOf("wiki") >= 0) return sites.wiki;
-        return sites.home;
+        return homeTarget();
       }
 
       // Router admin page: browsing to the gateway IP or "router" opens a live settings
@@ -1037,6 +1110,8 @@
         window.AE3_browserNav = function (href) { nav(href); }; // active browser drives in-page links
         if (!fromHistory && t.label !== "home") { A3.send("web_log", { url: t.label }); }
         load(t);
+        if (active >= 0) { tabs[active].label = addrEl.value; }
+        renderTabs();
       }
 
       body.querySelector(".go").addEventListener("click", function () { nav(addrEl.value); });
@@ -1068,7 +1143,7 @@
       // Re-bind the in-page link hook to this window whenever it gains focus.
       win.el.addEventListener("mousedown", function () { window.AE3_browserNav = function (href) { nav(href); }; });
 
-      nav("home");
+      newTab(); // open the first tab (navigates to the laptop homepage)
     }
   });
 

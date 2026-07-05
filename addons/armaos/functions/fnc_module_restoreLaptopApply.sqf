@@ -46,7 +46,9 @@ if (_slot isEqualTo "") then { _slot = "slot1"; };
     {
         private _computer = _x;
         if (!isNull _computer) then {
-            // Apply only once the fresh device has finished its own initialization.
+            // Force the fresh device to finish its own init (a just-spawned laptop may not have yet),
+            // then apply once ready so the snapshot is not raced or lost to a pending init.
+            [_computer] call AE3_armaos_fnc_device_ensureInit;
             waitUntil {
                 sleep 0.1;
                 _computer getVariable ["AE3_filesystemReady", false]

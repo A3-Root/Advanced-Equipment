@@ -18,12 +18,13 @@
   // AE3_desktop_fnc_desktop_openWeb). A3API takes Windows-style backslash paths.
   var WEB_ROOT = "\\z\\ae3\\addons\\desktop\\ui\\web\\";
   window.AE3_WEB_ROOT = WEB_ROOT;
-  // Search order for non-absolute asset paths: the MISSION root first (so mission makers can ship
-  // and override content, e.g. their own sites/portal/index.html shadows the bundled sample), then
-  // this addon's PBO as the fallback for defaults. Absolute paths (\z\othermod\..., other loaded
-  // mods) are used as-is. Shared with bridge.js (A3.loadFile) via window.AE3_WEB_ROOTS.
-  var ROOTS = ["", WEB_ROOT];
-  window.AE3_WEB_ROOTS = ROOTS;
+  // CONTENT search order (sites/, wiki/, images) via A3.loadFile: the MISSION root first (so mission
+  // makers can ship and override content, e.g. their own sites/portal/index.html shadows the bundled
+  // sample), then this addon's PBO as the fallback. Absolute paths (\z\othermod\...) are used as-is.
+  window.AE3_WEB_ROOTS = ["", WEB_ROOT];
+  // SHELL assets below (css/js) always ship in this PBO, so load them mod-FIRST: this avoids a
+  // guaranteed mission-root miss (and the "Script ... not found" RPT warning) for every bundled asset.
+  var ROOTS = [WEB_ROOT, ""];
 
   // CSS first (so there is no unstyled flash), then JS modules in strict dependency order.
   var CSS = ["css/ubuntu.css"];

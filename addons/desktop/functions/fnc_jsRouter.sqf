@@ -286,16 +286,18 @@ switch (_command) do {
         [_sres] call _reply;
     };
 
-    // Selectable wallpapers: the bundled images plus any registered via registerMedia. Returned as
-    // engine paths; the Settings app resolves each to a data URL through the texture bridge.
+    // Selectable wallpapers: the bundled images plus any registered via registerMedia. The bundled
+    // ones are served as pre-encoded base64 sidecars (.png.b64) so the CEF surface reads them via
+    // RequestFile instead of the unreliable .paa texture sampler; the Settings app turns each into a
+    // data URL through the bridge.
     case "wallpaper_list": {
         private _list = [
-            "\z\ae3\addons\desktop\images\wallpaper_1.paa",
-            "\z\ae3\addons\desktop\images\wallpaper_2.paa",
-            "\z\ae3\addons\desktop\images\wallpaper_3.paa",
-            "\z\ae3\addons\desktop\images\wallpaper_4.paa",
-            "\z\ae3\addons\desktop\images\wallpaper_5.paa",
-            "\z\ae3\addons\desktop\images\do-u-code-bro.paa"
+            "\z\ae3\addons\desktop\images\wallpaper_1.png.b64",
+            "\z\ae3\addons\desktop\images\wallpaper_2.png.b64",
+            "\z\ae3\addons\desktop\images\wallpaper_3.png.b64",
+            "\z\ae3\addons\desktop\images\wallpaper_4.png.b64",
+            "\z\ae3\addons\desktop\images\wallpaper_5.png.b64",
+            "\z\ae3\addons\desktop\images\do-u-code-bro.png.b64"
         ];
         { _list pushBackUnique _x; } forEach (missionNamespace getVariable ["AE3_Desktop_WallpaperList", []]);
         [createHashMapFromArray [["wallpapers", _list]]] call _reply;

@@ -36,3 +36,5 @@ Append-only log for code-wiki maintenance actions. Actions: created, updated, re
 2026-07-05 | updated | desktop-gui-and-browser | Terminal app + desktop<->CLI switching (sys_switch_cli / desktop command); executable file green tint + run (fs_list exec flag, sys_run_file)
 2026-07-05 | updated | desktop-gui-and-browser | mission-first web roots + custom domains (registerSite/web_sites/Add Website); per-user wallpapers + picker; calendar time; symlink exec; media filename+overwrite
 2026-07-05 | updated | eden-zeus-tooling | laptop clone case-fix + network restore; Zeus filesystem browser pick fixes; ZEN calendar time; ZEN interface access OWNERS; Add Website module
+2026-07-06 | updated | desktop-gui-and-browser | browser tabs; home=RootNet; site-relative .md; shell assets mod-first (RPT fix); wallpapers via .png.b64 sidecars + png2b64 tool
+2026-07-06 | updated | eden-zeus-tooling | laptop clone real fix: filesystem applied server-local (not broadcast) so getRemoteVar/userlist no longer stalls; ensureInit target

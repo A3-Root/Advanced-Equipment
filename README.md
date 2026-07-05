@@ -161,6 +161,10 @@ hemtt build
 - [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2888888564)
 - [Discord](https://discord.gg/qQXg8tB7gr)
 
+## Special Thanks
+
+Special thanks to 
+
 ## License
 
 Licensed under the Arma Public License - Share Alike. See [LICENSE](LICENSE) for the full license text.
