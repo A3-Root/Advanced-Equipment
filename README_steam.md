@@ -90,6 +90,8 @@ Full documentation, examples, API references, and developer notes are maintained
     [*] Wasserstoff - Core contributions
     [*] JulesVerner - Development
 [/list]
+[b]Special Thanks:[/b]
+Special thanks to [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3591608460]JSF Reaper[/url] whose work on the [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3646665660]Forge - OS[/url] laid the foundation of the massive 2.0 Rework with GUI by giving me ideas and references.
 
 [hr]
 [h2]Related Mods[/h2]

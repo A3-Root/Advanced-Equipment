@@ -163,7 +163,7 @@ hemtt build
 
 ## Special Thanks
 
-Special thanks to 
+Special thanks to [JSF Reaper](https://steamcommunity.com/id/operator-101992) whose work on the [Forge - OS](https://steamcommunity.com/sharedfiles/filedetails/?id=3646665660) laid the foundation of this massive GUI update by giving me ideas and references.
 
 ## License
 
