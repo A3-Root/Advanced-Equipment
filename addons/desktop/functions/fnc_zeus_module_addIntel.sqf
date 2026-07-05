@@ -174,12 +174,25 @@ if (_event isEqualTo "onUnload") exitWith
 		};
 	};
 
+	// Fifth dispatch field (destination path). For media the third field is the destination folder
+	// (field 1403) and the file name comes from the reused row (field 1405); combine them.
+	private _field3 = if (_type isEqualTo "media") then
+	{
+		private _folder = ctrlText (_display displayCtrl 1403);
+		private _fname = ctrlText (_display displayCtrl 1405);
+		if (_fname isEqualTo "") then { _folder } else { (_folder + "/" + _fname) regexReplace ["/+", "/"] }
+	}
+	else
+	{
+		ctrlText (_display displayCtrl 1403)
+	};
+
 	[
 		_type,
 		_target,
 		ctrlText (_display displayCtrl 1401),
 		_field2,
-		ctrlText (_display displayCtrl 1403),
+		_field3,
 		_arg6,
 		_f5
 	] call AE3_desktop_fnc_intel_dispatch;

@@ -576,7 +576,8 @@ class AE3_UserInterface_Zeus_FilesystemBrowser
 			text = "/";
 			x = -1 * GUI_GRID_W + GUI_GRID_X;
 			y = 3.5 * GUI_GRID_H + GUI_GRID_Y;
-			w = 50.5 * GUI_GRID_W;
+			// Ends before the "Select Path" button (x=39) so the button is never covered in pick mode.
+			w = 39 * GUI_GRID_W;
 			h = 1 * GUI_GRID_H;
 			colorBackground[] = {-1,-1,-1,0.5};
 			canModify = 0;

@@ -12,6 +12,7 @@ class CfgPatches
             "AE3_AddBrowserHistory",
             "AE3_AddMedia",
             "AE3_AddPasswordedFile",
+            "AE3_AddWebsite",
             "AE3_InterfaceAccess",
             "AE3_CrashDevice"
         };

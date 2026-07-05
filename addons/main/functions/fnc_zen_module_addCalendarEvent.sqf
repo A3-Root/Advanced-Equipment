@@ -23,7 +23,7 @@ params ["_module", "_computer"];
 
 private _onConfirm = {
     params ["_values", "_args"];
-    _values params ["_date", "_title", "_location", "_body"];
+    _values params ["_date", "_time", "_title", "_location", "_body"];
     _args params ["_module", "_computer"];
 
     if (_date isEqualTo "") exitWith {
@@ -35,7 +35,7 @@ private _onConfirm = {
         deleteVehicle _module;
     };
 
-    ["ae3_main_zeusDeviceOp", [netId _computer, "addCalendarEvent", [_date, _title, _location, _body], clientOwner]] call CBA_fnc_serverEvent;
+    ["ae3_main_zeusDeviceOp", [netId _computer, "addCalendarEvent", [_date, _title, _location, _body, _time], clientOwner]] call CBA_fnc_serverEvent;
     deleteVehicle _module;
 };
 
@@ -48,6 +48,7 @@ private _onCancel = {
     "AE3: Add Calendar Event",
     [
         ["EDIT", "Date (YYYY-MM-DD)", [""]],
+        ["EDIT", "Time (HH:MM, blank = all-day)", [""]],
         ["EDIT", "Title", [""]],
         ["EDIT", "Location", [""]],
         ["EDIT:MULTI", "Details", [""]]

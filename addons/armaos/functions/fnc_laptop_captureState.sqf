@@ -21,11 +21,13 @@
 
 params ["_laptop"];
 
-private _excluded = call AE3_armaos_fnc_laptop_stateVarsExcluded;
+// allVariables returns lower-cased names, so compare case-insensitively - otherwise the exclusion
+// set (mixed case) never matches and non-serializable TEXT/CODE vars get snapshotted.
+private _excluded = (call AE3_armaos_fnc_laptop_stateVarsExcluded) apply { toLower _x };
 private _state = createHashMap;
 
 {
-    if !(_x in _excluded) then {
+    if !((toLower _x) in _excluded) then {
         private _value = _laptop getVariable _x;
         if (!isNil "_value") then {
             _state set [_x, _value];

@@ -235,9 +235,9 @@ switch (_command) do {
         private _events = _computer getVariable ["AE3_calendar_events", []];
         private _out = [];
         {
-            _x params [["_date", ""], ["_title", ""], ["_loc", ""], ["_body", ""]];
+            _x params [["_date", ""], ["_title", ""], ["_loc", ""], ["_body", ""], ["_time", ""]];
             _out pushBack createHashMapFromArray [
-                ["date", _date], ["title", _title], ["location", _loc], ["body", _body], ["index", _forEachIndex]
+                ["date", _date], ["title", _title], ["location", _loc], ["body", _body], ["time", _time], ["index", _forEachIndex]
             ];
         } forEach _events;
         [_out] call _reply;
@@ -248,7 +248,7 @@ switch (_command) do {
         private _title = _data getOrDefault ["title", ""];
         if (isNull _computer || {_date isEqualTo "" || {_title isEqualTo ""}}) then { _ares set ["error", "bad_input"]; }
         else {
-            [_computer, _date, _title, _data getOrDefault ["location", ""], _data getOrDefault ["body", ""]] remoteExec ["AE3_armaos_fnc_computer_addCalendarEvent", 2];
+            [_computer, _date, _title, _data getOrDefault ["location", ""], _data getOrDefault ["body", ""], _data getOrDefault ["time", ""]] remoteExec ["AE3_armaos_fnc_computer_addCalendarEvent", 2];
             _ares set ["ok", true];
         };
         [_ares] call _reply;
@@ -274,15 +274,31 @@ switch (_command) do {
     // Native real-world map overlay: CEF cannot host the map control, so open it as a dialog.
     case "map_open": { [_computer, _data] call FUNC(mapOpen); };
 
-    // Settings: change system name / wallpaper, applied server-side and broadcast.
+    // Settings: change system name / wallpaper, applied server-side and broadcast. Wallpaper is
+    // stored per logged-in user so different users of the same laptop keep their own.
     case "sys_set": {
         private _sres = createHashMapFromArray [["error", ""]];
         if (isNull _computer) then { _sres set ["error", "no_device"]; }
         else {
-            [_computer, _data getOrDefault ["hostname", ""], _data getOrDefault ["wallpaper", ""]] remoteExec ["AE3_desktop_fnc_setSystemConfig", 2];
+            [_computer, _data getOrDefault ["hostname", ""], _data getOrDefault ["wallpaper", ""], _display getVariable [QGVAR(user), ""]] remoteExec ["AE3_desktop_fnc_setSystemConfig", 2];
             _sres set ["ok", true];
         };
         [_sres] call _reply;
+    };
+
+    // Selectable wallpapers: the bundled images plus any registered via registerMedia. Returned as
+    // engine paths; the Settings app resolves each to a data URL through the texture bridge.
+    case "wallpaper_list": {
+        private _list = [
+            "\z\ae3\addons\desktop\images\wallpaper_1.paa",
+            "\z\ae3\addons\desktop\images\wallpaper_2.paa",
+            "\z\ae3\addons\desktop\images\wallpaper_3.paa",
+            "\z\ae3\addons\desktop\images\wallpaper_4.paa",
+            "\z\ae3\addons\desktop\images\wallpaper_5.paa",
+            "\z\ae3\addons\desktop\images\do-u-code-bro.paa"
+        ];
+        { _list pushBackUnique _x; } forEach (missionNamespace getVariable ["AE3_Desktop_WallpaperList", []]);
+        [createHashMapFromArray [["wallpapers", _list]]] call _reply;
     };
 
     // Mail.
@@ -339,6 +355,25 @@ switch (_command) do {
             _pageOut pushBack createHashMapFromArray [["url", _x], ["title", _entry select 0], ["content", _entry select 1]];
         } forEach (keys _pages);
         [createHashMapFromArray [["pages", _pageOut]]] call _reply;
+    };
+
+    // Registered custom domains -> mission site-root folders (AE3_desktop_fnc_registerSite). Merged
+    // global + per-laptop, returned as {domain: siteRoot} so the Browser can resolve typed domains
+    // and route in-page links under them.
+    case "web_sites": {
+        private _sites = +(missionNamespace getVariable ["AE3_Desktop_Sites", createHashMap]);
+        if (!isNull _computer) then
+        {
+            private _localSites = _computer getVariable ["AE3_Desktop_Sites", createHashMap];
+            {
+                _sites set [_x, _localSites get _x];
+            } forEach (keys _localSites);
+        };
+        private _siteOut = createHashMap;
+        {
+            _siteOut set [_x, _sites get _x];
+        } forEach (keys _sites);
+        [createHashMapFromArray [["sites", _siteOut]]] call _reply;
     };
     case "web_history": {
         private _whres = createHashMapFromArray [["history", ""]];

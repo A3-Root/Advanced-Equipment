@@ -95,8 +95,19 @@ switch (_op) do {
                     } catch {};
                 };
                 // An executable file carries a code payload (the programs under /bin etc.); the GUI
-                // tints these green and runs them on double-click via the terminal.
-                private _isExec = !_isDir && {(_child select 0) isEqualType {}};
+                // tints these green and runs them on double-click via the terminal. A symlink is
+                // executable when the file it points at is - resolve the target's content type.
+                private _isExec = false;
+                if (!_isDir) then {
+                    if (_link isNotEqualTo "") then {
+                        try {
+                            private _targetContent = [[], _fs, _link, _fsUser, 0] call AE3_filesystem_fnc_getFile;
+                            _isExec = _targetContent isEqualType {};
+                        } catch {};
+                    } else {
+                        _isExec = (_child select 0) isEqualType {};
+                    };
+                };
                 _entries pushBack createHashMapFromArray [
                     ["name", _x],
                     ["dir", _isDir],

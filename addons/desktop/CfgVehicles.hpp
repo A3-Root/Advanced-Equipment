@@ -310,6 +310,45 @@ class CfgVehicles
 		};
 	};
 
+	// MODULE ADD WEBSITE - maps a custom domain (e.g. thisisme.com) to a mission site-root folder
+	// so the Browser can visit the domain and load that folder's index.html. Eden uses the Domain /
+	// Site root attributes; Zeus (with Zeus Enhanced) opens a ZEN dialog.
+	class AE3_AddWebsite: Module_F
+	{
+		scope = 2;
+		scopeCurator = 2;
+		displayName = "AE3: Add Website";
+		icon = "\z\ae3\addons\armaos\ui\AE3_Module_Icons_addUser.paa";
+		category = "AE3_armaosModules";
+		function = "AE3_desktop_fnc_module_addWebsite";
+		functionPriority = 1;
+		isGlobal = 0;
+		isTriggerActivated = 1;
+		isDisposable = 1;
+		is3DEN = 0;
+
+		class Attributes: AttributesBase
+		{
+			class AE3_ModuleWebsite_Domain: Edit
+			{
+				property = "AE3_ModuleWebsite_Domain";
+				displayName = "Domain";
+				tooltip = "The address players type to reach the site, e.g. thisisme.com";
+				typeName = "STRING";
+				defaultValue = """thisisme.com""";
+			};
+			class AE3_ModuleWebsite_SiteRoot: Edit
+			{
+				property = "AE3_ModuleWebsite_SiteRoot";
+				displayName = "Site root folder";
+				tooltip = "Mission-relative folder holding index.html, e.g. sites/portal";
+				typeName = "STRING";
+				defaultValue = """sites/portal""";
+			};
+			class ModuleDescription: ModuleDescription{};
+		};
+	};
+
 	// MODULE INTERFACE & ACCESS (Zeus only) - per-laptop interface mode plus per-player /
 	// per-side CLI/GUI/Both access. Place it ON a laptop. Optional power-tool: by default
 	// laptops already offer both interfaces with free switching (AE3_Desktop_DefaultMode).

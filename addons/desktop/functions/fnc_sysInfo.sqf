@@ -48,8 +48,12 @@ private _d = date;
 private _months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 _info set ["missionDate", format ["%1 %2", _d select 2, _months param [(_d select 1) - 1, ""]]];
 _info set ["missionTime", [dayTime, "HH:MM"] call BIS_fnc_timeToString];
-// Per-laptop wallpaper: a CSS background string or image path ("" = the theme default).
-_info set ["wallpaper", _computer getVariable ["AE3_desktop_wallpaper", ""]];
+// Per-user-per-laptop wallpaper (CSS background string or image path); falls back to the laptop-wide
+// legacy var, then the theme default ("").
+private _wallpapers = _computer getVariable ["AE3_desktop_wallpapers", createHashMap];
+private _userWp = _wallpapers getOrDefault [_user, ""];
+if (_userWp isEqualTo "") then { _userWp = _computer getVariable ["AE3_desktop_wallpaper", ""]; };
+_info set ["wallpaper", _userWp];
 // SSH access toggle: whether this device accepts incoming SSH connections.
 _info set ["sshEnabled", _computer getVariable ["AE3_ssh_enabled", true]];
 

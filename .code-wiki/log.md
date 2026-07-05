@@ -34,3 +34,5 @@ Append-only log for code-wiki maintenance actions. Actions: created, updated, re
 2026-07-04 | updated | eden-zeus-tooling | documented optional ZEN (Zeus Enhanced) Dynamic Dialog compat for all 10 Zeus modules
 2026-07-05 | updated | eden-zeus-tooling | Add Intel split into standalone per-type Zeus modules; Add User ZEN defaults admin/admin123
 2026-07-05 | updated | desktop-gui-and-browser | Terminal app + desktop<->CLI switching (sys_switch_cli / desktop command); executable file green tint + run (fs_list exec flag, sys_run_file)
+2026-07-05 | updated | desktop-gui-and-browser | mission-first web roots + custom domains (registerSite/web_sites/Add Website); per-user wallpapers + picker; calendar time; symlink exec; media filename+overwrite
+2026-07-05 | updated | eden-zeus-tooling | laptop clone case-fix + network restore; Zeus filesystem browser pick fixes; ZEN calendar time; ZEN interface access OWNERS; Add Website module

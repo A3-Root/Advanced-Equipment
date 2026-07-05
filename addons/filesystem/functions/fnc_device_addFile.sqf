@@ -13,6 +13,8 @@
  * 6: _isEncrypted <BOOL> (Optional, default: false) - If true, content will be encrypted
  * 7: _encryptionAlgorithm <STRING> (Optional) - Encryption algorithm ("caesar" or "columnar")
  * 8: _encryptionKey <STRING> (Optional) - Encryption key
+ * 9: _overwrite <BOOL> (Optional, default: false) - If true, an existing file whose name matches
+ *    case-INSENSITIVELY in the target directory is removed first (so the new file replaces it)
  *
  * Return Value:
  * None
@@ -25,7 +27,7 @@
  * Public: Yes
  */
 
-params ["_computer", "_path", "_content", "_isCode", "_owner", "_permissions", ["_isEncrypted", false], ["_encryptionAlgorithm", nil], ["_encryptionKey", nil]];
+params ["_computer", "_path", "_content", "_isCode", "_owner", "_permissions", ["_isEncrypted", false], ["_encryptionAlgorithm", nil], ["_encryptionKey", nil], ["_overwrite", false]];
 
 if (!isServer) exitWith {};
 
@@ -102,6 +104,26 @@ if (_isEncrypted) then
 	} forEach _content;
 
 	_content = _content joinString endl;
+};
+
+// Overwrite mode (used by media registration): remove any case-insensitive name match in the target
+// directory first, so "Intel.PNG" replaces an existing "intel.png" instead of coexisting or being
+// skipped as "already exists".
+if (_overwrite) then
+{
+    private _parts = (_path splitString "/") select { _x isNotEqualTo "" };
+    if (_parts isNotEqualTo []) then
+    {
+        private _fname = _parts deleteAt (count _parts - 1);
+        try
+        {
+            private _pdir = [_parts, _filesystem] call AE3_filesystem_fnc_resolvePntr;
+            private _pcontent = _pdir select 0;
+            {
+                if ((toLower _x) isEqualTo (toLower _fname)) exitWith { _pcontent deleteAt _x; };
+            } forEach (keys _pcontent);
+        } catch {};
+    };
 };
 
 // throws exception if file already exists

@@ -2,9 +2,11 @@
 /*
  * Author: Root
  * Description: Zeus Enhanced dialog variant of the Interface & Access module. Opens a ZEN Dynamic Dialog
- * on the curator's machine with the laptop's interface mode, one access combo per connected player and a
- * per-side fallback. On confirm it reuses the same access-condition builder and appliers as the legacy
- * dialog (AE3_desktop_fnc_setInterfaceMode / _setInterfaceAccess). Owns the module lifecycle.
+ * on the curator's machine: the laptop's interface mode plus two ZEN OWNERS pickers (who may use the CLI,
+ * who may use the GUI). OWNERS scales cleanly to large lobbies where a per-player combo list would not
+ * fit. On confirm it flattens each OWNERS selection to a list of player UIDs + sides and applies it via
+ * the same appliers as the legacy dialog (AE3_desktop_fnc_setInterfaceMode / _setInterfaceAccess). An
+ * empty picker leaves that interface open to everyone (subject to the mode). Owns the module lifecycle.
  *
  * Arguments:
  * 0: _module <OBJECT> - The module logic
@@ -21,15 +23,6 @@
 
 params ["_module", "_computer"];
 
-private _accessValues = ["none", "cli", "gui", "both"];
-private _accessLabels = [
-    localize "STR_AE3_Desktop_Access_None",
-    localize "STR_AE3_Desktop_Access_CLI",
-    localize "STR_AE3_Desktop_Access_GUI",
-    localize "STR_AE3_Desktop_Access_Both"
-];
-
-// Interface mode row (default = Both, i.e. leave the global default in place)
 private _rows = [
     ["COMBO", localize "STR_AE3_Desktop_Access_ModeDefault", [
         ["default", "cli", "gui", "both"],
@@ -40,62 +33,43 @@ private _rows = [
             localize "STR_AE3_Desktop_Access_Both"
         ],
         3
-    ]]
+    ]],
+    // Empty = everyone (with the mode) may use that interface; add owners to restrict it.
+    ["OWNERS", ["CLI access (empty = everyone)", "Who may use the terminal (CLI)"], [[], [], [], 2]],
+    ["OWNERS", ["GUI access (empty = everyone)", "Who may use the desktop (GUI)"], [[], [], [], 2]]
 ];
-
-// One access combo per connected human (default Both); track UIDs so the values map back on confirm.
-private _uids = [];
-{
-    private _uid = getPlayerUID _x;
-    if (_uid isEqualTo "") then { continue };
-    _uids pushBack _uid;
-    _rows pushBack ["COMBO", name _x, [_accessValues, _accessLabels, 3]];
-} forEach (allPlayers - entities "HeadlessClient_F");
-
-// Per-side fallback combos (WEST/EAST/GUER/CIV), default Both
-{
-    _rows pushBack ["COMBO", _x, [_accessValues, _accessLabels, 3]];
-} forEach ["Side: WEST", "Side: EAST", "Side: GUER", "Side: CIV"];
 
 private _onConfirm = {
     params ["_values", "_args"];
-    _args params ["_module", "_computer", "_uids"];
+    _values params ["_mode", "_cliOwners", "_guiOwners"];
+    _args params ["_module", "_computer"];
 
-    private _mode = _values select 0;
-    private _nPlayers = count _uids;
-    private _playerAccess = _values select [1, _nPlayers];
-    private _sideVals = _values select [1 + _nPlayers, 4];
+    // Flatten a ZEN OWNERS result [sides, groups, players, tab] to an array of player UID strings plus
+    // side objects, which AE3_desktop_fnc_setInterfaceAccess accepts directly (matched by
+    // AE3_desktop_fnc_canAccessInterface's array branch: UID or side membership).
+    private _fnc_flat = {
+        params ["_owners"];
+        _owners params ["_sides", "_groups", "_players", "_tab"];
+        private _out = [];
+        { _out pushBack getPlayerUID _x; } forEach _players;
+        private _grpUnits = [];
+        { _grpUnits append (units _x); } forEach _groups;
+        { if (isPlayer _x) then { _out pushBack getPlayerUID _x; }; } forEach _grpUnits;
+        { _out pushBack _x; } forEach _sides; // side objects
+        _out
+    };
 
-    // Interface mode
+    private _cli = [_cliOwners] call _fnc_flat;
+    private _gui = [_guiOwners] call _fnc_flat;
+
     if (_mode isNotEqualTo "default") then
     {
         [_computer, _mode] call FUNC(setInterfaceMode);
     };
 
-    private _playerPairs = [];
-    {
-        _playerPairs pushBack [_x, _playerAccess select _forEachIndex];
-    } forEach _uids;
-
-    private _sidePairs = [
-        ["WEST", _sideVals select 0],
-        ["EAST", _sideVals select 1],
-        ["GUER", _sideVals select 2],
-        ["CIV",  _sideVals select 3]
-    ];
-
-    // Authoritative per-player, then per-side fallback. Compiled with the tables inlined so the
-    // condition is self-contained (setInterfaceAccess stores it as a public, JIP-safe var).
-    private _mkCond = {
-        params ["_iface"];
-        compile format [
-            "params ['_l', '_p']; private _pa = %1; private _sa = %2; private _ic = %3; private _u = getPlayerUID _p; private _a = ''; { if ((_x select 0) isEqualTo _u) exitWith { _a = _x select 1 } } forEach _pa; if (_a isEqualTo '') then { private _sn = str (side group _p); { if ((_x select 0) isEqualTo _sn) exitWith { _a = _x select 1 } } forEach _sa }; _a in _ic",
-            str _playerPairs, str _sidePairs, str [_iface, "both"]
-        ]
-    };
-
-    [_computer, "cli", ["cli"] call _mkCond] call FUNC(setInterfaceAccess);
-    [_computer, "gui", ["gui"] call _mkCond] call FUNC(setInterfaceAccess);
+    // Empty selection -> reset to allow-all ({true}); otherwise restrict to the listed owners.
+    [_computer, "cli", ([{true}, _cli] select (_cli isNotEqualTo []))] call FUNC(setInterfaceAccess);
+    [_computer, "gui", ([{true}, _gui] select (_gui isNotEqualTo []))] call FUNC(setInterfaceAccess);
 
     [localize "STR_AE3_Desktop_Config_InterfaceAccessDisplayName", format ["%1: %2", localize "STR_AE3_Desktop_Access_Applied", [_computer] call FUNC(deviceLabel)], 5] call BIS_fnc_curatorHint;
 
@@ -112,5 +86,5 @@ private _onCancel = {
     _rows,
     _onConfirm,
     _onCancel,
-    [_module, _computer, _uids]
+    [_module, _computer]
 ] call EFUNC(main,zen_createDialog);

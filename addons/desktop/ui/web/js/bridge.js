@@ -88,7 +88,7 @@
       }
       if (rel.charAt(0) === "\\") return requestOne(rel); // absolute - this or any other mod
       var roots = (extraRoots || []).concat(window.AE3_WEB_ROOTS ||
-        [window.AE3_WEB_ROOT || "\\z\\ae3\\addons\\desktop\\ui\\web\\", ""]);
+        ["", window.AE3_WEB_ROOT || "\\z\\ae3\\addons\\desktop\\ui\\web\\"]);
       var i = 0;
       function next() {
         if (i >= roots.length) return Promise.reject(new Error("not found in any root: " + rel));

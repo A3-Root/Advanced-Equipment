@@ -613,11 +613,19 @@
       var h = document.getElementById("hostname");
       if (h) h.textContent = name || "armaOS";
     },
-    // Wallpaper: CSS background applied to #wallpaper (url or gradient/colour string).
+    // Wallpaper: CSS background applied to #wallpaper. Values may be a CSS colour/gradient, an http/
+    // data URL, or an engine/mod texture / mission raster (.paa/.jpg/.png or a \z\... path) - the
+    // latter are resolved to a data URL through the texture bridge (CEF cannot load engine paths).
     setWallpaper: function (val) {
       var w = document.getElementById("wallpaper");
       if (!w || !val) return;
-      w.style.background = (/^https?:|^data:|\\|\//.test(val)) ? ("center/cover no-repeat url('" + val + "')") : val;
+      if (/\.(paa|jpe?g|png|gif)$/i.test(val) || val.charAt(0) === "\\") {
+        A3.loadImage(val).then(function (url) {
+          w.style.background = "#000 center/cover no-repeat url('" + url + "')";
+        }).catch(function () {});
+        return;
+      }
+      w.style.background = (/^https?:|^data:|\//.test(val)) ? ("center/cover no-repeat url('" + val + "')") : val;
     },
     signOut: function () {
       if (window.WM && WM.closeAll) WM.closeAll();

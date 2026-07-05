@@ -93,6 +93,11 @@ _keys sort true;
 	};
 } forEach _keys;
 
+// Do not leave a selection: an RscListBox auto-selects index 0 once populated, which would fire
+// onSelect and pre-pick the folder's first item (so "Select Path" returned it without a user click).
+_listCtrl lbSetCurSel -1;
+_display setVariable ["AE3_currentFile", ""];
+
 // Clear file content and properties
 private _contentCtrl = _display displayCtrl 1401;
 _contentCtrl ctrlSetText "";

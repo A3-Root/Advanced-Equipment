@@ -569,8 +569,9 @@
           '<div style="display:flex;flex-direction:column;gap:8px;max-width:420px">' +
             '<label class="muted">System name (hostname)</label>' +
             '<input class="input shost" placeholder="armaOS">' +
-            '<label class="muted">Wallpaper (CSS colour/gradient or image path, blank = default)</label>' +
+            '<label class="muted">Wallpaper (CSS colour/gradient or image path, blank = default). Saved per user.</label>' +
             '<input class="input swall" placeholder="#1d1d1d or linear-gradient(...) or \\\\z\\\\...\\\\bg.jpg">' +
+            '<div class="wallgrid" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:2px"></div>' +
             '<div><button class="btn accent ssave">Apply</button> <span class="muted sst"></span></div>' +
           '</div>' +
           '<h3 style="margin-top:14px">Access</h3>' +
@@ -613,6 +614,23 @@
       loadSysinfo(true);
       // Live-update the panel when a curator/mission-maker changes battery, wifi, IP, hostname or SSH.
       A3.on("sys_changed", function () { loadSysinfo(false); });
+
+      // Selectable wallpaper thumbnails (bundled images + any registered). Clicking one applies it for
+      // the current user immediately; each engine texture is resolved to a data URL for the preview.
+      var wallGrid = body.querySelector(".wallgrid");
+      A3.request("wallpaper_list", {}).then(function (r) {
+        ((r && r.wallpapers) || []).forEach(function (p) {
+          var thumb = document.createElement("div");
+          thumb.style.cssText = "width:72px;height:44px;border-radius:4px;background:#222 center/cover no-repeat;cursor:pointer;border:1px solid var(--line)";
+          thumb.title = p;
+          A3.loadImage(p).then(function (url) { thumb.style.backgroundImage = "url('" + url + "')"; }).catch(function () {});
+          thumb.addEventListener("click", function () {
+            if (wallEl) wallEl.value = p;
+            A3.request("sys_set", { wallpaper: p }).then(function () { Desktop.setWallpaper(p); });
+          });
+          wallGrid.appendChild(thumb);
+        });
+      }).catch(function () {});
       body.querySelector(".sipapply").addEventListener("click", function () {
         var ip = sipEl.value.trim();
         A3.request("net_setip", { ip: ip }).then(function (r) {
@@ -752,13 +770,14 @@
         if (!list.length) html += '<p class="muted">No events.</p>';
         list.forEach(function (e) {
           html += '<div class="ev" data-idx="' + e.index + '" style="margin:8px 0;padding:8px;background:var(--surface-2);border-radius:6px">' +
-            '<div style="display:flex;align-items:center"><b style="flex:1">' + esc(e.title) + '</b><button class="btn evdel" data-idx="' + e.index + '">&#215;</button></div>' +
+            '<div style="display:flex;align-items:center"><b style="flex:1">' + (e.time ? esc(e.time) + ' &#183; ' : "") + esc(e.title) + '</b><button class="btn evdel" data-idx="' + e.index + '">&#215;</button></div>' +
             (e.location ? '<div class="muted" style="font-size:12px">@ ' + esc(e.location) + '</div>' : "") +
             (e.body ? '<div style="margin-top:4px;white-space:pre-wrap">' + esc(e.body) + '</div>' : "") +
             '</div>';
         });
         html += '<hr style="border-color:var(--line)"><div style="display:flex;flex-direction:column;gap:6px">' +
           '<input class="input ntitle" placeholder="New event title">' +
+          '<input class="input ntime" placeholder="Time HH:MM (optional)">' +
           '<input class="input nloc" placeholder="Location (optional)">' +
           '<textarea class="input nbody" rows="3" placeholder="Details (optional)"></textarea>' +
           '<div><button class="btn accent nadd">Add event</button> <span class="muted nst"></span></div></div>';
@@ -772,7 +791,7 @@
           var title = detail.querySelector(".ntitle").value.trim();
           var st = detail.querySelector(".nst");
           if (!title) { st.textContent = "Title required."; return; }
-          A3.request("cal_add", { date: iso, title: title, location: detail.querySelector(".nloc").value, body: detail.querySelector(".nbody").value }).then(function (r) {
+          A3.request("cal_add", { date: iso, title: title, time: detail.querySelector(".ntime").value, location: detail.querySelector(".nloc").value, body: detail.querySelector(".nbody").value }).then(function (r) {
             st.textContent = (r && r.error && r.error !== "") ? ("Failed: " + r.error) : "Added.";
             if (!r || !r.error || r.error === "") setTimeout(function () { fetchAll(iso); }, 350);
           });
@@ -826,8 +845,15 @@
         A3.request("web_pages", {}).then(function (res) { intelPages = (res && res.pages) || []; }).catch(function () {});
       }
       reloadIntelPages();
-      // Re-pull the page list when a webpage/intel is registered or removed while the Browser is open.
+      // Registered custom domains -> mission site-root folders (AE3_desktop_fnc_registerSite).
+      var regSites = {}; // { "thisisme.com": "sites/portal", ... }
+      function reloadSites() {
+        A3.request("web_sites", {}).then(function (res) { regSites = (res && res.sites) || {}; }).catch(function () {});
+      }
+      reloadSites();
+      // Re-pull the page + site lists when content is registered or removed while the Browser is open.
       A3.on("web_changed", reloadIntelPages);
+      A3.on("web_changed", reloadSites);
 
       // Injected into every page so in-page links drive the address bar instead of dead relative nav.
       // Arma's CEF renders iframe srcdoc with an opaque origin, so a direct parent.AE3_browserNav()
@@ -897,6 +923,19 @@
       function resolve(addrRaw) {
         var addr = String(addrRaw == null ? "home" : addrRaw).trim();
         if (isRouterAddr(addr)) return { router: true, label: "router" };
+
+        // Registered custom domain? Match the host part (before the first "/"); the rest is a subpath
+        // under the site root. "thisisme.com" -> <root>/index.html; "thisisme.com/about" -> <root>/about.
+        // Checked before the generic path branch so a domain with a subpath is not mistaken for a file.
+        var rawStripped = addr.replace(/^https?:\/\//i, "");
+        var rawSlash = rawStripped.indexOf("/");
+        var host = (rawSlash < 0 ? rawStripped : rawStripped.slice(0, rawSlash)).toLowerCase().replace(/\/+$/, "");
+        if (regSites[host]) {
+          var root = String(regSites[host]).replace(/\/+$/, "");
+          var sub = (rawSlash < 0 ? "" : rawStripped.slice(rawSlash + 1)).replace(/^\/+/, "");
+          return { type: "html", path: (sub === "" ? (root + "/index.html") : (root + "/" + sub)), label: addr };
+        }
+
         var hasPath = addr.charAt(0) === "\\" || /^[a-z]:/i.test(addr) || addr.indexOf("/") >= 0 || addr.indexOf("\\") >= 0;
         var mdName = addr.match(/([^\/\\]+\.md)(?:[#?].*)?$/i); // keep original case for the VFS lookup
 

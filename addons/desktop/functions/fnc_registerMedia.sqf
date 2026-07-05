@@ -82,7 +82,8 @@ switch (true) do
 {
 	if (!isNull _x && {_x getVariable ["AE3_cap_hasFilesystem", false]}) then
 	{
-		[_x, _fsDest, _marker, false, "root", [[true, true, false], [true, false, false]], false, "caesar", "1"] call AE3_filesystem_fnc_device_addFile;
+		// Overwrite any existing (case-insensitive) file at the destination so re-placing media replaces it.
+		[_x, _fsDest, _marker, false, "root", [[true, true, false], [true, false, false]], false, "caesar", "1", true] call AE3_filesystem_fnc_device_addFile;
 	};
 } forEach _computers;
 

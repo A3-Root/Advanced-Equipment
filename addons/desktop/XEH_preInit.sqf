@@ -111,6 +111,7 @@ if (isServer) then
 	// Client-routed intel APIs (email, webpages, browser history, calendar)
 	["ae3_desktop_addEmail", { _this call AE3_desktop_fnc_addEmail }] call CBA_fnc_addEventHandler;
 	["ae3_desktop_registerWebpage", { _this call AE3_desktop_fnc_registerWebpage }] call CBA_fnc_addEventHandler;
+	["ae3_desktop_registerSite", { _this call AE3_desktop_fnc_registerSite }] call CBA_fnc_addEventHandler;
 	["ae3_desktop_addHistoryEntry", { _this call AE3_desktop_fnc_addHistoryEntry }] call CBA_fnc_addEventHandler;
 	["ae3_desktop_addCalendarEvent", { _this call AE3_desktop_fnc_addCalendarEvent }] call CBA_fnc_addEventHandler;
 	["ae3_desktop_registerCamera", { _this call AE3_desktop_fnc_registerCamera }] call CBA_fnc_addEventHandler;

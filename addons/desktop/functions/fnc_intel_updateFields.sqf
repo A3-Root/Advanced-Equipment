@@ -38,7 +38,7 @@ private _labels = switch (_type) do
 {
 	case "webpage":    { [localize "STR_AE3_Desktop_Intel_LabelUrl", localize "STR_AE3_Desktop_Intel_LabelTitle", localize "STR_AE3_Desktop_Intel_LabelContent"] };
 	case "history":    { [localize "STR_AE3_Desktop_Intel_LabelUrl", localize "STR_AE3_Desktop_Intel_LabelTime", ""] };
-	case "media":      { [localize "STR_AE3_Desktop_Intel_LabelSource", localize "STR_AE3_Desktop_Intel_LabelMediaType", localize "STR_AE3_Desktop_Intel_LabelDest"] };
+	case "media":      { [localize "STR_AE3_Desktop_Intel_LabelSource", localize "STR_AE3_Desktop_Intel_LabelMediaType", "Destination folder:"] };
 	case "lockedfile": { [localize "STR_AE3_Desktop_Intel_LabelDest", localize "STR_AE3_Desktop_Intel_LabelPassword", localize "STR_AE3_Desktop_Intel_LabelContent"] };
 	default            { [localize "STR_AE3_Desktop_Intel_LabelFrom", localize "STR_AE3_Desktop_Intel_LabelTo", localize "STR_AE3_Desktop_Intel_LabelSubject"] };
 };
@@ -90,7 +90,7 @@ private _isMedia = _type isEqualTo "media";
 } forEach [1713, 1404];
 // shared: received-time row (email) / owner-name row (lockedfile)
 {
-	(_x call _getCtrl) ctrlShow (_isEmail || _isLocked);
+	(_x call _getCtrl) ctrlShow (_isEmail || _isLocked || _isMedia);
 } forEach [1714, 1405];
 // email + media: the two checkbox rows. Email uses them for sender/recipient address creation;
 // media reuses them for the native-RscPicture fallback (1317) and the mod-path hint (1318).
@@ -113,7 +113,7 @@ private _isMedia = _type isEqualTo "media";
 (1602 call _getCtrl) ctrlEnable _isMedia;
 (1402 call _getCtrl) ctrlEnable (!_isMedia);
 (1404 call _getCtrl) ctrlEnable _isEmail;
-(1405 call _getCtrl) ctrlEnable (_isEmail || _isLocked);
+(1405 call _getCtrl) ctrlEnable (_isEmail || _isLocked || _isMedia);
 {
 	(_x call _getCtrl) ctrlEnable _isLocked;
 } forEach [1301, 1302, 1303, 1304, 1305, 1306];
@@ -165,4 +165,19 @@ if (_isMedia) then
 	(1718 call _getCtrl) ctrlSetText (localize "STR_AE3_Desktop_Intel_LabelModPath");
 	(1317 call _getCtrl) cbSetChecked false;
 	(1318 call _getCtrl) cbSetChecked false;
+
+	// Reuse the shared row (1714 label / 1405 edit) as the destination file name. Combined with the
+	// Browse-picked folder (field 1403) this forms the save path; a same-name (case-insensitive) file
+	// is overwritten. Position it at body_y + 1 grid row (same as the lockedfile owner row).
+	(1714 call _getCtrl) ctrlSetText "File Name with Extension (overwrites same name):";
+	private _pLabel = ctrlPosition (1713 call _getCtrl);
+	private _pBody  = ctrlPosition (1404 call _getCtrl);
+	private _gH = (_pBody select 1) - (_pLabel select 1);
+	private _origY = (_pBody select 1) + _gH;
+	private _p14 = ctrlPosition (1714 call _getCtrl);
+	private _p15 = ctrlPosition (1405 call _getCtrl);
+	(1714 call _getCtrl) ctrlSetPosition [_p14 select 0, _origY, _p14 select 2, _p14 select 3];
+	(1405 call _getCtrl) ctrlSetPosition [_p15 select 0, _origY, _p15 select 2, _p15 select 3];
+	(1714 call _getCtrl) ctrlCommit 0;
+	(1405 call _getCtrl) ctrlCommit 0;
 };
