@@ -881,12 +881,12 @@
                 <Chinesesimp>此模块将文件添加到支持文件系统的对象(如计算机).</Chinesesimp>
             </Key>
             <Key ID="STR_AE3_Main_Zeus_Module_AddUser">
-                <Original>AE3 Add User</Original>
-                <English>AE3 Add User</English>
-                <French>AE3 Ajouter un utilisateur</French>
-                <Italian>AE3 Aggiungi utente</Italian>
-                <Russian>AE3 Add User</Russian>
-                <German>AE3 Benutzer hinzufügen</German>
+                <Original>AE3: Add User</Original>
+                <English>AE3: Add User</English>
+                <French>AE3: Ajouter un utilisateur</French>
+                <Italian>AE3: Aggiungi utente</Italian>
+                <Russian>AE3: Add User</Russian>
+                <German>AE3: Benutzer hinzufügen</German>
                 <Chinesesimp>AE3添加用户</Chinesesimp>
             </Key>
             <Key ID="STR_AE3_Main_Zeus_Module_AddUser_Description">
