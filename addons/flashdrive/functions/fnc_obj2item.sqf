@@ -17,6 +17,14 @@
 
 params ["_object", "_player"];
 
+// Root Cyberwarfare: a Rubberducky drive collapses back to its single stackable item on pickup instead
+// of being buffered as a unique per-instance drive (no per-drive id is allocated).
+private _rubberItem = _object getVariable ["ROOT_rubberducky_item", ""];
+if (_rubberItem isNotEqualTo "") exitWith {
+	[_player, _rubberItem, true] remoteExecCall ["CBA_fnc_addItem", _player];
+	deleteVehicle _object;
+};
+
 private _itemClass = getText ((configOf _object) >> "ae3_item");
 
 if (isNil "_itemClass") exitWith {};

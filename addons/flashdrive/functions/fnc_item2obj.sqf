@@ -21,6 +21,17 @@ params['_player', '_item', ['_pos', [0, 0, 0]]];
 [missionNamespace, "AE3_ITEM"] call AE3_main_fnc_getRemoteVar;
 private _buffer = missionNamespace getVariable ["AE3_ITEM" , createHashMap];
 
+// Root Cyberwarfare: single-purpose "Rubberducky" drives are never buffered per-instance (they carry
+// a fixed read-only payload). When one is connected without a buffer entry, spawn a fresh drive from
+// the item's paired object class; its init handler seeds the read-only, pre-armed filesystem.
+if (!(_item in _buffer) && {(getNumber (configFile >> "CfgWeapons" >> _item >> "ROOT_rubberducky")) == 1}) exitWith {
+	private _objType = getText (configFile >> "CfgWeapons" >> _item >> "ae3_vehicle");
+	if (_objType isEqualTo "") then { _objType = "Land_USB_Dongle_01_F_AE3"; };
+	private _rubber = createVehicle [_objType, _pos, [], 0, "CAN_COLLIDE"];
+	[_player, _item] remoteExecCall ["CBA_fnc_removeItem", _player];
+	_rubber
+};
+
 if (!(_item in _buffer)) exitWith {};
 
 private _itemnamespace = _buffer get _item;
