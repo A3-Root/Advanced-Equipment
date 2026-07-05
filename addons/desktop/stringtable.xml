@@ -353,13 +353,13 @@
                 <Chinesesimp>正文</Chinesesimp>
             </Key>
             <Key ID="STR_AE3_Desktop_Intel_LabelContent">
-                <Original>Content - | starts a new line, [[url|label]] makes a link</Original>
-                <English>Content - | starts a new line, [[url|label]] makes a link</English>
-                <French>Contenu - | commence une nouvelle ligne, [[url|label]] crée un lien</French>
-                <Italian>Contenuto - | inizia una nuova riga, [[url|label]] crea un collegamento</Italian>
-                <Russian>Content - | starts a new line, [[url|label]] makes a link</Russian>
-                <German>Inhalt - | beginnt eine neue Zeile, [[url|label]] erstellt einen Link</German>
-                <Chinesesimp>内容 - | 表示换行,[[url|label]] 表示链接</Chinesesimp>
+                <Original>Content</Original>
+                <English>Content</English>
+                <French>Contenu</French>
+                <Italian>Contenuto</Italian>
+                <Russian>Content</Russian>
+                <German>Inhalt</German>
+                <Chinesesimp>内容</Chinesesimp>
             </Key>
             <Key ID="STR_AE3_Desktop_Intel_LabelCreateFromHandle">
                 <Original>Create and Save Sender Address?</Original>
