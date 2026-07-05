@@ -37,6 +37,7 @@ At minimum, allow:
 - `css`
 - `js`
 - `md`
+- `b64`
 
 If the GUI desktop does not load correctly on a dedicated server, check `allowedLoadFileExtensions[]` in `server.cfg`.
 

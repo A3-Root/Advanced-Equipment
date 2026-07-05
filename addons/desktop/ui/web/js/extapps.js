@@ -172,7 +172,15 @@
             var gridHtml = (d.grid != null && d.grid !== "") ? ' <span class="muted" style="font-size:12px">&#128205; ' + esc(d.grid) + '</span>' : "";
             var top = document.createElement("div");
             top.style.display = "flex"; top.style.alignItems = "center"; top.style.width = "100%";
-            top.innerHTML = '<span class="ico">' + glyph + '</span><span style="flex:1">' + esc(d.label || d.name || ("#" + d.id)) + statusHtml + gridHtml + "</span>";
+            // Root_CW: an in-progress network scan renders an animated radar sweep instead of the app icon.
+            var isScanning = (d.label === "Scanning network");
+            if (isScanning && !document.getElementById("rootcw-radar-style")) {
+              var st = document.createElement("style"); st.id = "rootcw-radar-style";
+              st.textContent = "@keyframes rootcwSpin{to{transform:rotate(360deg)}}.rootcw-radar{display:inline-block;width:16px;height:16px;margin-right:8px;border:2px solid #8ce10b;border-top-color:transparent;border-radius:50%;animation:rootcwSpin .8s linear infinite;vertical-align:middle}";
+              document.head.appendChild(st);
+            }
+            var icoHtml = isScanning ? '<span class="rootcw-radar"></span>' : ('<span class="ico">' + glyph + '</span>');
+            top.innerHTML = icoHtml + '<span style="flex:1">' + esc(d.label || d.name || ("#" + d.id)) + statusHtml + gridHtml + "</span>";
             if (d.pos && d.pos.length >= 2) {
               var mb = document.createElement("button"); mb.className = "btn"; mb.textContent = "Map"; mb.style.marginLeft = "6px";
               mb.addEventListener("click", function () { window.AE3_openMap(d.pos, d.mapLabel !== undefined ? d.mapLabel : (d.label || ("#" + d.id)), d.mapMarker); });
