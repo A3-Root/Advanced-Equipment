@@ -52,6 +52,15 @@ private _isLocked = _type isEqualTo "lockedfile";
 private _isMedia = _type isEqualTo "media";
 (1602 call _getCtrl) ctrlShow _isMedia;
 (1402 call _getCtrl) ctrlShow (!_isMedia);
+// Media-only base64 image box. Present only in the Zeus dialog, not the 3DEN attribute group, so
+// resolve defensively and skip when the control is absent.
+private _b64Edit = 1420 call _getCtrl;
+if (!isNull _b64Edit) then
+{
+	_b64Edit ctrlShow _isMedia;
+	_b64Edit ctrlEnable _isMedia;
+	(1721 call _getCtrl) ctrlShow _isMedia;
+};
 	// The filesystem-path picker button (beside field 1401) only makes sense for the two types whose
 	// first field is a filesystem path: media source and locked-file destination.
 	(1720 call _getCtrl) ctrlShow (_isLocked || _isMedia);
@@ -168,16 +177,34 @@ if (_isMedia) then
 
 	// Reuse the shared row (1714 label / 1405 edit) as the destination file name. Combined with the
 	// Browse-picked folder (field 1403) this forms the save path; a same-name (case-insensitive) file
-	// is overwritten. Position it at body_y + 1 grid row (same as the lockedfile owner row).
+	// is overwritten.
 	(1714 call _getCtrl) ctrlSetText "File Name with Extension (overwrites same name):";
 	private _pLabel = ctrlPosition (1713 call _getCtrl);
 	private _pBody  = ctrlPosition (1404 call _getCtrl);
 	private _gH = (_pBody select 1) - (_pLabel select 1);
-	private _origY = (_pBody select 1) + _gH;
+	// When the base64 box exists (Zeus dialog), lift the file-name row directly under the destination
+	// folder so the tall paste box can occupy the space below it. Otherwise (3DEN attribute, no box)
+	// keep the original position at body_y + 1 grid row.
+	private _b64Media = 1420 call _getCtrl;
+	private _origY = if (isNull _b64Media) then { (_pBody select 1) + _gH } else { _pLabel select 1 };
 	private _p14 = ctrlPosition (1714 call _getCtrl);
 	private _p15 = ctrlPosition (1405 call _getCtrl);
 	(1714 call _getCtrl) ctrlSetPosition [_p14 select 0, _origY, _p14 select 2, _p14 select 3];
 	(1405 call _getCtrl) ctrlSetPosition [_p15 select 0, _origY, _p15 select 2, _p15 select 3];
 	(1714 call _getCtrl) ctrlCommit 0;
 	(1405 call _getCtrl) ctrlCommit 0;
+
+	// Lay out the base64 paste box (label + tall edit) below the file-name row, spanning full width.
+	if (!isNull _b64Media) then
+	{
+		private _b64Label = 1721 call _getCtrl;
+		private _pRef = ctrlPosition (1710 call _getCtrl);
+		private _fullX = _pRef select 0;
+		private _fullW = _pRef select 2;
+		_b64Label ctrlSetText (localize "STR_AE3_Desktop_Intel_LabelBase64");
+		_b64Label ctrlSetPosition [_fullX, _origY + (1.2 * _gH), _fullW, _gH];
+		_b64Media ctrlSetPosition [_fullX, _origY + (2.2 * _gH), _fullW, 2.4 * _gH];
+		_b64Label ctrlCommit 0;
+		_b64Media ctrlCommit 0;
+	};
 };

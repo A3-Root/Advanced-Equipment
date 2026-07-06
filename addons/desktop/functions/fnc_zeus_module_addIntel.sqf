@@ -187,10 +187,30 @@ if (_event isEqualTo "onUnload") exitWith
 		ctrlText (_display displayCtrl 1403)
 	};
 
+	// Media with base64 pasted into the image box: route as an inline picture (stored as a data-URL
+	// marker for the web viewer) instead of registering a real texture path. The box overrides the
+	// source-path field; the folder + file name still form the filesystem destination (_field3).
+	private _dispatchType = _type;
+	private _f1 = ctrlText (_display displayCtrl 1401);
+	if (_type isEqualTo "media") then
+	{
+		private _b64 = ctrlText (_display displayCtrl 1420);
+		if ((trim _b64) isNotEqualTo "") then
+		{
+			if ((count _b64) > AE3_MAX_PICTURE_B64) exitWith
+			{
+				[objNull, localize "STR_AE3_Main_Zeus_PictureTooLarge"] call BIS_fnc_showCuratorFeedbackMessage;
+				deleteVehicle _module;
+			};
+			_dispatchType = "picture";
+			_f1 = _b64;
+		};
+	};
+
 	[
-		_type,
+		_dispatchType,
 		_target,
-		ctrlText (_display displayCtrl 1401),
+		_f1,
 		_field2,
 		_field3,
 		_arg6,

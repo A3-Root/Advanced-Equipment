@@ -69,6 +69,7 @@ PREP(app_sysinfo);
 
 /* Media + intel registries */
 PREP(registerMedia);
+PREP(registerPictureB64);
 PREP(parseMediaMarker);
 PREP(audioPlayer);
 PREP(mediaNotify);

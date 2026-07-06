@@ -10,6 +10,7 @@
  *  "history"  - f1: URL,  f2: Time (optional, "HH:MM")
  *  "media"    - f1: Source path, f2: image|video|audio, f3: filesystem destination,
  *               f4: path scope (mod|mission|auto), f5: try-web-viewer flag <BOOL>
+ *  "picture"  - f1: raw base64 image data, f3: filesystem destination
  *  "lockedfile" - f1: filesystem path, f2: password, f3: content, f4: owner, f5: permissions
  *
  * Arguments:
@@ -77,6 +78,24 @@ switch (toLower _type) do
 		private _scope = ["auto", _f4] select (_f4 isEqualType "");
 		private _web = _f5 isEqualTo true;
 		[_f1, _f2, _f3, _targets, _scope, _web] call AE3_desktop_fnc_registerMedia;
+	};
+	case "picture":
+	{
+		// Inline base64 image: f1 is the raw base64 payload, f3 the filesystem destination. Stored as
+		// a data-URL picture marker rendered by the in-OS web viewer (see fnc_registerPictureB64).
+		private _targets = switch (true) do
+		{
+			case (_target isEqualType objNull): { [_target] };
+			case (_target isEqualType []): { _target };
+			case (_target isEqualTo "all"): { "all" };
+			case (_target isEqualTo "future"): { "future" };
+			default
+			{
+				private _targetObject = objectFromNetId _target;
+				if (isNull _targetObject) then { [] } else { [_targetObject] };
+			};
+		};
+		[_f1, _f3, _targets] call AE3_desktop_fnc_registerPictureB64;
 	};
 	case "lockedfile":
 	{

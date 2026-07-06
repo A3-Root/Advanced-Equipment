@@ -347,6 +347,10 @@
                 <German>Browserverlauf-Eintrag</German>
                 <Chinesesimp>浏览器历史条目</Chinesesimp>
             </Key>
+            <Key ID="STR_AE3_Desktop_Intel_LabelBase64">
+                <Original>Base64 image (paste to store an inline picture; overrides the source path)</Original>
+                <English>Base64 image (paste to store an inline picture; overrides the source path)</English>
+            </Key>
             <Key ID="STR_AE3_Desktop_Intel_LabelBody">
                 <Original>Body</Original>
                 <English>Body</English>

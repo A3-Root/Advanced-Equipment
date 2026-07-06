@@ -78,6 +78,7 @@ if (isServer) then
 {
 	ae3_desktop_computers = [];
 	ae3_desktop_pendingMedia = []; // [_sourcePath, _type, _fsDest, _scope, _web] entries applied to future laptops
+	ae3_desktop_pendingPictures = []; // [_b64, _fsDest, _pictureType] inline-picture entries applied to future laptops
 
 	// Emitted by AE3_armaos_fnc_device_initComplete after a computer finished initializing
 	["ae3_armaos_deviceReady", {
@@ -93,10 +94,17 @@ if (isServer) then
 			_x params ["_sourcePath", "_type", "_fsDest", ["_scope", "auto"], ["_web", false]];
 			[_sourcePath, _type, _fsDest, [_computer], _scope, _web] call AE3_desktop_fnc_registerMedia;
 		} forEach ae3_desktop_pendingMedia;
+
+		// Apply inline base64 pictures registered for "future" laptops
+		{
+			_x params ["_b64", "_fsDest", ["_pictureType", "auto"]];
+			[_b64, _fsDest, [_computer], _pictureType] call AE3_desktop_fnc_registerPictureB64;
+		} forEach ae3_desktop_pendingPictures;
 	}] call CBA_fnc_addEventHandler;
 
 	// Client-routed media registration
 	["ae3_desktop_registerMedia", { _this call AE3_desktop_fnc_registerMedia }] call CBA_fnc_addEventHandler;
+	["ae3_desktop_registerPictureB64", { _this call AE3_desktop_fnc_registerPictureB64 }] call CBA_fnc_addEventHandler;
 
 	// Client-routed interface mode changes
 	["ae3_desktop_setInterfaceMode", { _this call AE3_desktop_fnc_setInterfaceMode }] call CBA_fnc_addEventHandler;

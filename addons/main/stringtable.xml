@@ -822,14 +822,6 @@
                 <German>AE3 Spiele hinzugefügt</German>
                 <Chinesesimp>AE3 游戏已添加</Chinesesimp>
             </Key>
-            <Key ID="STR_AE3_Main_Zeus_ImageType">
-                <Original>Image type</Original>
-                <English>Image type</English>
-            </Key>
-            <Key ID="STR_AE3_Main_Zeus_ImageTypeAuto">
-                <Original>Auto-detect</Original>
-                <English>Auto-detect</English>
-            </Key>
             <Key ID="STR_AE3_Main_Zeus_IsCode">
                 <Original>Is code?</Original>
                 <English>Is code?</English>
@@ -838,10 +830,6 @@
                 <Russian>Это код?</Russian>
                 <German>Ist Code?</German>
                 <Chinesesimp>是否为代码?</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_Main_Zeus_IsPicture">
-                <Original>This is a Picture</Original>
-                <English>This is a Picture</English>
             </Key>
             <Key ID="STR_AE3_Main_Zeus_ItemDeleted">
                 <Original>Item '%1' deleted successfully.</Original>

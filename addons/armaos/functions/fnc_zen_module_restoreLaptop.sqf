@@ -22,6 +22,10 @@
 
 params ["_moduleNetId", "_syncedNetIds", ["_slots", []]];
 
+// Present the stored slots in a stable alphabetical order so the picker reads predictably as the
+// number of saves grows.
+_slots sort true;
+
 // With no stored snapshots there is nothing to restore. Tell the curator and drop the module instead
 // of presenting a fake slot that would restore an empty state.
 if (_slots isEqualTo []) exitWith

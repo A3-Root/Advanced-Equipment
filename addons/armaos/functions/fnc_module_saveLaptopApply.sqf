@@ -27,6 +27,9 @@ if (!isServer) exitWith { false };
 
 if (_module isEqualType "") then { _module = objectFromNetId _module; };
 _syncedUnits = _syncedUnits apply { if (_x isEqualType "") then { objectFromNetId _x } else { _x } };
+// Normalise the slot name so a stray leading/trailing space cannot split one logical slot into two
+// keys that Save writes and Restore fails to find.
+_slot = trim _slot;
 if (_slot isEqualTo "") then { _slot = "slot1"; };
 
 [_module, _syncedUnits, _slot] spawn {

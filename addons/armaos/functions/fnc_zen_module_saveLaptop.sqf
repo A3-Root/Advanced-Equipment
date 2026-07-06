@@ -26,6 +26,7 @@ private _onConfirm = {
     _values params ["_slot"];
     _args params ["_moduleNetId", "_syncedNetIds"];
 
+    _slot = trim _slot;
     if (_slot isEqualTo "") then { _slot = "slot1"; };
     [_moduleNetId, _syncedNetIds, _slot] remoteExec [QFUNC(module_saveLaptopApply), 2];
 };

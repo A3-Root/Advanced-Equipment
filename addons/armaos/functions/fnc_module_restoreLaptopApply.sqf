@@ -27,6 +27,8 @@ if (!isServer) exitWith { false };
 
 if (_module isEqualType "") then { _module = objectFromNetId _module; };
 _syncedUnits = _syncedUnits apply { if (_x isEqualType "") then { objectFromNetId _x } else { _x } };
+// Match the normalisation used when the slot was saved so the stored key resolves reliably.
+_slot = trim _slot;
 if (_slot isEqualTo "") then { _slot = "slot1"; };
 
 [_module, _syncedUnits, _slot] spawn {

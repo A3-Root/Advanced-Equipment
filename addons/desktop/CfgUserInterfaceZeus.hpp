@@ -320,6 +320,33 @@ class AE3_UserInterface_Zeus_Module_AddIntel
 			colorText[] = {0.7,0.7,0.7,1};
 		};
 
+		// Media-only: pasting raw base64 image data here stores it as an inline picture (rendered by
+		// the in-OS web viewer) instead of registering a real texture path. Repositioned and shown for
+		// the media type by AE3_desktop_fnc_intel_updateFields; hidden by default.
+		class RscText_1721: RscText
+		{
+			idc = 1721;
+			text = "";
+			x = 0.5 * GUI_GRID_W + GUI_GRID_X;
+			y = 12.4 * GUI_GRID_H + GUI_GRID_Y;
+			w = 39 * GUI_GRID_W;
+			h = 1 * GUI_GRID_H;
+			style = ST_MULTI;
+			lineSpacing = 1;
+			onLoad = "params ['_control']; _control ctrlShow false;";
+		};
+		class RscEdit_1420: RscEdit
+		{
+			idc = 1420;
+			x = 0.5 * GUI_GRID_W + GUI_GRID_X;
+			y = 13.4 * GUI_GRID_H + GUI_GRID_Y;
+			w = 39 * GUI_GRID_W;
+			h = 2.4 * GUI_GRID_H;
+			style = ST_MULTI;
+			lineSpacing = 1;
+			onLoad = "params ['_control']; _control ctrlShow false; _control ctrlEnable false;";
+		};
+
 		class RscButtonMenuOK_1600: RscButtonMenuOK
 		{
 			idc = 1; // IDC_OK: engine auto-closes the dialog with exit code 1 (do not change)
