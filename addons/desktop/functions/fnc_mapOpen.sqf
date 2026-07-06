@@ -25,6 +25,10 @@ if (!hasInterface) exitWith { displayNull };
 private _focus = _data getOrDefault ["pos", []];
 private _focusLabel = _data getOrDefault ["label", ""];
 private _focusMarker = _data getOrDefault ["marker", true];
+// A device map-link supplies a focus position; when it does, the map shows only that one device (plus
+// the "You" dot) instead of scattering every nearby AE3 device/router. The generic Map app has no focus
+// and still plots everything.
+private _hasFocus = _focus isEqualType [] && {count _focus >= 2};
 
 // Parent to the open browser display so the overlay sits on top of the CEF desktop.
 private _parent = findDisplay 17010;
@@ -54,23 +58,27 @@ _self setMarkerColorLocal "ColorRed";
 _self setMarkerTextLocal "You";
 _markers pushBack _self;
 
-{
-    private _obj = _x;
-    if (_obj isEqualTo player) then { continue };
-    private _cfg = configOf _obj;
-    private _isRouter = isClass (_cfg >> "AE3_Router");
-    private _isDevice = isClass (_cfg >> "AE3_Device");
-    if (_isRouter || _isDevice) then {
-        private _mk = createMarkerLocal [format ["AE3_mapDev_%1_%2", _stamp, _forEachIndex], getPosWorld _obj];
-        _mk setMarkerTypeLocal "mil_box";
-        _mk setMarkerColorLocal (["ColorGreen", "ColorBlue"] select _isRouter);
-        _mk setMarkerSizeLocal [0.7, 0.7];
-        _markers pushBack _mk;
-    };
-} forEach (nearestObjects [_center, [], 2000]);
+// Only plot the surrounding AE3 devices/routers for the generic Map app; a focused device map-link
+// wants just its own marker.
+if (!_hasFocus) then {
+    {
+        private _obj = _x;
+        if (_obj isEqualTo player) then { continue };
+        private _cfg = configOf _obj;
+        private _isRouter = isClass (_cfg >> "AE3_Router");
+        private _isDevice = isClass (_cfg >> "AE3_Device");
+        if (_isRouter || _isDevice) then {
+            private _mk = createMarkerLocal [format ["AE3_mapDev_%1_%2", _stamp, _forEachIndex], getPosWorld _obj];
+            _mk setMarkerTypeLocal "mil_box";
+            _mk setMarkerColorLocal (["ColorGreen", "ColorBlue"] select _isRouter);
+            _mk setMarkerSizeLocal [0.7, 0.7];
+            _markers pushBack _mk;
+        };
+    } forEach (nearestObjects [_center, [], 2000]);
+};
 
 // Highlighted marker for a focused device
-if (_focusMarker && {_focus isEqualType []} && {count _focus >= 2}) then {
+if (_focusMarker && _hasFocus) then {
     private _fm = createMarkerLocal [format ["AE3_mapFocus_%1", _stamp], _center];
     _fm setMarkerTypeLocal "mil_objective";
     _fm setMarkerColorLocal "ColorOrange";
