@@ -14,7 +14,7 @@ The mod is intended for players, Zeus operators, mission makers, and communities
 [/list]
 [b]Server Configuration:[/b]
 
-Append the following in the `[b]server.cfg[/b]` file for GUI/Desktop variant [code]"css", "js", "md", "b64"[/code]
+Append the following in the `[b]server.cfg[/b]` file for GUI/Desktop variant [code]"css", "js", "md", "b64", "svg"[/code]
 [img]https://i.ibb.co/dsR0BfXL/20260706-Document1-Word-998.png[/img]
 
 [hr]

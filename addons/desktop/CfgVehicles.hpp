@@ -341,9 +341,9 @@ class CfgVehicles
 			{
 				property = "AE3_ModuleWebsite_SiteRoot";
 				displayName = "Site root folder";
-				tooltip = "Mission-relative folder holding index.html, e.g. sites/portal";
+				tooltip = "Mission-relative folder holding index.html, e.g. sites/mysite";
 				typeName = "STRING";
-				defaultValue = """sites/portal""";
+				defaultValue = """sites/mysite""";
 			};
 			class ModuleDescription: ModuleDescription{};
 		};

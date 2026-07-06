@@ -23,11 +23,11 @@ Dependencies:
 Server configuration for GUI/Desktop content:
 
 ```cpp
-allowedLoadFileExtensions[] = {"hpp", "sqs", "sqf", "fsm", "cpp", "paa", "txt", "xml", "inc", "ext", "sqm", "ods", "fxy", "lip", "csv", "kb", "bik", "bikb", "html", "htm", "biedi", "css", "js", "md", "b64"};
-allowedHTMLLoadExtensions[] = {"htm","html","xml","txt", "css", "js", "md", "b64"};
+allowedLoadFileExtensions[] = {"hpp", "sqs", "sqf", "fsm", "cpp", "paa", "txt", "xml", "inc", "ext", "sqm", "ods", "fxy", "lip", "csv", "kb", "bik", "bikb", "html", "htm", "biedi", "css", "js", "md", "b64", "svg"};
+allowedHTMLLoadExtensions[] = {"htm","html","xml","txt", "css", "js", "md", "b64", "svg"};
 ```
 
-At minimum, dedicated servers that use the GUI/Desktop variant must allow loading `css`, `js`, and `md` files.
+At minimum, dedicated servers that use the GUI/Desktop variant must allow loading `css`, `js`, `md` file extensions with optional `svg`, and `b64` for loading images and other asthetics.
 
 ## Installation
 

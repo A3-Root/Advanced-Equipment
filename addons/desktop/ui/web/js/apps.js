@@ -835,22 +835,21 @@
       // Friendly names -> bundled pages. Addresses may also be explicit paths: an absolute VFS path
       // into any loaded mod (\z\othermod\...\page.html) or a mission-relative path
       // (sites/intel/report.md), both resolved through A3.loadFile's root search.
-      var sites = {
-        "wiki":    { type: "md",   path: "wiki/Home.md",            label: "wiki" }
-      };
+      var sites = {}; // reserved for friendly-name -> page shortcuts; populated by regSites at runtime
       var intelPages = []; // intel pages registered via Zeus/API
       function reloadIntelPages() {
         return A3.request("web_pages", {}).then(function (res) {
           intelPages = (res && res.pages) || [];
           // The page list arrives asynchronously. If the active tab is still on the homepage, re-resolve
-          // it now that the list is available so the seeded RootNet home replaces the interim sample that
-          // was shown while the list was still empty.
+          // it now that the list is available so the registered RootNet home replaces the static fallback
+          // that was shown while the list was still empty.
           if (active >= 0 && addrEl.value === "home") { nav("home", true); }
         }).catch(function () {});
       }
-      // The laptop's actual homepage is the seeded RootNet index (or any page registered as
-      // home.root / rootnet.root), NOT the bundled Portal sample. Fall back to the sample only when
-      // no home page is registered.
+      // The laptop's homepage is the server-seeded RootNet index (registered as rootnet.root / home.root).
+      // Until the page list loads - and if a mission ever strips the page - fall back to a static RootNet
+      // page with the same content so the browser home is never the old Portal sample and never empty.
+      var ROOTNET_HOME = "<t size='1.2'>Welcome to RootNet</t>\n\nThe internal network index. Pages published on this network appear on the home screen.\n\nType an address in the bar above, or pick a link below.\n\n[[home.root|Home]]";
       function homeTarget() {
         for (var hi = 0; hi < intelPages.length; hi++) {
           var u = (intelPages[hi].url || "").toLowerCase();
@@ -858,7 +857,7 @@
             return { type: "intel", title: intelPages[hi].title, content: intelPages[hi].content, label: "home" };
           }
         }
-        return { type: "html", path: "sites/portal/index.html", label: "home" };
+        return { type: "intel", title: "RootNet", content: ROOTNET_HOME, label: "home" };
       }
       reloadIntelPages();
       // Registered custom domains -> mission site-root folders (AE3_desktop_fnc_registerSite).
@@ -1047,7 +1046,6 @@
             return { type: "intel", title: intelPages[pi].title, content: intelPages[pi].content, label: intelPages[pi].url };
           }
         }
-        if (lower.indexOf("wiki") >= 0) return sites.wiki;
         return homeTarget();
       }
 
@@ -1111,7 +1109,7 @@
           A3.loadFile(t.path).then(function (mdText) {
             curDir = dirOf(t.path); // base for relative links, adopted only once the page actually loaded
             setDoc(wikiDoc(MD.render(mdText || "")));
-          }).catch(function (e) { console.error("[AE3] browser md load failed:", t.path, e); setDoc(wikiDoc("<h1>Page not found</h1><p><a href=\"Home.md\">Back to wiki home</a></p>")); });
+          }).catch(function (e) { console.error("[AE3] browser md load failed:", t.path, e); setDoc(wikiDoc("<h1>Page not found</h1><p><a href=\"home\">Back to home</a></p>")); });
         } else {
           A3.loadFile(t.path).then(function (htmlText) {
             curDir = dirOf(t.path);

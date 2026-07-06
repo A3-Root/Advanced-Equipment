@@ -42,7 +42,7 @@ private _onCancel = {
     "AE3: Add Website",
     [
         ["EDIT", "Domain (e.g. thisisme.com)", [""]],
-        ["EDIT", "Site root folder (e.g. sites/portal)", [""]]
+        ["EDIT", "Site root folder (e.g. sites/mysite)", [""]]
     ],
     _onConfirm,
     _onCancel,
