@@ -22,8 +22,13 @@
 
 params ["_moduleNetId", "_syncedNetIds", ["_slots", []]];
 
-// A combo needs at least one entry; fall back to the default slot when nothing has been saved yet.
-if (_slots isEqualTo []) then { _slots = ["slot1"]; };
+// With no stored snapshots there is nothing to restore. Tell the curator and drop the module instead
+// of presenting a fake slot that would restore an empty state.
+if (_slots isEqualTo []) exitWith
+{
+    [localize "STR_AE3_ArmaOS_Config_RestoreLaptopDisplayName", "No saved laptop snapshots - use Save Laptop first.", 5] call BIS_fnc_curatorHint;
+    (objectFromNetId _moduleNetId) remoteExec ["deleteVehicle", 2];
+};
 
 private _onConfirm = {
     params ["_values", "_args"];

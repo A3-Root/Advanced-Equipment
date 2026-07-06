@@ -329,6 +329,38 @@
                 <German>AE3 allgemeine Module</German>
                 <Chinesesimp>AE3 主模块</Chinesesimp>
             </Key>
+            <Key ID="STR_AE3_Main_SubcategoryBattery">
+                <Original>Battery</Original>
+                <English>Battery</English>
+            </Key>
+            <Key ID="STR_AE3_Main_SubcategoryFurniture">
+                <Original>Furniture</Original>
+                <English>Furniture</English>
+            </Key>
+            <Key ID="STR_AE3_Main_SubcategoryLaptop">
+                <Original>Laptop</Original>
+                <English>Laptop</English>
+            </Key>
+            <Key ID="STR_AE3_Main_SubcategoryLights">
+                <Original>Lights</Original>
+                <English>Lights</English>
+            </Key>
+            <Key ID="STR_AE3_Main_SubcategoryPower">
+                <Original>Power</Original>
+                <English>Power</English>
+            </Key>
+            <Key ID="STR_AE3_Main_SubcategoryRouters">
+                <Original>Routers</Original>
+                <English>Routers</English>
+            </Key>
+            <Key ID="STR_AE3_Main_SubcategorySolarPanel">
+                <Original>Solar Panel</Original>
+                <English>Solar Panel</English>
+            </Key>
+            <Key ID="STR_AE3_Main_SubcategoryStorage">
+                <Original>Storage</Original>
+                <English>Storage</English>
+            </Key>
         </Container>
         <Container name="Zeus">
             <Key ID="STR_AE3_Main_Zeus_AlreadyInThisDirectory">

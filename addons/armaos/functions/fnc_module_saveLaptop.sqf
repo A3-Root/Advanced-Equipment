@@ -27,17 +27,29 @@ params ["_module", "_syncedUnits", "_activated"];
 if (!_activated) exitWith { true };
 if (!isServer) exitWith {};
 
+// Resolve the target laptops. A curator dropping this module directly onto a laptop spawns it at the
+// laptop's position without a synchronization link, so the synced-object list is empty. Filter the
+// synced objects to AE3 laptops and, when none are linked, fall back to the nearest laptop around the
+// module so a placed-on-laptop module still finds its target.
+private _isLaptop = { isClass (configOf _this >> "AE3_USB_Interface") || {_this getVariable ["AE3_cap_hasTerminal", false]} };
+private _objs = _syncedUnits select { _x call _isLaptop };
+if (_objs isEqualTo []) then
+{
+    private _near = (nearestObjects [_module, [], 3]) select { _x call _isLaptop };
+    if (_near isNotEqualTo []) then { _objs = [_near select 0]; };
+};
+
 // When Zeus Enhanced is present, ask the placing curator for the save slot name through a ZEN dialog,
 // then let its confirm callback drive the same server-side snapshot via AE3_armaos_fnc_module_saveLaptopApply.
 if (EGVAR(main,hasZenDialog)) exitWith
 {
-    [netId _module, _syncedUnits apply { netId _x }] remoteExec [QFUNC(zen_module_saveLaptop), owner _module];
+    [netId _module, _objs apply { netId _x }] remoteExec [QFUNC(zen_module_saveLaptop), owner _module];
     true
 };
 
 private _slot = _module getVariable ["AE3_ModuleSaveSlot", ""];
 if (_slot isEqualTo "") then { _slot = "slot1"; };
 
-[_module, _syncedUnits, _slot] call FUNC(module_saveLaptopApply);
+[_module, _objs, _slot] call FUNC(module_saveLaptopApply);
 
 true

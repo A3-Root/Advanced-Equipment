@@ -29,6 +29,7 @@ The flashdrive component provides inventory/world flash drives, USB interface in
 - If a flash drive has no filesystem at mount time, an empty filesystem is created lazily on the authoritative server copy.
 - Mount failures are caught, logged, and forwarded to any open desktop volume UI through `ae3_desktop_volError`.
 - The terminal uses commands such as `lsusb`, `mount`, and `unmount`; the GUI uses volume commands through `fnc_volHandle`.
+- Arsenal shows a **single** "Flash Drive" item. The base `Item_FlashDisk_AE3` keeps `scopeArsenal = 2`; the 512 pre-generated `..._ID_n` state-tracking variants (`ITEM_ID_UNIQUEENTRY`, `addons/flashdrive/script_item_macro.hpp`) set `scopeArsenal = 0` + `ace_arsenal_uniqueBase = <base>` (ACRE's collapse pattern, `reference_files/acre2-master/.../script_radio_macro.hpp`), so they no longer flood the arsenal and a picked-up unique still maps to the base entry. `addons/armaos/script_item_macro.hpp` carries the same macro (laptop items) and is kept identical, though laptop items are `scope = 1` (hidden) anyway.
 
 ## decisions
 

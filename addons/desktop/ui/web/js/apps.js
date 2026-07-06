@@ -840,7 +840,13 @@
       };
       var intelPages = []; // intel pages registered via Zeus/API
       function reloadIntelPages() {
-        A3.request("web_pages", {}).then(function (res) { intelPages = (res && res.pages) || []; }).catch(function () {});
+        return A3.request("web_pages", {}).then(function (res) {
+          intelPages = (res && res.pages) || [];
+          // The page list arrives asynchronously. If the active tab is still on the homepage, re-resolve
+          // it now that the list is available so the seeded RootNet home replaces the interim sample that
+          // was shown while the list was still empty.
+          if (active >= 0 && addrEl.value === "home") { nav("home", true); }
+        }).catch(function () {});
       }
       // The laptop's actual homepage is the seeded RootNet index (or any page registered as
       // home.root / rootnet.root), NOT the bundled Portal sample. Fall back to the sample only when
@@ -941,7 +947,7 @@
           tab.appendChild(name);
           if (tabs.length > 1) {
             var x = document.createElement("span");
-            x.textContent = "×"; x.style.cssText = "opacity:.7";
+            x.innerHTML = "&#215;"; x.style.cssText = "opacity:.7";
             x.addEventListener("click", function (e) { e.stopPropagation(); closeTab(i); });
             tab.appendChild(x);
           }
@@ -1020,7 +1026,16 @@
         // page-relative href (e.g. portal's "../wiki/index.html") is joined to the current page's
         // directory; bridge.loadFile then collapses the ".." so A3API gets a clean path.
         if (/\.html?($|[#?])/i.test(addr) || hasPath) {
-          var p = (!isAbsolute(addr) && isPageRelative(addr)) ? (curDir + addr) : addr;
+          var p;
+          if (!isAbsolute(addr) && isPageRelative(addr)) {
+            p = curDir + addr;
+          } else if (!isAbsolute(addr) && curDir && /^sites\//i.test(curDir) && !/^sites\//i.test(addr)) {
+            // A slash-containing link inside a mission site (e.g. the gallery page's "assets/night.svg")
+            // is relative to the site folder, not the VFS root, so join it to the current site directory.
+            p = curDir + addr;
+          } else {
+            p = addr;
+          }
           return { type: "html", path: p, label: addr };
         }
 
@@ -1092,13 +1107,14 @@
           setDoc(wikiDoc("<h1>" + esc(t.title || t.label) + "</h1>" + MD.render(t.content || "")));
           return;
         }
-        curDir = dirOf(t.path); // base for any relative links on the page we are about to show
         if (t.type === "md") {
           A3.loadFile(t.path).then(function (mdText) {
+            curDir = dirOf(t.path); // base for relative links, adopted only once the page actually loaded
             setDoc(wikiDoc(MD.render(mdText || "")));
           }).catch(function (e) { console.error("[AE3] browser md load failed:", t.path, e); setDoc(wikiDoc("<h1>Page not found</h1><p><a href=\"Home.md\">Back to wiki home</a></p>")); });
         } else {
           A3.loadFile(t.path).then(function (htmlText) {
+            curDir = dirOf(t.path);
             setDoc(htmlText || "<p>Empty page.</p>");
           }).catch(function (e) { console.error("[AE3] browser html load failed:", t.path, e); setDoc("<p style='font-family:sans-serif;padding:20px'>Page unavailable.</p>"); });
         }
@@ -1106,18 +1122,27 @@
 
       function nav(addrRaw, fromHistory) {
         var t = resolve(addrRaw);
-        if (!fromHistory) { history = history.slice(0, hi + 1); history.push(t.label); hi = history.length - 1; }
+        if (!fromHistory) { history = history.slice(0, hi + 1); history.push(t); hi = history.length - 1; }
         window.AE3_browserNav = function (href) { nav(href); }; // active browser drives in-page links
         if (!fromHistory && t.label !== "home") { A3.send("web_log", { url: t.label }); }
         load(t);
         if (active >= 0) { tabs[active].label = addrEl.value; }
         renderTabs();
       }
+      // Back/forward restore a previously visited target as-is. Re-resolving a bare label (e.g. a mission
+      // site's "gallery.md") would depend on the current directory, which changes as you browse deeper,
+      // so the stored resolved target is loaded directly instead of being resolved again.
+      function loadHistoryEntry() {
+        window.AE3_browserNav = function (href) { nav(href); };
+        load(history[hi]);
+        if (active >= 0) { tabs[active].label = addrEl.value; }
+        renderTabs();
+      }
 
       body.querySelector(".go").addEventListener("click", function () { nav(addrEl.value); });
       body.querySelector(".home").addEventListener("click", function () { nav("home"); });
-      body.querySelector(".back").addEventListener("click", function () { if (hi > 0) { hi--; nav(history[hi], true); } });
-      body.querySelector(".fwd").addEventListener("click", function () { if (hi < history.length - 1) { hi++; nav(history[hi], true); } });
+      body.querySelector(".back").addEventListener("click", function () { if (hi > 0) { hi--; loadHistoryEntry(); } });
+      body.querySelector(".fwd").addEventListener("click", function () { if (hi < history.length - 1) { hi++; loadHistoryEntry(); } });
       addrEl.addEventListener("keydown", function (e) { if (e.key === "Enter") nav(addrEl.value); });
       body.querySelector(".hist").addEventListener("click", function () {
         A3.request("web_history", {}).then(function (res) {

@@ -10,6 +10,7 @@ class CfgVehicles
 		scopeArsenal = 2; // Virtual Arsenal visability; 2 will show it in the menu, 0 will hide it.
 
 		editorCategory = "AE3_Assets";
+		editorSubcategory = "AE3_Sub_Storage";
 
 		ae3_item = "Item_FlashDisk_AE3";
 

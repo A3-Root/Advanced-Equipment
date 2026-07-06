@@ -66,7 +66,7 @@
 		[["Dark", "Dark"], ["Light", "Light"], ["Olive", "Olive"]],
 		0
 	],
-	1,
+	0,
 	{ params ["_value"]; },
 	false
 ] call CBA_fnc_addSetting;
