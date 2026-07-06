@@ -75,6 +75,16 @@
           extra.globalActions.forEach(function (a) {
             var b = document.createElement("button"); b.className = "btn"; b.textContent = a.label; b.style.marginLeft = "6px";
             b.addEventListener("click", function () {
+              // Download flow (Root_CW Network Scanner export): let the user pick a save location
+              // instead of sending straight to a hardcoded server-side default.
+              if (a.flow === "download" && typeof window.AE3_pickFile === "function") {
+                window.AE3_pickFile("save", { title: "Save exported file", start: (window.AE3_HOME || "/root"), filename: a.label || "export" }).then(function (savePath) {
+                  if (!savePath) return;
+                  A3.send("dev_action", { app: desc.id, type: extra.type, id: "", action: a.id, path: "", savePath: savePath });
+                  setStatus(a.label + "...");
+                });
+                return;
+              }
               A3.send("dev_action", { app: desc.id, type: extra.type, id: "", action: a.id, path: "" });
               setStatus(a.label + "...");
             });
