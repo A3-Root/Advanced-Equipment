@@ -37,7 +37,8 @@ At minimum, allow:
 - `css`
 - `js`
 - `md`
-- `b64`
+- `b64` (Optional if you want to load different wallpapers or add images via the desktop browser)
+- `svg` (Optional if you want to load different wallpapers or add images via the desktop browser)
 
 If the GUI desktop does not load correctly on a dedicated server, check `allowedLoadFileExtensions[]` in `server.cfg`.
 
