@@ -321,6 +321,10 @@
                 <German>Dies ist eine ausführbare Datei - im Terminal ausführen</German>
                 <Chinesesimp>这是可执行文件 - 请在终端应用中运行</Chinesesimp>
             </Key>
+            <Key ID="STR_AE3_Desktop_Files_PictureWebOnly">
+                <Original>This base64 image can only be shown in the web desktop's Image Viewer.</Original>
+                <English>This base64 image can only be shown in the web desktop's Image Viewer.</English>
+            </Key>
             <Key ID="STR_AE3_Desktop_Intel_Browse">
                 <Original>Browse</Original>
                 <English>Browse</English>

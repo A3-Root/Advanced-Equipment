@@ -267,7 +267,14 @@
       var content = (res && res.content) || "";
       if (content.indexOf("AE3_MEDIA|") === 0) {
         var media = A3.parseMedia(content);
-        if (media && media.type === "image" && media.web) {
+        if (media && media.type === "image" && media.b64) {
+          // Inline base64 image: only the web viewer can render it (as a data URL). The native
+          // viewer cannot load a data URL, so there is no native fallback here.
+          Apps.launch("media", {
+            b64: true, mime: media.mime, data: media.data,
+            vfsPath: path, marker: content, title: path.split("/").pop()
+          });
+        } else if (media && media.type === "image" && media.web) {
           // Opt-in experimental web viewer: open the in-OS Image Viewer window (it falls back to the
           // native viewer if the CEF texture sampler cannot render the image).
           Apps.launch("media", {

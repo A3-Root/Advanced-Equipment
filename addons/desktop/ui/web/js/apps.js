@@ -469,6 +469,7 @@
       body.style.flexDirection = "column";
       body.innerHTML =
         '<div class="toolbar"><button class="btn mopen">Open </button>' +
+          '<button class="btn mdecode">Decode B64</button>' +
           '<span class="muted mname" style="margin-left:10px;align-self:center"></span></div>' +
         '<div class="mstage" style="flex:1;min-height:0;display:flex;align-items:center;justify-content:center">' +
           '<div class="muted mload" style="padding:16px">No image open. Use "Open image" to load one.</div>' +
@@ -477,12 +478,37 @@
       var img = body.querySelector(".mimg");
       var load = body.querySelector(".mload");
       var nameEl = body.querySelector(".mname");
+      // Guess the MIME type from a base64 payload's magic prefix (mirrors the SQF-side detection).
+      function mimeFromB64(b64) {
+        var h = String(b64 || "").slice(0, 8);
+        if (h.slice(0, 5) === "iVBOR") return "image/png";
+        if (h.slice(0, 4) === "/9j/") return "image/jpeg";
+        if (h.slice(0, 6) === "R0lGOD") return "image/gif";
+        if (h.slice(0, 5) === "UklGR") return "image/webp";
+        if (h.slice(0, 2) === "Qk") return "image/bmp";
+        return "image/png";
+      }
       // Render a registered media source. It can be absolute (\myMod\img.paa), addon-relative, or
       // mission-relative (media\images\pic.jpg); try each form so any valid path resolves.
       function showImage(srcPath, name, opts) {
         opts = opts || {};
         nameEl.textContent = name || "";
         win.el.querySelector(".title").textContent = "Image Viewer" + (name ? " - " + name : "");
+        // Inline base64 image: render straight as a data URL. No native fallback exists (native
+        // RscPicture cannot load a data URL), so a decode failure just reports the error here.
+        if (opts.b64) {
+          var mime = opts.mime || "image/png";
+          var data = String(opts.data || "").replace(/\s/g, "");
+          img.onload = function () {
+            if (!img.naturalWidth || !img.naturalHeight) { img.style.display = "none"; load.style.display = "block"; load.textContent = "Cannot decode this base64 image."; return; }
+            load.style.display = "none"; img.style.display = "block";
+          };
+          img.onerror = function () { img.style.display = "none"; load.style.display = "block"; load.textContent = "Cannot decode this base64 image."; };
+          img.style.display = "none"; load.style.display = "block"; load.textContent = "Rendering image...";
+          img.src = "data:" + mime + ";base64," + data;
+          return;
+        }
+
         if (!srcPath) { img.style.display = "none"; load.style.display = "block"; load.textContent = 'No image open. Use "Open image" to load one.'; return; }
 
         // Any web-side failure funnels here and hands off to the native RscPicture viewer (which
@@ -532,6 +558,10 @@
           A3.request("fs_read", { path: p }).then(function (res) {
             var content = (res && res.content) || "";
             var media = A3.parseMedia(content);
+            if (media && media.type === "image" && media.b64) {
+              showImage("", p.split("/").pop(), { b64: true, mime: media.mime, data: media.data, vfsPath: p, marker: content });
+              return;
+            }
             if (media && media.type === "image") {
               showImage(media.path, p.split("/").pop(), { scope: media.scope, web: media.web, vfsPath: p, marker: content });
               return;
@@ -541,9 +571,32 @@
         });
       });
 
-      showImage((args && args.path) || "",
-        (args && args.title) || ((args && args.path) ? String(args.path).split("\\").pop().split("/").pop() : ""),
-        { scope: (args && args.scope), web: (args && args.web), vfsPath: (args && args.vfsPath), marker: (args && args.marker) });
+      // Decode B64: paste raw base64 and render it live in this viewer, without touching the VFS.
+      body.querySelector(".mdecode").addEventListener("click", function () {
+        Modal.decodeB64().then(function (r) {
+          if (!r || !r.data) return;
+          var data = String(r.data).replace(/\s/g, "");
+          var m = data.indexOf(";base64,");
+          var mime = "";
+          if (m !== -1) {
+            var head = data.slice(0, m);
+            var c = head.indexOf("data:");
+            if (c !== -1) mime = head.slice(c + 5);
+            data = data.slice(m + 8);
+          }
+          if ((r.type || "auto") !== "auto") { mime = "image/" + r.type; }
+          if (!mime) { mime = mimeFromB64(data); }
+          showImage("", "Pasted image", { b64: true, mime: mime, data: data });
+        });
+      });
+
+      if (args && args.b64) {
+        showImage("", (args && args.title) || "image", { b64: true, mime: args.mime, data: args.data, vfsPath: (args && args.vfsPath), marker: (args && args.marker) });
+      } else {
+        showImage((args && args.path) || "",
+          (args && args.title) || ((args && args.path) ? String(args.path).split("\\").pop().split("/").pop() : ""),
+          { scope: (args && args.scope), web: (args && args.web), vfsPath: (args && args.vfsPath), marker: (args && args.marker) });
+      }
     }
   });
 

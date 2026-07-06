@@ -194,7 +194,36 @@ class CfgVehicles
 				// Because it is an expression, to return a String one must have a string within a string
 				defaultValue = """13""";
 			};
-			
+
+			// Inline base64 picture: store _content as a base64 image marker for the in-OS web viewer.
+			class AE3_Module_AddFile_IsPicture: Checkbox
+			{
+				property = "AE3_Module_AddFile_IsPicture";
+				displayName = "$STR_AE3_Filesystem_Config_IsPictureDisplayName";
+				tooltip = "$STR_AE3_Filesystem_Config_IsPictureTooltip";
+				typeName = "BOOL"; // Value type, can be "NUMBER", "STRING" or "BOOL"
+				defaultValue = 0;
+			};
+			class AE3_Module_AddFile_PictureType: Combo
+			{
+				property = "AE3_Module_AddFile_PictureType";
+				displayName = "$STR_AE3_Filesystem_Config_PictureTypeDisplayName";
+				tooltip = "$STR_AE3_Filesystem_Config_PictureTypeTooltip";
+				typeName = "STRING"; // Value type, can be "NUMBER", "STRING" or "BOOL"
+				defaultValue = """auto""";
+
+				// Listbox items:
+				class Values
+				{
+					class auto	{ name = "$STR_AE3_Filesystem_Config_PictureTypeAuto";	value = "auto"; };
+					class png	{ name = "PNG";		value = "png"; };
+					class jpeg	{ name = "JPEG";	value = "jpeg"; };
+					class gif	{ name = "GIF";		value = "gif"; };
+					class bmp	{ name = "BMP";		value = "bmp"; };
+					class webp	{ name = "WEBP";	value = "webp"; };
+				};
+			};
+
 			class ModuleDescription: ModuleDescription{}; // Module description should be shown last
 		};
 

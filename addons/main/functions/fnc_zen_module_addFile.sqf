@@ -22,10 +22,11 @@ params ["_module", "_computer"];
 
 private _onConfirm = {
     params ["_values", "_args"];
-    _values params ["_path", "_content", "_isCode", "_owner", "_oRead", "_oWrite", "_oExec", "_eRead", "_eWrite", "_eExec", "_enableEncryption", "_encryptionAlgorithm", "_encryptionKey"];
+    _values params ["_path", "_content", "_isCode", "_owner", "_oRead", "_oWrite", "_oExec", "_eRead", "_eWrite", "_eExec", "_enableEncryption", "_encryptionAlgorithm", "_encryptionKey", "_isPicture", "_pictureTypeIdx"];
     _args params ["_module", "_computer"];
 
     private _permissions = [[_oRead, _oWrite, _oExec], [_eRead, _eWrite, _eExec]];
+    private _pictureType = (["auto", "png", "jpeg", "gif", "bmp", "webp"] param [_pictureTypeIdx, "auto"]);
 
     if (_path isEqualTo "") exitWith {
         [objNull, localize "STR_AE3_Main_Zeus_PathMissing"] call BIS_fnc_showCuratorFeedbackMessage;
@@ -35,8 +36,12 @@ private _onConfirm = {
         [objNull, localize "STR_AE3_Main_Zeus_OwnerMissing"] call BIS_fnc_showCuratorFeedbackMessage;
         deleteVehicle _module;
     };
-    if (_enableEncryption && {_encryptionKey isEqualTo ""}) exitWith {
+    if (_enableEncryption && {!_isPicture} && {_encryptionKey isEqualTo ""}) exitWith {
         [objNull, localize "STR_AE3_Main_Zeus_KeyMissing"] call BIS_fnc_showCuratorFeedbackMessage;
+        deleteVehicle _module;
+    };
+    if (_isPicture && {(count _content) > AE3_MAX_PICTURE_B64}) exitWith {
+        [objNull, localize "STR_AE3_Main_Zeus_PictureTooLarge"] call BIS_fnc_showCuratorFeedbackMessage;
         deleteVehicle _module;
     };
     if ((_path find " ") != -1) exitWith {
@@ -48,7 +53,7 @@ private _onConfirm = {
         deleteVehicle _module;
     };
 
-    ["ae3_main_zeusDeviceOp", [netId _computer, "addFile", [_path, _content, _isCode, _owner, _permissions, _enableEncryption, _encryptionAlgorithm, _encryptionKey], clientOwner]] call CBA_fnc_serverEvent;
+    ["ae3_main_zeusDeviceOp", [netId _computer, "addFile", [_path, _content, _isCode, _owner, _permissions, _enableEncryption, _encryptionAlgorithm, _encryptionKey, false, _isPicture, _pictureType], clientOwner]] call CBA_fnc_serverEvent;
     deleteVehicle _module;
 };
 
@@ -72,7 +77,9 @@ private _onCancel = {
         ["CHECKBOX", "Everyone: Execute", false],
         ["CHECKBOX", "Enable encryption", false],
         ["COMBO", "Encryption algorithm", [["caesar", "columnar"], ["Caesar", "Columnar"], 0]],
-        ["EDIT", "Encryption key", [""]]
+        ["EDIT", "Encryption key", [""]],
+        ["CHECKBOX", "This is a Picture", false],
+        ["COMBO", "Image type", [[0, 1, 2, 3, 4, 5], ["Auto-detect", "PNG", "JPEG", "GIF", "BMP", "WEBP"], 0]]
     ],
     _onConfirm,
     _onCancel,

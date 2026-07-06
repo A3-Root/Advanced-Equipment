@@ -86,6 +86,37 @@
         }, resolve);
       });
     },
+    // Paste a raw base64 image and (optionally) force its type. Resolves { data, type } on OK, or
+    // null on cancel. Used by the Image Viewer's "Decode B64" button to render an image live without
+    // saving it to the virtual filesystem.
+    decodeB64: function () {
+      return new Promise(function (resolve) {
+        overlay(function (box, close) {
+          box.innerHTML =
+            '<div class="titlebar"><span class="title">Decode base64 image</span></div>' +
+            '<div class="pad">' +
+              '<textarea class="input b64ta" style="width:100%;height:160px;resize:vertical;font-family:monospace" placeholder="Paste raw base64 (a data: URL prefix is accepted too)"></textarea>' +
+              '<div style="display:flex;align-items:center;gap:8px;margin-top:10px">' +
+                '<span class="muted">Type</span>' +
+                '<select class="input b64type" style="width:auto">' +
+                  '<option value="auto">Auto-detect</option>' +
+                  '<option value="png">PNG</option>' +
+                  '<option value="jpeg">JPEG</option>' +
+                  '<option value="gif">GIF</option>' +
+                  '<option value="bmp">BMP</option>' +
+                  '<option value="webp">WEBP</option>' +
+                '</select>' +
+              '</div>' +
+              '<div style="margin-top:12px;text-align:right;display:flex;gap:8px;justify-content:flex-end">' +
+              '<button class="btn cancel">Cancel</button><button class="btn accent ok">Render</button></div></div>';
+          var ta = box.querySelector(".b64ta");
+          var sel = box.querySelector(".b64type");
+          ta.focus();
+          box.querySelector(".ok").addEventListener("click", function () { close({ data: ta.value, type: sel.value }); });
+          box.querySelector(".cancel").addEventListener("click", function () { close(null); });
+        }, resolve);
+      });
+    },
     alert: function (title, message) {
       return new Promise(function (resolve) {
         overlay(function (box, close) {

@@ -193,6 +193,14 @@
                 <German>Dateiinhalt wird beim Missionsstart verschlüsselt</German>
                 <Chinesesimp>文件内容将在任务开始时加密</Chinesesimp>
             </Key>
+            <Key ID="STR_AE3_Filesystem_Config_IsPictureDisplayName">
+                <Original>This is a Picture</Original>
+                <English>This is a Picture</English>
+            </Key>
+            <Key ID="STR_AE3_Filesystem_Config_IsPictureTooltip">
+                <Original>Treat the file content as raw base64 image data and render it in the Image Viewer. Overrides code/encryption. Max ~2 million characters.</Original>
+                <English>Treat the file content as raw base64 image data and render it in the Image Viewer. Overrides code/encryption. Max ~2 million characters.</English>
+            </Key>
             <Key ID="STR_AE3_Filesystem_Config_ModuleAddDirDescription">
                 <Original>This module adds a directory to a object which supports filesystems, like computers. Simply sync one or more of these modules to a supported object.</Original>
                 <English>This module adds a directory to a object which supports filesystems, like computers. Simply sync one or more of these modules to a supported object.</English>
@@ -246,6 +254,18 @@
                 <Russian>Путь и имя объекта файловой системы (файла), например /tmp/new/example.txt</Russian>
                 <German>Pfad und Name eines Dateisystemobjekts (Datei), zum Beispiel /tmp/new/example.txt</German>
                 <Chinesesimp>文件系统对象（文件）的路径和名称,例如</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Filesystem_Config_PictureTypeAuto">
+                <Original>Auto-detect</Original>
+                <English>Auto-detect</English>
+            </Key>
+            <Key ID="STR_AE3_Filesystem_Config_PictureTypeDisplayName">
+                <Original>Image type</Original>
+                <English>Image type</English>
+            </Key>
+            <Key ID="STR_AE3_Filesystem_Config_PictureTypeTooltip">
+                <Original>Image format of the base64 data. Auto-detect reads it from the data itself.</Original>
+                <English>Image format of the base64 data. Auto-detect reads it from the data itself.</English>
             </Key>
             <Key ID="STR_AE3_Filesystem_Config_ReadByOtherDisplayName">
                 <Original>Can be read by everyone</Original>

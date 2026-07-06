@@ -1656,6 +1656,65 @@ class AE3_UserInterface_Zeus_Module_AddFile
             //onEditChanged = "params ['_control', '_newText'];";
         };
 
+        // Inline base64 picture: store the content as an image marker the in-OS web viewer renders.
+        class RscText_1017: RscText
+        {
+            idc = 1017;
+
+            text = "$STR_AE3_Main_Zeus_IsPicture";
+            x = 21 * GUI_GRID_W + GUI_GRID_X;
+            y = 19.5 * GUI_GRID_H + GUI_GRID_Y;
+            w = 8 * GUI_GRID_W;
+            h = 1 * GUI_GRID_H;
+
+            style = ST_RIGHT;
+        };
+
+        class RscCheckBox_1309: RscCheckBox
+        {
+            idc = 1309;
+            x = 29.5 * GUI_GRID_W + GUI_GRID_X;
+            y = 19.5 * GUI_GRID_H + GUI_GRID_Y;
+            w = 1 * GUI_GRID_W;
+            h = 1 * GUI_GRID_H;
+            colorBackground[] = {-1,-1,-1,0.5};
+
+            checked = 0;
+        };
+
+        class RscText_1018: RscText
+        {
+            idc = 1018;
+
+            text = "$STR_AE3_Main_Zeus_ImageType";
+            x = 21 * GUI_GRID_W + GUI_GRID_X;
+            y = 21 * GUI_GRID_H + GUI_GRID_Y;
+            w = 8 * GUI_GRID_W;
+            h = 1 * GUI_GRID_H;
+
+            style = ST_RIGHT;
+        };
+
+        class RscCombo_1502: RscCombo
+        {
+            idc = 1502;
+            x = 29.5 * GUI_GRID_W + GUI_GRID_X;
+            y = 21 * GUI_GRID_H + GUI_GRID_Y;
+            w = 10 * GUI_GRID_W;
+            h = 1 * GUI_GRID_H;
+            colorBackground[] = {-1,-1,-1,0.5};
+
+            class Items
+            {
+                class ItemAuto { text = "$STR_AE3_Main_Zeus_ImageTypeAuto"; default = 1; };
+                class ItemPng  { text = "PNG"; };
+                class ItemJpeg { text = "JPEG"; };
+                class ItemGif  { text = "GIF"; };
+                class ItemBmp  { text = "BMP"; };
+                class ItemWebp { text = "WEBP"; };
+            };
+        };
+
          class RscButtonMenuOK_2600: RscButtonMenuOK
         {
             x = 37 * GUI_GRID_W + GUI_GRID_X;

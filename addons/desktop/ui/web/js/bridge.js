@@ -184,6 +184,10 @@
       if (s.indexOf("AE3_MEDIA|") !== 0) return null;
       var p = s.split("|");
       var type = (p[1] || "").toLowerCase();
+      // Inline base64 image: "AE3_MEDIA|image|b64|<mime>|<data>". Rendered as a data URL, no path.
+      if (type === "image" && (p[2] || "").toLowerCase() === "b64") {
+        return { type: type, b64: true, scope: "auto", web: true, mime: p[3] || "image/png", data: p.slice(4).join("|") };
+      }
       if (p.length >= 5) {
         var scope = (p[2] || "auto").toLowerCase();
         if (scope !== "mod" && scope !== "mission") scope = "auto";

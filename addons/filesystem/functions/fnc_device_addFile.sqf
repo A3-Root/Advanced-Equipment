@@ -15,6 +15,10 @@
  * 8: _encryptionKey <STRING> (Optional) - Encryption key
  * 9: _overwrite <BOOL> (Optional, default: false) - If true, an existing file whose name matches
  *    case-INSENSITIVELY in the target directory is removed first (so the new file replaces it)
+ * 10: _isPicture <BOOL> (Optional, default: false) - If true, _content is treated as a raw base64
+ *    image and stored as an inline picture marker for the in-OS web viewer (overrides code/encryption)
+ * 11: _pictureType <STRING> (Optional, default: "auto") - Image MIME hint: "auto" (detect from the
+ *    base64 magic bytes), or one of "png"/"jpeg"/"gif"/"bmp"/"webp" to force it
  *
  * Return Value:
  * None
@@ -27,7 +31,7 @@
  * Public: Yes
  */
 
-params ["_computer", "_path", "_content", "_isCode", "_owner", "_permissions", ["_isEncrypted", false], ["_encryptionAlgorithm", nil], ["_encryptionKey", nil], ["_overwrite", false]];
+params ["_computer", "_path", "_content", "_isCode", "_owner", "_permissions", ["_isEncrypted", false], ["_encryptionAlgorithm", nil], ["_encryptionKey", nil], ["_overwrite", false], ["_isPicture", false], ["_pictureType", "auto"]];
 
 if (!isServer) exitWith {};
 
@@ -41,6 +45,59 @@ private _filesystem = _computer getVariable ["AE3_filesystem", nil];
 // Validate filesystem exists
 if (isNil "_filesystem") exitWith {
 	ERROR_2("Computer %1 has no filesystem initialized. Cannot add file: %2",_computer,_path);
+};
+
+// Inline base64 picture: store the raw base64 as a media marker the in-OS web viewer renders as a
+// data URL. Used when the source image cannot be shipped as a real texture in the mission. This path
+// overrides code/encryption (both would corrupt the payload) and is size-capped, since the content
+// rides the network filesystem sync and the CEF ExecJS transport.
+if (_isPicture) then
+{
+	_isCode = false;
+	_isEncrypted = false;
+
+	if !(_content isEqualType "") exitWith { _content = ""; };
+
+	// Strip an optional "data:<mime>;base64," URL prefix and all whitespace/newlines so only the raw
+	// base64 alphabet remains (the marker splits on "|", which base64 never contains).
+	private _b64 = _content;
+	private _comma = _b64 find ";base64,";
+	if (_comma != -1) then { _b64 = _b64 select [_comma + 8]; };
+	_b64 = _b64 regexReplace ["\s+", ""];
+
+	if ((count _b64) > AE3_MAX_PICTURE_B64) exitWith
+	{
+		ERROR_2("Picture file %1 rejected: base64 length %2 exceeds the maximum",_path,count _b64);
+	};
+
+	// Resolve the MIME type: honor an explicit hint, otherwise detect from the base64 magic prefix.
+	private _type = toLower _pictureType;
+	private _mime = switch (_type) do
+	{
+		case "png":  { "image/png" };
+		case "jpeg": { "image/jpeg" };
+		case "jpg":  { "image/jpeg" };
+		case "gif":  { "image/gif" };
+		case "bmp":  { "image/bmp" };
+		case "webp": { "image/webp" };
+		default { "" };
+	};
+
+	if (_mime isEqualTo "") then
+	{
+		private _head = _b64 select [0, 8];
+		_mime = call
+		{
+			if ((_head select [0, 5]) isEqualTo "iVBOR") exitWith { "image/png" };
+			if ((_head select [0, 4]) isEqualTo "/9j/") exitWith { "image/jpeg" };
+			if ((_head select [0, 6]) isEqualTo "R0lGOD") exitWith { "image/gif" };
+			if ((_head select [0, 5]) isEqualTo "UklGR") exitWith { "image/webp" };
+			if ((_head select [0, 2]) isEqualTo "Qk") exitWith { "image/bmp" };
+			"image/png"
+		};
+	};
+
+	_content = AE3_MEDIA_B64_PREFIX + _mime + "|" + _b64;
 };
 
 if(_isCode) then

@@ -46,24 +46,27 @@ if (_activated) then
 	private _isEncrypted = _module getVariable "AE3_Module_AddFile_IsEncrypted";
 	private _encryptionAlgorithm = _module getVariable "AE3_Module_AddFile_EncryptionAlgorithm";
 	private _encryptionKey = _module getVariable "AE3_Module_AddFile_EncryptionKey";
+	private _isPicture = _module getVariable ["AE3_Module_AddFile_IsPicture", false];
+	private _pictureType = _module getVariable ["AE3_Module_AddFile_PictureType", "auto"];
 
 	// check for empty path, owner and encryption key
 	if (_path isEqualTo "") exitWith { deleteVehicle _module; false; };
 	if (_owner isEqualTo "") exitWith { deleteVehicle _module; false; };
-	if (_encryptionKey isEqualTo "") exitWith { deleteVehicle _module; false; };
+	// Picture files ignore encryption, so an empty key must not reject them.
+	if (!_isPicture && {_encryptionKey isEqualTo ""}) exitWith { deleteVehicle _module; false; };
 
 	// check for not allowed spaces in path and owner
 	if((_path find " ") != -1) exitWith { deleteVehicle _module; false; };
 	if((_owner find " ") != -1) exitWith { deleteVehicle _module; false; };
 
-	[_module, _syncedObjects, _path, _content, _isCode, _owner, _permissions, _isEncrypted, _encryptionAlgorithm, _encryptionKey] spawn 
+	[_module, _syncedObjects, _path, _content, _isCode, _owner, _permissions, _isEncrypted, _encryptionAlgorithm, _encryptionKey, _isPicture, _pictureType] spawn
 	{
-		params ["_module", "_syncedObjects", "_path", "_content", "_isCode", "_owner", "_permissions", "_isEncrypted", "_encryptionAlgorithm", "_encryptionKey"];
+		params ["_module", "_syncedObjects", "_path", "_content", "_isCode", "_owner", "_permissions", "_isEncrypted", "_encryptionAlgorithm", "_encryptionKey", "_isPicture", "_pictureType"];
 
 		waitUntil { !isNil "BIS_fnc_init" };
 
 		{
-			[_x, _path, _content, _isCode, _owner, _permissions, _isEncrypted, _encryptionAlgorithm, _encryptionKey] call AE3_filesystem_fnc_device_addFile;
+			[_x, _path, _content, _isCode, _owner, _permissions, _isEncrypted, _encryptionAlgorithm, _encryptionKey, false, _isPicture, _pictureType] call AE3_filesystem_fnc_device_addFile;
 		} forEach _syncedObjects;
 
 		deleteVehicle _module;

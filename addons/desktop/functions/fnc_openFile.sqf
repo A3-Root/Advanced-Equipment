@@ -46,6 +46,16 @@ if (_content isEqualType {}) exitWith
 if (!(_content isEqualType "")) exitWith {};
 
 /* ---------------------------------------- */
+/* Inline base64 picture - web viewer only */
+
+// Native RscPicture cannot render a data URL, so an inline base64 image can only be shown by the
+// in-OS web viewer. The desktop routes these there; if one reaches the native viewer, decline it.
+if ((_content select [0, count AE3_MEDIA_B64_PREFIX]) isEqualTo AE3_MEDIA_B64_PREFIX) exitWith
+{
+	hintSilent (localize "STR_AE3_Desktop_Files_PictureWebOnly");
+};
+
+/* ---------------------------------------- */
 /* Media marker files */
 
 if ((_content select [0, 10]) isEqualTo "AE3_MEDIA|") exitWith

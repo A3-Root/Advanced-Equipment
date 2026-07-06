@@ -73,6 +73,8 @@ if (_event isEqualTo "onUnload") exitWith
     private _enableEncryptionCtrl = _display displayCtrl 1308;
     private _encryptionAlgorithmCtrl = _display displayCtrl 1501;
     private _encryptionKeyCtrl = _display displayCtrl 1405;
+    private _isPictureCtrl = _display displayCtrl 1309;
+    private _pictureTypeCtrl = _display displayCtrl 1502;
     private _path = ctrlText _pathCtrl;
     private _content = ctrlText _contentCtrl;
     private _isCode = cbChecked _isCodeCtrl;
@@ -87,6 +89,8 @@ if (_event isEqualTo "onUnload") exitWith
     private _enableEncryption = cbChecked _enableEncryptionCtrl;
     private _encryptionAlgorithm = lbCurSel _encryptionAlgorithmCtrl; // 0 = Caesar; 1 = Columnar
     private _encryptionKey = ctrlText _encryptionKeyCtrl;
+    private _isPicture = cbChecked _isPictureCtrl;
+    private _pictureType = (["auto", "png", "jpeg", "gif", "bmp", "webp"] param [lbCurSel _pictureTypeCtrl, "auto"]);
 
     if (_encryptionAlgorithm == 0) then { _encryptionAlgorithm = "caesar"; } else { _encryptionAlgorithm = "columnar"; };
 
@@ -95,15 +99,20 @@ if (_event isEqualTo "onUnload") exitWith
     // but currently, this case will be catched by UI logic, defined directly in config
     if(_path isEqualTo "") exitWith { [objNull, localize "STR_AE3_Main_Zeus_PathMissing"] call BIS_fnc_showCuratorFeedbackMessage; };
     if(_owner isEqualTo "") exitWith { [objNull, localize "STR_AE3_Main_Zeus_OwnerMissing"] call BIS_fnc_showCuratorFeedbackMessage; };
-    if(_encryptionKey isEqualTo "") exitWith { [objNull, localize "STR_AE3_Main_Zeus_KeyMissing"] call BIS_fnc_showCuratorFeedbackMessage; };
+    // Picture files ignore encryption, so an empty key must not block them.
+    if(!_isPicture && {_encryptionKey isEqualTo ""}) exitWith { [objNull, localize "STR_AE3_Main_Zeus_KeyMissing"] call BIS_fnc_showCuratorFeedbackMessage; };
 
     // check for not allowed spaces in path and owner
     if((_path find " ") != -1) exitWith { [objNull, localize "STR_AE3_Main_Zeus_PathContainsSpaces"] call BIS_fnc_showCuratorFeedbackMessage; };
     if((_owner find " ") != -1) exitWith { [objNull, localize "STR_AE3_Main_Zeus_OwnerContainsSpaces"] call BIS_fnc_showCuratorFeedbackMessage; };
 
+    // Reject an oversized base64 payload up front so the curator gets feedback instead of a silent
+    // server-side drop. The server re-checks authoritatively in device_addFile.
+    if(_isPicture && {(count _content) > AE3_MAX_PICTURE_B64}) exitWith { [objNull, localize "STR_AE3_Main_Zeus_PictureTooLarge"] call BIS_fnc_showCuratorFeedbackMessage; };
+
     // Server ensures the filesystem is initialized (on demand) and reports back via
     // "ae3_main_zeusOpFeedback" - no client-side polling (fixes timeouts on dedicated)
-    ["ae3_main_zeusDeviceOp", [netId _computer, "addFile", [_path, _content, _isCode, _owner, _permissions, _enableEncryption, _encryptionAlgorithm, _encryptionKey], clientOwner]] call CBA_fnc_serverEvent;
+    ["ae3_main_zeusDeviceOp", [netId _computer, "addFile", [_path, _content, _isCode, _owner, _permissions, _enableEncryption, _encryptionAlgorithm, _encryptionKey, false, _isPicture, _pictureType], clientOwner]] call CBA_fnc_serverEvent;
 
     deleteVehicle _module;
 };
