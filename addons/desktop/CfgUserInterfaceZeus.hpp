@@ -590,3 +590,113 @@ class AE3_UserInterface_Zeus_Module_InterfaceAccess
 		};
 	};
 };
+
+// Zeus dialog for the AE3_AddWebsite module: domain + mission site-root folder, mapped by the
+// Browser to that folder's index.html. Built-in fallback used when Zeus Enhanced is not loaded;
+// see fnc_zeus_module_addWebsite for the logic (and the ZEN dialog it hands off to when present).
+class AE3_UserInterface_Zeus_Module_AddWebsite
+{
+	idd = 17120;
+	movingEnable = 1;
+	enableSimulation = 1;
+
+	onLoad = "params ['_display']; [_display, 0, 'onLoad'] call AE3_desktop_fnc_zeus_module_addWebsite;";
+	onUnload = "params ['_display', '_exitCode']; [_display, _exitCode, 'onUnload'] call AE3_desktop_fnc_zeus_module_addWebsite;";
+
+	class controlsBackground
+	{
+		class RscText_900: RscText
+		{
+			idc = 900;
+			x = 0 * GUI_GRID_W + GUI_GRID_X;
+			y = 2 * GUI_GRID_H + GUI_GRID_Y;
+			w = 40 * GUI_GRID_W;
+			h = 13 * GUI_GRID_H;
+			colorBackground[] = {0.2,0.2,0.2,1};
+		};
+	};
+
+	class controls
+	{
+		class RscText_1000: RscText
+		{
+			idc = 1000;
+			text = "$STR_AE3_Desktop_Config_AddWebsiteDisplayName";
+			x = 0 * GUI_GRID_W + GUI_GRID_X;
+			y = 0 * GUI_GRID_H + GUI_GRID_Y;
+			w = 40 * GUI_GRID_W;
+			h = 1.5 * GUI_GRID_H;
+			colorBackground[] = {-1,-1,-1,1};
+		};
+
+		class RscText_1400: RscText
+		{
+			idc = 1400;
+			text = "$STR_AE3_Desktop_Config_AddWebsiteDescription";
+			x = 0.5 * GUI_GRID_W + GUI_GRID_X;
+			y = 2.5 * GUI_GRID_H + GUI_GRID_Y;
+			w = 39 * GUI_GRID_W;
+			h = 4 * GUI_GRID_H;
+			colorBackground[] = {-1,-1,-1,0.5};
+			style = ST_MULTI;
+			lineSpacing = 1;
+		};
+
+		class RscText_1001: RscText
+		{
+			idc = 1001;
+			text = "$STR_AE3_Desktop_Config_WebsiteDomainDisplayName";
+			x = 0.5 * GUI_GRID_W + GUI_GRID_X;
+			y = 7 * GUI_GRID_H + GUI_GRID_Y;
+			w = 12 * GUI_GRID_W;
+			h = 1 * GUI_GRID_H;
+			style = ST_RIGHT;
+		};
+		class RscEdit_1401: RscEdit
+		{
+			idc = 1401;
+			x = 13 * GUI_GRID_W + GUI_GRID_X;
+			y = 7 * GUI_GRID_H + GUI_GRID_Y;
+			w = 26.5 * GUI_GRID_W;
+			h = 1 * GUI_GRID_H;
+			colorBackground[] = {-1,-1,-1,0.5};
+		};
+
+		class RscText_1002: RscText
+		{
+			idc = 1002;
+			text = "$STR_AE3_Desktop_Config_WebsiteSiteRootDisplayName";
+			x = 0.5 * GUI_GRID_W + GUI_GRID_X;
+			y = 8.5 * GUI_GRID_H + GUI_GRID_Y;
+			w = 12 * GUI_GRID_W;
+			h = 1 * GUI_GRID_H;
+			style = ST_RIGHT;
+		};
+		class RscEdit_1402: RscEdit
+		{
+			idc = 1402;
+			x = 13 * GUI_GRID_W + GUI_GRID_X;
+			y = 8.5 * GUI_GRID_H + GUI_GRID_Y;
+			w = 26.5 * GUI_GRID_W;
+			h = 1 * GUI_GRID_H;
+			colorBackground[] = {-1,-1,-1,0.5};
+		};
+
+		class RscButtonMenuOK_1600: RscButtonMenuOK
+		{
+			idc = 1; // IDC_OK: engine auto-closes the dialog with exit code 1 (do not change)
+			x = 30 * GUI_GRID_W + GUI_GRID_X;
+			y = 13 * GUI_GRID_H + GUI_GRID_Y;
+			w = 9.5 * GUI_GRID_W;
+			h = 1 * GUI_GRID_H;
+		};
+		class RscButtonMenuCancel_1601: RscButtonMenuCancel
+		{
+			idc = 2; // IDC_CANCEL: engine auto-closes the dialog with exit code 2 (do not change)
+			x = 0.5 * GUI_GRID_W + GUI_GRID_X;
+			y = 13 * GUI_GRID_H + GUI_GRID_Y;
+			w = 9.5 * GUI_GRID_W;
+			h = 1 * GUI_GRID_H;
+		};
+	};
+};

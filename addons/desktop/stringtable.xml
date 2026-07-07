@@ -260,6 +260,14 @@
                 <German>AE3: Intel hinzufügen</German>
                 <Chinesesimp>AE3: 添加情报</Chinesesimp>
             </Key>
+            <Key ID="STR_AE3_Desktop_Config_AddWebsiteDescription">
+                <Original>Maps a custom domain (e.g. thisisme.com) to a mission site-root folder so the Browser can visit the domain and load that folder's index.html.</Original>
+                <English>Maps a custom domain (e.g. thisisme.com) to a mission site-root folder so the Browser can visit the domain and load that folder's index.html.</English>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Config_AddWebsiteDisplayName">
+                <Original>AE3: Add Website</Original>
+                <English>AE3: Add Website</English>
+            </Key>
             <Key ID="STR_AE3_Desktop_Config_CrashDeviceDisplayName">
                 <Original>AE3: Crash Device</Original>
                 <English>AE3: Crash Device</English>
@@ -302,6 +310,14 @@
             <Key ID="STR_AE3_Desktop_Config_ModuleInterfaceAccessDescription">
                 <Original>Place ON a laptop to set its interface mode and grant each player (and, as a fallback, each side) access to CLI, GUI, Both or None. Optional - laptops already offer both interfaces with free switching by default.</Original>
                 <English>Place ON a laptop to set its interface mode and grant each player (and, as a fallback, each side) access to CLI, GUI, Both or None. Optional - laptops already offer both interfaces with free switching by default.</English>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Config_WebsiteDomainDisplayName">
+                <Original>Domain</Original>
+                <English>Domain</English>
+            </Key>
+            <Key ID="STR_AE3_Desktop_Config_WebsiteSiteRootDisplayName">
+                <Original>Site root folder</Original>
+                <English>Site root folder</English>
             </Key>
             <Key ID="STR_AE3_Desktop_Files_Disabled">
                 <Original>File browsing is disabled on this server</Original>

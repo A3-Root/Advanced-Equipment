@@ -9,6 +9,8 @@ PREP(module_saveLaptopApply);
 PREP(module_restoreLaptopApply);
 PREP(zen_module_saveLaptop);
 PREP(zen_module_restoreLaptop);
+PREP(zeus_module_saveLaptop);
+PREP(zeus_module_restoreLaptop);
 
 /* Calendar */
 PREP(computer_addCalendarEvent);

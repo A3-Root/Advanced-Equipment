@@ -70,6 +70,16 @@ Editor tooling is split between 3DEN attributes/connections, Eden modules, Zeus 
 - ZEN builders run on the curator's machine. For the dialog modules the module logic is curator-local (same as the legacy handlers, which `deleteVehicle` on the curator). For the no-dialog modules the effect stays server-authoritative and the module is deleted server-side via `remoteExec [..., 2]`. ZEN's `zen_dialog_fnc_create` no-ops on headless (`!hasInterface`), so `owner _module` must resolve to a real curator client.
 - ZEN row labels use literal English strings (not stringtable keys) to avoid stringtable churn; titles reuse the existing `STR_AE3_*` module display-name keys (ZEN auto-localizes localized keys and uppercases titles).
 
+## non-ZEN curator fallback dialogs
+
+Zeus modules that need curator input must work **without** Zeus Enhanced. Two patterns exist:
+
+- **curatorInfoType dialog** (e.g. `AE3_AddUser`): engine auto-opens a `CfgUserInterfaceZeus` dialog on the curator; `function` guards with `if (isCuratorPlaced) exitWith {false}`. Good when no server-side data is needed.
+- **server-push dialog** (Save/Restore Laptop, Add Website): the module `function` runs on the server, resolves data (laptops, save-slot list, which the curator does not have), then `remoteExec`s a curator-side opener to `owner _module`. The opener stashes netIds in `uiNamespace` and `createDialog`s a `CfgUserInterfaceZeus` dialog whose `onUnload` sends the choice back via `remoteExec [..., 2]`. Do **not** also set `curatorInfoType` on these, or two dialogs open.
+- Dispatch picks ZEN vs built-in with `[QFUNC(zeus_*), QFUNC(zen_*)] select (EGVAR(main,hasZenDialog))`. The `*Apply` workers accept objects **or** netIds so both paths share them.
+- `AE3_AddWebsite` uses curatorInfoType (`AE3_UserInterface_Zeus_Module_AddWebsite`, in `desktop/CfgUserInterfaceZeus.hpp`) since it needs no server data; its `fnc_zeus_module_addWebsite` hands off to the ZEN dialog in `onLoad` when present.
+- `AE3_SaveLaptop`/`AE3_RestoreLaptop` use server-push (`fnc_zeus_module_saveLaptop`/`restoreLaptop`, dialogs in `armaos/CfgUserInterfaceZeus.hpp`). Restore's combo is filled by the opener from the server-provided slot list.
+
 ## re-verify when
 
 - Any module class, Zeus dialog, Cfg3DEN connection, object attribute, or Zeus filesystem browser function changes.

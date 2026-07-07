@@ -62,6 +62,7 @@ The desktop component also acts as the mission-intel and communications layer: E
 
 ## re-verify when
 
+- Mail address registry `AE3_mail_addresses` entries are `[ownerLaptopNetId, displayAddress]`; element 0 is the owning laptop used by `fnc_mailRoute` for delivery/authorization. Every writer must store the target laptop netId, never `""` — `fnc_addEmail`'s "create sender/recipient address" binds to the email's `_target` laptop (skips when `_target` is `"all"`); `fnc_addrRegister`/`fnc_provisionIdentity` are the other canonical writers.
 - A new intel type, desktop app notification, mail/chat route, media marker format, address/handle registry, or AddIntel field changes.
 - `fnc_intel_dispatch.sqf`, `fnc_module_addIntel.sqf`, `fnc_zeus_module_addIntel.sqf`, `fnc_registerMedia.sqf`, `fnc_mailRoute.sqf`, or `fnc_msgRoute.sqf` changes.
 

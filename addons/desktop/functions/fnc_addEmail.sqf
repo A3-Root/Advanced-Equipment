@@ -99,18 +99,26 @@ private _deliver = {
 	};
 } forEach _computers;
 
-// Auto-register lore addresses in the mission-wide address book when Zeus plants the email.
+// Auto-register lore addresses in the mission-wide address book when Zeus plants the email. Each
+// address is owned by the laptop this email targets, so the router (fnc_mailRoute) delivers and
+// authorises it against that laptop. A broadcast to "all" has no single owner, so nothing is claimed.
+private _targetNetId = switch (true) do
+{
+	case (_target isEqualType objNull): { netId _target };
+	case (_target isEqualTo "all"):     { "" };
+	default                             { _target };
+};
 private _toRegister = [];
 if (_createFrom && {_from isNotEqualTo ""} && {(_from find "@") >= 0}) then { _toRegister pushBack _from; };
 if (_createTo && {_to isNotEqualTo ""} && {(_to find "@") >= 0}) then { _toRegister pushBack _to; };
-if (_toRegister isNotEqualTo []) then
+if (_targetNetId isNotEqualTo "" && {_toRegister isNotEqualTo []}) then
 {
 	private _registry = missionNamespace getVariable ["AE3_mail_addresses", createHashMap];
 	{
 		private _key = toLower _x;
 		if ((_registry getOrDefault [_key, []]) isEqualTo []) then
 		{
-			_registry set [_key, ["", _x]];
+			_registry set [_key, [_targetNetId, _x]];
 		};
 	} forEach _toRegister;
 	missionNamespace setVariable ["AE3_mail_addresses", _registry, true];

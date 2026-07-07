@@ -77,6 +77,7 @@ PREP(registerWebpage);
 PREP(registerSite);
 PREP(module_addWebsite);
 PREP(zen_module_addWebsite);
+PREP(zeus_module_addWebsite);
 PREP(addEmail);
 PREP(addHistoryEntry);
 PREP(addCalendarEvent);

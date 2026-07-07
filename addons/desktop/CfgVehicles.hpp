@@ -327,6 +327,10 @@ class CfgVehicles
 		isDisposable = 1;
 		is3DEN = 0;
 
+		// Menu shown when a curator places the module: a built-in domain/site-root prompt that works
+		// without Zeus Enhanced (and hands off to the ZEN dialog when it is loaded).
+		curatorInfoType = "AE3_UserInterface_Zeus_Module_AddWebsite";
+
 		class Attributes: AttributesBase
 		{
 			class AE3_ModuleWebsite_Domain: Edit

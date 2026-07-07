@@ -21,8 +21,20 @@
 		// router on at mission start would refresh every client and wipe its static address.
 		private _leases = _x getVariable ["AE3_network_staticIpByRouter", createHashMap];
 		private _staticStr = _leases getOrDefault [netId _entity, ""];
-		if (_staticStr isEqualTo "") then { _staticStr = _x getVariable ["AE3_network_staticIpDefault", ""]; };
 		private _static = [_staticStr] call AE3_network_fnc_str2ip;
+		// The 3DEN default static is only reused when it sits inside this router's subnet, so it never
+		// lingers on an unrelated gateway - an out-of-subnet default drops to a fresh DHCP lease.
+		if (_static isEqualTo []) then
+		{
+			private _defStr = _x getVariable ["AE3_network_staticIpDefault", ""];
+			private _def = [_defStr] call AE3_network_fnc_str2ip;
+			private _gateway = _entity getVariable ["AE3_network_address", []];
+			if ([_def, _gateway] call AE3_network_fnc_ipInSubnet) then
+			{
+				_staticStr = _defStr;
+				_static = _def;
+			};
+		};
 		if (_static isNotEqualTo [] && {!([_x, _static] call AE3_network_fnc_ipInUse)}) then
 		{
 			_x setVariable ["AE3_network_staticIp", _staticStr, true];

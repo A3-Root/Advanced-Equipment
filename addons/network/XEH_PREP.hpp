@@ -30,6 +30,7 @@ PREP(setStaticIp);
 /* Generic */
 PREP(ip2str);
 PREP(str2ip);
+PREP(ipInSubnet);
 
 /* Connections */
 PREP(createNetworkConnection);

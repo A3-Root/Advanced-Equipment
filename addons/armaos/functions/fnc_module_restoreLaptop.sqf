@@ -38,15 +38,19 @@ if (_objs isEqualTo []) then
     if (_near isNotEqualTo []) then { _objs = [_near select 0]; };
 };
 
-// When Zeus Enhanced is present, let the placing curator pick the slot from a ZEN dialog listing the
-// stored snapshots, then drive the same server-side restore via AE3_armaos_fnc_module_restoreLaptopApply.
-if (EGVAR(main,hasZenDialog)) exitWith
+// Curator placement lets the placing curator pick a stored slot from a dialog on their machine - the
+// ZEN Dynamic Dialog when Zeus Enhanced is loaded, otherwise the built-in picker. The server gathers
+// the slot list here (the snapshot buffer is server-side) and passes it to the dialog, which drives
+// the restore via AE3_armaos_fnc_module_restoreLaptopApply.
+if (_module getVariable ["BIS_fnc_moduleInit_isCuratorPlaced", false]) exitWith
 {
     private _slots = keys (missionNamespace getVariable ["AE3_LAPTOP_SAVES", createHashMap]);
-    [netId _module, _objs apply { netId _x }, _slots] remoteExec [QFUNC(zen_module_restoreLaptop), owner _module];
+    private _dialogFnc = [QFUNC(zeus_module_restoreLaptop), QFUNC(zen_module_restoreLaptop)] select (EGVAR(main,hasZenDialog));
+    [netId _module, _objs apply { netId _x }, _slots] remoteExec [_dialogFnc, owner _module];
     true
 };
 
+// Eden / trigger placement reads the slot from the module attribute.
 private _slot = _module getVariable ["AE3_ModuleSaveSlot", ""];
 if (_slot isEqualTo "") then { _slot = "slot1"; };
 

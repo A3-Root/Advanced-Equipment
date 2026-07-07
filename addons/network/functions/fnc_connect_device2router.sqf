@@ -30,11 +30,23 @@ if (isNull _parent) then
 else
 {
 	// Static leases are per router. Joining a different router falls back to DHCP unless this laptop
-	// has a saved static address for that router, or a static IP configured in the 3DEN attribute.
+	// has a saved static address for that router. The 3DEN default static is only reused when it sits
+	// inside the new gateway's subnet, so switching networks never carries an out-of-subnet address
+	// across - an unrelated gateway hands out a fresh DHCP lease instead.
 	private _leases = _device getVariable ["AE3_network_staticIpByRouter", createHashMap];
 	private _staticStr = _leases getOrDefault [netId _parent, ""];
-	if (_staticStr isEqualTo "") then { _staticStr = _device getVariable ["AE3_network_staticIpDefault", ""]; };
 	private _static = [_staticStr] call AE3_network_fnc_str2ip;
+	if (_static isEqualTo []) then
+	{
+		private _defStr = _device getVariable ["AE3_network_staticIpDefault", ""];
+		private _def = [_defStr] call AE3_network_fnc_str2ip;
+		private _gateway = _parent getVariable ["AE3_network_address", []];
+		if ([_def, _gateway] call AE3_network_fnc_ipInSubnet) then
+		{
+			_staticStr = _defStr;
+			_static = _def;
+		};
+	};
 	if (_static isNotEqualTo [] && {!([_device, _static] call AE3_network_fnc_ipInUse)}) then
 	{
 		_device setVariable ["AE3_network_staticIp", _staticStr, true];

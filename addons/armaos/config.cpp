@@ -40,3 +40,6 @@ class CfgPatches
 
 // Advanced Equipment Dialog Definitions
 #include "dialog.hpp"
+
+// Built-in Zeus module dialogs (used when Zeus Enhanced is not loaded)
+#include "CfgUserInterfaceZeus.hpp"

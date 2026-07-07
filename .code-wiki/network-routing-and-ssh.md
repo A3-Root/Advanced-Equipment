@@ -48,6 +48,10 @@ The network component manages routers, laptop/router network connections, DHCP/s
 - Desktop SSH payloads avoid HashMaps across network events; operation arguments are serialized as arrays/plain strings.
 - A preset static IP/gateway must be a four-number array to be honored by router init.
 
+## static IP is subnet-gated per gateway
+
+When a device joins a router (`fnc_connect_device2router`) or a router refreshes leases (`fnc_dhcp_refresh`), the static address is resolved in order: per-router lease (`AE3_network_staticIpByRouter`, keyed by `netId` of the router — trusted as-is) → the 3DEN default `AE3_network_staticIpDefault`. The default is only honored when it sits in the **new gateway's /24** (`AE3_network_fnc_ipInSubnet`, compares first 3 octets against `_parent`/`_entity`'s own `AE3_network_address`); otherwise the device drops to a DHCP lease. This stops a static from a previous network carrying across when switching WiFi. `fnc_ipInUse` only checks duplicates, not subnet, so the subnet gate is what prevents out-of-subnet statics.
+
 ## re-verify when
 
 - Router initialization, DHCP, static IP, route resolution, ping, SSH, or Zeus/Eden network connection behavior changes.
