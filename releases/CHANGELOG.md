@@ -1,19 +1,5 @@
 # Changelog
 
-## Update 2 (v2.0.0.0)
-
-### Added
-- GUI / Desktop version
-- Added modern apps
-- Added Ping, SSH, Email, Messenger, Map, Network, and Routers
-- Added Browser, Webpages, and Media file compatibility
-
-### Removed
-- N/A
-
-### Changed
-- More optimization and reworking to use CBA macros and server target events
-
 ## Update 1 (v1.0.0.1)
 
 ### Added
