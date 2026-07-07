@@ -19,48 +19,53 @@
 
 params ["_display", "_exitCode"];
 
-private _computer = _display getVariable "AE3_computer";
+private _computer = _display getVariable ["AE3_computer", objNull];
+if (isNull _computer) exitWith {};
 
-// End an active SSH session (releases the remote mutex and pushes the remote filesystem)
-[_computer] call AE3_armaos_fnc_shell_sshEnd;
+// When the terminal is hosted inside the (native) desktop, an AE3_desktop_session is active and that
+// desktop owns the laptop lock and manages the screen (lock texture while open, idle image on its own
+// unload). In that case this handler must NOT release the mutex or reset the screen, or it would drop
+// the lock and clobber the desktop while the desktop is still open.
+private _inDesktop = !isNull ((uiNamespace getVariable ["AE3_desktop_session", createHashMap]) getOrDefault ["display", displayNull]);
 
-_computer setVariable ["AE3_computer_mutex", objNull, true];
-
-private _handleUpdateBatteryStatus = _display getVariable "AE3_handleUpdateBatteryStatus";
-[_handleUpdateBatteryStatus] call CBA_fnc_removePerFrameHandler;
-
+// Remove the per-frame handlers if they were installed. When the terminal is closed before startup
+// finishes wiring them up they are absent, so guard against the missing handle.
+private _handleUpdateBatteryStatus = _display getVariable ["AE3_handleUpdateBatteryStatus", -1];
+if (_handleUpdateBatteryStatus isNotEqualTo -1) then { [_handleUpdateBatteryStatus] call CBA_fnc_removePerFrameHandler; };
 
 /* ------------- UI on Texture ------------ */
 
-private _handleUpdateUiOnTexture = _display getVariable "AE3_handleUpdateUiOnTexture";
-[_handleUpdateUiOnTexture] call CBA_fnc_removePerFrameHandler;
+private _handleUpdateUiOnTexture = _display getVariable ["AE3_handleUpdateUiOnTexture", -1];
+if (_handleUpdateUiOnTexture isNotEqualTo -1) then { [_handleUpdateUiOnTexture] call CBA_fnc_removePerFrameHandler; };
 
 /* ---------------------------------------- */
 
-// Sync only essential terminal data to avoid serialization warnings
-private _terminal = _computer getVariable "AE3_terminal";
+// The session-local terminal state only exists once startup populated it. When the terminal was closed
+// before it was set up there is nothing to tear down or persist, so skip the SSH end and state sync.
+private _terminal = _computer getVariable ["AE3_terminal", nil];
+if (!isNil "_terminal") then {
+	// End an active SSH session (releases the remote mutex and pushes the remote filesystem)
+	[_computer] call AE3_armaos_fnc_shell_sshEnd;
 
-// Extract only essential data for network sync (avoid HashMap serialization)
-private _terminalSyncData = [
-	_terminal get "AE3_terminalBuffer",
-	_terminal get "AE3_terminalApplication",
-	_terminal get "AE3_terminalPrompt",
-	_terminal get "AE3_terminalScrollPosition",
-	_terminal get "AE3_terminalLoginUser",
-	_terminal get "AE3_terminalCommandHistory"
-];
-_computer setVariable ["AE3_terminal_sync", _terminalSyncData, [clientOwner, 2]];
+	// Extract only essential data for network sync (avoid HashMap serialization)
+	private _terminalSyncData = [
+		_terminal get "AE3_terminalBuffer",
+		_terminal get "AE3_terminalApplication",
+		_terminal get "AE3_terminalPrompt",
+		_terminal get "AE3_terminalScrollPosition",
+		_terminal get "AE3_terminalLoginUser",
+		_terminal get "AE3_terminalCommandHistory"
+	];
+	_computer setVariable ["AE3_terminal_sync", _terminalSyncData, [clientOwner, 2]];
 
-private _filepointer = _computer getVariable "AE3_filepointer";
-_computer setVariable ["AE3_filepointer", _filepointer, [clientOwner, 2]];
-
-// CLI home screen: restore the classic terminal idle texture when the STANDALONE terminal closes.
-// When the terminal runs inside the (native) desktop, an AE3_desktop_session is active and that
-// desktop manages the screen (lock texture while open, idle image on its own unload) - don't touch
-// it here, or we'd clobber the desktop lock screen.
-private _inDesktop = !isNull ((uiNamespace getVariable ["AE3_desktop_session", createHashMap]) getOrDefault ["display", displayNull]);
-if (!_inDesktop) then {
-    _computer setObjectTextureGlobal [1, "\z\ae3\addons\armaos\textures\Laptop_4_to_3_On.paa"];
+	private _filepointer = _computer getVariable "AE3_filepointer";
+	_computer setVariable ["AE3_filepointer", _filepointer, [clientOwner, 2]];
 };
 
-[_computer, "inUse", false] remoteExecCall ["AE3_interaction_fnc_manageAce3Interactions", 2];
+// Standalone terminal: restore the idle screen and release the laptop. Inside the desktop the desktop
+// keeps ownership and cleans up on its own unload.
+if (!_inDesktop) then {
+	_computer setObjectTextureGlobal [1, "\z\ae3\addons\armaos\textures\Laptop_4_to_3_On.paa"];
+	_computer setVariable ["AE3_computer_mutex", objNull, true];
+	[_computer, "inUse", false] remoteExecCall ["AE3_interaction_fnc_manageAce3Interactions", 2];
+};

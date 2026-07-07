@@ -576,24 +576,19 @@ if (!isDedicated) then {
 				_laptop setVariable ["AE3_computer_mutex", player, true];
 
 				// The real laptop stays hidden while it is used straight from the inventory, so spawn a
-				// non-interactable stand-in model in front of the user as a visual anchor for the session.
-				// It is a client-local simple object (no simulation, no ACE actions) attached to the player
-				// and removed as soon as the session ends, the player dies, or the laptop is gone.
-				private _propModel = (getModelInfo _laptop) select 1;
-				if (_propModel isNotEqualTo "") then {
-					private _prop = createSimpleObject [_propModel, [0, 0, 0], true];
-					_prop attachTo [player, [0, 0.5, 0.5]];
-					[_prop, _laptop] spawn {
-						params ["_prop", "_laptop"];
-						waitUntil {
-							sleep 0.5;
-							isNull _laptop
-							|| {!alive player}
-							|| {(_laptop getVariable ["AE3_computer_mutex", objNull]) isNotEqualTo player}
-						};
-						detach _prop;
-						deleteVehicle _prop;
+				// networked stand-in model (the laptop's non-AE3 base class - same model, no simulation
+				// or interactions) attached to the operator, so nearby and late-joining players see it
+				// too. It is removed as soon as the session ends, the player dies, or the laptop is gone.
+				[_laptop, player] remoteExec ["AE3_armaos_fnc_inventoryProp_spawn", 2];
+				[_laptop] spawn {
+					params ["_laptop"];
+					waitUntil {
+						sleep 0.5;
+						isNull _laptop
+						|| {!alive player}
+						|| {(_laptop getVariable ["AE3_computer_mutex", objNull]) isNotEqualTo player}
 					};
+					[_laptop] remoteExec ["AE3_armaos_fnc_inventoryProp_remove", 2];
 				};
 
 				if (_mode isEqualTo "cli") then {

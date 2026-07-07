@@ -166,13 +166,16 @@
       // A pre-encoded source skips the sampler entirely.
       if (/\.b64$/i.test(src)) return fromB64();
       // Mission-folder raster images (jpg/png/gif) ship as a base64 sidecar; the engine texture
-      // sampler cannot load them and logs an "Unknown sampler texture type" warning the moment it
-      // tries. Read the sidecar first for those so the sampler is never invoked, falling back to it
-      // only if no sidecar exists. Mod/addon assets (absolute \z\... paths, .paa, or scope "mod")
-      // sample cleanly, so those try the texture first and use the sidecar as fallback.
+      // sampler cannot load them on many builds and logs an "Unknown sampler texture type" warning the
+      // moment it tries. Read the sidecar ONLY for those - do NOT fall back to the sampler, which would
+      // spam that warning for a raw mission image that has no sidecar. Callers that have a native
+      // RscPicture fallback (the image viewer) handle such images through the engine instead; a raw
+      // mission raster simply cannot be a CEF wallpaper without a sidecar.
       var isAbsolute = src.charAt(0) === "\\";
       var isRaster = /\.(jpe?g|png|gif)$/i.test(src);
-      if (!isAbsolute && isRaster && scope !== "mod") return fromB64().catch(fromTexture);
+      if (!isAbsolute && isRaster && scope !== "mod") return fromB64();
+      // Mod/addon assets (absolute \z\... paths, .paa, or scope "mod") sample cleanly, so try the
+      // texture first and use a sidecar as fallback.
       return fromTexture().catch(fromB64);
     },
 

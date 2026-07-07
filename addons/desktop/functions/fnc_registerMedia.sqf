@@ -35,6 +35,24 @@ params ["_sourcePath", "_type", "_fsDest", ["_targets", "all"], ["_scope", "auto
 // keeps the native viewer, the web viewer and any persisted window state in agreement.
 _sourcePath = (trim _sourcePath) splitString "/" joinString "\";
 
+_type = toLower _type;
+
+// Correct the media type from the file extension when it clearly disagrees with the caller's choice.
+// The module's type combo defaults to "image"; a curator who adds an audio/video file without changing
+// it would otherwise store an audio clip as an image, which the native image viewer then hands to the
+// engine texture loader - an unsupported format there fails hard. Deriving the type from a recognised
+// extension keeps such files pointed at the correct player. Unknown extensions keep the caller's type.
+private _parts = _sourcePath splitString ".";
+private _ext = toLower (_parts param [(count _parts) - 1, ""]);
+private _extType = switch (true) do
+{
+	case (_ext in ["ogg", "mp3", "wav", "flac", "wss", "og8"]): { "audio" };
+	case (_ext in ["ogv", "mp4", "webm", "avi", "wmv", "mov"]): { "video" };
+	case (_ext in ["paa", "jpg", "jpeg", "png", "gif", "bmp", "tga"]): { "image" };
+	default { "" };
+};
+if (_extType isNotEqualTo "" && {_extType isNotEqualTo _type}) then { _type = _extType; };
+
 // Normalise the origin hint and the experimental web-viewer flag so the marker is always well formed.
 _scope = toLower _scope;
 if !(_scope in ["mod", "mission"]) then { _scope = "auto"; };

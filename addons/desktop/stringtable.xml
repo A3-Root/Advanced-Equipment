@@ -337,6 +337,10 @@
                 <German>Dies ist eine ausführbare Datei - im Terminal ausführen</German>
                 <Chinesesimp>这是可执行文件 - 请在终端应用中运行</Chinesesimp>
             </Key>
+            <Key ID="STR_AE3_Desktop_Files_NotAnImage">
+                <Original>This file is not an image and cannot be shown in the image viewer.</Original>
+                <English>This file is not an image and cannot be shown in the image viewer.</English>
+            </Key>
             <Key ID="STR_AE3_Desktop_Files_PictureWebOnly">
                 <Original>This base64 image can only be shown in the web desktop's Image Viewer.</Original>
                 <English>This base64 image can only be shown in the web desktop's Image Viewer.</English>

@@ -35,11 +35,23 @@ private _languageButton = _consoleDialog displayCtrl 1310;
 private _designButton = _consoleDialog displayCtrl 1320;
 private _titleControl = _consoleDialog displayCtrl 1000;
 
+// Store the computer on the display/output control and wire the release handler UP FRONT, before any
+// of the suspending remote-variable fetches below. The handler resolves the laptop from the display,
+// so it is safe to attach this early. If the operator closes the terminal before startup finishes,
+// this guarantees the laptop lock (mutex) is still released and the device never bricks.
+_consoleOutput setVariable ["AE3_computer", _computer];
+_consoleDialog setVariable ["AE3_computer", _computer];
+_consoleDialog displayAddEventHandler ["Unload", { _this call AE3_armaos_fnc_terminal_onUnload }];
+
 // Set dialog title from CBA setting
 _titleControl ctrlSetText AE3_TerminalDialogTitle;
 
 [_computer, "AE3_filesystem"] call AE3_main_fnc_getRemoteVar;
 [_computer, "AE3_filepointer"] call AE3_main_fnc_getRemoteVar;
+
+// The fetches above can suspend; if the terminal was closed meanwhile, stop here. The Unload handler
+// wired above has already released the device.
+if (isNull _consoleDialog) exitWith {};
 
 private _pointer = [];
 if (isNil { _computer getVariable "AE3_filepointer" }) then 
@@ -66,10 +78,6 @@ private _terminal = createHashMapFromArray
 		["AE3_terminalMaxColumns", 80]
 	];
 
-// Only nessecary to allow Event Handlers the access to _computer
-_consoleOutput setVariable ["AE3_computer", _computer];
-_consoleDialog setVariable ["AE3_computer", _computer];
-
 // Keep terminal local to client (no network sync of HashMap)
 // IMPORTANT: Set this BEFORE restoring sync data, as renderLine needs access to it
 _computer setVariable ["AE3_terminal", _terminal];
@@ -93,6 +101,9 @@ if (!isNil "_terminalSyncData") then {
 	} forEach _restoredBuffer;
 	_terminal set ["AE3_terminalRenderedBuffer", _renderedBuffer];
 };
+
+// The sync fetch above can also suspend; abort if the terminal was closed during it.
+if (isNull _consoleDialog) exitWith {};
 
 _terminal set ["AE3_terminalOutput", _consoleOutput];
 

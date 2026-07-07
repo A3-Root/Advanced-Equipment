@@ -31,17 +31,14 @@ private _terminalDisplay = _desktopDisplay createDisplay "AE3_ArmaOS_Main_Dialog
 
 [_computer, _terminalDisplay] spawn AE3_armaos_fnc_terminal_init;
 
-// The terminal's own Unload handler releases the mutex and reports "not in use" - re-claim
-// both for the still-open desktop session afterwards (handlers run in registration order)
+// The terminal's own Unload handler keeps the laptop lock and "in use" state held for the still-open
+// desktop session (it only releases them for a standalone terminal), so no re-claim is needed here.
+// Just restore the desktop lock screen, which the terminal unload intentionally leaves untouched.
 _terminalDisplay displayAddEventHandler ["Unload", {
 	private _session = uiNamespace getVariable ["AE3_desktop_session", createHashMap];
 	private _computer = _session getOrDefault ["computer", objNull];
 	if (isNull _computer) exitWith {};
 
-	_computer setVariable ["AE3_computer_mutex", _session getOrDefault ["player", player], true];
-	[_computer, "inUse", true] remoteExecCall ["AE3_interaction_fnc_manageAce3Interactions", 2];
-
-	// Desktop lock screen again (terminal unload does not know about the desktop)
 	_computer setObjectTextureGlobal [1, "#(argb,8,8,3)color(0.05,0.08,0.12,1,co)"];
 }];
 

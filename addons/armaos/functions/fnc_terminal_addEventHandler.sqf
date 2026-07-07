@@ -58,7 +58,7 @@ _designButtonCtrl ctrlAddEventHandler ["ButtonClick",
 
 /* ================================================================================ */
 
-/* Unlocks terminal after it is closed */
-_consoleDialog displayAddEventHandler ["Unload", { _this call AE3_armaos_fnc_terminal_onUnload }];
+// The Unload handler that releases the laptop is wired earlier, in fnc_terminal_init, before the
+// terminal performs any suspending state fetches - so an early close still unlocks the device.
 
 /* ================================================================================ */

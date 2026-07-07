@@ -44,6 +44,8 @@ The ArmaOS component owns the terminal/TUI interface, command shell, laptop stat
 
 ## gotchas
 
+- The laptop lock (`AE3_computer_mutex`) is released by the terminal display's `Unload` handler, which `fnc_terminal_init` now wires up **before** its suspending `getRemoteVar` fetches (not late via `fnc_terminal_addEventHandler`). This is what stops an early close (before startup finishes) from orphaning the mutex and bricking every mutex-gated laptop ACE action. `fnc_terminal_init` also bails (`isNull _consoleDialog`) after the fetches if the display was closed meanwhile.
+- `fnc_terminal_onUnload` must stay null-safe for a partial init (terminal HashMap / per-frame handles may be absent) and only releases the mutex/`inUse` when NOT hosted inside a desktop session (`_inDesktop`); when inside the native desktop, the desktop owns the lock and cleans up on its own unload, so `fnc_app_terminal` no longer re-claims the mutex.
 - Commands that are graphical or interactive must be marked SSH-compatible before they can run over SSH.
 - The terminal command runner assumes the execution computer has populated `AE3_terminal`, `AE3_filesystem`, and `AE3_Links` state.
 - `AE3_main_fnc_getRemoteVar` can suspend, so functions that call it must run in a scheduled context or deliberately spawn.

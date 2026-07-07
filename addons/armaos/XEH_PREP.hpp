@@ -188,6 +188,8 @@ PREP(laptop_handlePut);
 PREP(laptop_handleTake);
 PREP(laptop_pickup_stable);
 PREP(laptop_deploy_stable);
+PREP(inventoryProp_spawn);
+PREP(inventoryProp_remove);
 PREP(laptop_promptName);
 PREP(laptop_promptNameAndStore);
 PREP(laptop_nameDialog_OK);

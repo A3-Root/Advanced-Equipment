@@ -67,6 +67,17 @@ if ((_content select [0, 10]) isEqualTo "AE3_MEDIA|") exitWith
 	{
 		case "image":
 		{
+			// Only genuine image formats may reach a texture control. Handing an audio/video (or any
+			// non-image) source to RscPicture makes the engine attempt to build a texture from it, which
+			// fails at the DX level and terminates the game. Reject anything whose extension is not an
+			// image so a mistyped media file can never crash the client.
+			private _imgParts = _sourcePath splitString ".";
+			private _imgExt = toLower (_imgParts param [(count _imgParts) - 1, ""]);
+			if !(_imgExt in ["paa", "jpg", "jpeg", "png", "gif", "bmp", "tga"]) exitWith
+			{
+				hintSilent (localize "STR_AE3_Desktop_Files_NotAnImage");
+			};
+
 			[_computer, "image", _sourcePath, _path, true] call AE3_desktop_fnc_mediaNotify;
 			// Native image viewer used as the fallback when the in-OS web viewer cannot display the
 			// source. The picture renders through the engine texture loader (which reliably handles

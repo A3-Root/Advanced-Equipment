@@ -35,6 +35,7 @@ The interaction component compiles AE3 equipment config, initializes ACE interac
 
 ## gotchas
 
+- The "use laptop from inventory" stand-in model (`_useFromInventory` in `armaos/XEH_preInit.sqf` -> `AE3_armaos_fnc_inventoryProp_spawn`/`_remove`, server-side) is a networked `createVehicle` of the laptop's **non-AE3 base class** (`configName (inheritsFrom (configOf _laptop))`, e.g. `Land_Laptop_03_black_F`). That base has the same model but none of the AE3 init EHs, so it is a plain prop, not a second functional laptop - creating the `_AE3` class directly would fire `compileEquipment`/`initDevice` and duplicate the laptop. Simulation is disabled, it is attached to the operator, stored on the laptop (`AE3_armaos_invProp`), and JIP is automatic (real networked object). Removed when the session ends, the player dies, or the laptop is gone.
 - Duplicate action prevention is spread across components with component-specific flags.
 - Interaction initialization differs between server authority and client ACE menu creation.
 - Closing/opening state can block power operations.

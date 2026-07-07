@@ -59,6 +59,8 @@ The desktop component provides the graphical laptop desktop, native app registry
 
 ## gotchas
 
+- Media type is corrected from the file extension in `fnc_registerMedia` (the Zeus module's type combo defaults to "image"); the native image viewer in `fnc_openFile` also rejects any non-image extension before touching an `RscPicture`, because handing an audio/video source to a texture control hard-crashes the client (`DX11 CreateTexture E_INVALIDARG`).
+- `bridge.js loadImage` for a mission-folder raster (jpg/png/gif, scope != mod) reads only the `.b64` sidecar and does NOT fall back to the engine texture sampler (which spams "Unknown sampler texture type" for a raw mission image). Raw mission rasters render through the native `RscPicture` viewer (`fs_open_media`); they cannot be CEF wallpapers without a sidecar. Mod/absolute/`.paa` assets still sample cleanly (texture-first, sidecar fallback).
 - `fnc_jsRouter.sqf` is a major hotspot. New web commands should be reviewed for auth, locality, reply handling, and serialization before adding more cases.
 - HashMaps do not serialize safely through every multiplayer path; SSH command handling converts operation arguments to plain arrays/strings before sending a CBA server event.
 - Browser history writes require the laptop filesystem to exist and silently fail inside `try/catch` if the history file cannot be created.
