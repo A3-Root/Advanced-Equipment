@@ -692,6 +692,7 @@
           '<button class="btn nsettings" style="margin-right:6px">Settings</button>' +
           '<button class="btn rescan">Rescan</button></div>' +
         '<div class="netcfg" style="display:none;border:1px solid var(--line);border-radius:6px;padding:10px;margin:8px 0;flex-direction:column;gap:8px;max-width:420px">' +
+          '<div class="muted ninfo"></div>' +
           '<label class="muted" style="display:flex;align-items:center;gap:8px"><input type="checkbox" class="ssh"> Allow SSH access to this device</label>' +
           '<label class="muted">IP address (changes immediately)</label>' +
           '<div style="display:flex;gap:8px"><input class="input sipval" placeholder="192.168.x.x" style="flex:1"><button class="btn accent sipapply">Apply</button></div>' +
@@ -703,6 +704,7 @@
 
       // Device settings panel (SSH access + IP address), toggled by the Settings button next to Rescan.
       var cfg = body.querySelector(".netcfg");
+      var infoEl = body.querySelector(".ninfo");
       var sshEl = body.querySelector(".ssh");
       var sipEl = body.querySelector(".sipval");
       var sipSt = body.querySelector(".sipst");
@@ -729,6 +731,7 @@
           s = s || {};
           sshEl.checked = !!s.sshEnabled;
           if (initial || cfg.style.display === "none") sipEl.value = s.ip || "";
+          infoEl.textContent = "Current IP: " + (s.ip || "?") + "  ·  Default Gateway: " + (s.gateway || "?");
         }).catch(function () {});
       }
       loadNetCfg(true);
@@ -929,13 +932,13 @@
         }
         return { type: "intel", title: "RootNet", content: ROOTNET_HOME, label: "home" };
       }
-      reloadIntelPages();
+      var _introLoaded = reloadIntelPages();
       // Registered custom domains -> mission site-root folders (AE3_desktop_fnc_registerSite).
       var regSites = {}; // { "thisisme.com": "sites/portal", ... }
       function reloadSites() {
-        A3.request("web_sites", {}).then(function (res) { regSites = (res && res.sites) || {}; }).catch(function () {});
+        return A3.request("web_sites", {}).then(function (res) { regSites = (res && res.sites) || {}; }).catch(function () {});
       }
-      reloadSites();
+      var _sitesLoaded = reloadSites();
       // Re-pull the page + site lists when content is registered or removed while the Browser is open.
       A3.on("web_changed", reloadIntelPages);
       A3.on("web_changed", reloadSites);
@@ -1269,8 +1272,14 @@
         active = Math.min(Math.max(_saved.active | 0, 0), tabs.length - 1);
         history = []; hi = -1; curDir = "";
         renderTabs();
-        tabs[active].pending = false;
-        nav(tabs[active].label || "home");
+        // Wait for the intel-page/site registries to load before resolving the active tab's saved
+        // address - resolving too early (still-empty intelPages/regSites) silently falls back to home
+        // and loses the real target, since restore only re-loads the active tab immediately (inactive
+        // tabs stay pending until clicked, by which point the registries have long since loaded).
+        Promise.all([_introLoaded, _sitesLoaded]).then(function () {
+          tabs[active].pending = false;
+          nav(tabs[active].label || "home");
+        });
       } else {
         newTab(); // open the first tab (navigates to the laptop homepage)
       }
