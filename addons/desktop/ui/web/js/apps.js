@@ -627,31 +627,16 @@
             '<div class="wallgrid" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:2px"></div>' +
             '<div><button class="btn accent ssave">Apply</button> <span class="muted sst"></span></div>' +
           '</div>' +
-          '<h3 style="margin-top:14px">Access</h3>' +
-          '<label class="muted" style="display:flex;align-items:center;gap:8px"><input type="checkbox" class="ssh"> Allow SSH access to this device</label>' +
-          '<h3 style="margin-top:14px">Network</h3>' +
-          '<div style="display:flex;flex-direction:column;gap:8px;max-width:420px">' +
-            '<label class="muted">IP address (changes immediately)</label>' +
-            '<div style="display:flex;gap:8px"><input class="input sipval" placeholder="192.168.x.x" style="flex:1"><button class="btn accent sipapply">Apply</button></div>' +
-            '<span class="muted sipst"></span>' +
-          '</div>' +
         '</div>';
       var box = body.querySelector("#sysinfo");
       var hostEl = body.querySelector(".shost");
       var wallEl = body.querySelector(".swall");
-      var sshEl = body.querySelector(".ssh");
-      var sipEl = body.querySelector(".sipval");
-      var sipSt = body.querySelector(".sipst");
-      sshEl.addEventListener("change", function () {
-        A3.request("ssh_config", { enabled: sshEl.checked });
-      });
       // Reads laptop status into the System panel. On the first load the editable fields are seeded
       // too; later live refreshes (Zeus/mission-maker changes pushed via "sys_changed") only repaint
-      // the read-only readout and the SSH state so a mid-edit value is not clobbered.
+      // the read-only readout. SSH access and the IP address are configured in the Network app.
       function loadSysinfo(initial) {
         A3.request("sysinfo", {}).then(function (s) {
           s = s || {};
-          if (sshEl) sshEl.checked = !!s.sshEnabled;
           box.innerHTML =
             "Hostname: " + esc(s.hostname || "?") + "<br>" +
             "IP: " + esc(s.ip || "?") + " &nbsp; Gateway: " + esc(s.gateway || "?") + "<br>" +
@@ -660,12 +645,11 @@
           if (initial) {
             if (hostEl) hostEl.value = s.hostname || "";
             if (wallEl) wallEl.value = s.wallpaper || "";
-            if (sipEl) sipEl.value = s.ip || "";
           }
         }).catch(function () { box.textContent = "Unavailable"; });
       }
       loadSysinfo(true);
-      // Live-update the panel when a curator/mission-maker changes battery, wifi, IP, hostname or SSH.
+      // Live-update the panel when a curator/mission-maker changes battery, wifi, IP or hostname.
       A3.on("sys_changed", function () { loadSysinfo(false); });
 
       // Selectable wallpaper thumbnails (bundled images + any registered). Clicking one applies it for
@@ -684,17 +668,6 @@
           wallGrid.appendChild(thumb);
         });
       }).catch(function () {});
-      body.querySelector(".sipapply").addEventListener("click", function () {
-        var ip = sipEl.value.trim();
-        A3.request("net_setip", { ip: ip }).then(function (r) {
-          if (r && r.error && r.error !== "") {
-            sipSt.textContent = r.error === "ip_in_use" ? "Address already in use." : "Invalid address.";
-            return;
-          }
-          sipSt.textContent = "Applied.";
-        }).catch(function () { sipSt.textContent = "Failed."; });
-      });
-
       body.querySelector(".ssave").addEventListener("click", function () {
         var host = hostEl.value.trim(), wall = wallEl.value.trim();
         var st = body.querySelector(".sst");
@@ -713,9 +686,53 @@
     id: "network", title: "Network", glyph: Icons.network, width: 560, height: 380,
     showInDock: true,
     render: function (body) {
-      body.innerHTML = '<div class="pad"><div style="display:flex;align-items:center"><h3 style="flex:1">Wireless networks</h3><span class="muted nstat" style="margin-right:8px"></span><button class="btn rescan">Rescan</button></div><ul class="list nets"><li class="muted">Scanning&hellip;</li></ul></div>';
+      body.innerHTML = '<div class="pad">' +
+        '<div style="display:flex;align-items:center"><h3 style="flex:1">Wireless networks</h3>' +
+          '<span class="muted nstat" style="margin-right:8px"></span>' +
+          '<button class="btn nsettings" style="margin-right:6px">Settings</button>' +
+          '<button class="btn rescan">Rescan</button></div>' +
+        '<div class="netcfg" style="display:none;border:1px solid var(--line);border-radius:6px;padding:10px;margin:8px 0;flex-direction:column;gap:8px;max-width:420px">' +
+          '<label class="muted" style="display:flex;align-items:center;gap:8px"><input type="checkbox" class="ssh"> Allow SSH access to this device</label>' +
+          '<label class="muted">IP address (changes immediately)</label>' +
+          '<div style="display:flex;gap:8px"><input class="input sipval" placeholder="192.168.x.x" style="flex:1"><button class="btn accent sipapply">Apply</button></div>' +
+          '<span class="muted sipst"></span>' +
+        '</div>' +
+        '<ul class="list nets"><li class="muted">Scanning&hellip;</li></ul></div>';
       var nets = body.querySelector(".nets");
       var statEl = body.querySelector(".nstat");
+
+      // Device settings panel (SSH access + IP address), toggled by the Settings button next to Rescan.
+      var cfg = body.querySelector(".netcfg");
+      var sshEl = body.querySelector(".ssh");
+      var sipEl = body.querySelector(".sipval");
+      var sipSt = body.querySelector(".sipst");
+      body.querySelector(".nsettings").addEventListener("click", function () {
+        cfg.style.display = (cfg.style.display === "none") ? "flex" : "none";
+      });
+      sshEl.addEventListener("change", function () {
+        A3.request("ssh_config", { enabled: sshEl.checked });
+      });
+      body.querySelector(".sipapply").addEventListener("click", function () {
+        var ip = sipEl.value.trim();
+        A3.request("net_setip", { ip: ip }).then(function (r) {
+          if (r && r.error && r.error !== "") {
+            sipSt.textContent = r.error === "ip_in_use" ? "Address already in use." : "Invalid address.";
+            return;
+          }
+          sipSt.textContent = "Applied.";
+        }).catch(function () { sipSt.textContent = "Failed."; });
+      });
+      // Seed the SSH state and IP field, and keep the SSH toggle in sync with mission-maker changes.
+      // The IP input is only seeded when the panel is closed so a mid-edit value is not clobbered.
+      function loadNetCfg(initial) {
+        A3.request("sysinfo", {}).then(function (s) {
+          s = s || {};
+          sshEl.checked = !!s.sshEnabled;
+          if (initial || cfg.style.display === "none") sipEl.value = s.ip || "";
+        }).catch(function () {});
+      }
+      loadNetCfg(true);
+      A3.on("sys_changed", function () { loadNetCfg(false); });
       // Password-protected routers: prompt before connecting, then send the password.
       function connect(n) {
         if (n.locked) {
@@ -983,9 +1000,30 @@
       }
       function applyTab(i) {
         active = i; var T = tabs[i];
+        // A tab restored from a previous session has only its address saved (no live document); load it
+        // the first time it is shown instead of displaying a blank page.
+        if (T.pending) {
+          T.pending = false;
+          history = []; hi = -1; curDir = "";
+          addrEl.value = T.label || "home";
+          renderTabs();
+          nav(T.label || "home");
+          return;
+        }
         history = T.history; hi = T.hi; curDir = T.curDir; addrEl.value = T.label; frame.srcdoc = T.doc || "";
         window.AE3_browserNav = function (href) { nav(href); };
         renderTabs();
+        persistTabs();
+      }
+      // Persist the open tabs (their addresses + the active index) onto the window's args, so the WM
+      // layout snapshot saved to the laptop restores them when the desktop is closed and reopened.
+      function persistTabs() {
+        if (!win) return;
+        win.args = {
+          tabs: tabs.map(function (T, i) { return (i === active ? addrEl.value : (T.label || "home")); }),
+          active: active
+        };
+        if (window.WM && WM.onStateChange) WM.onStateChange();
       }
       function renderTabs() {
         tabBar.innerHTML = "";
@@ -1026,6 +1064,7 @@
         tabs.splice(i, 1);
         if (active > i) active -= 1; else if (active >= tabs.length) active = tabs.length - 1;
         applyTab(active);
+        persistTabs();
       }
 
       function setDoc(htmlText) { frame.srcdoc = htmlText + HOOK; }
@@ -1179,6 +1218,7 @@
         load(t);
         if (active >= 0) { tabs[active].label = addrEl.value; }
         renderTabs();
+        persistTabs();
       }
       // Back/forward restore a previously visited target as-is. Re-resolving a bare label (e.g. a mission
       // site's "gallery.md") would depend on the current directory, which changes as you browse deeper,
@@ -1219,7 +1259,21 @@
       // Re-bind the in-page link hook to this window whenever it gains focus.
       win.el.addEventListener("mousedown", function () { window.AE3_browserNav = function (href) { nav(href); }; });
 
-      newTab(); // open the first tab (navigates to the laptop homepage)
+      // Restore the tabs saved from a previous desktop session (addresses + active tab), else open the
+      // first tab on the laptop homepage. Only the active tab loads now; the rest load when first shown.
+      var _saved = (win && win.args && win.args.tabs && win.args.tabs.length) ? win.args : null;
+      if (_saved) {
+        _saved.tabs.forEach(function (label) {
+          tabs.push({ history: [], hi: -1, curDir: "", label: label || "home", doc: "", pending: true });
+        });
+        active = Math.min(Math.max(_saved.active | 0, 0), tabs.length - 1);
+        history = []; hi = -1; curDir = "";
+        renderTabs();
+        tabs[active].pending = false;
+        nav(tabs[active].label || "home");
+      } else {
+        newTab(); // open the first tab (navigates to the laptop homepage)
+      }
     }
   });
 
@@ -2262,8 +2316,13 @@
       body.innerHTML =
         '<div class="pad" style="text-align:center">' +
           '<div style="font-size:48px;color:var(--accent)">' + Icons.terminal + '</div><h2>armaOS</h2>' +
-          '<p class="muted">Advanced Equipment Revamped</p>' +
-          '<p class="muted">Powered by SHITE Technologies</p></div>';
+          '<p class="muted">Powered by SHITE Technologies</p>' +
+          '<p class="muted">Made in Kingdom of Kekistan</p>' +
+          '<p class="muted">at the behest of</p>' +
+          '<p class="muted">Sir Doctor Professor Colonel Mr Matt The Fifth Senior</p>' +
+          '<p class="muted">(Sir. Dr. Pf. Col. Mr. Matt V Sr.)</p>' +
+          '<p class="muted">Professional Shitposter</p>' +
+          '</div>';
     }
   });
 })();

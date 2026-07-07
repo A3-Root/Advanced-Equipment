@@ -44,6 +44,14 @@ _object setVariable ['AE3_Flashdrive_Interface', _name];
 
 	private _computer = _flashDrive getVariable 'AE3_Flashdrive_Parent';
 	private _interface_name = _flashDrive getVariable 'AE3_Flashdrive_Interface';
+
+	// The parent laptop may have been removed (e.g. picked up into inventory) while the drive was
+	// still attached; without it there is nothing to disconnect from, so just drop the handler.
+	if (isNull _computer) exitWith {
+		[_flashDrive, "AE3_Flashdrive_takeEH", _thisScriptedEventHandler] call BIS_fnc_removeScriptedEventHandler;
+		true;
+	};
+
 	private _interfaces = _computer getVariable "AE3_USB_Interfaces";
 
 	[_computer, _player, _interfaces get _interface_name] call AE3_flashdrive_fnc_disconnectFlashDrive;

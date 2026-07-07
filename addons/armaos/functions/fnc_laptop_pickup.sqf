@@ -59,6 +59,12 @@ if (!isNull _mutex) then {
 	_target setVariable ["AE3_computer_mutex", objNull, true];
 };
 
+// Return any connected flash drives to the picker's inventory first, so none is left behind in the
+// world attached to a laptop object that is about to be removed.
+if (!isNil "AE3_flashdrive_fnc_disconnectAllDrives") then {
+	[_target, _player] call AE3_flashdrive_fnc_disconnectAllDrives;
+};
+
 // CRITICAL: Ensure terminal sync data is available before saving to item
 // The terminal_sync variable contains the raw buffer (STRING data) that can be safely saved
 // When the terminal dialog closes, it saves sync data, but we need to retrieve it from remote

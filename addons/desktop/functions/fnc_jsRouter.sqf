@@ -299,7 +299,16 @@ switch (_command) do {
             "\z\ae3\addons\desktop\images\wallpaper_5.png.b64",
             "\z\ae3\addons\desktop\images\do-u-code-bro.png.b64"
         ];
-        { _list pushBackUnique _x; } forEach (missionNamespace getVariable ["AE3_Desktop_WallpaperList", []]);
+        // Only offer registered images the CEF surface can actually render: a base64 sidecar (either
+        // the path itself or a "<path>.b64" companion). A raw mission raster/paa without a sidecar
+        // cannot be a web wallpaper and would only make the Settings thumbnail loader trip the engine
+        // "Script ....b64 not found" / "Unknown sampler texture type" warnings, so it is filtered out
+        // here (it can still be opened in the native image viewer).
+        {
+            private _entry = _x;
+            private _b64 = if ((toLower _entry) select [(count _entry) - 4] isEqualTo ".b64") then { _entry } else { _entry + ".b64" };
+            if (fileExists _b64) then { _list pushBackUnique _entry; };
+        } forEach (missionNamespace getVariable ["AE3_Desktop_WallpaperList", []]);
         [createHashMapFromArray [["wallpapers", _list]]] call _reply;
     };
 

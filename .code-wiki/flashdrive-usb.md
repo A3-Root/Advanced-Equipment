@@ -39,6 +39,8 @@ The flashdrive component provides inventory/world flash drives, USB interface in
 
 ## gotchas
 
+- `fnc_disconnectFlashDrive` frees its `AE3_USB_Interfaces_occupied` slot (`set [_index, objNull]`, broadcast) after `obj2item`; leaving the stale reference caused intermittent reconnect failures. It also null-guards a removed parent computer, and the connect-time take EH bails (removing itself) if the parent laptop is gone.
+- Picking up a laptop first calls `AE3_flashdrive_fnc_disconnectAllDrives` (guarded by `!isNil`, from both `fnc_laptop_pickup` and `fnc_laptop_pickup_stable`) so connected drives return to the picker's inventory instead of being orphaned in the world attached to a removed/hidden laptop (which previously let another player take the drive and act on a dead parent).
 - Mount/unmount paths must update both the filesystem mount and the `AE3_USB_Interfaces_mounted` state list.
 - Dedicated-server timing can leave a drive object unknown to the mounting client/server path until synced.
 - Flash drive filesystems are separate `AE3_filesystem` structures mounted into laptop filesystems, not copied into the laptop by default.

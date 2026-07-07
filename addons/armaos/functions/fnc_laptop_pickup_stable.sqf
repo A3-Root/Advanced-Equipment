@@ -47,6 +47,12 @@ if (!isNull _mutex) then {
 	_target setVariable ["AE3_computer_mutex", objNull, true];
 };
 
+// Return any connected flash drives to the picker's inventory first, so none is left behind attached
+// to the hidden laptop where it could be taken and then act on a laptop that is no longer in the world.
+if (!isNil "AE3_flashdrive_fnc_disconnectAllDrives") then {
+	[_target, _player] call AE3_flashdrive_fnc_disconnectAllDrives;
+};
+
 // Get or create the global laptop tracking hashmap
 // Maps item class names (Item_Laptop_AE3_ID_X) to laptop objects
 private _laptopTracker = missionNamespace getVariable ["AE3_LAPTOP_STABLE_TRACKER", createHashMap];
