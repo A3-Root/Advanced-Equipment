@@ -910,13 +910,19 @@
       // (sites/intel/report.md), both resolved through A3.loadFile's root search.
       var sites = {}; // reserved for friendly-name -> page shortcuts; populated by regSites at runtime
       var intelPages = []; // intel pages registered via Zeus/API
+      // True while a saved active tab is still waiting on these same registries to resolve its real
+      // address (see the restore block below). The address bar reads "home" (its markup default)
+      // during that wait regardless of which tab is being restored, so the home-refresh self-heal
+      // below must not fire in that window - it would stomp the not-yet-resolved tab's saved label
+      // with "home" via its own nav("home", true) call before the restore ever gets to use it.
+      var _pendingRestore = false;
       function reloadIntelPages() {
         return A3.request("web_pages", {}).then(function (res) {
           intelPages = (res && res.pages) || [];
           // The page list arrives asynchronously. If the active tab is still on the homepage, re-resolve
           // it now that the list is available so the registered RootNet home replaces the static fallback
           // that was shown while the list was still empty.
-          if (active >= 0 && addrEl.value === "home") { nav("home", true); }
+          if (!_pendingRestore && active >= 0 && addrEl.value === "home") { nav("home", true); }
         }).catch(function () {});
       }
       // The laptop's homepage is the server-seeded RootNet index (registered as rootnet.root / home.root).
@@ -1276,7 +1282,9 @@
         // address - resolving too early (still-empty intelPages/regSites) silently falls back to home
         // and loses the real target, since restore only re-loads the active tab immediately (inactive
         // tabs stay pending until clicked, by which point the registries have long since loaded).
+        _pendingRestore = true;
         Promise.all([_introLoaded, _sitesLoaded]).then(function () {
+          _pendingRestore = false;
           tabs[active].pending = false;
           nav(tabs[active].label || "home");
         });
