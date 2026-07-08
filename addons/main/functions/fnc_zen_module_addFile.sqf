@@ -57,6 +57,10 @@ private _onCancel = {
     deleteVehicle (_args select 0);
 };
 
+private _algorithms = missionNamespace getVariable ["AE3_filesystem_encryptionAlgorithms", [["caesar", "Caesar", true], ["columnar", "Columnar", true]]];
+private _algorithmIds = _algorithms apply {_x select 0};
+private _algorithmLabels = _algorithms apply {_x select 1};
+
 [
     "STR_AE3_Filesystem_Config_AddFileDisplayName",
     [
@@ -71,7 +75,7 @@ private _onCancel = {
         ["CHECKBOX", "Everyone: Write", false],
         ["CHECKBOX", "Everyone: Execute", false],
         ["CHECKBOX", "Enable encryption", false],
-        ["COMBO", "Encryption algorithm", [["caesar", "columnar"], ["Caesar", "Columnar"], 0]],
+        ["COMBO", "Encryption algorithm", [_algorithmIds, _algorithmLabels, 0]],
         ["EDIT", "Encryption key", [""]]
     ],
     _onConfirm,

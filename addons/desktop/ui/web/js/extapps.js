@@ -251,6 +251,29 @@
   }
 
 
+  var scriptLoads = {};
+  function loadExternalScript(path) {
+    if (!path) return Promise.resolve();
+    if (scriptLoads[path]) return scriptLoads[path];
+    scriptLoads[path] = Promise.resolve(A3API.RequestFile(String(path).replace(/\//g, "\\"))).then(function (text) {
+      if (text == null || text === "") throw new Error("missing external app script: " + path);
+      var node = document.createElement("script");
+      node.text = text;
+      document.head.appendChild(node);
+    });
+    return scriptLoads[path];
+  }
+
+  function makeScriptApp(desc) {
+    var extra = desc.extra || {};
+    return loadExternalScript(extra.scriptPath).then(function () {
+      var factory = extra.factory && window[extra.factory];
+      if (typeof factory !== "function") throw new Error("missing external app factory: " + extra.factory);
+      return factory(desc);
+    });
+  }
+
+
   function makeLauncherApp(desc) {
     var extra = desc.extra || {};
     var glyph = glyphFor(desc);
@@ -312,6 +335,13 @@
     list.forEach(function (desc) {
       if (desc.kind === "deviceList") Apps.register(makeDeviceApp(desc));
       else if (desc.kind === "launcher") Apps.register(makeLauncherApp(desc));
+      else if (desc.kind === "script") {
+        makeScriptApp(desc).then(function (app) {
+          Apps.register(app);
+          if (window.Desktop) Desktop.refresh();
+          setTimeout(function () { hydrateAppImages(document); }, 0);
+        }).catch(function (e) { console.error(e); });
+      }
     });
     if (window.Desktop) Desktop.refresh();
     setTimeout(function () { hydrateAppImages(document); }, 0);

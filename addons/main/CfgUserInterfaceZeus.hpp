@@ -1624,7 +1624,7 @@ class AE3_UserInterface_Zeus_Module_AddFile
                 };
             };
 
-            onLoad = "params ['_control']; private _display = ctrlParent _control; _display setVariable ['algorithmCtrl', _control]; _control ctrlEnable false;";
+            onLoad = "params ['_control']; private _display = ctrlParent _control; _display setVariable ['algorithmCtrl', _control]; lbClear _control; { private _idx = _control lbAdd (_x select 1); _control lbSetData [_idx, _x select 0]; } forEach (missionNamespace getVariable ['AE3_filesystem_encryptionAlgorithms', [['caesar', 'Caesar', true], ['columnar', 'Columnar', true]]]); _control lbSetCurSel 0; _control ctrlEnable false;";
         };
 
         class RscText_1016: RscText

@@ -85,10 +85,10 @@ if (_event isEqualTo "onUnload") exitWith
     private _everyoneExecute = cbChecked _everyoneExecuteCtrl;
     private _permissions = [[_ownerRead, _ownerWrite, _ownerExecute], [_everyoneRead, _everyoneWrite, _everyoneExecute]];
     private _enableEncryption = cbChecked _enableEncryptionCtrl;
-    private _encryptionAlgorithm = lbCurSel _encryptionAlgorithmCtrl; // 0 = Caesar; 1 = Columnar
+    private _encryptionAlgorithmIndex = lbCurSel _encryptionAlgorithmCtrl;
+    private _encryptionAlgorithm = _encryptionAlgorithmCtrl lbData _encryptionAlgorithmIndex;
+    if (_encryptionAlgorithm isEqualTo "") then { _encryptionAlgorithm = ["caesar", "columnar"] select (_encryptionAlgorithmIndex max 0 min 1); };
     private _encryptionKey = ctrlText _encryptionKeyCtrl;
-
-    if (_encryptionAlgorithm == 0) then { _encryptionAlgorithm = "caesar"; } else { _encryptionAlgorithm = "columnar"; };
 
     // check for empty but mandatory input fields
     // module is still there an could be opened and filled in with valid input
