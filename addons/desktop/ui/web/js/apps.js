@@ -2920,13 +2920,14 @@
       body.innerHTML =
         '<div class="pad" style="text-align:center">' +
           '<div style="font-size:48px;color:var(--accent)">' + Icons.terminal + '</div><h2>armaOS</h2>' +
-          '<p class="muted"> </p>' +
+          '<br>' +
           '<p class="muted">Made in Kingdom of Kekistan</p>' +
-          '<p class="muted"> </p>' +
+          '<br>' +
           '<p class="muted">at the behest of</p>' +
-          '<p class="muted"> </p>' +
+          '<br>' +
           '<p class="muted">Sir Doctor Professor Colonel Mr Matt The Fifth Senior</p>' +
           '<p class="muted">(Sir. Dr. Pf. Col. Mr. Matt V Sr.)</p>' +
+          '<br>' +
           '<p class="muted">Professional Shitposter</p>' +
           '</div>';
     }
