@@ -1,18 +1,18 @@
 ---
 topic: multiplayer-locality-and-sync
 status: verified
-last-verified: 2026-06-30
+last-verified: 2026-07-08
 confidence_score: 1.0
 priority: core
 rank: 8
-tokens: ~700
+tokens: ~365
 code-paths:
   - addons/main/functions/fnc_getRemoteVar.sqf
   - addons/main/functions/fnc_sendVarToRemote.sqf
   - addons/*/functions/*.sqf
   - addons/*/XEH_preInit.sqf
   - addons/desktop/XEH_postInit.sqf
-related-topics: [armaos-terminal, desktop-gui-and-browser, filesystem-model, network-routing-and-ssh, power-model, desktop-intel-and-communications]
+related-topics: [armaos-terminal, desktop-gui-and-browser, filesystem-model, network-routing-and-ssh, power-model, desktop-intel-and-communications, main-runtime-infrastructure]
 related-docs:
   - wiki/Developer/Locality-and-Multiplayer.md
 ---

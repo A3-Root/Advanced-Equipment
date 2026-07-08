@@ -5,9 +5,9 @@
     "semantic_hash": "cde4f26e710135831853d3eebae216ee"
   },
   ".github/scripts/update_readme.py": {
-    "mtime": 1762751153.4791932,
-    "ast_hash": "271c7a0587593a24c987022d458616c2",
-    "semantic_hash": "271c7a0587593a24c987022d458616c2"
+    "mtime": 1782850968.2130134,
+    "ast_hash": "99467c3acbb33ffb10ae56cc76d69092",
+    "semantic_hash": "99467c3acbb33ffb10ae56cc76d69092"
   },
   "addons/armaos/Cfg3DEN.hpp": {
     "mtime": 1762373755.1781056,
@@ -25,9 +25,9 @@
     "semantic_hash": "9925cea9a49f133e5c8e5a720ed787c0"
   },
   "addons/armaos/CfgOsFunctions.hpp": {
-    "mtime": 1781309363.8028097,
-    "ast_hash": "6569ea16a179f3fdcb5d8167fa577f13",
-    "semantic_hash": "6569ea16a179f3fdcb5d8167fa577f13"
+    "mtime": 1783202548.8652844,
+    "ast_hash": "608cfe2c6bb369d6e64e4be1e909690b",
+    "semantic_hash": "608cfe2c6bb369d6e64e4be1e909690b"
   },
   "addons/armaos/CfgSecurityCommands.hpp": {
     "mtime": 1762373755.1791062,
@@ -40,9 +40,9 @@
     "semantic_hash": "fa4c6ee3562f3848c40489def8b0ab65"
   },
   "addons/armaos/CfgVehicles.hpp": {
-    "mtime": 1782342193.671393,
-    "ast_hash": "1ae8ba75f551cc61818791d9958dd62b",
-    "semantic_hash": "1ae8ba75f551cc61818791d9958dd62b"
+    "mtime": 1783418841.8647754,
+    "ast_hash": "1bcdbd5079a02a338a66b851c69f7eff",
+    "semantic_hash": "1bcdbd5079a02a338a66b851c69f7eff"
   },
   "addons/armaos/CfgWeapons.hpp": {
     "mtime": 1764359081.6454012,
@@ -50,14 +50,14 @@
     "semantic_hash": "8feaf3febbf2399380ceb3f88f9d158e"
   },
   "addons/armaos/XEH_PREP.hpp": {
-    "mtime": 1782250378.095767,
-    "ast_hash": "4bdc6fd50b5b5d3296663fc928d50af4",
-    "semantic_hash": "4bdc6fd50b5b5d3296663fc928d50af4"
+    "mtime": 1783490026.5398889,
+    "ast_hash": "d78e8542ef461a34a612f9074d1e0b07",
+    "semantic_hash": "d78e8542ef461a34a612f9074d1e0b07"
   },
   "addons/armaos/config.cpp": {
-    "mtime": 1782250617.9093926,
-    "ast_hash": "8aa4c5038e5aa94b859b4550b82d2335",
-    "semantic_hash": "8aa4c5038e5aa94b859b4550b82d2335"
+    "mtime": 1783418785.6033585,
+    "ast_hash": "ca7f1a907e4579f7c90efd198aacb628",
+    "semantic_hash": "ca7f1a907e4579f7c90efd198aacb628"
   },
   "addons/armaos/defines.inc": {
     "mtime": 1762373755.1801064,
@@ -75,9 +75,9 @@
     "semantic_hash": "3f1b5c136696a24cb37fab72b1952eab"
   },
   "addons/armaos/script_item_macro.hpp": {
-    "mtime": 1763333608.0448606,
-    "ast_hash": "97abd6700ac87cb855bd2b5d985a8a7d",
-    "semantic_hash": "97abd6700ac87cb855bd2b5d985a8a7d"
+    "mtime": 1783324120.314453,
+    "ast_hash": "73f3f28e8adbda9255e1b443e5e79e55",
+    "semantic_hash": "73f3f28e8adbda9255e1b443e5e79e55"
   },
   "addons/desktop/Cfg3DEN.hpp": {
     "mtime": 1782314170.4921443,
@@ -85,9 +85,9 @@
     "semantic_hash": "63d1d7051ee6953597a856ed269b3393"
   },
   "addons/desktop/CfgAE3Apps.hpp": {
-    "mtime": 1781291031.9536786,
-    "ast_hash": "1b2788d1f25595400927f0b8fd4f4f80",
-    "semantic_hash": "1b2788d1f25595400927f0b8fd4f4f80"
+    "mtime": 1783181440.5747511,
+    "ast_hash": "42d802faae3ab0b4f59eba09da743761",
+    "semantic_hash": "42d802faae3ab0b4f59eba09da743761"
   },
   "addons/desktop/CfgAE3Themes.hpp": {
     "mtime": 1781289473.320799,
@@ -100,24 +100,24 @@
     "semantic_hash": "d40bb3ed8d08d910affe12958099ee40"
   },
   "addons/desktop/CfgUserInterfaceZeus.hpp": {
-    "mtime": 1782314170.4921443,
-    "ast_hash": "a6dd9da102bd1a8067a20dbc7fac3427",
-    "semantic_hash": "a6dd9da102bd1a8067a20dbc7fac3427"
+    "mtime": 1783418461.5334888,
+    "ast_hash": "be04140633c599775a74e78e9ede0d02",
+    "semantic_hash": "be04140633c599775a74e78e9ede0d02"
   },
   "addons/desktop/CfgVehicles.hpp": {
-    "mtime": 1782388392.0668504,
-    "ast_hash": "287232d35fe6604383cf35a73367fd44",
-    "semantic_hash": "287232d35fe6604383cf35a73367fd44"
+    "mtime": 1783418508.070617,
+    "ast_hash": "1c223d8d6259b7072450c898c59141a8",
+    "semantic_hash": "1c223d8d6259b7072450c898c59141a8"
   },
   "addons/desktop/XEH_PREP.hpp": {
-    "mtime": 1782388736.6732922,
-    "ast_hash": "13e9827d30b2499aa0765aeece2753f1",
-    "semantic_hash": "13e9827d30b2499aa0765aeece2753f1"
+    "mtime": 1783418500.2308657,
+    "ast_hash": "0737133746f73af9417f7e8e24bf9582",
+    "semantic_hash": "0737133746f73af9417f7e8e24bf9582"
   },
   "addons/desktop/config.cpp": {
-    "mtime": 1782318456.7725198,
-    "ast_hash": "2e39336d187983cfe31945e41f9a122c",
-    "semantic_hash": "2e39336d187983cfe31945e41f9a122c"
+    "mtime": 1783224893.2358687,
+    "ast_hash": "9afb5ba681d8cbdb68f534d3f1f58812",
+    "semantic_hash": "9afb5ba681d8cbdb68f534d3f1f58812"
   },
   "addons/desktop/script_component.hpp": {
     "mtime": 1781269345.7166762,
@@ -130,24 +130,24 @@
     "semantic_hash": "b27308c82ac2fe22b16615bcad827b97"
   },
   "addons/desktop/ui/web/js/apps.js": {
-    "mtime": 1782728746.6191187,
-    "ast_hash": "af555a9c096a73c9a6ba68a078f32fb5",
-    "semantic_hash": "af555a9c096a73c9a6ba68a078f32fb5"
+    "mtime": 1783496834.1350384,
+    "ast_hash": "1483a53ea2ffc1e8d134dcc0049be686",
+    "semantic_hash": "1483a53ea2ffc1e8d134dcc0049be686"
   },
   "addons/desktop/ui/web/js/bridge.js": {
-    "mtime": 1782679299.6371617,
-    "ast_hash": "32c526a0244a154316630b07f42d2025",
-    "semantic_hash": "32c526a0244a154316630b07f42d2025"
+    "mtime": 1783439117.332553,
+    "ast_hash": "85f5e850306fcffa1e12dbf15c51ae50",
+    "semantic_hash": "85f5e850306fcffa1e12dbf15c51ae50"
   },
   "addons/desktop/ui/web/js/desktop.js": {
-    "mtime": 1782380105.079319,
-    "ast_hash": "d3316bc813674ea90e082b8829d739f9",
-    "semantic_hash": "d3316bc813674ea90e082b8829d739f9"
+    "mtime": 1783347636.8476846,
+    "ast_hash": "d2a633b22494a2066ba315daed095037",
+    "semantic_hash": "d2a633b22494a2066ba315daed095037"
   },
   "addons/desktop/ui/web/js/extapps.js": {
-    "mtime": 1782157680.951601,
-    "ast_hash": "bc102a0d71f37f97bec6364be753e79a",
-    "semantic_hash": "bc102a0d71f37f97bec6364be753e79a"
+    "mtime": 1783493140.455153,
+    "ast_hash": "7b2e854fa1353d75aa2d5af35eab5a05",
+    "semantic_hash": "7b2e854fa1353d75aa2d5af35eab5a05"
   },
   "addons/desktop/ui/web/js/icons.js": {
     "mtime": 1782249744.8969064,
@@ -165,14 +165,14 @@
     "semantic_hash": "a8a57be487c01745ed7a2e9a07d83e1f"
   },
   "addons/desktop/ui/web/js/modal.js": {
-    "mtime": 1782110471.5710063,
-    "ast_hash": "613ee04f77ba20053ed6f56c7722ac71",
-    "semantic_hash": "613ee04f77ba20053ed6f56c7722ac71"
+    "mtime": 1783347699.109511,
+    "ast_hash": "511a6366551990449f4ea79583d18d7d",
+    "semantic_hash": "511a6366551990449f4ea79583d18d7d"
   },
   "addons/desktop/ui/web/js/wm.js": {
-    "mtime": 1782101792.2059739,
-    "ast_hash": "4e0f52ec54e80038df79c49eb23be020",
-    "semantic_hash": "4e0f52ec54e80038df79c49eb23be020"
+    "mtime": 1783111499.882056,
+    "ast_hash": "f1cb68afe50d7117a8c9e0a10d488ac6",
+    "semantic_hash": "f1cb68afe50d7117a8c9e0a10d488ac6"
   },
   "addons/filesystem/Cfg3DEN.hpp": {
     "mtime": 1762373755.2056458,
@@ -190,9 +190,9 @@
     "semantic_hash": "6ab5c9bc82c37f8662206340d7573436"
   },
   "addons/filesystem/CfgVehicles.hpp": {
-    "mtime": 1781318536.170797,
-    "ast_hash": "4512a7839cc936cafff9222af89115ca",
-    "semantic_hash": "4512a7839cc936cafff9222af89115ca"
+    "mtime": 1783372516.684156,
+    "ast_hash": "33581086e262e13a25305e74b4111988",
+    "semantic_hash": "33581086e262e13a25305e74b4111988"
   },
   "addons/filesystem/XEH_PREP.hpp": {
     "mtime": 1782101346.9966087,
@@ -220,9 +220,9 @@
     "semantic_hash": "e1cf4a2a449a592816fcc70005bb8ad7"
   },
   "addons/flashdrive/CfgVehicles.hpp": {
-    "mtime": 1762402135.6469545,
-    "ast_hash": "69d4c55ec66dd326b8963e1deca20b38",
-    "semantic_hash": "69d4c55ec66dd326b8963e1deca20b38"
+    "mtime": 1783324481.3883915,
+    "ast_hash": "d96e4452cc780df8bc6110a120ba5307",
+    "semantic_hash": "d96e4452cc780df8bc6110a120ba5307"
   },
   "addons/flashdrive/CfgWeapons.hpp": {
     "mtime": 1781268864.619807,
@@ -230,9 +230,9 @@
     "semantic_hash": "1f3427be1b2556908319daa5c86c6b7f"
   },
   "addons/flashdrive/XEH_PREP.hpp": {
-    "mtime": 1762373755.2168314,
-    "ast_hash": "0a4031e9dd5bb42467ec54a21c5a0a4d",
-    "semantic_hash": "0a4031e9dd5bb42467ec54a21c5a0a4d"
+    "mtime": 1783442623.8797495,
+    "ast_hash": "9ca5c30c52fd7c601bc1f8496c0b308d",
+    "semantic_hash": "9ca5c30c52fd7c601bc1f8496c0b308d"
   },
   "addons/flashdrive/config.cpp": {
     "mtime": 1762459888.5748494,
@@ -245,9 +245,9 @@
     "semantic_hash": "fe0eda64cee1cba38a85872949bc3d2a"
   },
   "addons/flashdrive/script_item_macro.hpp": {
-    "mtime": 1762373755.2168314,
-    "ast_hash": "97abd6700ac87cb855bd2b5d985a8a7d",
-    "semantic_hash": "97abd6700ac87cb855bd2b5d985a8a7d"
+    "mtime": 1783324086.4630086,
+    "ast_hash": "73f3f28e8adbda9255e1b443e5e79e55",
+    "semantic_hash": "73f3f28e8adbda9255e1b443e5e79e55"
   },
   "addons/interaction/Cfg3DEN.hpp": {
     "mtime": 1762373755.2178364,
@@ -260,9 +260,9 @@
     "semantic_hash": "a207bb5ae043c0f9ffd8c5befcb481cd"
   },
   "addons/interaction/CfgVehicles.hpp": {
-    "mtime": 1762373755.2188356,
-    "ast_hash": "f531a0b671194f24d35b88b309eb29f9",
-    "semantic_hash": "f531a0b671194f24d35b88b309eb29f9"
+    "mtime": 1783324560.2536979,
+    "ast_hash": "26509319880beffa1e62c0dd5aada64c",
+    "semantic_hash": "26509319880beffa1e62c0dd5aada64c"
   },
   "addons/interaction/XEH_PREP.hpp": {
     "mtime": 1763204914.5563762,
@@ -285,9 +285,9 @@
     "semantic_hash": "60355c7aa46961acea124017431ab2d3"
   },
   "addons/main/CfgEditorCategories.hpp": {
-    "mtime": 1762373755.2239847,
-    "ast_hash": "dbb455801fe51c0354e4e0e6a973c98f",
-    "semantic_hash": "dbb455801fe51c0354e4e0e6a973c98f"
+    "mtime": 1783324335.1576724,
+    "ast_hash": "8594edfaaa4454acae0f73191cfa47a4",
+    "semantic_hash": "8594edfaaa4454acae0f73191cfa47a4"
   },
   "addons/main/CfgEventHandlers.hpp": {
     "mtime": 1762373755.2239847,
@@ -300,9 +300,9 @@
     "semantic_hash": "f1800db5ca43ca451c161a4f0ecdcf1e"
   },
   "addons/main/CfgUserInterfaceZeus.hpp": {
-    "mtime": 1782511864.4773488,
-    "ast_hash": "e9c9ca6c683f25ae5534ea0e04ecc0f4",
-    "semantic_hash": "e9c9ca6c683f25ae5534ea0e04ecc0f4"
+    "mtime": 1783493140.509135,
+    "ast_hash": "677dea5a79295241edf79f91443a0d8e",
+    "semantic_hash": "677dea5a79295241edf79f91443a0d8e"
   },
   "addons/main/CfgVehicles.hpp": {
     "mtime": 1782250728.901571,
@@ -310,9 +310,9 @@
     "semantic_hash": "96d9b5738665f62b98524dd18126217d"
   },
   "addons/main/XEH_PREP.hpp": {
-    "mtime": 1782250689.6587112,
-    "ast_hash": "1ae3aa8e18cf8b22422817453f6da012",
-    "semantic_hash": "1ae3aa8e18cf8b22422817453f6da012"
+    "mtime": 1783188165.7689915,
+    "ast_hash": "971049707e6f67159d1dc6ac98d37be0",
+    "semantic_hash": "971049707e6f67159d1dc6ac98d37be0"
   },
   "addons/main/config.cpp": {
     "mtime": 1782481479.615281,
@@ -335,9 +335,9 @@
     "semantic_hash": "83d673f18a12c935d7e05c70e55e68b1"
   },
   "addons/main/script_macros.hpp": {
-    "mtime": 1782015050.1280427,
-    "ast_hash": "709e6755da531f1a1a90d861d247e166",
-    "semantic_hash": "709e6755da531f1a1a90d861d247e166"
+    "mtime": 1783347383.6575782,
+    "ast_hash": "349ff9687b19077014987ce8e053a386",
+    "semantic_hash": "349ff9687b19077014987ce8e053a386"
   },
   "addons/main/script_mod.hpp": {
     "mtime": 1762371300.268916,
@@ -345,9 +345,9 @@
     "semantic_hash": "b1bf0ea5c0bf95085aeb2c2ca93821cf"
   },
   "addons/main/script_version.hpp": {
-    "mtime": 1782728218.6839259,
-    "ast_hash": "898bad5696594c162a39f03f0ceb9e69",
-    "semantic_hash": "898bad5696594c162a39f03f0ceb9e69"
+    "mtime": 1783496948.646511,
+    "ast_hash": "5d575ed3f4830a4f54baa7001e7994e2",
+    "semantic_hash": "5d575ed3f4830a4f54baa7001e7994e2"
   },
   "addons/network/Cfg3DEN.hpp": {
     "mtime": 1762373755.2330196,
@@ -360,19 +360,19 @@
     "semantic_hash": "ffab603b0cee06e3d43a6ea114b7c177"
   },
   "addons/network/CfgVehicles.hpp": {
-    "mtime": 1782511876.8612578,
-    "ast_hash": "de7cd4c77ca114d2904e4f12fb75ac42",
-    "semantic_hash": "de7cd4c77ca114d2904e4f12fb75ac42"
+    "mtime": 1783324527.3620427,
+    "ast_hash": "e5913f01fc9dc737380ab85199534e2e",
+    "semantic_hash": "e5913f01fc9dc737380ab85199534e2e"
   },
   "addons/network/XEH_PREP.hpp": {
-    "mtime": 1782318456.7795262,
-    "ast_hash": "05d2e6226c1b0f825f269111e39d1a0f",
-    "semantic_hash": "05d2e6226c1b0f825f269111e39d1a0f"
+    "mtime": 1783418259.0106328,
+    "ast_hash": "38e55ea1e2df7d8315739f2f311ffd55",
+    "semantic_hash": "38e55ea1e2df7d8315739f2f311ffd55"
   },
   "addons/network/config.cpp": {
-    "mtime": 1782017858.6453075,
-    "ast_hash": "8e44ec69172873a3d0cb3ed67ae66019",
-    "semantic_hash": "8e44ec69172873a3d0cb3ed67ae66019"
+    "mtime": 1783103081.3960967,
+    "ast_hash": "efb8177943dad08f3bbfe0d31cda1131",
+    "semantic_hash": "efb8177943dad08f3bbfe0d31cda1131"
   },
   "addons/network/script_component.hpp": {
     "mtime": 1762371300.2869353,
@@ -395,9 +395,9 @@
     "semantic_hash": "7f9084f7643fe48359f01c0860eed75e"
   },
   "addons/power/CfgVehicles.hpp": {
-    "mtime": 1762464193.6695137,
-    "ast_hash": "d389f729a7c0e1db42b0ab0050dc9cfd",
-    "semantic_hash": "d389f729a7c0e1db42b0ab0050dc9cfd"
+    "mtime": 1783324449.343271,
+    "ast_hash": "6e0945b93ca634871629957e07569e48",
+    "semantic_hash": "6e0945b93ca634871629957e07569e48"
   },
   "addons/power/XEH_PREP.hpp": {
     "mtime": 1781250589.6485312,
@@ -425,7 +425,7 @@
     "semantic_hash": "1afd5b715b44aa2cc19cd7478e74f39f"
   },
   "mod.cpp": {
-    "mtime": 1765746908.4341671,
+    "mtime": 1783286246.2174604,
     "ast_hash": "991767b4d4bb7a8e4f38a9d27fc39568",
     "semantic_hash": "991767b4d4bb7a8e4f38a9d27fc39568"
   },
@@ -435,34 +435,19 @@
     "semantic_hash": "abd38efcbbf7932dd4ea7fe14f3820f8"
   },
   "README.md": {
-    "mtime": 1782396695.9889853,
-    "ast_hash": "7ef18b119499fd9d61892fdd3b04a289",
-    "semantic_hash": "7ef18b119499fd9d61892fdd3b04a289"
+    "mtime": 1783327025.499721,
+    "ast_hash": "efc76bb7b7e95e3d197526fef2980899",
+    "semantic_hash": "efc76bb7b7e95e3d197526fef2980899"
   },
   "README_steam.md": {
-    "mtime": 1765936644.4870093,
-    "ast_hash": "73ea7240179ad962cee4a4b9304f66c6",
-    "semantic_hash": "73ea7240179ad962cee4a4b9304f66c6"
+    "mtime": 1783419992.7842984,
+    "ast_hash": "e30bc78d56972c8ed4ffb2cf15ee4b5b",
+    "semantic_hash": "e30bc78d56972c8ed4ffb2cf15ee4b5b"
   },
   "addons/desktop/ui/web/index.html": {
-    "mtime": 1782043418.5619035,
-    "ast_hash": "53cff55361096b9f3efda40ce59c7dd6",
-    "semantic_hash": "53cff55361096b9f3efda40ce59c7dd6"
-  },
-  "addons/desktop/ui/web/sites/portal/index.html": {
-    "mtime": 1781996232.5343416,
-    "ast_hash": "063c5aabe08564176a14bd08a6d53af8",
-    "semantic_hash": "063c5aabe08564176a14bd08a6d53af8"
-  },
-  "addons/desktop/ui/web/sites/wiki/getting-started.html": {
-    "mtime": 1781996236.6071064,
-    "ast_hash": "92df457a5ffe2a3f9bf1d8ed62681b8e",
-    "semantic_hash": "92df457a5ffe2a3f9bf1d8ed62681b8e"
-  },
-  "addons/desktop/ui/web/sites/wiki/index.html": {
-    "mtime": 1782013395.3198695,
-    "ast_hash": "e5143f2604db0cf0adc535e397a40f42",
-    "semantic_hash": "e5143f2604db0cf0adc535e397a40f42"
+    "mtime": 1783283582.7486625,
+    "ast_hash": "ba6185d5d3373bd7e67b648870f4c55a",
+    "semantic_hash": "ba6185d5d3373bd7e67b648870f4c55a"
   },
   "addons/interaction/readme.md": {
     "mtime": 1762366475.262727,
@@ -475,244 +460,34 @@
     "semantic_hash": "3ca78395515e53e02dfe848341f8a508"
   },
   "releases/CHANGELOG.md": {
-    "mtime": 1782246759.1313128,
-    "ast_hash": "fa8a1f43900a90ad282635134df71f56",
-    "semantic_hash": "fa8a1f43900a90ad282635134df71f56"
-  },
-  "wiki/ACE-Mutex.md": {
-    "mtime": 1762837390.516354,
-    "ast_hash": "34750042f5165996069994e73aeb851a",
-    "semantic_hash": "34750042f5165996069994e73aeb851a"
-  },
-  "wiki/API-Reference.md": {
-    "mtime": 1762842232.0911865,
-    "ast_hash": "10254b061d0a18d0a351f26bef81c285",
-    "semantic_hash": "10254b061d0a18d0a351f26bef81c285"
-  },
-  "wiki/App-Framework.md": {
-    "mtime": 1782075025.2724214,
-    "ast_hash": "54768cee40dfe655333b97773a9067ad",
-    "semantic_hash": "54768cee40dfe655333b97773a9067ad"
-  },
-  "wiki/Architecture.md": {
-    "mtime": 1762844998.5724335,
-    "ast_hash": "3410b4f43eece940ae702229b6239ed5",
-    "semantic_hash": "3410b4f43eece940ae702229b6239ed5"
-  },
-  "wiki/Configuration.md": {
-    "mtime": 1782075036.6011162,
-    "ast_hash": "04ac5ea19c7effaea66d3d021a4a33ef",
-    "semantic_hash": "04ac5ea19c7effaea66d3d021a4a33ef"
+    "mtime": 1783501393.7902164,
+    "ast_hash": "f1b07de937ba34ff3fb6d755ef1ff227",
+    "semantic_hash": "f1b07de937ba34ff3fb6d755ef1ff227"
   },
   "wiki/Eden-Editor-Guide.md": {
-    "mtime": 1762837789.527117,
-    "ast_hash": "411b2a97528635f00f0a87a9f2745586",
-    "semantic_hash": "411b2a97528635f00f0a87a9f2745586"
-  },
-  "wiki/Encryption-Examples.md": {
-    "mtime": 1781830055.1114483,
-    "ast_hash": "a250f81862340993c4ff3f4c563bfdfd",
-    "semantic_hash": "a250f81862340993c4ff3f4c563bfdfd"
-  },
-  "wiki/GUI-Laptop-Guide.md": {
-    "mtime": 1782075040.2300808,
-    "ast_hash": "4cf7ae755a9cd0a84f54813751b27fba",
-    "semantic_hash": "4cf7ae755a9cd0a84f54813751b27fba"
+    "mtime": 1782855513.8849616,
+    "ast_hash": "58b6324bbf1357ebf5f78b943eb9a592",
+    "semantic_hash": "58b6324bbf1357ebf5f78b943eb9a592"
   },
   "wiki/Home.md": {
-    "mtime": 1762863529.601574,
-    "ast_hash": "250e090f70582407664dfc2403ce1265",
-    "semantic_hash": "250e090f70582407664dfc2403ce1265"
+    "mtime": 1783001177.6358068,
+    "ast_hash": "02b6e37ad57304c1bc1240d3495004c4",
+    "semantic_hash": "02b6e37ad57304c1bc1240d3495004c4"
   },
   "wiki/Mission-Maker-Guide.md": {
-    "mtime": 1762837964.2788298,
-    "ast_hash": "6e393da718b199e91495c70e5f7ec0aa",
-    "semantic_hash": "6e393da718b199e91495c70e5f7ec0aa"
-  },
-  "wiki/Networking-SSH-Messaging.md": {
-    "mtime": 1781270163.1455472,
-    "ast_hash": "86b5f21ef7af2fa0293f7f0eb7370f8f",
-    "semantic_hash": "86b5f21ef7af2fa0293f7f0eb7370f8f"
-  },
-  "wiki/OS-Command-Customization.md": {
-    "mtime": 1762509174.0653808,
-    "ast_hash": "5fc9cd5964c0a535c1306588115e2646",
-    "semantic_hash": "5fc9cd5964c0a535c1306588115e2646"
-  },
-  "wiki/Security-Commands.md": {
-    "mtime": 1762366476.216334,
-    "ast_hash": "f53c6006213597358b02dee07f9d2da2",
-    "semantic_hash": "f53c6006213597358b02dee07f9d2da2"
-  },
-  "wiki/Terminal-Guide.md": {
-    "mtime": 1762863462.7650945,
-    "ast_hash": "087da8b4ff1b085827315805608180d6",
-    "semantic_hash": "087da8b4ff1b085827315805608180d6"
+    "mtime": 1782856768.266436,
+    "ast_hash": "65bf7dd887483a1e522f52ffe1b7e284",
+    "semantic_hash": "65bf7dd887483a1e522f52ffe1b7e284"
   },
   "wiki/Zeus-Guide.md": {
-    "mtime": 1762868004.2129343,
-    "ast_hash": "44a66e804fc865d9c707f959dca41e37",
-    "semantic_hash": "44a66e804fc865d9c707f959dca41e37"
+    "mtime": 1783202937.6603446,
+    "ast_hash": "dc5df3a7de306b87f3297cab054bf1ec",
+    "semantic_hash": "dc5df3a7de306b87f3297cab054bf1ec"
   },
   "AE3_Revamped_Logo.png": {
     "mtime": 1762863850.6096992,
     "ast_hash": "c783ffee6e45a3732ef8a6117187b3ec",
     "semantic_hash": "c783ffee6e45a3732ef8a6117187b3ec"
-  },
-  "zz_archives/design/AE3_Module_Icon_addConnection.png": {
-    "mtime": 1762366475.3219814,
-    "ast_hash": "4ab4884380f50afd21954b552193c5c3",
-    "semantic_hash": "4ab4884380f50afd21954b552193c5c3"
-  },
-  "zz_archives/design/AE3_Module_Icon_addHackingCommands.png": {
-    "mtime": 1762366475.3259828,
-    "ast_hash": "07c90b2a42c996e3306b0f16527c24c6",
-    "semantic_hash": "07c90b2a42c996e3306b0f16527c24c6"
-  },
-  "zz_archives/design/AE3_Module_Icon_addSecurityCommands.png": {
-    "mtime": 1762366475.327486,
-    "ast_hash": "cc0428730f46cb5c203f95cd7b94c7e3",
-    "semantic_hash": "cc0428730f46cb5c203f95cd7b94c7e3"
-  },
-  "zz_archives/design/AE3_Module_Icon_addSecurityCommands_v2.png": {
-    "mtime": 1762366475.3294895,
-    "ast_hash": "2fa35d021f5114d2999fb784f9cb5ab1",
-    "semantic_hash": "2fa35d021f5114d2999fb784f9cb5ab1"
-  },
-  "zz_archives/design/AE3_Module_Icons_addDir.png": {
-    "mtime": 1762366475.3324926,
-    "ast_hash": "d9fa6c37c4f2181ccee9b2fa22a88864",
-    "semantic_hash": "d9fa6c37c4f2181ccee9b2fa22a88864"
-  },
-  "zz_archives/design/AE3_Module_Icons_addFile.png": {
-    "mtime": 1762366475.3334935,
-    "ast_hash": "f6a3a8f96a85d255a32bc6093e92dcf2",
-    "semantic_hash": "f6a3a8f96a85d255a32bc6093e92dcf2"
-  },
-  "zz_archives/design/AE3_Module_Icons_addGames.png": {
-    "mtime": 1762366475.3334935,
-    "ast_hash": "e06c306083e14c6d2e1a865564557331",
-    "semantic_hash": "e06c306083e14c6d2e1a865564557331"
-  },
-  "zz_archives/design/AE3_Module_Icons_addUser.png": {
-    "mtime": 1762366475.3344927,
-    "ast_hash": "c8559263097d01ded3c1c28cea8ec077",
-    "semantic_hash": "c8559263097d01ded3c1c28cea8ec077"
-  },
-  "zz_archives/design/AE3_bucket.png": {
-    "mtime": 1762366475.3374932,
-    "ast_hash": "1bcc657de71ab134814ebe449fd4163a",
-    "semantic_hash": "1bcc657de71ab134814ebe449fd4163a"
-  },
-  "zz_archives/design/AE3_close.png": {
-    "mtime": 1762366475.3386059,
-    "ast_hash": "3ae7432d6c7ba1f79f523882bd9a6734",
-    "semantic_hash": "3ae7432d6c7ba1f79f523882bd9a6734"
-  },
-  "zz_archives/design/AE3_flashdrive_ca.png": {
-    "mtime": 1762366475.3466086,
-    "ast_hash": "ae3e1c76792dd0ebedcd34123a16c04d",
-    "semantic_hash": "ae3e1c76792dd0ebedcd34123a16c04d"
-  },
-  "zz_archives/design/Advanced-Eqipment-Arma-3-512x512.jpg": {
-    "mtime": 1762366475.3776271,
-    "ast_hash": "67e63e0ee69a710e5478fb3b2f9b397b",
-    "semantic_hash": "67e63e0ee69a710e5478fb3b2f9b397b"
-  },
-  "zz_archives/design/Advanced-Eqipment-Github-Social-Preview-1280x640.jpg": {
-    "mtime": 1762366475.3946414,
-    "ast_hash": "1c854229d5f34cb3dd5acbfa1a1ee6db",
-    "semantic_hash": "1c854229d5f34cb3dd5acbfa1a1ee6db"
-  },
-  "zz_archives/design/Advanced-Eqipment-Logo-Simple-Color.png": {
-    "mtime": 1762366475.401153,
-    "ast_hash": "e109cdc2c86bfe8de9b1aafd18529442",
-    "semantic_hash": "e109cdc2c86bfe8de9b1aafd18529442"
-  },
-  "zz_archives/design/Advanced-Eqipment-Logo-Simple-Font.png": {
-    "mtime": 1762366475.4051526,
-    "ast_hash": "c226237ad2bc3b678e70e936552cd229",
-    "semantic_hash": "c226237ad2bc3b678e70e936552cd229"
-  },
-  "zz_archives/design/Advanced-Eqipment-Logo-Simple-Transparent.png": {
-    "mtime": 1762366475.409662,
-    "ast_hash": "e0300df8ec5ed6f531ee3c10dcbd87d6",
-    "semantic_hash": "e0300df8ec5ed6f531ee3c10dcbd87d6"
-  },
-  "zz_archives/design/Advanced-Eqipment-Logo.jpg": {
-    "mtime": 1762366475.4336753,
-    "ast_hash": "2a9cf67dc6bb3ad85dcd10a31af0dcff",
-    "semantic_hash": "2a9cf67dc6bb3ad85dcd10a31af0dcff"
-  },
-  "zz_archives/design/Laptop_4_to_3_Booting_0.png": {
-    "mtime": 1762366475.4431858,
-    "ast_hash": "aa9f89cb5a461d266c856987c5b1ec7d",
-    "semantic_hash": "aa9f89cb5a461d266c856987c5b1ec7d"
-  },
-  "zz_archives/design/Laptop_4_to_3_Booting_1.png": {
-    "mtime": 1762366475.4441874,
-    "ast_hash": "2ca49664eea4e51aa898a7f976e8456e",
-    "semantic_hash": "2ca49664eea4e51aa898a7f976e8456e"
-  },
-  "zz_archives/design/Laptop_4_to_3_Booting_2.png": {
-    "mtime": 1762366475.4441874,
-    "ast_hash": "3b993697c155cc823d9b7b05b3d1344a",
-    "semantic_hash": "3b993697c155cc823d9b7b05b3d1344a"
-  },
-  "zz_archives/design/Laptop_4_to_3_Booting_3.png": {
-    "mtime": 1762366475.4451835,
-    "ast_hash": "5a8367f3d0bdde4c844f85f776b83c61",
-    "semantic_hash": "5a8367f3d0bdde4c844f85f776b83c61"
-  },
-  "zz_archives/design/Laptop_4_to_3_On.png": {
-    "mtime": 1762847372.6018565,
-    "ast_hash": "669218cdaf44e3be82f967c0c3e201b1",
-    "semantic_hash": "669218cdaf44e3be82f967c0c3e201b1"
-  },
-  "zz_archives/design/Laptop_4_to_3_Shutting_Down_0.png": {
-    "mtime": 1762366475.4461837,
-    "ast_hash": "88bd102c6ed86ae545f4496d800bcbc8",
-    "semantic_hash": "88bd102c6ed86ae545f4496d800bcbc8"
-  },
-  "zz_archives/design/Laptop_4_to_3_Shutting_Down_1.png": {
-    "mtime": 1762366475.4461837,
-    "ast_hash": "ef6e6e7185076b8c1df816df9444c837",
-    "semantic_hash": "ef6e6e7185076b8c1df816df9444c837"
-  },
-  "zz_archives/design/Laptop_4_to_3_Shutting_Down_2.png": {
-    "mtime": 1762366475.4476857,
-    "ast_hash": "5182d82f2061fef585e4f026092425f0",
-    "semantic_hash": "5182d82f2061fef585e4f026092425f0"
-  },
-  "zz_archives/design/Laptop_4_to_3_Shutting_Down_3.png": {
-    "mtime": 1762366475.4476857,
-    "ast_hash": "8b61db4c092dbd8fdbe3792d40c0582c",
-    "semantic_hash": "8b61db4c092dbd8fdbe3792d40c0582c"
-  },
-  "zz_archives/design/Laptop_4_to_3_Standby.png": {
-    "mtime": 1762366475.4486883,
-    "ast_hash": "2c63e8f689434d1d9e9a008b0e98822d",
-    "semantic_hash": "2c63e8f689434d1d9e9a008b0e98822d"
-  },
-  "zz_archives/design/Snake_GameOver.png": {
-    "mtime": 1762366475.5787895,
-    "ast_hash": "bf5310cd1f0c05fa9635a5dc8d3063dd",
-    "semantic_hash": "bf5310cd1f0c05fa9635a5dc8d3063dd"
-  },
-  "zz_archives/design/Snake_GameOver_PreRescale.png": {
-    "mtime": 1762366475.5787895,
-    "ast_hash": "79e0a920a95e87a3efb12c488d239c54",
-    "semantic_hash": "79e0a920a95e87a3efb12c488d239c54"
-  },
-  "zz_archives/design/Snake_Splash.png": {
-    "mtime": 1762366475.5817962,
-    "ast_hash": "9d33240a33e0e880839f9c2e77f49c84",
-    "semantic_hash": "9d33240a33e0e880839f9c2e77f49c84"
-  },
-  "zz_archives/design/Snake_Splash_PreRescale.png": {
-    "mtime": 1762366475.5817962,
-    "ast_hash": "a2ca195dad190daadf8d5912232fee2e",
-    "semantic_hash": "a2ca195dad190daadf8d5912232fee2e"
   },
   "addons/armaos/sounds/Blip.ogg": {
     "mtime": 1762366475.242356,
@@ -794,49 +569,474 @@
     "ast_hash": "9df2636b7fa4fd97471d50a944daff5d",
     "semantic_hash": "9df2636b7fa4fd97471d50a944daff5d"
   },
-  "zz_archives/sounds/169940__jeffwojo__generator-startup-run-shutdown.wav": {
-    "mtime": 1762855597.9819577,
-    "ast_hash": "996fb1fe69e4042c4136a40c4ddc6a12",
-    "semantic_hash": "996fb1fe69e4042c4136a40c4ddc6a12"
+  "addons/armaos/CfgUserInterfaceZeus.hpp": {
+    "mtime": 1783418921.465894,
+    "ast_hash": "7efce8ef557a618ba7c54b1e5a6e179b",
+    "semantic_hash": "7efce8ef557a618ba7c54b1e5a6e179b"
   },
-  "zz_archives/sounds/415096__wolderado__game-over.wav": {
-    "mtime": 1762855598.0070546,
-    "ast_hash": "6be5fbbd88cd4d02bb6497d1d12103dc",
-    "semantic_hash": "6be5fbbd88cd4d02bb6497d1d12103dc"
+  "addons/network/ui/RscNetworkPassword.hpp": {
+    "mtime": 1783103036.423009,
+    "ast_hash": "64f6238b2c9600fdaa258a09e57847dc",
+    "semantic_hash": "64f6238b2c9600fdaa258a09e57847dc"
   },
-  "zz_archives/sounds/434660__claforet__startingpowerwasher.wav": {
-    "mtime": 1762855598.076146,
-    "ast_hash": "241400296a9906817aca769b8e083cd3",
-    "semantic_hash": "241400296a9906817aca769b8e083cd3"
+  "sample_files/gallery/app.js": {
+    "mtime": 1782985844.2087243,
+    "ast_hash": "418087322c47ddd65dbc4164aeb4b2da",
+    "semantic_hash": "418087322c47ddd65dbc4164aeb4b2da"
   },
-  "zz_archives/sounds/516759__jameswrowles__small-diesel-generator.wav": {
-    "mtime": 1762855598.3021672,
-    "ast_hash": "cfb45b63ed82c1ac530e52bf826269a6",
-    "semantic_hash": "cfb45b63ed82c1ac530e52bf826269a6"
+  "sample_files/portal/app.js": {
+    "mtime": 1782985569.8304014,
+    "ast_hash": "9d6d30a641f8a33faa435a4ea4ecb623",
+    "semantic_hash": "9d6d30a641f8a33faa435a4ea4ecb623"
   },
-  "zz_archives/sounds/527650__fupicat__winsquare.wav": {
-    "mtime": 1762855598.3071668,
-    "ast_hash": "a324eb1f93048ad57ca7105b69d79b1c",
-    "semantic_hash": "a324eb1f93048ad57ca7105b69d79b1c"
+  "sample_files/regret/app.js": {
+    "mtime": 1782985839.613778,
+    "ast_hash": "367a504bdd8af7c34a02d43c47ef6afc",
+    "semantic_hash": "367a504bdd8af7c34a02d43c47ef6afc"
   },
-  "zz_archives/sounds/GeneratorRunningSound.wav": {
-    "mtime": 1762855598.3131864,
-    "ast_hash": "d7fcebdc0b1df4d7c342ca4a95b0b43c",
-    "semantic_hash": "d7fcebdc0b1df4d7c342ca4a95b0b43c"
+  "tools/png2b64.ps1": {
+    "mtime": 1783283927.17347,
+    "ast_hash": "6f8b11b4e17f4c1f39efa8439453ac12",
+    "semantic_hash": "6f8b11b4e17f4c1f39efa8439453ac12"
   },
-  "zz_archives/sounds/GeneratorRunningSoundLong.wav": {
-    "mtime": 1762855598.5302703,
-    "ast_hash": "1938191530dcc840a4b926a1a2f1c6b7",
-    "semantic_hash": "1938191530dcc840a4b926a1a2f1c6b7"
+  "tools/png2b64.py": {
+    "mtime": 1783283937.9005544,
+    "ast_hash": "0b7a8612f442e2bab3b3ba4cbae860ab",
+    "semantic_hash": "0b7a8612f442e2bab3b3ba4cbae860ab"
   },
-  "zz_archives/sounds/GeneratorStartSound.wav": {
-    "mtime": 1762855598.5397754,
-    "ast_hash": "2b5cde0012bc7096bc16dbcb41edf238",
-    "semantic_hash": "2b5cde0012bc7096bc16dbcb41edf238"
+  ".code-wiki/archive/README.md": {
+    "mtime": 1782861684.9840338,
+    "ast_hash": "0d767144912893afcb14495cacd6f6f0",
+    "semantic_hash": "0d767144912893afcb14495cacd6f6f0"
   },
-  "zz_archives/sounds/GeneratorStopSound.wav": {
-    "mtime": 1762855598.553346,
-    "ast_hash": "316fca568c90ba80b45e618d09d34577",
-    "semantic_hash": "316fca568c90ba80b45e618d09d34577"
+  ".code-wiki/armaos-terminal.md": {
+    "mtime": 1783499951.2547984,
+    "ast_hash": "79c576104103f23beb261cf3d296aa3c",
+    "semantic_hash": "79c576104103f23beb261cf3d296aa3c"
+  },
+  ".code-wiki/conventions.md": {
+    "mtime": 1782858167.335304,
+    "ast_hash": "7ce9eb583de1ffaad874983ae2837b1a",
+    "semantic_hash": "7ce9eb583de1ffaad874983ae2837b1a"
+  },
+  ".code-wiki/desktop-gui-and-browser.md": {
+    "mtime": 1783499952.85734,
+    "ast_hash": "3b310347374964c29dd41b8917eec1fd",
+    "semantic_hash": "3b310347374964c29dd41b8917eec1fd"
+  },
+  ".code-wiki/desktop-intel-and-communications.md": {
+    "mtime": 1783499955.2684326,
+    "ast_hash": "31d5e81f714df9a2de6b5b49e5d37018",
+    "semantic_hash": "31d5e81f714df9a2de6b5b49e5d37018"
+  },
+  ".code-wiki/eden-zeus-tooling.md": {
+    "mtime": 1783499956.758278,
+    "ast_hash": "3bab420cf409e1db973eb5733d2c3221",
+    "semantic_hash": "3bab420cf409e1db973eb5733d2c3221"
+  },
+  ".code-wiki/filesystem-model.md": {
+    "mtime": 1783499958.453704,
+    "ast_hash": "d6d4732574dd637d3cfd93d2accb52e1",
+    "semantic_hash": "d6d4732574dd637d3cfd93d2accb52e1"
+  },
+  ".code-wiki/flashdrive-usb.md": {
+    "mtime": 1783499960.0174265,
+    "ast_hash": "c297150a829b0b5071863cf472e056db",
+    "semantic_hash": "c297150a829b0b5071863cf472e056db"
+  },
+  ".code-wiki/index.md": {
+    "mtime": 1783499970.2038505,
+    "ast_hash": "a5b5acb55ff20cdfbbd1f4d6cdd11288",
+    "semantic_hash": "a5b5acb55ff20cdfbbd1f4d6cdd11288"
+  },
+  ".code-wiki/interaction-equipment.md": {
+    "mtime": 1783499961.521644,
+    "ast_hash": "19f936f8d172c6e97a3180ca5a3c4866",
+    "semantic_hash": "19f936f8d172c6e97a3180ca5a3c4866"
+  },
+  ".code-wiki/log.md": {
+    "mtime": 1783499971.9335415,
+    "ast_hash": "c47a9ab09d1ef7a7c5098c56a28cb364",
+    "semantic_hash": "c47a9ab09d1ef7a7c5098c56a28cb364"
+  },
+  ".code-wiki/main-runtime-infrastructure.md": {
+    "mtime": 1783499963.041316,
+    "ast_hash": "e94380e41a515b354d6899b0c4fa4d2d",
+    "semantic_hash": "e94380e41a515b354d6899b0c4fa4d2d"
+  },
+  ".code-wiki/multiplayer-locality-and-sync.md": {
+    "mtime": 1783499965.5503097,
+    "ast_hash": "c115f3f7e2d3c9888813c5920d3d20a5",
+    "semantic_hash": "c115f3f7e2d3c9888813c5920d3d20a5"
+  },
+  ".code-wiki/network-routing-and-ssh.md": {
+    "mtime": 1783499967.0216455,
+    "ast_hash": "11c081b2d3f2bb5399061a7f64ada098",
+    "semantic_hash": "11c081b2d3f2bb5399061a7f64ada098"
+  },
+  ".code-wiki/power-model.md": {
+    "mtime": 1783499968.6597373,
+    "ast_hash": "f5f6f8fef7ef34db2568b6109e56c308",
+    "semantic_hash": "f5f6f8fef7ef34db2568b6109e56c308"
+  },
+  ".github/ISSUE_TEMPLATE/bug_report.yml": {
+    "mtime": 1782851842.3873174,
+    "ast_hash": "65d42ea536c57f48f8b77430dc084a24",
+    "semantic_hash": "65d42ea536c57f48f8b77430dc084a24"
+  },
+  ".github/ISSUE_TEMPLATE/documentation.yml": {
+    "mtime": 1782851842.395345,
+    "ast_hash": "4faf41a8e95b1d04840844c5bfba5663",
+    "semantic_hash": "4faf41a8e95b1d04840844c5bfba5663"
+  },
+  ".github/ISSUE_TEMPLATE/feature_request.yml": {
+    "mtime": 1782851842.3913457,
+    "ast_hash": "9e9ecfb6f159fcacb22e99607e244f37",
+    "semantic_hash": "9e9ecfb6f159fcacb22e99607e244f37"
+  },
+  ".github/PULL_REQUEST_TEMPLATE.md": {
+    "mtime": 1782851947.1819265,
+    "ast_hash": "8197302af391d42b4cbe74fba7336425",
+    "semantic_hash": "8197302af391d42b4cbe74fba7336425"
+  },
+  "sample_files/README.md": {
+    "mtime": 1782985567.011675,
+    "ast_hash": "672dfd2112ed7509edf50ef4947ef7da",
+    "semantic_hash": "672dfd2112ed7509edf50ef4947ef7da"
+  },
+  "sample_files/gallery/gallery.md": {
+    "mtime": 1782985954.939948,
+    "ast_hash": "dbafe88ea1e6ab748b649aa040f3f82c",
+    "semantic_hash": "dbafe88ea1e6ab748b649aa040f3f82c"
+  },
+  "sample_files/gallery/index.html": {
+    "mtime": 1782985842.6137009,
+    "ast_hash": "8678eca8e9697b09cdf56051c0b3d333",
+    "semantic_hash": "8678eca8e9697b09cdf56051c0b3d333"
+  },
+  "sample_files/portal/brief.md": {
+    "mtime": 1782985570.7083504,
+    "ast_hash": "a272054cf64904f664f7a49c940f034a",
+    "semantic_hash": "a272054cf64904f664f7a49c940f034a"
+  },
+  "sample_files/portal/index.html": {
+    "mtime": 1782985568.183446,
+    "ast_hash": "524400b91b95f9adf95f25c639168e63",
+    "semantic_hash": "524400b91b95f9adf95f25c639168e63"
+  },
+  "sample_files/regret/feed.md": {
+    "mtime": 1782985840.3237927,
+    "ast_hash": "6f5c6b7a92e3b1bb722f6bf8351626af",
+    "semantic_hash": "6f5c6b7a92e3b1bb722f6bf8351626af"
+  },
+  "sample_files/regret/index.html": {
+    "mtime": 1782985838.10037,
+    "ast_hash": "eada70b8e5a43299cac505f6a815a3c1",
+    "semantic_hash": "eada70b8e5a43299cac505f6a815a3c1"
+  },
+  "tools/README.md": {
+    "mtime": 1783283951.7837777,
+    "ast_hash": "5157309869788da496286529a8f643bb",
+    "semantic_hash": "5157309869788da496286529a8f643bb"
+  },
+  "wiki/Developer/Addon-Components.md": {
+    "mtime": 1782855514.3042202,
+    "ast_hash": "b001ae80c1e7b71c39abae7eec2cdee6",
+    "semantic_hash": "b001ae80c1e7b71c39abae7eec2cdee6"
+  },
+  "wiki/Developer/Architecture.md": {
+    "mtime": 1782855514.313234,
+    "ast_hash": "67c7a9fa9197b10051ad56b63af6426a",
+    "semantic_hash": "67c7a9fa9197b10051ad56b63af6426a"
+  },
+  "wiki/Developer/Debugging.md": {
+    "mtime": 1782856768.3037846,
+    "ast_hash": "b308654c2e26caaa0294839385119275",
+    "semantic_hash": "b308654c2e26caaa0294839385119275"
+  },
+  "wiki/Developer/Extending-Browser-Webpages.md": {
+    "mtime": 1783178908.3991272,
+    "ast_hash": "94fb63f72bd67a232ddd2cc53864dc49",
+    "semantic_hash": "94fb63f72bd67a232ddd2cc53864dc49"
+  },
+  "wiki/Developer/Extending-Desktop-GUI.md": {
+    "mtime": 1782855514.3400743,
+    "ast_hash": "0998291a57fe606ff9450da67d186c0a",
+    "semantic_hash": "0998291a57fe606ff9450da67d186c0a"
+  },
+  "wiki/Developer/Extending-Terminal-TUI.md": {
+    "mtime": 1782855514.3490968,
+    "ast_hash": "fce0aac784b5efd0a31f2fd482843415",
+    "semantic_hash": "fce0aac784b5efd0a31f2fd482843415"
+  },
+  "wiki/Developer/Locality-and-Multiplayer.md": {
+    "mtime": 1782856768.2965045,
+    "ast_hash": "ab1cabd5b6c99401ab76b8e2f6652aa7",
+    "semantic_hash": "ab1cabd5b6c99401ab76b8e2f6652aa7"
+  },
+  "wiki/Examples/Add-Custom-Terminal-Commands.md": {
+    "mtime": 1782989471.4824245,
+    "ast_hash": "087e6b6a9ea9a1524bcf17acb13f373e",
+    "semantic_hash": "087e6b6a9ea9a1524bcf17acb13f373e"
+  },
+  "wiki/Examples/Add-Files-and-Folders.md": {
+    "mtime": 1782989324.4875555,
+    "ast_hash": "1874738695a714c428101c7990ee030a",
+    "semantic_hash": "1874738695a714c428101c7990ee030a"
+  },
+  "wiki/Examples/Add-Intel-Mail-Chat-or-Media.md": {
+    "mtime": 1782989338.1220603,
+    "ast_hash": "e3a125250c66654aa27a7480328de139",
+    "semantic_hash": "e3a125250c66654aa27a7480328de139"
+  },
+  "wiki/Examples/Add-Webpages-and-Browser-History.md": {
+    "mtime": 1782989472.7752748,
+    "ast_hash": "a5a44c1a923ad73e9f410008cf6befa3",
+    "semantic_hash": "a5a44c1a923ad73e9f410008cf6befa3"
+  },
+  "wiki/Examples/Browser-Sample-Gallery.md": {
+    "mtime": 1782985475.8848116,
+    "ast_hash": "37d8679ca07d6c850e2ecc4e29c3a464",
+    "semantic_hash": "37d8679ca07d6c850e2ecc4e29c3a464"
+  },
+  "wiki/Examples/Browser-Sample-Pages.md": {
+    "mtime": 1783225105.4545193,
+    "ast_hash": "7f7d823aa65a341c5a505c434e5a5a3f",
+    "semantic_hash": "7f7d823aa65a341c5a505c434e5a5a3f"
+  },
+  "wiki/Examples/Browser-Sample-Portal.md": {
+    "mtime": 1782985461.7821681,
+    "ast_hash": "ec5e28729b23dec4e52cfea6651874db",
+    "semantic_hash": "ec5e28729b23dec4e52cfea6651874db"
+  },
+  "wiki/Examples/Browser-Sample-Regret.md": {
+    "mtime": 1782985468.696691,
+    "ast_hash": "110ce8e610f3004aa9fc90f6c201b9dd",
+    "semantic_hash": "110ce8e610f3004aa9fc90f6c201b9dd"
+  },
+  "wiki/Examples/Build-a-Network.md": {
+    "mtime": 1782989414.6560276,
+    "ast_hash": "a5c85e05502851491fac26032e1e89fb",
+    "semantic_hash": "a5c85e05502851491fac26032e1e89fb"
+  },
+  "wiki/Examples/Configure-GUI-vs-TUI-Access.md": {
+    "mtime": 1782989421.5130942,
+    "ast_hash": "4e537a46aa1cfab0d32c396c2dd380ce",
+    "semantic_hash": "4e537a46aa1cfab0d32c396c2dd380ce"
+  },
+  "wiki/Examples/Configure-Power.md": {
+    "mtime": 1782989413.4481468,
+    "ast_hash": "5dc364fd5c8301e78acf4410e4ada3f5",
+    "semantic_hash": "5dc364fd5c8301e78acf4410e4ada3f5"
+  },
+  "wiki/Examples/Create-a-Laptop.md": {
+    "mtime": 1782989376.9557548,
+    "ast_hash": "09d9ea23c4bf34b066e730af9f5d14db",
+    "semantic_hash": "09d9ea23c4bf34b066e730af9f5d14db"
+  },
+  "wiki/Examples/README.md": {
+    "mtime": 1782989272.4120574,
+    "ast_hash": "f77b948750c040416c9b1ce7067015a9",
+    "semantic_hash": "f77b948750c040416c9b1ce7067015a9"
+  },
+  "wiki/Examples/Register-Desktop-Apps.md": {
+    "mtime": 1783202209.2374907,
+    "ast_hash": "2729a4950602000a1e38e14330eaf709",
+    "semantic_hash": "2729a4950602000a1e38e14330eaf709"
+  },
+  "wiki/Examples/Use-Flash-Drives.md": {
+    "mtime": 1782989448.8305302,
+    "ast_hash": "faaff6a708303dda47ac85164890fe3a",
+    "semantic_hash": "faaff6a708303dda47ac85164890fe3a"
+  },
+  "wiki/Examples/Zeus-Live-Operations.md": {
+    "mtime": 1782989450.0240622,
+    "ast_hash": "c9c77658119cd152aad9379ac5d9262d",
+    "semantic_hash": "c9c77658119cd152aad9379ac5d9262d"
+  },
+  "wiki/Getting-Started.md": {
+    "mtime": 1782855513.8939915,
+    "ast_hash": "4fa319f73b9da34ad15a431f942bcb91",
+    "semantic_hash": "4fa319f73b9da34ad15a431f942bcb91"
+  },
+  "wiki/Player-Guide.md": {
+    "mtime": 1783180508.4673753,
+    "ast_hash": "bd5764dfa5787dbe66923c28fc3bf772",
+    "semantic_hash": "bd5764dfa5787dbe66923c28fc3bf772"
+  },
+  "wiki/Reference/API-Overview.md": {
+    "mtime": 1783180195.1855295,
+    "ast_hash": "a9577fdd370674b463a7aa3579370ad5",
+    "semantic_hash": "a9577fdd370674b463a7aa3579370ad5"
+  },
+  "wiki/Reference/ArmaOS-API.md": {
+    "mtime": 1783178735.3932562,
+    "ast_hash": "725cb726ef1344b019d8b8b9febb2867",
+    "semantic_hash": "725cb726ef1344b019d8b8b9febb2867"
+  },
+  "wiki/Reference/Browser-API.md": {
+    "mtime": 1782856768.320441,
+    "ast_hash": "d7ba222fdd0339e9ed642d71399546dd",
+    "semantic_hash": "d7ba222fdd0339e9ed642d71399546dd"
+  },
+  "wiki/Reference/Config-Classes.md": {
+    "mtime": 1783180405.1739275,
+    "ast_hash": "59103481edd11d7e1e197f589aa418ff",
+    "semantic_hash": "59103481edd11d7e1e197f589aa418ff"
+  },
+  "wiki/Reference/Desktop-API.md": {
+    "mtime": 1783202209.2259855,
+    "ast_hash": "7e438a2fe23435e9d88d8d89c77d9b5e",
+    "semantic_hash": "7e438a2fe23435e9d88d8d89c77d9b5e"
+  },
+  "wiki/Reference/Desktop-Apps.md": {
+    "mtime": 1783202209.2324922,
+    "ast_hash": "1eec5a6ed172e3aaa8a9f876130e00a6",
+    "semantic_hash": "1eec5a6ed172e3aaa8a9f876130e00a6"
+  },
+  "wiki/Reference/Eden-Attributes.md": {
+    "mtime": 1782855514.235229,
+    "ast_hash": "0c2106e6be13e14a461bcf1838882447",
+    "semantic_hash": "0c2106e6be13e14a461bcf1838882447"
+  },
+  "wiki/Reference/Filesystem-API.md": {
+    "mtime": 1783180161.1710544,
+    "ast_hash": "3c23d2e2b257b62ee9af281043fddd00",
+    "semantic_hash": "3c23d2e2b257b62ee9af281043fddd00"
+  },
+  "wiki/Reference/Flashdrive-API.md": {
+    "mtime": 1783180124.3095803,
+    "ast_hash": "45c539853a5b4149a9f31357c94810cd",
+    "semantic_hash": "45c539853a5b4149a9f31357c94810cd"
+  },
+  "wiki/Reference/Interaction-API.md": {
+    "mtime": 1782855514.2614903,
+    "ast_hash": "41a9d6e5b717caa777c81e2cc8007941",
+    "semantic_hash": "41a9d6e5b717caa777c81e2cc8007941"
+  },
+  "wiki/Reference/Network-API.md": {
+    "mtime": 1782855514.2700071,
+    "ast_hash": "5441f2c65e52b26f3b9d5e6be874c5ce",
+    "semantic_hash": "5441f2c65e52b26f3b9d5e6be874c5ce"
+  },
+  "wiki/Reference/Power-API.md": {
+    "mtime": 1782855514.278513,
+    "ast_hash": "aefc5472cbb30a075d1b7cf017f9f284",
+    "semantic_hash": "aefc5472cbb30a075d1b7cf017f9f284"
+  },
+  "wiki/Reference/Terminal-Commands.md": {
+    "mtime": 1783202950.0755806,
+    "ast_hash": "fc6cd9a5afdc5daf775c29f50701b580",
+    "semantic_hash": "fc6cd9a5afdc5daf775c29f50701b580"
+  },
+  "wiki/Reference/Zeus-API.md": {
+    "mtime": 1782855514.2951405,
+    "ast_hash": "f379ca24df4708463704984ed4b03016",
+    "semantic_hash": "f379ca24df4708463704984ed4b03016"
+  },
+  "wiki/Server-Admin-Guide.md": {
+    "mtime": 1783329903.1184015,
+    "ast_hash": "812936d711bf4d7ecb35cb9914664820",
+    "semantic_hash": "812936d711bf4d7ecb35cb9914664820"
+  },
+  "wiki/Systems/Browser-and-Webpages.md": {
+    "mtime": 1783178896.36007,
+    "ast_hash": "af9fb5ae9e372cb95aa70217b2fd128f",
+    "semantic_hash": "af9fb5ae9e372cb95aa70217b2fd128f"
+  },
+  "wiki/Systems/Desktop-GUI.md": {
+    "mtime": 1783178359.4351463,
+    "ast_hash": "67032ca405661cba2a37ad9f89bd76d2",
+    "semantic_hash": "67032ca405661cba2a37ad9f89bd76d2"
+  },
+  "wiki/Systems/Encryption-and-Security.md": {
+    "mtime": 1783180179.8593936,
+    "ast_hash": "f8aafca22d08913144fa176061f6d024",
+    "semantic_hash": "f8aafca22d08913144fa176061f6d024"
+  },
+  "wiki/Systems/Filesystem.md": {
+    "mtime": 1783178346.38034,
+    "ast_hash": "6c100df7279b19e7686d6383efe1f449",
+    "semantic_hash": "6c100df7279b19e7686d6383efe1f449"
+  },
+  "wiki/Systems/Flash-Drives.md": {
+    "mtime": 1783178184.8807104,
+    "ast_hash": "856c319ec876939494f17af5e93db250",
+    "semantic_hash": "856c319ec876939494f17af5e93db250"
+  },
+  "wiki/Systems/Intel-Mail-Chat-Media.md": {
+    "mtime": 1783178422.8169932,
+    "ast_hash": "8f3d7320c79a859106eb2a4598dc1e9d",
+    "semantic_hash": "8f3d7320c79a859106eb2a4598dc1e9d"
+  },
+  "wiki/Systems/Laptops-and-Interfaces.md": {
+    "mtime": 1783180521.3323102,
+    "ast_hash": "c0c218d78761dbeaedeeb47e53b7ae36",
+    "semantic_hash": "c0c218d78761dbeaedeeb47e53b7ae36"
+  },
+  "wiki/Systems/Lights-and-Interaction.md": {
+    "mtime": 1783178205.5977168,
+    "ast_hash": "3a474592f546bfb3b52177741ebf3d72",
+    "semantic_hash": "3a474592f546bfb3b52177741ebf3d72"
+  },
+  "wiki/Systems/Networking.md": {
+    "mtime": 1783178374.000375,
+    "ast_hash": "a40a694a12813201b5c3f83e92367483",
+    "semantic_hash": "a40a694a12813201b5c3f83e92367483"
+  },
+  "wiki/Systems/Power.md": {
+    "mtime": 1783178388.1892605,
+    "ast_hash": "4eab946cda454c4c57e9d7c073c935df",
+    "semantic_hash": "4eab946cda454c4c57e9d7c073c935df"
+  },
+  "wiki/Systems/Terminal-TUI.md": {
+    "mtime": 1783178329.29722,
+    "ast_hash": "d424bf1f3cb3f846da1dfcd3f147c5f7",
+    "semantic_hash": "d424bf1f3cb3f846da1dfcd3f147c5f7"
+  },
+  "addons/desktop/images/do-u-code-bro.png": {
+    "mtime": 1783281842.9175038,
+    "ast_hash": "9c5e5a14d516a506a7a66aac57cc692a",
+    "semantic_hash": "9c5e5a14d516a506a7a66aac57cc692a"
+  },
+  "addons/desktop/images/wallpaper_1.png": {
+    "mtime": 1783281842.943026,
+    "ast_hash": "e4c550e4765eb795051474f3358f7bb2",
+    "semantic_hash": "e4c550e4765eb795051474f3358f7bb2"
+  },
+  "addons/desktop/images/wallpaper_2.png": {
+    "mtime": 1783281842.9791033,
+    "ast_hash": "da22cfcfd728c3a350a0e511fcfb6130",
+    "semantic_hash": "da22cfcfd728c3a350a0e511fcfb6130"
+  },
+  "addons/desktop/images/wallpaper_3.png": {
+    "mtime": 1783281843.0101626,
+    "ast_hash": "7792e3c553ad8bafd687e4ce80aef72e",
+    "semantic_hash": "7792e3c553ad8bafd687e4ce80aef72e"
+  },
+  "addons/desktop/images/wallpaper_4.png": {
+    "mtime": 1783281843.063284,
+    "ast_hash": "b7feb90a5c6bcb6527f8b1bc6a91efe9",
+    "semantic_hash": "b7feb90a5c6bcb6527f8b1bc6a91efe9"
+  },
+  "addons/desktop/images/wallpaper_5.png": {
+    "mtime": 1783281843.0883296,
+    "ast_hash": "309faa8735c6c9105cc3333fa93789b2",
+    "semantic_hash": "309faa8735c6c9105cc3333fa93789b2"
+  },
+  "sample_files/gallery/assets/01-night-relay.svg": {
+    "mtime": 1782985846.1614368,
+    "ast_hash": "eeabdce475920dfb792471e536f4e64f",
+    "semantic_hash": "eeabdce475920dfb792471e536f4e64f"
+  },
+  "sample_files/gallery/assets/02-dawn-route.svg": {
+    "mtime": 1782985846.8407302,
+    "ast_hash": "256ca717e6b4a6935ba7dfb652fba486",
+    "semantic_hash": "256ca717e6b4a6935ba7dfb652fba486"
+  },
+  "sample_files/gallery/assets/03-evidence-wall.svg": {
+    "mtime": 1782985847.5277066,
+    "ast_hash": "5d487597f5619eb94e7c0803688a6628",
+    "semantic_hash": "5d487597f5619eb94e7c0803688a6628"
   }
 }

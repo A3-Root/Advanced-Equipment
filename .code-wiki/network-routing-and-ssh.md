@@ -1,16 +1,16 @@
 ---
 topic: network-routing-and-ssh
 status: verified
-last-verified: 2026-06-30
+last-verified: 2026-07-08
 confidence_score: 1.0
 priority: core
 rank: 3
-tokens: ~850
+tokens: ~560
 code-paths:
   - addons/network/
   - addons/armaos/functions/fnc_os_ssh.sqf
   - addons/desktop/functions/fnc_sshOpServer.sqf
-related-topics: [armaos-terminal, desktop-gui-and-browser, power-model, eden-zeus-tooling, multiplayer-locality-and-sync]
+related-topics: [armaos-terminal, desktop-gui-and-browser, power-model, eden-zeus-tooling, multiplayer-locality-and-sync, main-runtime-infrastructure]
 related-docs:
   - wiki/Systems/Networking.md
   - wiki/Reference/Network-API.md

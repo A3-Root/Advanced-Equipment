@@ -1,6 +1,6 @@
 ---
 title: wiki operation log
-last-updated: 2026-06-30
+last-updated: 2026-07-08
 ---
 
 # code wiki operation log
@@ -45,3 +45,7 @@ Append-only log for code-wiki maintenance actions. Actions: created, updated, re
 2026-07-06 | updated | eden-zeus-tooling, desktop-gui-and-browser | AddFile "This is a Picture" checkbox + image-type combo (Zeus/3DEN/ZEN): raw base64 stored as AE3_MEDIA|image|b64|<mime>|<data> inline marker; device_addFile gains _isPicture/_pictureType params (after _overwrite); web Image Viewer renders it as a data URL + new "Decode B64" paste-and-render button (temporary, no VFS write); native viewer declines b64; cap AE3_MAX_PICTURE_B64 2MB enforced server-side
 2026-07-07 | updated | desktop-gui-and-browser, eden-zeus-tooling | moved base64 picture input from Add File to Add Media: removed the "This is a Picture" checkbox/combo from Add File (Zeus/ZEN/3DEN) and orphaned stringtable keys; Add Media Zeus dialog gains a base64 box (IDC 1420, media only) that dispatches type "picture" -> new fnc_registerPictureB64 (ae3_desktop_registerPictureB64 event + pendingPictures future-laptop apply). device_addFile _isPicture path unchanged/reused. Save/Restore Laptop: ZEN restore combo now sorts stored slots; slot names trimmed on save+restore for key consistency
 2026-07-07 | updated | network-routing-and-ssh, eden-zeus-tooling, desktop-intel-and-communications | dedicated-server fixes: (1) WiFi static IP carryover - 3DEN default static (staticIpDefault) now subnet-gated via new AE3_network_fnc_ipInSubnet in connect_device2router + dhcp_refresh, so switching networks drops out-of-subnet statics to DHCP; per-router leases untouched. (2) Non-ZEN Zeus fallback dialogs: AddWebsite via curatorInfoType (desktop/CfgUserInterfaceZeus + fnc_zeus_module_addWebsite); Save/Restore Laptop via server-push openers (fnc_zeus_module_saveLaptop/restoreLaptop + armaos/CfgUserInterfaceZeus), server function dispatches [zeus,zen] select hasZenDialog; Apply workers reused (accept netIds). (3) Add Email "create sender/recipient address" now binds AE3_mail_addresses entry to the target laptop netId instead of "".
+2026-07-08 | created | main-runtime-infrastructure | fresh scan draft from main addon helpers
+2026-07-08 | verified | main-runtime-infrastructure | maintainer approved draft
+2026-07-08 | lint | wiki-topics | fresh wiki-lint pass: no structural errors; several topics need re-verification for code-path drift
+2026-07-08 | re-verified | armaos-terminal, desktop-gui-and-browser, desktop-intel-and-communications, eden-zeus-tooling, filesystem-model, flashdrive-usb, interaction-equipment, multiplayer-locality-and-sync, network-routing-and-ssh, power-model, main-runtime-infrastructure | refreshed stale topics and token estimates after lint pass

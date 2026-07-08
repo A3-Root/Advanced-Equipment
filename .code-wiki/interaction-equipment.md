@@ -1,14 +1,14 @@
 ---
 topic: interaction-equipment
 status: verified
-last-verified: 2026-06-30
+last-verified: 2026-07-08
 confidence_score: 1.0
 priority: support
-tokens: ~590
+tokens: ~370
 code-paths:
   - addons/interaction/
   - addons/interaction/CfgVehicles.hpp
-related-topics: [power-model, armaos-terminal, flashdrive-usb]
+related-topics: [power-model, armaos-terminal, flashdrive-usb, main-runtime-infrastructure]
 related-docs:
   - wiki/Systems/Interactions.md
 ---

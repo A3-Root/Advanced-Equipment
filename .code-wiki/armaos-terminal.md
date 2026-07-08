@@ -1,11 +1,11 @@
 ---
 topic: armaos-terminal
 status: verified
-last-verified: 2026-06-30
+last-verified: 2026-07-08
 confidence_score: 1.0
 priority: core
 rank: 5
-tokens: ~780
+tokens: ~590
 code-paths:
   - addons/armaos/
   - addons/armaos/functions/fnc_os_*.sqf

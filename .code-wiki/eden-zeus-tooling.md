@@ -1,11 +1,11 @@
 ---
 topic: eden-zeus-tooling
 status: verified
-last-verified: 2026-06-30
+last-verified: 2026-07-08
 confidence_score: 1.0
 priority: core
 rank: 2
-tokens: ~810
+tokens: ~1550
 code-paths:
   - addons/main/Cfg3DEN.hpp
   - addons/main/CfgUserInterfaceZeus.hpp
@@ -19,7 +19,7 @@ code-paths:
   - addons/main/functions/fnc_zen_createDialog.sqf
   - addons/*/functions/fnc_zen_module_*.sqf
   - addons/main/functions/fnc_zeus_applyConnection.sqf
-related-topics: [filesystem-model, network-routing-and-ssh, power-model, desktop-gui-and-browser, desktop-intel-and-communications]
+related-topics: [filesystem-model, network-routing-and-ssh, power-model, desktop-gui-and-browser, desktop-intel-and-communications, main-runtime-infrastructure]
 related-docs:
   - wiki/Eden-Editor-Guide.md
   - wiki/Zeus-Guide.md

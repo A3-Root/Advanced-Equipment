@@ -1,11 +1,11 @@
 ---
 topic: desktop-intel-and-communications
 status: verified
-last-verified: 2026-06-30
+last-verified: 2026-07-08
 confidence_score: 1.0
 priority: core
 rank: 4
-tokens: ~1190
+tokens: ~650
 code-paths:
   - addons/desktop/functions/fnc_intel_*.sqf
   - addons/desktop/functions/fnc_module_addIntel.sqf

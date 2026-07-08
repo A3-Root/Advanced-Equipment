@@ -1,10 +1,10 @@
 ---
 topic: flashdrive-usb
 status: verified
-last-verified: 2026-06-30
+last-verified: 2026-07-08
 confidence_score: 1.0
 priority: support
-tokens: ~610
+tokens: ~440
 code-paths:
   - addons/flashdrive/
   - addons/filesystem/functions/fnc_mount.sqf

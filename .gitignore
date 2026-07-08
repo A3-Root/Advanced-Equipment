@@ -29,7 +29,9 @@ logs/**/*
 !.code-wiki/**
 .bak
 reference_files
-!graphify-out
+!graphify-out/
+!graphify-out/wiki/
+!graphify-out/wiki/**
 cache
 .graphify_python
 .graphify_root

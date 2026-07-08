@@ -1,11 +1,11 @@
 ---
 topic: desktop-gui-and-browser
 status: verified
-last-verified: 2026-07-04
+last-verified: 2026-07-08
 confidence_score: 1.0
 priority: core
 rank: 1
-tokens: ~980
+tokens: ~1750
 code-paths:
   - addons/desktop/
   - addons/desktop/functions/fnc_jsRouter.sqf
@@ -89,4 +89,3 @@ The desktop component provides the graphical laptop desktop, native app registry
 - `addons/desktop/functions/fnc_registerWebpage.sqf`
 - `addons/desktop/XEH_postInit.sqf`
 - `addons/desktop/CfgAE3Apps.hpp`
-
