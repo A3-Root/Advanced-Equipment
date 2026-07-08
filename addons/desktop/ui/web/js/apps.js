@@ -2316,7 +2316,7 @@
 
   // ---------------- About ----------------
   Apps.register({
-    id: "about", title: "About OS", glyph: Icons.about, width: 420, height: 260, singleton: true,
+    id: "about", title: "About OS", glyph: Icons.about, width: 480, height: 372, singleton: true,
     render: function (body) {
       body.innerHTML =
         '<div class="pad" style="text-align:center">' +
