@@ -33,9 +33,17 @@ if (_mounted) then
 	[_computer, _name] call AE3_flashdrive_fnc_unmount;
 };
 
-[_occupied, _player] call AE3_flashdrive_fnc_obj2item;
+private _item = [_occupied, _player] call AE3_flashdrive_fnc_obj2item;
 
 // Free the interface slot so the drive can be reconnected and the laptop's occupied state stays
 // consistent (a leftover reference to the now-deleted object otherwise lingers in the list).
 _occupiedList set [_index, objNull];
 _computer setVariable ["AE3_USB_Interfaces_occupied", _occupiedList, true];
+
+private _sound = "\z\ae3\addons\flashdrive\audio\usb_connect.ogg";
+if ((typeOf _occupied) find "ROOT_Rubberducky" == 0) then {
+    _sound = "\z\root_cyberwarfare\addons\main\audio\ducky_connected.ogg";
+};
+[_computer, _sound] remoteExecCall ["AE3_desktop_fnc_playDeviceSound", 0];
+
+_item

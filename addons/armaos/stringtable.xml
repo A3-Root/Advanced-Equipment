@@ -744,42 +744,6 @@
                 <German>Verwendung cp: 'cp [alter Pfad] [neuer Pfad]' kopiert eine Datei in neuen Pfad.</German>
                 <Chinesesimp>cp说明: 'cp [old path] [new path]' 将文件复制到新路径.</Chinesesimp>
             </Key>
-            <Key ID="STR_AE3_ArmaOS_Config_CommandCrackDescr">
-                <Original>Trys to decrypt text with a given algorythm using multiple methods like bruteforce or statistics.</Original>
-                <English>Trys to decrypt text with a given algorythm using multiple methods like bruteforce or statistics.</English>
-                <French>Essaie de déchiffrer du texte avec un algorithme donné en utilisant plusieurs méthodes comme la force brute ou les statistiques.</French>
-                <Italian>Cerca di decriptare il testo con l'algoritmo indicato utilizzando multipli metodi come forza bruta o statistiche.</Italian>
-                <Russian>Пытается расшифровать текст с заданным алгоритмом, используя брутфорс или статистику</Russian>
-                <German>Versucht den angegebenen Text durch verschiedene Methoden wie per Bruteforce oder über Statistiken zu entschlüsseln.</German>
-                <Chinesesimp>尝试使用多种指定算法(如bruteforce或statistics)解密文本.</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_Config_CommandCrackMan">
-                <Original>Usage crack: 'crack -a [algorythm] -m [mode] [text]' prints the results to stdout.</Original>
-                <English>Usage crack: 'crack -a [algorythm] -m [mode] [text]' prints the results to stdout.</English>
-                <French>Utilisation crack: 'crack -a [algorythme] -m [mode] [textee]' affiche les résultats sur stdout.</French>
-                <Italian>Utilizzo crack: 'crack -a [algoritmo] -m [modalità] [testo]' mostra il risultato a console.</Italian>
-                <Russian>Использование crack: crack -a [algorythm] -m [mode] [text]' выводит результаты на stdout</Russian>
-                <German>Verwendung crack: 'crack -a [Algorythmus] -m [Modus] [Text]' gibt die Ergebnisse nach stdout aus.</German>
-                <Chinesesimp>crack说明: 'crack -a [algorythm] -m [mode] [text]' 将结果打印到标准输出流.</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_Config_CommandCryptoDescr">
-                <Original>Encrypts/decrypts text with a given algorythm and key.</Original>
-                <English>Encrypts/decrypts text with a given algorythm and key.</English>
-                <French>Chiffre/déchiffre du texte avec un algorithme et une clé donnés.</French>
-                <Italian>Encripta/Decrypta testo con un algoritmo e chiave fornito.</Italian>
-                <Russian>Шифрует/дешифрует текст с заданным алгоритмом и ключом.</Russian>
-                <German>Ver-/Entschlüsselt text mit dem angegebenen Algorythmus und Schlüssel.</German>
-                <Chinesesimp>使用指定的算法和密钥加密/解密文本.</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_Config_CommandCryptoMan">
-                <Original>Usage crypto: 'crypto -a [algorythm] -k [key] -m [mode] [text]' prints the processed text to stdout.</Original>
-                <English>Usage crypto: 'crypto -a [algorythm] -k [key] -m [mode] [text]' prints the processed text to stdout.</English>
-                <French>Utilisation crypto: 'crypto -a [algorythme] -k [clé] -m [mode] [texte]' affiche le texte traité sur stdout.</French>
-                <Italian>utilizza crypto: 'crypto -a [algorythm] -k [key] -m [mode] [text]' mostra il processo in testo.</Italian>
-                <Russian>Использование crypto: 'crypto -a [algorythm] -k [key] -m [mode] [text]' выводит обработанный текст на stdout.</Russian>
-                <German>Verwendung crypto: 'crypto -a [Algorythmus] -k [Schlüssel] -m [Modus] [Text]' gibt den verarbeiteten Text nach stdout aus.</German>
-                <Chinesesimp>crypto说明: 'crypto -a [algorythm] -k [key] -m [mode] [text]' 将处理后的文本打印到标准输出流.</Chinesesimp>
-            </Key>
             <Key ID="STR_AE3_ArmaOS_Config_CommandDateDescr">
                 <Original>Prints the date.</Original>
                 <English>Prints the date.</English>

@@ -62,7 +62,8 @@ if (!isNull _mutex) then {
 // Return any connected flash drives to the picker's inventory first, so none is left behind in the
 // world attached to a laptop object that is about to be removed.
 if (!isNil "AE3_flashdrive_fnc_disconnectAllDrives") then {
-	[_target, _player] call AE3_flashdrive_fnc_disconnectAllDrives;
+    private _savedDrives = [_target, _player] call AE3_flashdrive_fnc_disconnectAllDrives;
+    _target setVariable ["AE3_laptop_connectedDrives", _savedDrives, false];
 };
 
 // CRITICAL: Ensure terminal sync data is available before saving to item

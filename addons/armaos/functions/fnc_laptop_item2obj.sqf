@@ -206,12 +206,36 @@ if (isServer) then {
 private _offTexture = "#(argb,8,8,3)color(0,0,0,0.0,co)";
 _object setObjectTextureGlobal [1, _offTexture];
 
+// Apply any charge accumulated while this laptop was carried in inventory after its internal
+// battery has been created by the normal device initialization path.
+private _storedCharge = _itemNamespace getOrDefault ["ROOT_EWO_BATTERY_PERCENT", -1];
+private _internalBattery = _object getVariable ["AE3_power_internal", objNull];
+if (_storedCharge >= 0 && {!isNull _internalBattery}) then {
+    [_internalBattery, _storedCharge] remoteExecCall ["AE3_power_fnc_setBatteryLevel", 2];
+};
+
 if (AE3_DebugMode) then {
 	diag_log format ["[AE3 DEBUG] [%1] laptop_item2obj: Set power state to OFF, close state to OPEN, and texture to OFF state", time];
 };
 
 // Remove item from player inventory
 [_player, _item] remoteExecCall ["CBA_fnc_removeItem", _player];
+
+// Reattach the removable drives that travelled with this laptop. The drive items remain normal
+// inventory items while the laptop is packed, so reconnecting them uses the same authoritative
+// conversion and mount path as an ACE interaction.
+private _savedDrives = _itemNamespace getOrDefault ["AE3_laptop_connectedDrives", []];
+private _interfaces = _object getVariable ["AE3_USB_Interfaces", createHashMap];
+{
+    _x params ["_interface", "_driveItem", ["_wasMounted", false]];
+    private _cfg = _interfaces getOrDefault [_interface, []];
+    if (_cfg isNotEqualTo [] && {_driveItem in (items _player)}) then {
+        [_object, _player, _driveItem, _cfg] call AE3_flashdrive_fnc_connectFlashDrive;
+        if (!_wasMounted) then {
+            [_object, _interface] remoteExecCall ["AE3_flashdrive_fnc_unmount", 2];
+        };
+    };
+} forEach _savedDrives;
 
 // No deployment hint needed
 

@@ -89,6 +89,8 @@ private _deliver = {
 		["ae3_network_imNotify", [_computer, _from], _holder] call CBA_fnc_targetEvent;
 		["ae3_desktop_mailNotify", [_from], _holder] call CBA_fnc_targetEvent;
 	};
+
+	[_computer, "\z\ae3\addons\flashdrive\audio\mail_received.ogg"] remoteExecCall ["AE3_desktop_fnc_playDeviceSound", 0];
 };
 
 {

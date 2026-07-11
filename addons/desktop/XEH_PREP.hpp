@@ -32,6 +32,7 @@ PREP(cryptoRun);
 PREP(crackRun);
 PREP(mapOpen);
 PREP(volHandle);
+PREP(playDeviceSound);
 PREP(routerHandle);
 PREP(sshOpServer);
 PREP(setSystemConfig);

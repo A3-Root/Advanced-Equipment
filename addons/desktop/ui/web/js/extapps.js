@@ -56,11 +56,15 @@
         body.innerHTML =
           '<div class="toolbar"><span class="muted" style="flex:1">' + esc(desc.title) + '</span>' +
             (extra.globalActions ? '<span class="globals"></span>' : '') +
+            (extra.filters ? '<button class="btn filters">Filters</button>' : '') +
             '<button class="btn refresh">&#8635;</button></div>' +
           '<ul class="list devs"><li class="muted pad">Loading...</li></ul>' +
           '<div class="dev-status" style="min-height:22px;padding:8px 12px;font-weight:600"></div>';
         var devs = body.querySelector(".devs");
         var status = body.querySelector(".dev-status");
+        var allItems = [], filterGrid = "", filterDistance = 0;
+        var pinKey = "rootcw_pins_" + extra.type;
+        var pins = JSON.parse(localStorage.getItem(pinKey) || "[]");
 
         // Prominent, clearly-coloured result feedback (Root_CW general #2): success green, failure
         // orange-red, so low-battery / overload / not-allowed messages can't be missed.
@@ -171,6 +175,12 @@
         }
 
         function render(items) {
+          allItems = items;
+          items = items.filter(function (d) {
+            var gridOk = !filterGrid || String(d.grid || "").toLowerCase().indexOf(filterGrid) === 0;
+            var distOk = !filterDistance || (Number(d.distance) >= 0 && Number(d.distance) <= filterDistance);
+            return gridOk && distOk;
+          }).sort(function (a, b) { return (pins.indexOf(String(b.id)) >= 0) - (pins.indexOf(String(a.id)) >= 0); });
           devs.innerHTML = "";
           if (!items.length) { devs.innerHTML = '<li class="muted pad">No devices</li>'; return; }
           items.forEach(function (d) {
@@ -191,6 +201,11 @@
             }
             var icoHtml = isScanning ? '<span class="rootcw-radar"></span>' : ('<span class="ico">' + glyph + '</span>');
             top.innerHTML = icoHtml + '<span style="flex:1">' + esc(d.label || d.name || ("#" + d.id)) + statusHtml + gridHtml + "</span>";
+            if (extra.filters) {
+              var pb = document.createElement("button"); pb.className = "btn"; pb.textContent = pins.indexOf(String(d.id)) >= 0 ? "Unpin" : "Pin"; pb.style.marginLeft = "6px";
+              pb.addEventListener("click", function () { var i = pins.indexOf(String(d.id)); if (i >= 0) pins.splice(i, 1); else pins.push(String(d.id)); localStorage.setItem(pinKey, JSON.stringify(pins)); render(allItems); });
+              top.appendChild(pb);
+            }
             if (d.pos && d.pos.length >= 2) {
               var mb = document.createElement("button"); mb.className = "btn"; mb.textContent = "Map"; mb.style.marginLeft = "6px";
               mb.addEventListener("click", function () { window.AE3_openMap(d.pos, d.mapLabel !== undefined ? d.mapLabel : (d.label || ("#" + d.id)), d.mapMarker); });
@@ -226,6 +241,15 @@
           });
         }
         listSubs[extra.type] = render;
+
+        var filterButton = body.querySelector(".filters");
+        if (filterButton) filterButton.addEventListener("click", function () {
+          var grid = window.prompt("Grid reference (leave blank for all devices)", filterGrid);
+          if (grid === null) return;
+          var distance = window.prompt("Maximum distance in metres (leave blank for any distance)", filterDistance || "");
+          if (distance === null) return;
+          filterGrid = String(grid || "").trim().toLowerCase(); filterDistance = Number(distance) || 0; render(allItems);
+        });
         resultSubs[extra.type] = function (r) {
           setStatus(r.msg || (r.ok ? "OK" : "Failed"), r.ok);
           // Also raise a prominent toast so blocked/failed actions (low battery, overload not allowed,

@@ -13,6 +13,7 @@
 - Executable files get a green tint in the file browser and can be run directly (`fs_list` exec flag, `sys_run_file`)
 - `CfgEditorSubcategories` (8 subcategories) organizing AE3 objects in the 3DEN/Zeus editor tree
 - Flash Drive in the Virtual Arsenal / ACE Arsenal
+- AE3 Laptops in the Virtual Arsenal / ACE Arsenal
 - WiFi Network with static IP, DHCP, SSH. It respects subnet boundaries when a device switches networks, falling back to DHCP if its saved static doesn't fit
 - Optional **ZEN (Zeus Enhanced) Dynamic Dialog** support across Zeus modules, with non-ZEN fallback dialogs so Add Website / Save-Restore Laptop still work on dedicated servers without ZEN installed
 - Maintainer-facing code wiki (`.code-wiki/`) and a graphify dependency graph for contributors
@@ -20,6 +21,7 @@
 ### Removed
 - Zeus **Add Games** and **Add Security Commands** modules (the underlying terminal commands are still available, but they can no longer be added to a mission via a Zeus module)
 - Terminal `chat` and `ipconfig` commands, non-functional/unused since v1.0.0.1
+- `Crypto` and `Crack` apps (they are now in the `Root_Cyberwarfare` repository)
 
 ### Fixed
 - Numerous runtime errors across ArmaOS, Network, and Desktop components found during QA passes

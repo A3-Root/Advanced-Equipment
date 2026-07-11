@@ -54,3 +54,5 @@ missionNamespace setVariable ["AE3_ITEM", _buffer];
 [_player, _item, true] remoteExecCall ["CBA_fnc_addItem", _player];
 
 deleteVehicle _object;
+
+_item

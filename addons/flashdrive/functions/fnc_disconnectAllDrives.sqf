@@ -25,6 +25,8 @@ if (isNull _computer) exitWith {};
 
 private _occupiedList = +(_computer getVariable ["AE3_USB_Interfaces_occupied", []]);
 private _interfaces = _computer getVariable ["AE3_USB_Interfaces", createHashMap];
+private _mountedList = _computer getVariable ["AE3_USB_Interfaces_mounted", []];
+private _savedDrives = [];
 
 {
     private _obj = _x;
@@ -34,7 +36,13 @@ private _interfaces = _computer getVariable ["AE3_USB_Interfaces", createHashMap
         private _cfg = _interfaces getOrDefault [_name, []];
         if (_cfg isNotEqualTo []) then
         {
-            [_computer, _player, _cfg] call AE3_flashdrive_fnc_disconnectFlashDrive;
+            private _wasMounted = _mountedList param [_cfg select 0, false];
+            private _item = [_computer, _player, _cfg] call AE3_flashdrive_fnc_disconnectFlashDrive;
+            if (_item isEqualType "" && {_item isNotEqualTo ""}) then {
+                _savedDrives pushBack [_name, _item, _wasMounted];
+            };
         };
     };
 } forEach _occupiedList;
+
+_savedDrives

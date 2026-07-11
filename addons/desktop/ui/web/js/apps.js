@@ -2037,6 +2037,20 @@
             card.addEventListener("click", function () { if (v.type !== "usb" || v.mounted) openIn(v.path); });
             volsEl.appendChild(card);
           });
+          var available = (res && res.availableDrives) || [];
+          if (available.length) {
+            (res && res.volumes || []).filter(function (v) { return v.type === "usb" && !v.id; }).forEach(function () {});
+            var free = Object.keys((res && res.volumes || []).reduce(function (out, v) { if (v.type === "usb") out[v.id] = true; return out; }, {}));
+            (res && res.volumes || []).filter(function (v) { return v.type === "free"; }).forEach(function (slot) {
+              available.forEach(function (drive) {
+                var card = h('<div class="mc-vol"><div class="mc-name">' + esc(drive.label || drive.item) + '</div><div class="mc-sub">Available removable drive</div><div class="mc-actions"></div></div>');
+                var connect = h('<button class="btn accent">Connect</button>');
+                connect.addEventListener("click", function (e) { e.stopPropagation(); A3.request("vol_connect", { interface: slot.id, item: drive.item }).then(function () { setTimeout(loadVols, 400); }); });
+                card.querySelector(".mc-actions").appendChild(connect);
+                volsEl.appendChild(card);
+              });
+            });
+          }
           if (!volsEl.children.length) volsEl.innerHTML = '<div class="pad muted">No volumes</div>';
         }).catch(function () { volsEl.innerHTML = '<div class="pad muted">Unavailable</div>'; });
       }

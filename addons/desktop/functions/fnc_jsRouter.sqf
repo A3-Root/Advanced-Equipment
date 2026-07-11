@@ -219,6 +219,7 @@ switch (_command) do {
     // --- Network + system info. ---
     // My Computer volumes: list/mount/unmount USB drives.
     case "vol_list";
+    case "vol_connect";
     case "vol_mount";
     case "vol_unmount": {
         private _user = _display getVariable [QGVAR(user), ""];
