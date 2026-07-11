@@ -1,3 +1,4 @@
+// File: fnc_laptop_deploy_stable.sqf
 /*
  * Author: Root
  * Description: Handles deploying a laptop using the stable method. Unhides the laptop object,

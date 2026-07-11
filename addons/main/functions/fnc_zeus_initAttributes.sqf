@@ -1,3 +1,4 @@
+// File: fnc_zeus_initAttributes.sqf
 /*
  * Author: Root, y0014984
  * Description: Initializes the Zeus Asset Attributes interface on load. Runs locally on the Zeus curator's machine.

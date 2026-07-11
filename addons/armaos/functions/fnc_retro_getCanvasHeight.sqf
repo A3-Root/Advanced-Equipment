@@ -1,3 +1,4 @@
+// File: fnc_retro_getCanvasHeight.sqf
 /*
  * Author: Root, y0014984
  * Description: Returns the height in pixels of a retro graphics canvas.

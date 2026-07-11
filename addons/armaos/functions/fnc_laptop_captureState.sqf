@@ -1,3 +1,4 @@
+// File: fnc_laptop_captureState.sqf
 #include "..\script_component.hpp"
 /*
  * Author: Root, y0014984, Wasserstoff

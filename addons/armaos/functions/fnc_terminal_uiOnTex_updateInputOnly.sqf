@@ -1,3 +1,4 @@
+// File: fnc_terminal_uiOnTex_updateInputOnly.sqf
 /*
  * Author: Root
  * Description: Updates only the input line on UI-on-Texture displays for nearby players.

@@ -1,3 +1,4 @@
+// File: fnc_computer_standby.sqf
 /*
  * Author: Root, Wasserstoff, y0014984
  * Description: Executes the standby operation for a given computer object. Syncs terminal state, changes texture to standby screen, and plays standby sound.

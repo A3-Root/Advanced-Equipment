@@ -1,3 +1,4 @@
+// File: fnc_ensureFile.sqf
 #include "..\script_component.hpp"
 /*
  * Author: Root

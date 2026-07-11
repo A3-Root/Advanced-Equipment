@@ -1,3 +1,4 @@
+// File: fnc_terminal_removeCharFromInput.sqf
 /*
  * Author: Root, Wasserstoff
  * Description: Removes a character from the terminal input buffer at the current cursor position.

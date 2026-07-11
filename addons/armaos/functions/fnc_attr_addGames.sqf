@@ -1,3 +1,4 @@
+// File: fnc_attr_addGames.sqf
 /*
  * Author: Root
  * Description: Eden object-attribute helper. Adds the chosen games to a laptop once it has finished

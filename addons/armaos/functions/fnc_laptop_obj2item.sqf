@@ -1,3 +1,4 @@
+// File: fnc_laptop_obj2item.sqf
 /*
  * Author: Root
  * Description: Converts a laptop object to an inventory item, preserving all state (filesystem, terminal, network, power).

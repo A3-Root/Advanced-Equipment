@@ -1,3 +1,4 @@
+// File: fnc_zeus_filesystemBrowser_init.sqf
 /*
  * Author: Root
  * Description: Initializes the Zeus filesystem browser display. Retrieves the entity from mission namespace, loads its filesystem,

@@ -1,3 +1,4 @@
+// File: fnc_addHistoryEntry.sqf
 #include "..\script_component.hpp"
 /*
  * Author: Root

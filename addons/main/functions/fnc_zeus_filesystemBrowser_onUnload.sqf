@@ -1,3 +1,4 @@
+// File: fnc_zeus_filesystemBrowser_onUnload.sqf
 /*
  * Author: Root
  * Description: Handles cleanup when the Zeus filesystem browser display is closed. Clears the stored entity reference from

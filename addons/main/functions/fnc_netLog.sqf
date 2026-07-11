@@ -1,3 +1,4 @@
+// File: fnc_netLog.sqf
 /*
  * Author: Root
  * Description: Logs an AE3 network event (remoteExec / CBA event) to the RPT via diag_log when

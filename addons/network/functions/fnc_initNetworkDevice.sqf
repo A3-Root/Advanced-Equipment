@@ -1,3 +1,4 @@
+// File: fnc_initNetworkDevice.sqf
 /**
  * Initializes a network device (e.g. Computer, Server, usw.).
  *

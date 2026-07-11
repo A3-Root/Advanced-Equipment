@@ -1,3 +1,4 @@
+// File: fnc_zeus_disconnectFromRouter.sqf
 /*
  * Author: Root
  * Description: Disconnects the selected terminal asset from its current Wi-Fi router, driven by the

@@ -1,3 +1,4 @@
+// File: fnc_app_browser.sqf
 #include "..\script_component.hpp"
 /*
  * Author: Root

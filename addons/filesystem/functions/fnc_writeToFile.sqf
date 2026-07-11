@@ -1,3 +1,4 @@
+// File: fnc_writeToFile.sqf
 /*
  * Author: Root, y0014984
  * Description: Writes content to a file, either replacing existing content or appending to it. Requires write permission on the file.

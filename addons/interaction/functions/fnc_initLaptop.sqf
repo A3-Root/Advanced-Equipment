@@ -1,3 +1,4 @@
+// File: fnc_initLaptop.sqf
 /*
  * Author: Root, y0014984
  * Description: Initializes a laptop by setting the open/closed animation state and adding the "Use Terminal"

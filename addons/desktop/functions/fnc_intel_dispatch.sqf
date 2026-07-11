@@ -1,3 +1,4 @@
+// File: fnc_intel_dispatch.sqf
 #include "..\script_component.hpp"
 /*
  * Author: Root

@@ -1,3 +1,4 @@
+// File: fnc_terminal_getHeaderText.sqf
 /*
  * Author: Root, Wasserstoff, y0014984
  * Description: Returns the terminal header text (ASCII art logo) for the current terminal design.

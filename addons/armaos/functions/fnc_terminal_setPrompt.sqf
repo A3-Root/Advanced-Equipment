@@ -1,3 +1,4 @@
+// File: fnc_terminal_setPrompt.sqf
 /*
  * Author: Root, Wasserstoff, y0014984
  * Description: Updates the terminal prompt line (command input line) with the current prompt text. Typically shows username, hostname, and current directory.

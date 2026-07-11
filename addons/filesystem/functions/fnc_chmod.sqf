@@ -1,3 +1,4 @@
+// File: fnc_chmod.sqf
 /*
  * Author: Root
  * Description: Changes filesystem permissions on a file or directory. Root can change any object;

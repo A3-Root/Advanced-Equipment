@@ -1,3 +1,4 @@
+// File: fnc_terminal_onKeyDown.sqf
 #include "..\script_component.hpp"
 #include "\a3\ui_f\hpp\definedikcodes.inc"
 /*

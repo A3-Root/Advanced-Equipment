@@ -1,3 +1,4 @@
+// File: fnc_laptop_pickup.sqf
 /*
  * Author: Root
  * Description: Handles laptop pickup into inventory. Closes active terminal dialogs and clears mutex.

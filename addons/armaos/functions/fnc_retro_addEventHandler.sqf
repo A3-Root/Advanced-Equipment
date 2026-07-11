@@ -1,3 +1,4 @@
+// File: fnc_retro_addEventHandler.sqf
 /*
  * Author: Root, y0014984
  * Description: Adds keyboard event handlers to a retro graphics canvas for interactive applications.

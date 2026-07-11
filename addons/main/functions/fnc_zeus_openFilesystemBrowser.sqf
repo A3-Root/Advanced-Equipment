@@ -1,3 +1,4 @@
+// File: fnc_zeus_openFilesystemBrowser.sqf
 /*
  * Author: Root
  * Description: Opens the filesystem browser dialog for the selected Zeus entity. Allows Zeus curators to browse and manage the filesystem of computers.

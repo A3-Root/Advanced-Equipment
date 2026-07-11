@@ -1,3 +1,4 @@
+// File: fnc_obj2item.sqf
 /*
  * Author: Root, Wasserstoff
  * Description: Converts a world object to an inventory item, preserving all object variables in the item's namespace and deleting the object from the world

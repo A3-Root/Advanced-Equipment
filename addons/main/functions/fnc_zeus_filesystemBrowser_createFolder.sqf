@@ -1,3 +1,4 @@
+// File: fnc_zeus_filesystemBrowser_createFolder.sqf
 /*
  * Author: Root
  * Description: Opens the New Folder dialog in the Zeus filesystem browser. Validates that the current directory is not a protected

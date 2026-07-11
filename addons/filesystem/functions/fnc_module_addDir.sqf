@@ -1,3 +1,4 @@
+// File: fnc_module_addDir.sqf
 /*
  * Author: Root, y0014984
  * Description: Module function for adding directories to devices via Eden editor. Triggered after mission start for synced objects. Only runs on server and ignores Zeus-placed modules. Module is deleted after processing.

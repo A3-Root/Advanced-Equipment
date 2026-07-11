@@ -1,3 +1,4 @@
+// File: fnc_initConsumer.sqf
 /*
  * Author: Root, Wasserstoff
  * Description: Initializes a power consumer device with consumption and standby power requirements. Creates wrapper functions that check power availability before turning on and update power draw when changing states. Power consumption is in kWh.

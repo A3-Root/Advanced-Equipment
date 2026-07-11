@@ -1,3 +1,4 @@
+// File: fnc_getBatteryLevel.sqf
 /*
  * Author: Root, y0014984
  * Description: Returns the battery level of the given battery device in Wh and percent. Optionally displays a hint with the battery status. This function handles both scheduled and unscheduled execution contexts. For devices with internal batteries (like laptops), pass the internal battery object instead of the parent device.

@@ -1,3 +1,4 @@
+// File: fnc_getPowerState.sqf
 /*
  * Author: Root, y0014984
  * Description: Returns the current power state of a device as a localized string. Power states are: 0 = Off, 1 = On, 2 = Standby, -1 = Unknown.

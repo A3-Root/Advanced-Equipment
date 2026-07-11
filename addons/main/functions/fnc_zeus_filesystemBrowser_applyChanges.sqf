@@ -1,3 +1,4 @@
+// File: fnc_zeus_filesystemBrowser_applyChanges.sqf
 /*
  * Author: Root
  * Description: Applies owner and permission changes to the currently selected file or folder in the Zeus filesystem browser.

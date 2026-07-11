@@ -1,3 +1,4 @@
+// File: fnc_laptop_pickup_stable.sqf
 /*
  * Author: Root
  * Description: Handles laptop pickup using the stable method. Hides the laptop, disables simulation,

@@ -1,3 +1,4 @@
+// File: fnc_turnOffSolarAction.sqf
 /*
  * Author: Root, y0014984, Wasserstoff
  * Description: ACE3 interaction action that turns off a solar panel with progress bar. Removes provider handler, turns off connected devices, and updates interactions. In Zeus mode or if silent, stops immediately without progress bar.

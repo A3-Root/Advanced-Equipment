@@ -1,3 +1,4 @@
+// File: fnc_device_initComplete.sqf
 #include "..\script_component.hpp"
 /*
  * Author: Root

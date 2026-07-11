@@ -1,3 +1,4 @@
+// File: fnc_inventoryProp_remove.sqf
 #include "..\script_component.hpp"
 /*
  * Author: Root

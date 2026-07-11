@@ -1,3 +1,4 @@
+// File: fnc_desktop_openWeb.sqf
 #include "..\script_component.hpp"
 /*
  * Author: Root

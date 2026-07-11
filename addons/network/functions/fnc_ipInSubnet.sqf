@@ -1,3 +1,4 @@
+// File: fnc_ipInSubnet.sqf
 /**
  * Tests whether an IP belongs to a gateway's /24 subnet by comparing the first three octets. Used to
  * decide whether a configured default static address may be applied on a given router, or whether the

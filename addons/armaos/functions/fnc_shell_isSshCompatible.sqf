@@ -1,3 +1,4 @@
+// File: fnc_shell_isSshCompatible.sqf
 #include "..\script_component.hpp"
 /*
  * Author: Root

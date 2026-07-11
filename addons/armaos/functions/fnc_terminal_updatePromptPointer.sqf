@@ -1,3 +1,4 @@
+// File: fnc_terminal_updatePromptPointer.sqf
 /*
  * Author: Root, Wasserstoff, y0014984
  * Description: Updates the terminal prompt pointer (current working directory display).

@@ -1,3 +1,4 @@
+// File: fnc_laptop_item2obj.sqf
 /*
  * Author: Root
  * Description: Converts a laptop inventory item back to a world object, restoring all state.

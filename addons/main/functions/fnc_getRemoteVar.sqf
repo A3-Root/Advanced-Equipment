@@ -1,3 +1,4 @@
+// File: fnc_getRemoteVar.sqf
 /*
  * Author: Root, y0014984, Wasserstoff
  * Description: Retrieves a variable from a remote client and sets it locally. Waits until the variable transfer is complete.

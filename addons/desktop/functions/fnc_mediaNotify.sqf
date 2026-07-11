@@ -1,3 +1,4 @@
+// File: fnc_mediaNotify.sqf
 #include "..\script_component.hpp"
 /*
  * Author: Root

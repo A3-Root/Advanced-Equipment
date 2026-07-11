@@ -1,3 +1,4 @@
+// File: fnc_compileDevice.sqf
 /*
  * Author: Root, y0014984, Wasserstoff
  * Description: Compiles power device configuration from CfgVehicles config for a given object. Reads AE3_Device, AE3_InternalDevice, AE3_Battery, AE3_Generator, AE3_SolarGenerator, and AE3_Consumer configs. Caches compiled config in missionNamespace for performance. Analogous to ACE3 MenuCompile pattern.

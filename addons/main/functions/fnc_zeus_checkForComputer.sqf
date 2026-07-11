@@ -1,3 +1,4 @@
+// File: fnc_zeus_checkForComputer.sqf
 /*
  * Author: Root, y0014984
  * Description: Helper function for Zeus modules that validates the target object.

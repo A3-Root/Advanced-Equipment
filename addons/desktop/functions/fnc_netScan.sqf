@@ -1,3 +1,4 @@
+// File: fnc_netScan.sqf
 #include "..\script_component.hpp"
 /*
  * Author: Root

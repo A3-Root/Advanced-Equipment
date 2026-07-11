@@ -1,3 +1,4 @@
+// File: fnc_os_rm.sqf
 /*
  * Author: Root, y0014984, Wasserstoff
  * Description: Removes/deletes a file or directory at the specified path. Similar to Unix rm command.

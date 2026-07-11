@@ -1,3 +1,4 @@
+// File: fnc_os_shutdown.sqf
 /*
  * Author: Root, y0014984, Wasserstoff
  * Description: Powers down the computer immediately, closes the terminal dialog and turns off the computer. Similar to Unix shutdown command.

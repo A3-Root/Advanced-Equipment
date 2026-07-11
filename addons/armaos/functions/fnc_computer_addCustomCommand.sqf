@@ -1,3 +1,4 @@
+// File: fnc_computer_addCustomCommand.sqf
 /*
  * Author: Root
  * Description: Adds a custom command to a computer without requiring config file entries. This makes it easy to add unique commands to specific computers dynamically at runtime.

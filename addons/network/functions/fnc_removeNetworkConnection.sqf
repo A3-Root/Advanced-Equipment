@@ -1,3 +1,4 @@
+// File: fnc_removeNetworkConnection.sqf
 /**
  * PUBLIC
  *

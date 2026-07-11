@@ -1,3 +1,4 @@
+// File: fnc_terminal_renderLine.sqf
 /*
  * Author: Root, Wasserstoff
  * Description: Renders a line of text as structured text with color formatting for terminal display.

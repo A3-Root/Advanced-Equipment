@@ -1,3 +1,4 @@
+// File: fnc_updatePower.sqf
 /*
  * Author: Root, Wasserstoff
  * Description: Checks if the power capacity of a generator or battery is sufficient to supply all connected devices. Sums power draw from all connected devices and compares to power capacity. If insufficient, turns off the provider and resets power requirements.

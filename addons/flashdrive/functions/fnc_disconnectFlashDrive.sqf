@@ -1,3 +1,4 @@
+// File: fnc_disconnectFlashDrive.sqf
 /*
  * Author: Root, Wasserstoff
  * Description: Physically disconnects a flash drive from a computer's USB interface, unmounting it if necessary and converting the object back to an inventory item

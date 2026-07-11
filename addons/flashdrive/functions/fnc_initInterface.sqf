@@ -1,3 +1,4 @@
+// File: fnc_initInterface.sqf
 /*
  * Author: Root, Wasserstoff
  * Description: Initializes USB interfaces on a device, creating ACE3 interaction menus for connecting/disconnecting flash drives.

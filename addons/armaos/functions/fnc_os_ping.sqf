@@ -1,3 +1,4 @@
+// File: fnc_os_ping.sqf
 /*
  * Author: Root, y0014984, Wasserstoff
  * Description: Tests network connectivity to a specified IP address and displays round-trip time. Similar to Unix ping command.

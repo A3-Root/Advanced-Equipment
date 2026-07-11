@@ -1,3 +1,4 @@
+// File: fnc_addrRegister.sqf
 #include "..\script_component.hpp"
 /*
  * Author: Root

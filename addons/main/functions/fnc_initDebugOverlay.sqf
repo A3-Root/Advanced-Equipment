@@ -1,3 +1,4 @@
+// File: fnc_initDebugOverlay.sqf
 /*
  * Author: Root, y0014984
  * Description: Initializes and adds onEachFrame event handler to draw debug information above AE3 objects in 3D space.

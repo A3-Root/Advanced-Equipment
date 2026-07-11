@@ -1,3 +1,4 @@
+// File: fnc_terminal_getAllowedKeysHE.sqf
 /*
  * Author: Root
  * Description: Returns the allowed keyboard key mappings for Hebrew (HE) layout.

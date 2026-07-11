@@ -1,3 +1,4 @@
+// File: fnc_terminal_addHeader.sqf
 /*
  * Author: Root, y0014984
  * Description: Adds the terminal header (logo/banner) to the terminal output buffer.

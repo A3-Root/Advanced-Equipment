@@ -1,3 +1,4 @@
+// File: fnc_intel_browsePath.sqf
 #include "..\script_component.hpp"
 /*
  * Author: Root

@@ -1,3 +1,4 @@
+// File: fnc_games_snake.sqf
 /*
  * Author: Root, y0014984
  * Description: Implements the Snake game playable in the ArmaOS terminal.

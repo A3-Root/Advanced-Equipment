@@ -1,3 +1,4 @@
+// File: fnc_zeus_updateAttributes.sqf
 /*
  * Author: Root, y0014984
  * Description: Handles the Zeus Asset Attributes interface on unload. Runs locally on the Zeus curator's machine.

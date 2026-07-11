@@ -1,3 +1,4 @@
+// File: fnc_manageAce3Interactions.sqf
 /*
  * Author: Root, y0014984
  * Description: Manages ACE3 interaction states (dragging, carrying, cargo) based on equipment status conditions.

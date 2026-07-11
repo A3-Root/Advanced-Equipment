@@ -1,3 +1,4 @@
+// File: fnc_terminal_getAllowedKeysDE.sqf
 /*
  * Author: Root, Wasserstoff, y0014984
  * Description: Returns the allowed keyboard key mappings for German (DE) layout.

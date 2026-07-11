@@ -1,3 +1,4 @@
+// File: fnc_terminal_getAllowedKeysAR.sqf
 /*
  * Author: Root
  * Description: Returns the allowed keyboard key mappings for Arabic (AR) layout.

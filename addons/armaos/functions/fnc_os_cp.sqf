@@ -1,3 +1,4 @@
+// File: fnc_os_cp.sqf
 /*
  * Author: Root, Wasserstoff
  * Description: Copies a file from source to destination path. Similar to Unix cp command.

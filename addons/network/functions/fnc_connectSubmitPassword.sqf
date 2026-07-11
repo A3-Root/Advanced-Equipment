@@ -1,3 +1,4 @@
+// File: fnc_connectSubmitPassword.sqf
 /*
  * Author: Root
  * Description: Connect button handler for the router password prompt. Compares the entered password

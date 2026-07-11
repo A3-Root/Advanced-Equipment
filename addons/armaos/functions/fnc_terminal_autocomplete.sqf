@@ -1,3 +1,4 @@
+// File: fnc_terminal_autocomplete.sqf
 /*
  * Author: Root
  * Description: Attempts to autocomplete the current command based on available commands and file paths.

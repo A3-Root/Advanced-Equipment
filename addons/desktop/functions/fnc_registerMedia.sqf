@@ -1,3 +1,4 @@
+// File: fnc_registerMedia.sqf
 #include "..\script_component.hpp"
 /*
  * Author: Root

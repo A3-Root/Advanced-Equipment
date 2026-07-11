@@ -1,3 +1,4 @@
+// File: fnc_desktop_onUnload.sqf
 #include "..\script_component.hpp"
 /*
  * Author: Root

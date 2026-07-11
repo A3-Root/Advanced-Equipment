@@ -1,3 +1,4 @@
+// File: fnc_wm_getTheme.sqf
 #include "..\script_component.hpp"
 /*
  * Author: Root

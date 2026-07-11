@@ -1,3 +1,4 @@
+// File: XEH_postInit.sqf
 #include "script_component.hpp"
 
 // Seed a default Browser homepage (RootNet index) on the server so the in-game browser is never

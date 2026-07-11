@@ -1,3 +1,4 @@
+// File: fnc_initInteraction.sqf
 /*
  * Author: Root, Wasserstoff, y0014984
  * Description: Initializes interactive equipment with ACE3 actions for opening/closing and animation points.

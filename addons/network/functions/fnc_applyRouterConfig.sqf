@@ -1,3 +1,4 @@
+// File: fnc_applyRouterConfig.sqf
 /*
  * Author: Root
  * Description: Applies wireless configuration to a router and broadcasts it: network name,

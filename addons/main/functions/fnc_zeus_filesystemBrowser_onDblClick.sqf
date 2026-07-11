@@ -1,3 +1,4 @@
+// File: fnc_zeus_filesystemBrowser_onDblClick.sqf
 /*
  * Author: Root
  * Description: Handles double-click events on items in the Zeus filesystem browser. For directories, navigates into the directory.

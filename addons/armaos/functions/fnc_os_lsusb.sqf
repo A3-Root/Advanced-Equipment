@@ -1,3 +1,4 @@
+// File: fnc_os_lsusb.sqf
 /*
  * Author: Root, Wasserstoff
  * Description: Lists all available USB interfaces and connected USB devices. Similar to Linux lsusb command.

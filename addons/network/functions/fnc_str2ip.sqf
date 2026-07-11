@@ -1,3 +1,4 @@
+// File: fnc_str2ip.sqf
 /**
  * Converts an "a.b.c.d" string into a 4-element integer IP list. Returns [] when the string is not
  * four numeric octets, so callers can validate before routing. The octets are floored to integers

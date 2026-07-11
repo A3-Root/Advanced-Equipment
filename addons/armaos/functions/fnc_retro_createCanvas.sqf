@@ -1,3 +1,4 @@
+// File: fnc_retro_createCanvas.sqf
 /*
  * Author: Root, y0014984
  * Description: Creates a pixel-based retro graphics canvas for terminal applications. Supports two modes: 80x50px (mode 1) or 40x25px (mode 2).

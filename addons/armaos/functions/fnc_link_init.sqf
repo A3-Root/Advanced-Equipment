@@ -1,3 +1,4 @@
+// File: fnc_link_init.sqf
 /*
  * Author: Root, y0014984, Wasserstoff
  * Description: Initializes command links from config for a computer, loading all available commands.

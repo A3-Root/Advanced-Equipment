@@ -1,3 +1,4 @@
+// File: fnc_os_whoami.sqf
 /*
  * Author: Root, y0014984, Wasserstoff
  * Description: Displays the username of the currently logged-in user. Similar to Unix whoami command.

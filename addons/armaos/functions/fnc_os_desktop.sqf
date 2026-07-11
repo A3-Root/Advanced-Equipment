@@ -1,3 +1,4 @@
+// File: fnc_os_desktop.sqf
 /*
  * Author: Root
  * Description: Switches this laptop from the CLI terminal to the GUI desktop. Closes the terminal

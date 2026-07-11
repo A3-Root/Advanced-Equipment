@@ -1,3 +1,4 @@
+// File: fnc_retro_setPixelColor.sqf
 /*
  * Author: Root, y0014984
  * Description: Sets the color of a pixel at specified coordinates in the retro graphics canvas. Creates or deletes control as needed.

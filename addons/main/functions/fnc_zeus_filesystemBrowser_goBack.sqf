@@ -1,3 +1,4 @@
+// File: fnc_zeus_filesystemBrowser_goBack.sqf
 /*
  * Author: Root
  * Description: Navigates to the parent directory in the Zeus filesystem browser. Removes the last directory from the pointer stack

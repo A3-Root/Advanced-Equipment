@@ -1,3 +1,4 @@
+// File: XEH_preInit.sqf
 #include "script_component.hpp"
 #include "XEH_PREP.hpp"
 

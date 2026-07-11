@@ -1,3 +1,4 @@
+// File: fnc_shell_getOptsPrintHelp.sqf
 /*
  * Author: Root, y0014984
  * Description: Prints formatted help text for a command, showing syntax, options, and descriptions.

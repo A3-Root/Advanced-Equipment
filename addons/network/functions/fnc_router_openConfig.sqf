@@ -1,3 +1,4 @@
+// File: fnc_router_openConfig.sqf
 /*
  * Author: Root
  * Description: Opens the router configuration dialog from the router's ACE interaction menu,

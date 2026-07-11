@@ -1,3 +1,4 @@
+// File: fnc_encryption_columnar.sqf
 /*
  * Author: Root, JulesVerner
  * Description: Encrypts or decrypts a message using columnar transposition cipher with the specified key.

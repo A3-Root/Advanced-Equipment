@@ -1,3 +1,4 @@
+// File: fnc_desk_close.sqf
 /*
  * Author: Root, y0014984
  * Description: Closes a desk by animating all drawers closed, hiding lids, and showing wing covers.

@@ -1,3 +1,4 @@
+// File: fnc_unmount.sqf
 /*
  * Author: Root, Wasserstoff
  * Description: Unmounts a filesystem from a mount point by replacing it with an empty directory. Requires write permission on the mount point. Used for detaching external storage devices safely.

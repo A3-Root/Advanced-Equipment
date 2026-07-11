@@ -1,3 +1,4 @@
+// File: fnc_setBatteryLevel.sqf
 /*
  * Author: Root, y0014984
  * Description: Sets the battery level of a given battery to a specified percentage. Must be executed on the server. The value is automatically clamped between 0 and 100 percent.

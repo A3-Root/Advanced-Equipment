@@ -1,3 +1,4 @@
+// File: fnc_terminal_updateBatteryStatus.sqf
 /*
  * Author: Root, y0014984
  * Description: Updates the battery status display in the terminal header.

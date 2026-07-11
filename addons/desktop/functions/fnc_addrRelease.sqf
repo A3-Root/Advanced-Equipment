@@ -1,3 +1,4 @@
+// File: fnc_addrRelease.sqf
 #include "..\script_component.hpp"
 /*
  * Author: Root

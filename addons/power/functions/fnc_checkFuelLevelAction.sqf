@@ -1,3 +1,4 @@
+// File: fnc_checkFuelLevelAction.sqf
 /*
  * Author: Root, y0014984, Wasserstoff
  * Description: ACE3 interaction action that displays generator fuel level via hint. Shows fuel in liters, percentage, and total capacity with formatted numbers.

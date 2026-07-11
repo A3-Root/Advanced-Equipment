@@ -1,3 +1,4 @@
+// File: fnc_wm_updateTaskbar.sqf
 #include "..\script_component.hpp"
 /*
  * Author: Root

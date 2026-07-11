@@ -1,3 +1,4 @@
+// File: fnc_mount.sqf
 /*
  * Author: Root, Wasserstoff
  * Description: Mounts a flash drive attached to a USB interface, creating a mount point at /mnt/<interface> and making the drive's filesystem accessible to the specified user

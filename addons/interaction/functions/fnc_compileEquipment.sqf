@@ -1,3 +1,4 @@
+// File: fnc_compileEquipment.sqf
 /*
  * Author: Root, Wasserstoff, y0014984
  * Description: Compiles the equipment from config for an object's class, analogous to ACE3 MenuCompile.

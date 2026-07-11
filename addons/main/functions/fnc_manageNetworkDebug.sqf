@@ -1,3 +1,4 @@
+// File: fnc_manageNetworkDebug.sqf
 /*
  * Author: Root
  * Description: Toggles AE3 network debug logging. Sets the AE3_NetworkDebugEnabled flag that

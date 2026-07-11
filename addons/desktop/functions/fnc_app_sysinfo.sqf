@@ -1,3 +1,4 @@
+// File: fnc_app_sysinfo.sqf
 #include "..\script_component.hpp"
 /*
  * Author: Root

@@ -1,3 +1,4 @@
+// File: fnc_terminal_uiOnTex_addUpdateAllEventHandler.sqf
 /*
  * Author: Root, y0014984
  * Description: Adds an event handler to update UI-on-Texture when terminal state changes.

@@ -1,3 +1,4 @@
+// File: fnc_laptop_promptName.sqf
 /*
  * Author: Root
  * Description: Shows a dialog to prompt player to name their laptop

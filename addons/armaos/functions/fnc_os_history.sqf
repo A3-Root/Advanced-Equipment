@@ -1,3 +1,4 @@
+// File: fnc_os_history.sqf
 /*
  * Author: Root, y0014984, Wasserstoff
  * Description: Displays the command history for the current user. Supports -c flag to clear history and -d flag to delete a specific entry. Similar to Unix history command.

@@ -1,3 +1,4 @@
+// File: fnc_zeus_filesystemBrowser_rename.sqf
 /*
  * Author: Root
  * Description: Handles the Rename dialog for the Zeus filesystem browser. On load, populates the dialog with the current item name.

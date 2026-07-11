@@ -1,3 +1,4 @@
+// File: fnc_zeus_browser_newFolder.sqf
 /*
  * Author: Root
  * Description: Handles the New Folder dialog for the Zeus filesystem browser. On load, initializes the dialog. On unload with OK,

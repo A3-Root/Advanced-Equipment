@@ -1,3 +1,4 @@
+// File: fnc_zeus_deviceOpServer.sqf
 #include "..\script_component.hpp"
 /*
  * Author: Root

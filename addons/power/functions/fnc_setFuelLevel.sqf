@@ -1,3 +1,4 @@
+// File: fnc_setFuelLevel.sqf
 /*
  * Author: Root, y0014984
  * Description: Sets the fuel level of a generator to a specified percentage. The value is automatically clamped between 0 and 100 percent. Uses Arma 3's setFuel command.

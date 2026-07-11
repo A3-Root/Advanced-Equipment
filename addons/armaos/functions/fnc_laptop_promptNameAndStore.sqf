@@ -1,3 +1,4 @@
+// File: fnc_laptop_promptNameAndStore.sqf
 /*
  * Author: Root
  * Description: Shows naming dialog and stores the result on the laptop object

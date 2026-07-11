@@ -1,3 +1,4 @@
+// File: fnc_shell_getOptsCreateSearchArray.sqf
 /*
  * Author: Root, y0014984
  * Description: Creates a search array for option parsing by combining short and long form option names.

@@ -1,3 +1,4 @@
+// File: fnc_checkPowerStateAction.sqf
 /*
  * Author: Root, y0014984, Wasserstoff
  * Description: ACE3 interaction action that displays device power state via hint. Shows localized state string (Off, On, Standby, Unknown).

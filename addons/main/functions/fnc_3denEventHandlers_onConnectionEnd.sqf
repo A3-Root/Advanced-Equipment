@@ -1,3 +1,4 @@
+// File: fnc_3denEventHandlers_onConnectionEnd.sqf
 /*
  * Author: Root, y0014984
  * Description: Handles connection end events in Eden Editor. Validates and processes network and power connections between devices.

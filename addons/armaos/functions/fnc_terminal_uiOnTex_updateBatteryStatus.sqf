@@ -1,3 +1,4 @@
+// File: fnc_terminal_uiOnTex_updateBatteryStatus.sqf
 /*
  * Author: Root, y0014984
  * Description: Updates battery status on UI-on-Texture displays for nearby players.

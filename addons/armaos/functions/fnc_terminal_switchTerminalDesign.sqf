@@ -1,3 +1,4 @@
+// File: fnc_terminal_switchTerminalDesign.sqf
 /*
  * Author: Root, y0014984
  * Description: Cycles through available terminal designs.

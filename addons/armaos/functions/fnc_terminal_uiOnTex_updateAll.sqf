@@ -1,3 +1,4 @@
+// File: fnc_terminal_uiOnTex_updateAll.sqf
 /*
  * Author: Root, y0014984
  * Description: Updates all UI-on-Texture display elements (output, battery, design) for nearby players.

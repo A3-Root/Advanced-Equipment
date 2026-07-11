@@ -1,3 +1,4 @@
+// File: fnc_manageDebugMode.sqf
 /*
  * Author: Root, y0014984
  * Description: Triggered by CBA setting change event handler to start or stop the debug mode loop.

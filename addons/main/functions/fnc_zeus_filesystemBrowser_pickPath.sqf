@@ -1,3 +1,4 @@
+// File: fnc_zeus_filesystemBrowser_pickPath.sqf
 /*
  * Author: Root
  * Description: Confirms the current selection in the Zeus filesystem browser when it is used as a

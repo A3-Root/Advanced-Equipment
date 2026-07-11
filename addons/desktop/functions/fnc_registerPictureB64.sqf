@@ -1,3 +1,4 @@
+// File: fnc_registerPictureB64.sqf
 #include "..\script_component.hpp"
 /*
  * Author: Root

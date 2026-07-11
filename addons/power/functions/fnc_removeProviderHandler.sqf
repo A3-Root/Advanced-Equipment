@@ -1,3 +1,4 @@
+// File: fnc_removeProviderHandler.sqf
 /*
  * Author: Root, y0014984, Wasserstoff
  * Description: Removes the per-frame handler from a power provider, stopping its power generation loop. Resets power state to off and clears power capacity. Called when generators, batteries, or solar panels are turned off.

@@ -1,3 +1,4 @@
+// File: fnc_shell_validatePassword.sqf
 /*
  * Author: Root, Wasserstoff, y0014984
  * Description: Validates a password against the stored password for a given username.

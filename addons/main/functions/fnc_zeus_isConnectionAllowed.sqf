@@ -1,3 +1,4 @@
+// File: fnc_zeus_isConnectionAllowed.sqf
 /*
  * Author: Root, y0014984
  * Description: Validates whether a network or power connection in Zeus is allowed based on object classes.

@@ -1,3 +1,4 @@
+// File: fnc_animateInteraction.sqf
 /*
  * Author: Root, y0014984
  * Description: Creates event handlers for interactive equipment animations via mouse scroll and modifier keys.

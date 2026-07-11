@@ -1,3 +1,4 @@
+// File: fnc_initRouter.sqf
 /**
  * Initializes a router.
  *

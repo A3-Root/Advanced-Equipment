@@ -1,3 +1,4 @@
+// File: fnc_terminal_init.sqf
 /*
  * Author: Root, Wasserstoff, y0014984
  * Description: Initializes a new terminal session for a computer, setting up all terminal variables and state.

@@ -1,3 +1,4 @@
+// File: fnc_laptop_handleTake.sqf
 /*
  * Author: Root
  * Description: Handles when a laptop item is picked up from a container/ground via vanilla inventory.

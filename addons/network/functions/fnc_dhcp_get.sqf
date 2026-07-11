@@ -1,3 +1,4 @@
+// File: fnc_dhcp_get.sqf
 /**
  * Hands out a lease from a router's own subnet. Each router owns a single /24 and keeps its own
  * lease counter, so a device always receives an address inside the subnet of the router it is

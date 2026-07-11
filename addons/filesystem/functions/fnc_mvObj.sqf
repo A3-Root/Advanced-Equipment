@@ -1,3 +1,4 @@
+// File: fnc_mvObj.sqf
 /*
  * Author: Root, y0014984, Wasserstoff
  * Description: Moves or copies a filesystem object (file or directory) to another location. If copying, requires read permission on source. If moving, requires write permission on source. Always requires write permission on target directory.

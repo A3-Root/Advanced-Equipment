@@ -1,3 +1,4 @@
+// File: fnc_disconnectAllDrives.sqf
 /*
  * Author: Root
  * Description: Disconnects every flash drive currently connected to a computer, converting each back

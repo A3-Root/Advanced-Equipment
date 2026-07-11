@@ -1,3 +1,4 @@
+// File: fnc_shell_stdout.sqf
 /*
  * Author: Root, Wasserstoff
  * Description: Writes output to the terminal display. Accepts string or array of strings/formatted text. This is the standard output function for all commands.

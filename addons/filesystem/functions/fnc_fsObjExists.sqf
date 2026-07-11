@@ -1,3 +1,4 @@
+// File: fnc_fsObjExists.sqf
 /*
  * Author: Root, y0014984
  * Description: Checks whether a filesystem object (file or directory) exists at the specified path. Returns false if path is invalid or object doesn't exist.

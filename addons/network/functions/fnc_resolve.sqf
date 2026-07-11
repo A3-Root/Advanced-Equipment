@@ -1,3 +1,4 @@
+// File: fnc_resolve.sqf
 /**
  * Resolves a target IP to a device anywhere in the mission and enforces the per-router external
  * access policy. A target on the source's own gateway is always reachable. A target on a different

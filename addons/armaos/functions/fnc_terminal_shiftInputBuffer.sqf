@@ -1,3 +1,4 @@
+// File: fnc_terminal_shiftInputBuffer.sqf
 /*
  * Author: Root, Wasserstoff
  * Description: Shifts the terminal input buffer left or right for cursor movement.

@@ -1,3 +1,4 @@
+// File: fnc_registerExtApp.sqf
 #include "..\script_component.hpp"
 /*
  * Author: Root

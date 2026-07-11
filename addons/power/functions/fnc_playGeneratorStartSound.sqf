@@ -1,3 +1,4 @@
+// File: fnc_playGeneratorStartSound.sqf
 /*
  * Author: Root, Wasserstoff
  * Description: Plays generator startup sound effect using soundStartEngine from config. Sets generator engine state to on after sound completes. Uses 3D positional audio with 100m max distance.

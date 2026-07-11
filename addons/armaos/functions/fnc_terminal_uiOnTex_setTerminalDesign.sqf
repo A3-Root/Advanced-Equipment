@@ -1,3 +1,4 @@
+// File: fnc_terminal_uiOnTex_setTerminalDesign.sqf
 /*
  * Author: Root, y0014984
  * Description: Sets terminal design on UI-on-Texture displays for nearby players.

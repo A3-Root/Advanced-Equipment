@@ -1,3 +1,4 @@
+// File: fnc_os_standby.sqf
 /*
  * Author: Root, y0014984, Wasserstoff
  * Description: Puts the computer into standby mode, closes the terminal dialog and enters low power state.

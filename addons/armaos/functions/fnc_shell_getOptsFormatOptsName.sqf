@@ -1,3 +1,4 @@
+// File: fnc_shell_getOptsFormatOptsName.sqf
 /*
  * Author: Root, y0014984
  * Description: Formats an option name for display in help text, combining short and long forms with type information.

@@ -1,3 +1,4 @@
+// File: fnc_lamp_turnOn.sqf
 /*
  * Author: Root, y0014984
  * Description: Turns on a lamp using BIS_fnc_switchLamp and updates ACE3 interaction state via

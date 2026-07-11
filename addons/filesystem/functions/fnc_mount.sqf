@@ -1,3 +1,4 @@
+// File: fnc_mount.sqf
 /*
  * Author: Root, Wasserstoff
  * Description: Mounts a filesystem (like a flash drive) to a specified directory mount point. Requires write permission on the mount point. Used for attaching external storage devices.

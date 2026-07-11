@@ -1,3 +1,4 @@
+// File: fnc_multSolarPanelOrientation.sqf
 /*
  * Author: Root, Wasserstoff
  * Description: Calculates and returns the world-space normal vectors for a dual solar panel system. Uses panel yaw and pitch angles stored in object variables to compute 3D orientation vectors. Used for solar efficiency calculations based on sun position.

@@ -1,3 +1,4 @@
+// File: fnc_turnOffBatteryAction.sqf
 /*
  * Author: Root, y0014984, Wasserstoff
  * Description: ACE3 interaction action that turns off a battery by removing its provider handler. Stops battery calculation loop, turns off all connected devices, and updates ACE3 interactions to show "turned off" state.

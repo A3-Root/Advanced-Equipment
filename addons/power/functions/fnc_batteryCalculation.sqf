@@ -1,3 +1,4 @@
+// File: fnc_batteryCalculation.sqf
 /*
  * Author: Root, Wasserstoff
  * Description: Calculates and updates the battery level based on power consumption and recharging rate. Called every second by the power provider handler. Handles both charging (from connected power source) and discharging (when powering devices). Power values are in kWh.

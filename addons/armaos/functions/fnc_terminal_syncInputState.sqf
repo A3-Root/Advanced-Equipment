@@ -1,3 +1,4 @@
+// File: fnc_terminal_syncInputState.sqf
 /*
  * Author: Root
  * Description: Synchronizes only the input state (input buffer, cursor position, prompt) to nearby players for real-time typing display.

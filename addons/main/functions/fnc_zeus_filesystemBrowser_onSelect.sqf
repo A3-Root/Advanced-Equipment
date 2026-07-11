@@ -1,3 +1,4 @@
+// File: fnc_zeus_filesystemBrowser_onSelect.sqf
 /*
  * Author: Root
  * Description: Handles selection change events in the Zeus filesystem browser list. Sets the selected item as the current file/folder

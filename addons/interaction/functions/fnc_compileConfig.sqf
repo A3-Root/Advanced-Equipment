@@ -1,3 +1,4 @@
+// File: fnc_compileConfig.sqf
 /*
  * Author: Root, Wasserstoff, y0014984
  * Description: Uses the AE3 Equipment config to compile a hashmap for the object. Parses config entries

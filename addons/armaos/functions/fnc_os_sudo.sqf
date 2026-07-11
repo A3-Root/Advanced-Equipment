@@ -1,3 +1,4 @@
+// File: fnc_os_sudo.sqf
 #include "..\script_component.hpp"
 /*
  * Author: Root

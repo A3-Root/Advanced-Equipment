@@ -1,3 +1,4 @@
+// File: fnc_playGeneratorStopSound.sqf
 /*
  * Author: Root, Wasserstoff
  * Description: Plays generator shutdown sound effect using soundStopEngine from config. Sets generator engine state to off before sound. Uses 3D positional audio with 100m max distance.

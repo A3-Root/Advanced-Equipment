@@ -1,3 +1,4 @@
+// File: fnc_setSystemConfig.sqf
 #include "..\script_component.hpp"
 /*
  * Author: Root

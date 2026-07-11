@@ -1,3 +1,4 @@
+// File: fnc_ping.sqf
 /**
  * Returns the device object and the route length for given initial device and
  * target IP. Returns objNull if route is invalid.

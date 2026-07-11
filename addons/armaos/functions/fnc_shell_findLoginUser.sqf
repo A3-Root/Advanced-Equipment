@@ -1,3 +1,4 @@
+// File: fnc_shell_findLoginUser.sqf
 /*
  * Author: Root, Wasserstoff, y0014984
  * Description: Finds and validates a login user in the computer's user list by checking username and password.

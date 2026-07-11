@@ -1,3 +1,4 @@
+// File: fnc_terminal_getAllowedKeysHU.sqf
 /*
  * Author: Root
  * Description: Returns the allowed keyboard key mappings for Hungarian (HU) layout.

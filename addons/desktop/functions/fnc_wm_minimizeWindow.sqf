@@ -1,3 +1,4 @@
+// File: fnc_wm_minimizeWindow.sqf
 #include "..\script_component.hpp"
 /*
  * Author: Root

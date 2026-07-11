@@ -1,3 +1,4 @@
+// File: fnc_terminal_switchKeyboardLayout.sqf
 /*
  * Author: Root, Wasserstoff, y0014984
  * Description: Cycles through available keyboard layouts (US, DE, FR, IT, RU, AR, HE, HU, TR).

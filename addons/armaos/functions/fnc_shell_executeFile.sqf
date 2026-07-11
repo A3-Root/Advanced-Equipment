@@ -1,3 +1,4 @@
+// File: fnc_shell_executeFile.sqf
 /*
  * Author: Root, y0014984, Wasserstoff
  * Description: Executes a file from the filesystem. If the file contains executable code, spawns it as a process and waits for completion.

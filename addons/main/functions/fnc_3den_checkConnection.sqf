@@ -1,3 +1,4 @@
+// File: fnc_3den_checkConnection.sqf
 /*
  * Author: Root, y0014984
  * Description: Validates a network or power connection in Eden Editor. Checks if the connection is between allowed object classes,

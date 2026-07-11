@@ -1,3 +1,4 @@
+// File: fnc_initDevice.sqf
 /*
  * Author: Root, y0014984, Wasserstoff
  * Description: Initializes a power device with turn on/off/standby actions and conditions. Sets up ACE3 interaction menus, creates wrapper functions, and stores device state. Handles both equipment devices (laptops) with submenu structure and standalone devices with simple menu structure.
