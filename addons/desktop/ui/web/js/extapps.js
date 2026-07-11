@@ -78,7 +78,10 @@
           '<div class="dev-status" style="min-height:22px;padding:8px 12px;font-weight:600"></div>';
         var devs = body.querySelector(".devs");
         var status = body.querySelector(".dev-status");
-        var allItems = [], filterGrid = "", filterDistance = 0;
+        // filterOrigin holds the world position of the grid reference once the engine has resolved it.
+        // With both a grid and a distance set, the distance is measured from that grid square instead
+        // of from the player, so the pair reads as "everything within N metres of this grid".
+        var allItems = [], filterGrid = "", filterDistance = 0, filterOrigin = null;
         var pinKey = "rootcw_pins_" + extra.type;
         var pins = [];
         try { pins = JSON.parse(storeGet(pinKey) || "[]") || []; } catch (e) { pins = []; }
@@ -194,6 +197,13 @@
         function render(items) {
           allItems = items;
           items = items.filter(function (d) {
+            // Grid + distance together: keep only what lies within the radius of the named grid square.
+            if (filterOrigin && filterDistance) {
+              var p = d.pos;
+              if (!p || p.length < 2) return false;
+              var dx = Number(p[0]) - filterOrigin[0], dy = Number(p[1]) - filterOrigin[1];
+              return Math.sqrt(dx * dx + dy * dy) <= filterDistance;
+            }
             var gridOk = !filterGrid || String(d.grid || "").toLowerCase().indexOf(filterGrid) === 0;
             var distOk = !filterDistance || (Number(d.distance) >= 0 && Number(d.distance) <= filterDistance);
             return gridOk && distOk;
@@ -272,11 +282,21 @@
           filterBar.querySelector(".fapply").addEventListener("click", function () {
             filterGrid = String(gridInput.value || "").trim().toLowerCase();
             filterDistance = Number(distInput.value) || 0;
+            filterOrigin = null;
+            // Only the engine can turn a grid reference into a world position, and it is only needed
+            // when a radius is given too - a grid on its own still matches by grid label.
+            if (filterGrid && filterDistance) {
+              A3.request("grid_pos", { grid: filterGrid }).then(function (res) {
+                filterOrigin = (res && res.ok && res.pos && res.pos.length >= 2) ? res.pos : null;
+                render(allItems);
+              }).catch(function () { render(allItems); });
+              return;
+            }
             render(allItems);
           });
           filterBar.querySelector(".fclear").addEventListener("click", function () {
             gridInput.value = ""; distInput.value = "";
-            filterGrid = ""; filterDistance = 0;
+            filterGrid = ""; filterDistance = 0; filterOrigin = null;
             render(allItems);
           });
         }

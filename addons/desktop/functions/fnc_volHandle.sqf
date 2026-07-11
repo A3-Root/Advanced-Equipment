@@ -9,8 +9,8 @@
  * Arguments:
  * 0: _computer <OBJECT> - The bound laptop
  * 1: _user <STRING> - The logged-in session user (mount grants this user access)
- * 2: _op <STRING> - "list" | "connect" | "mount" | "unmount"
- * 3: _data <HASHMAP> - key "interface" for mount/unmount
+ * 2: _op <STRING> - "list" | "connect" | "mount" | "eject" | "unmount"
+ * 3: _data <HASHMAP> - key "interface" for mount/eject/unmount
  *
  * Return Value:
  * Result <HASHMAP>
@@ -104,6 +104,20 @@ switch (_op) do {
         private _interface = _data getOrDefault ["interface", ""];
         if (_interface isEqualTo "") exitWith { _res set ["error", "bad_input"]; };
         [_computer, _interface] remoteExecCall ["AE3_flashdrive_fnc_unmount", 2];
+        _res set ["ok", true];
+    };
+
+    // Physically pull the drive out of the port: unmounts it, frees the USB slot for another drive
+    // and hands the drive back to the player as an inventory item. Unmounting alone leaves the slot
+    // occupied, so this is what the "Eject" button in My Computer performs.
+    case "eject": {
+        private _interface = _data getOrDefault ["interface", ""];
+        private _interfaces = _computer getVariable ["AE3_USB_Interfaces", createHashMap];
+        private _cfg = _interfaces getOrDefault [_interface, []];
+        if (_interface isEqualTo "" || {_cfg isEqualTo []}) exitWith { _res set ["error", "bad_input"]; };
+        private _occupied = _computer getVariable ["AE3_USB_Interfaces_occupied", []];
+        if (isNull (_occupied param [_cfg select 0, objNull])) exitWith { _res set ["error", "unavailable"]; };
+        [_computer, player, _cfg] remoteExecCall ["AE3_flashdrive_fnc_disconnectFlashDrive", 2];
         _res set ["ok", true];
     };
 

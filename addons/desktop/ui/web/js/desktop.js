@@ -40,15 +40,14 @@
     notepad: "Productivity & Files", calculator: "Productivity & Files", calendar: "Productivity & Files",
     files: "Productivity & Files", recyclebin: "Productivity & Files", media: "Productivity & Files",
     browser: "Communication & Web", mail: "Communication & Web", messenger: "Communication & Web", map: "Communication & Web",
-    snake: "Games & Entertainment",
-    crypto: "Cryptography", crack: "Cryptography"
+    snake: "Games & Entertainment"
   };
   // Root Cyberwarfare apps carry app.menu = "Hacking Tools" (set in fn_gui_registerApps.sqf), which is
   // the last category here. My Computer is intentionally not menu-listed (it lives on the desktop/dock).
-  var CATEGORY_ORDER = ["System & Core Utilities", "Productivity & Files", "Communication & Web", "Games & Entertainment", "Cryptography", "Hacking Tools"];
+  var CATEGORY_ORDER = ["System & Core Utilities", "Productivity & Files", "Communication & Web", "Games & Entertainment", "Hacking Tools"];
   var APP_ORDER = ["terminal", "settings", "network", "ping", "ssh", "about",
     "notepad", "calculator", "calendar", "files", "recyclebin", "media",
-    "browser", "mail", "messenger", "map", "snake", "crypto", "crack"];
+    "browser", "mail", "messenger", "map", "snake"];
   function appRank(app) { var i = APP_ORDER.indexOf(app.id); return i < 0 ? 999 : i; }
 
   // Fixed system icons that always sit on the desktop (like Ubuntu's Home/Trash). "My Computer" is
@@ -208,18 +207,25 @@
   // Load and render the logged-in user's ~/Desktop folder. Launchers (.app, holding "app=<id>")
   // launch the app; folders open Files there; files open in the default viewer; symlinks follow
   // their target. Mirrors a real Ubuntu/Debian desktop.
-  function loadUserDesktop(desk, retries) {
+  function loadUserDesktop(desk, retries, gen) {
     retries = retries || 0;
     var home = window.AE3_HOME;
     if (!home) return;
     var path = home + "/Desktop";
     A3.request("fs_list", { path: path }).then(function (res) {
+      // A rebuild that started after this one has already cleared and repopulated the surface, so
+      // these entries belong to a surface that no longer exists - appending them now would stack a
+      // second copy of every icon on top of the current ones.
+      if (gen !== deskGen) return;
       if (!res || (res.error && res.error !== "")) return;
       if (res.loading) {
-        if (retries < 6) setTimeout(function () { loadUserDesktop(desk, retries + 1); }, 500);
+        if (retries < 6) setTimeout(function () { loadUserDesktop(desk, retries + 1, gen); }, 500);
         return;
       }
+      var placed = {};
       (res.entries || []).forEach(function (it) {
+        if (placed[it.name]) return;
+        placed[it.name] = true;
         var full = (path + "/" + it.name).replace(/\/+/g, "/");
         var glyph = it.dir ? Icons.folder : Icons.file;
         var open = function () { openDesktopEntry(it, full); };
@@ -232,6 +238,7 @@
         // Launcher files hold "app=<id>" and can use any visible filename, including .exe names.
         if (!it.dir) {
           A3.request("fs_read", { path: (it.link && it.link !== "") ? it.link : full }).then(function (res2) {
+            if (gen !== deskGen) return;
             var m = String((res2 && res2.content) || "").match(/app\s*=\s*([\w-]+)/i);
             var target = m && Apps.get(m[1]);
             var g = icon.querySelector(".glyph");
@@ -302,15 +309,22 @@
     }).catch(function () { window.AE3_openFile(readPath); });
   }
 
+  // Bumped on every rebuild so the asynchronous ~/Desktop listing can tell whether the surface it
+  // was started for is still the current one (see loadUserDesktop).
+  var deskGen = 0;
+  var refreshPending = false;
+
   function buildDesktopIcons() {
     var desk = document.getElementById("desktop");
     desk.innerHTML = "";
+    deskGen++;
+    var gen = deskGen;
     DESKTOP_ICONS.forEach(function (d) {
       if (!Apps.get(d.app)) return; // skip if the backing app is not present (e.g. recyclebin disabled)
       var glyph = (typeof d.glyph === "function") ? d.glyph() : d.glyph;
       makeIcon(desk, d.label, glyph, function () { Apps.launch(d.app, d.args); }, { trash: d.app === "recyclebin" });
     });
-    loadUserDesktop(desk);
+    loadUserDesktop(desk, 0, gen);
     desk.addEventListener("mousedown", function (e) {
       if (e.target === desk) desk.querySelectorAll(".desktop-icon").forEach(function (n) { n.classList.remove("sel"); });
     });
@@ -640,7 +654,17 @@
       A3.send("signout", {});
       if (typeof window.AE3_showLogin === "function") window.AE3_showLogin();
     },
-    refresh: function () { buildDock(); buildDesktopIcons(); onTaskbarChange(); },
+    // Coalesced: several addons can push their app list in the same frame (one push per laptop or per
+    // USB change), and each push asks for a refresh. Rebuilding once per burst keeps the surface from
+    // being torn down while a previous rebuild is still listing the user's ~/Desktop folder.
+    refresh: function () {
+      if (refreshPending) return;
+      refreshPending = true;
+      setTimeout(function () {
+        refreshPending = false;
+        buildDock(); buildDesktopIcons(); onTaskbarChange();
+      }, 0);
+    },
     // Reopen the windows saved from the previous session.
     restoreUi: function (list) {
       uiRestoring = true;

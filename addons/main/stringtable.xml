@@ -1249,15 +1249,6 @@
                 <German>Speichern</German>
                 <Chinesesimp>保存</Chinesesimp>
             </Key>
-            <Key ID="STR_AE3_Main_Zeus_SecurityCommandsAdded">
-                <Original>AE3 Security Commands added</Original>
-                <English>AE3 Security Commands added</English>
-                <French>AE3 Commandes de sécurité ajoutées</French>
-                <Italian>AE3 Comandi di sicurezza aggiunti</Italian>
-                <Russian>AE3 Security Commands added</Russian>
-                <German>AE3 Spiele hinzugefügt</German>
-                <Chinesesimp>AE3 安全命令已添加</Chinesesimp>
-            </Key>
             <Key ID="STR_AE3_Main_Zeus_SelectDestination">
                 <Original>Select destination folder:</Original>
                 <English>Select destination folder:</English>

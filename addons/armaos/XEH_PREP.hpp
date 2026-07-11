@@ -63,9 +63,7 @@ PREP(computer_turnOn);
 PREP(computer_turnOff);
 
 PREP(computer_addUser);
-PREP(computer_addSecurityCommands);
 PREP(computer_addGames);
-PREP(attr_addSecurityCommands);
 PREP(attr_addGames);
 PREP(computer_addCustomCommand);
 PREP(computer_initWithCommands);
@@ -102,8 +100,6 @@ PREP(os_shutdown);
 PREP(os_desktop);
 PREP(os_standby);
 PREP(os_whoami);
-PREP(os_crypto);
-PREP(os_crack);
 PREP(os_find);
 PREP(os_mount);
 PREP(os_unmount);
@@ -118,8 +114,6 @@ PREP(os_sudo);
 /* Encryption Functions */
 PREP(encryption_caesar);
 PREP(encryption_columnar);
-PREP(encryption_crack);
-PREP(encryption_crypto);
 
 /* Terminal Functions */
 PREP(terminal_init);

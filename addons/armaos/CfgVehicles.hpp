@@ -1,29 +1,7 @@
-// Laptop software toggles exposed as 3DEN object attributes (replacing the old Add Security
-// Commands / Add Games modules). Each checkbox installs the command/game on the laptop at mission
-// start once it has finished initialising. Shared by every laptop variant.
+// Laptop software toggles exposed as 3DEN object attributes (replacing the old Add Games module).
+// Each checkbox installs the game on the laptop at mission start once it has finished initialising.
+// Shared by every laptop variant.
 #define AE3_LAPTOP_SOFTWARE_ATTRIBUTES \
-	class AE3_SecurityCommand_Crypto \
-	{ \
-		displayName = "Crypto (security command)"; \
-		tooltip = "$STR_AE3_ArmaOS_Config_ModuleAddSecurityCommandsCryptoTooltip"; \
-		property = "AE3_SecurityCommand_Crypto"; \
-		control = "Checkbox"; \
-		expression = "[_this, _value, false] call AE3_armaos_fnc_attr_addSecurityCommands;"; \
-		defaultValue = "false"; \
-		typeName = "BOOL"; \
-		condition = "1"; \
-	}; \
-	class AE3_SecurityCommand_Crack \
-	{ \
-		displayName = "Crack (security command)"; \
-		tooltip = "$STR_AE3_ArmaOS_Config_ModuleAddSecurityCommandsCrackTooltip"; \
-		property = "AE3_SecurityCommand_Crack"; \
-		control = "Checkbox"; \
-		expression = "[_this, false, _value] call AE3_armaos_fnc_attr_addSecurityCommands;"; \
-		defaultValue = "false"; \
-		typeName = "BOOL"; \
-		condition = "1"; \
-	}; \
 	class AE3_Game_Snake \
 	{ \
 		displayName = "Snake (game)"; \

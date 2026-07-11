@@ -303,6 +303,96 @@
     load();
   };
 
+  // ---------------- My Computer ----------------
+  // Central computer view: removable volumes (auto-mounted USB), mount/unmount, shortcuts to Network
+  // & System properties, plus an embedded file browser - like a real Debian/Ubuntu "Computer".
+  Apps.register({
+    id: "mycomputer", title: "My Computer", glyph: (Icons.computer || Icons.files), width: 780, height: 560,
+    showInDock: true, singleton: false, showInMenu: false,
+    render: function (body, win) {
+      body.innerHTML =
+        '<div style="display:flex;height:100%">' +
+          '<div class="mc-side" style="width:230px;border-right:1px solid var(--line);overflow:auto">' +
+            '<div class="pad" style="font-weight:600">Volumes</div>' +
+            '<div class="mc-vols"></div>' +
+            '<div class="pad" style="font-weight:600;border-top:1px solid var(--line)">Shortcuts</div>' +
+            '<div style="padding:6px 12px;display:flex;flex-direction:column;gap:6px">' +
+              '<button class="btn mc-net">Network properties</button>' +
+              '<button class="btn mc-sys">System properties</button>' +
+            '</div>' +
+          '</div>' +
+          '<div class="mc-main" style="flex:1;display:flex;flex-direction:column;min-width:0"></div>' +
+        '</div>';
+      var volsEl = body.querySelector(".mc-vols");
+      var main = body.querySelector(".mc-main");
+      var browserApi = null;
+
+      function openIn(path) {
+        window.AE3_FileBrowser(main, win, { path: path }, { onReady: function (api) { browserApi = api; } });
+      }
+      function loadVols() {
+        A3.request("vol_list", {}).then(function (res) {
+          volsEl.innerHTML = "";
+          (res && res.volumes || []).forEach(function (v) {
+            var sub = v.type === "usb" ? (v.mounted ? "USB &middot; mounted" : "USB &middot; not mounted") : (v.type === "free" ? "Empty USB slot" : "Local disk");
+            var card = h('<div class="mc-vol"><div class="mc-name">' + esc(v.label) + '</div>' +
+              '<div class="mc-sub">' + sub + '</div>' +
+              '<div class="mc-actions"></div></div>');
+            var acts = card.querySelector(".mc-actions");
+            if (v.type === "usb") {
+              if (v.mounted) {
+                var openB = h('<button class="btn">Open</button>'); openB.addEventListener("click", function (e) { e.stopPropagation(); openIn(v.path); }); acts.appendChild(openB);
+              } else {
+                var mt = h('<button class="btn accent">Mount</button>'); mt.addEventListener("click", function (e) { e.stopPropagation(); A3.request("vol_mount", { interface: v.id }).then(function () { setTimeout(loadVols, 400); }); }); acts.appendChild(mt);
+              }
+              // Eject pulls the drive out of the port: it unmounts, frees the USB slot so another
+              // drive can be connected, and returns the drive to the player's inventory.
+              var ej = h('<button class="btn">Eject</button>');
+              ej.title = "Unplug the drive and return it to your inventory";
+              ej.addEventListener("click", function (e) { e.stopPropagation(); A3.request("vol_eject", { interface: v.id }).then(function () { setTimeout(loadVols, 400); }); });
+              acts.appendChild(ej);
+            }
+            card.addEventListener("click", function () { if (v.type === "system" || (v.type === "usb" && v.mounted)) openIn(v.path); });
+            volsEl.appendChild(card);
+          });
+          // One card per drive class held in the inventory (not one per slot-drive combination).
+          // Connect uses the first free interface; the server re-checks that it is still free.
+          var available = (res && res.availableDrives) || [];
+          var freeSlots = (res && res.volumes || []).filter(function (v) { return v.type === "free"; });
+          available.forEach(function (drive) {
+            var n = Number(drive.count) || 1;
+            var name = esc(drive.label || drive.item) + (n > 1 ? " &times;" + n : "");
+            var card = h('<div class="mc-vol"><div class="mc-name">' + name + '</div><div class="mc-sub">Available removable drive</div><div class="mc-actions"></div></div>');
+            var connect = h('<button class="btn accent">Connect</button>');
+            if (!freeSlots.length) {
+              connect.disabled = true;
+              connect.title = "No free USB slot";
+            } else {
+              connect.addEventListener("click", function (e) {
+                e.stopPropagation();
+                A3.request("vol_connect", { interface: freeSlots[0].id, item: drive.item }).then(function () { setTimeout(loadVols, 400); });
+              });
+            }
+            card.querySelector(".mc-actions").appendChild(connect);
+            volsEl.appendChild(card);
+          });
+          if (!volsEl.children.length) volsEl.innerHTML = '<div class="pad muted">No volumes</div>';
+        }).catch(function () { volsEl.innerHTML = '<div class="pad muted">Unavailable</div>'; });
+      }
+
+      body.querySelector(".mc-net").addEventListener("click", function () { Apps.launch("network"); });
+      body.querySelector(".mc-sys").addEventListener("click", function () { Apps.launch("settings"); });
+      A3.on("vol_changed", loadVols);
+      A3.on("vol_error", function (d) {
+        if (window.AE3_toast) window.AE3_toast("Mount failed: " + ((d && d.message) || "unknown error"), "error");
+        loadVols();
+      });
+      openIn("/");
+      loadVols();
+    }
+  });
+
+  /*
   Apps.register({
     id: "files", title: "Files", glyph: Icons.files, width: 577, height: 475,
     showOnDesktop: true, showInDock: true,
@@ -375,7 +465,7 @@
       });
     });
   };
-
+*/
   // ---------------- Notepad ----------------
   Apps.register({
     id: "notepad", title: "Text Editor", glyph: Icons.notepad, width: 620, height: 460,
@@ -1387,49 +1477,6 @@
     }
   });
 
-  // ---------------- Cryptography Helpers ----------------
-  function renderCryptoApp(body, win, isCrack) {
-    body.innerHTML =
-      '<div class="pad" style="display:flex;flex-direction:column;gap:8px;height:100%">' +
-        '<div style="display:flex;gap:8px;flex-wrap:wrap">' +
-          '<select class="input cmode" style="min-width:130px"></select>' +
-          '<select class="input calgo" style="min-width:160px"><option value="caesar">Caesar</option><option value="columnar">Columnar</option></select>' +
-          '<input class="input ckey" placeholder="Key" style="min-width:180px">' +
-        '</div>' +
-        '<textarea class="input ctext" rows="9" placeholder="Text input"></textarea>' +
-        '<textarea class="input cout" rows="10" readonly placeholder="Result"></textarea>' +
-        '<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn accent crun">Run</button><button class="btn csave">Save Output</button><button class="btn cclear">Clear</button></div>' +
-      '</div>';
-    var mode = body.querySelector(".cmode"), algo = body.querySelector(".calgo"), key = body.querySelector(".ckey"), input = body.querySelector(".ctext"), out = body.querySelector(".cout");
-    (isCrack ? [["bruteforce", "Bruteforce"], ["statistics", "Statistics"], ["key", "Key Length"]] : [["encrypt", "Encrypt"], ["decrypt", "Decrypt"]]).forEach(function (m) { var o = document.createElement("option"); o.value = m[0]; o.textContent = m[1]; mode.appendChild(o); });
-    function setOutput(res) {
-      if (!res) { out.value = ""; return; }
-      if (res.error && res.error !== "") { out.value = "Error: " + res.error; return; }
-      out.value = isCrack ? ((res.lines || []).join("\n")) : String(res.result || "");
-    }
-    function run() {
-      var command = isCrack ? "crack_run" : "crypto_run";
-      A3.request(command, { mode: mode.value, algorithm: algo.value, key: key.value, text: input.value || "" }).then(setOutput).catch(function (e) { out.value = String(e || "Error"); });
-    }
-    body.querySelector(".crun").addEventListener("click", run);
-    body.querySelector(".cclear").addEventListener("click", function () { input.value = ""; out.value = ""; });
-    body.querySelector(".csave").addEventListener("click", function () {
-      if (typeof window.AE3_pickFile !== "function") return;
-      AE3_pickFile("save", { title: "Save output", start: (window.AE3_HOME || "/home"), filename: (algo.value + ".txt") }).then(function (p) { if (p) A3.request("fs_save", { path: p, content: out.value || "" }); });
-    });
-    win.app.onClose = function () {};
-  }
-
-  Apps.register({
-    id: "crypto", title: "Crypto", glyph: Icons.crypto, width: 720, height: 520, showInDock: false,
-    render: function (body, win) { renderCryptoApp(body, win, false); }
-  });
-
-  Apps.register({
-    id: "crack", title: "Crack", glyph: Icons.crack, width: 720, height: 520, showInDock: false,
-    render: function (body, win) { renderCryptoApp(body, win, true); }
-  });
-
   // ---------------- Games: Snake ----------------
   Apps.register({
     id: "snake", title: "Snake", glyph: Icons.snake, width: 420, height: 460, showInDock: false,
@@ -1991,90 +2038,6 @@
     }
   });
 
-  // ---------------- My Computer ----------------
-  // Central computer view: removable volumes (auto-mounted USB), mount/unmount, shortcuts to Network
-  // & System properties, plus an embedded file browser - like a real Debian/Ubuntu "Computer".
-  Apps.register({
-    id: "mycomputer", title: "My Computer", glyph: (Icons.computer || Icons.files), width: 780, height: 560,
-    showInDock: true, singleton: true, showInMenu: false,
-    render: function (body, win) {
-      body.innerHTML =
-        '<div style="display:flex;height:100%">' +
-          '<div class="mc-side" style="width:230px;border-right:1px solid var(--line);overflow:auto">' +
-            '<div class="pad" style="font-weight:600">Volumes</div>' +
-            '<div class="mc-vols"></div>' +
-            '<div class="pad" style="font-weight:600;border-top:1px solid var(--line)">Shortcuts</div>' +
-            '<div style="padding:6px 12px;display:flex;flex-direction:column;gap:6px">' +
-              '<button class="btn mc-net">Network properties</button>' +
-              '<button class="btn mc-sys">System properties</button>' +
-            '</div>' +
-          '</div>' +
-          '<div class="mc-main" style="flex:1;display:flex;flex-direction:column;min-width:0"></div>' +
-        '</div>';
-      var volsEl = body.querySelector(".mc-vols");
-      var main = body.querySelector(".mc-main");
-      var browserApi = null;
-
-      function openIn(path) {
-        window.AE3_FileBrowser(main, win, { path: path }, { onReady: function (api) { browserApi = api; } });
-      }
-      function loadVols() {
-        A3.request("vol_list", {}).then(function (res) {
-          volsEl.innerHTML = "";
-          (res && res.volumes || []).forEach(function (v) {
-            var sub = v.type === "usb" ? (v.mounted ? "USB &middot; mounted" : "USB &middot; not mounted") : (v.type === "free" ? "Empty USB slot" : "Local disk");
-            var card = h('<div class="mc-vol"><div class="mc-name">' + esc(v.label) + '</div>' +
-              '<div class="mc-sub">' + sub + '</div>' +
-              '<div class="mc-actions"></div></div>');
-            var acts = card.querySelector(".mc-actions");
-            if (v.type === "usb") {
-              if (v.mounted) {
-                var openB = h('<button class="btn">Open</button>'); openB.addEventListener("click", function (e) { e.stopPropagation(); openIn(v.path); }); acts.appendChild(openB);
-                var um = h('<button class="btn">Eject</button>'); um.addEventListener("click", function (e) { e.stopPropagation(); A3.request("vol_unmount", { interface: v.id }).then(function () { setTimeout(loadVols, 400); }); }); acts.appendChild(um);
-              } else {
-                var mt = h('<button class="btn accent">Mount</button>'); mt.addEventListener("click", function (e) { e.stopPropagation(); A3.request("vol_mount", { interface: v.id }).then(function () { setTimeout(loadVols, 400); }); }); acts.appendChild(mt);
-              }
-            }
-            card.addEventListener("click", function () { if (v.type === "system" || (v.type === "usb" && v.mounted)) openIn(v.path); });
-            volsEl.appendChild(card);
-          });
-          // One card per drive class held in the inventory (not one per slot-drive combination).
-          // Connect uses the first free interface; the server re-checks that it is still free.
-          var available = (res && res.availableDrives) || [];
-          var freeSlots = (res && res.volumes || []).filter(function (v) { return v.type === "free"; });
-          available.forEach(function (drive) {
-            var n = Number(drive.count) || 1;
-            var name = esc(drive.label || drive.item) + (n > 1 ? " &times;" + n : "");
-            var card = h('<div class="mc-vol"><div class="mc-name">' + name + '</div><div class="mc-sub">Available removable drive</div><div class="mc-actions"></div></div>');
-            var connect = h('<button class="btn accent">Connect</button>');
-            if (!freeSlots.length) {
-              connect.disabled = true;
-              connect.title = "No free USB slot";
-            } else {
-              connect.addEventListener("click", function (e) {
-                e.stopPropagation();
-                A3.request("vol_connect", { interface: freeSlots[0].id, item: drive.item }).then(function () { setTimeout(loadVols, 400); });
-              });
-            }
-            card.querySelector(".mc-actions").appendChild(connect);
-            volsEl.appendChild(card);
-          });
-          if (!volsEl.children.length) volsEl.innerHTML = '<div class="pad muted">No volumes</div>';
-        }).catch(function () { volsEl.innerHTML = '<div class="pad muted">Unavailable</div>'; });
-      }
-
-      body.querySelector(".mc-net").addEventListener("click", function () { Apps.launch("network"); });
-      body.querySelector(".mc-sys").addEventListener("click", function () { Apps.launch("settings"); });
-      A3.on("vol_changed", loadVols);
-      A3.on("vol_error", function (d) {
-        if (window.AE3_toast) window.AE3_toast("Mount failed: " + ((d && d.message) || "unknown error"), "error");
-        loadVols();
-      });
-      openIn("/");
-      loadVols();
-    }
-  });
-
   // ---------------- Calculator ----------------
   Apps.register({
     id: "calculator", title: "Calculator", glyph: (Icons.calculator || Icons.about), width: 280, height: 380,
@@ -2350,6 +2313,7 @@
           '<br>' +
           '<p class="muted">Sir Doctor Professor Colonel Mr Matt The Fifth Senior</p>' +
           '<p class="muted">(Sir. Dr. Pf. Col. Mr. Matt V Sr.)</p>' +
+          '<p class="muted">Also known as A3-Root / xMidnightSnowx / @elpep</p>' +
           '<br>' +
           '<p class="muted">Professional Shitposter</p>' +
           '</div>';

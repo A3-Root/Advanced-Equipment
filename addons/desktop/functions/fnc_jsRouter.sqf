@@ -157,14 +157,18 @@ switch (_command) do {
         private _pass = _data getOrDefault ["pass", ""];
 
         // Persists a successful session on the laptop so closing/reopening resumes without re-login,
-        // tagged with this player so only they get the seamless re-entry (see "ready").
+        // tagged with this player so only they get the seamless re-entry (see "ready"). Everything it
+        // touches is taken as an argument: the retry path below calls it from inside a spawn, which
+        // starts a fresh variable scope where the caller's locals do not exist.
         private _persistSession = {
-            params ["_res"];
+            params ["_res", "_sessionDisplay", "_sessionUser", "_sessionComputer"];
             if (_res getOrDefault ["ok", false]) then {
-                _display setVariable [QGVAR(user), _user];
-                if (!isNull _computer) then {
-                    _computer setVariable [QGVAR(sessionUser), _user, true];
-                    _computer setVariable [QGVAR(sessionOwner), getPlayerUID player, true];
+                if (!isNull _sessionDisplay) then {
+                    _sessionDisplay setVariable [QGVAR(user), _sessionUser];
+                };
+                if (!isNull _sessionComputer) then {
+                    _sessionComputer setVariable [QGVAR(sessionUser), _sessionUser, true];
+                    _sessionComputer setVariable [QGVAR(sessionOwner), getPlayerUID player, true];
                 };
             };
         };
@@ -172,19 +176,19 @@ switch (_command) do {
         private _res = [_computer, _user, _pass] call FUNC(authUser);
         if (_res getOrDefault ["retry", false]) then {
             // Cache miss: resolve authoritatively in a scheduled thread, then reply.
-            [_computer, _user, _pass, _rid, _command, _persistSession] spawn {
-                params ["_computer", "_user", "_pass", "_rid", "_command", "_persistSession"];
+            [_computer, _user, _pass, _rid, _command, _persistSession, _display] spawn {
+                params ["_computer", "_user", "_pass", "_rid", "_command", "_persistSession", "_display"];
                 if (isMultiplayer && {!isNull _computer}) then {
                     [_computer, "AE3_Userlist"] call AE3_main_fnc_getRemoteVar; // blocks until synced
                 };
                 private _res = [_computer, _user, _pass, true] call AE3_desktop_fnc_authUser;
-                [_res] call _persistSession;
+                [_res, _display, _user, _computer] call _persistSession;
                 if (_rid isNotEqualTo "") then {
                     [_command, createHashMapFromArray [["_rid", _rid], ["data", _res]]] call AE3_desktop_fnc_jsSend;
                 };
             };
         } else {
-            [_res] call _persistSession;
+            [_res, _display, _user, _computer] call _persistSession;
             [_res] call _reply;
         };
     };
@@ -221,10 +225,27 @@ switch (_command) do {
     case "vol_list";
     case "vol_connect";
     case "vol_mount";
+    case "vol_eject";
     case "vol_unmount": {
         private _user = _display getVariable [QGVAR(user), ""];
         private _op = _command select [4]; // strip "vol_"
         [[_computer, _user, _op, _data] call FUNC(volHandle)] call _reply;
+    };
+
+    // Resolve a map grid reference typed by the user into a world position, so an app can measure
+    // distances from that grid square instead of from the player. Only the engine knows the map's
+    // grid layout, so JS cannot do this on its own. An unparseable grid replies with ok = false.
+    case "grid_pos": {
+        private _grid = toUpper (_data getOrDefault ["grid", ""]);
+        private _digits = count (toArray _grid);
+        private _res = createHashMapFromArray [["ok", false], ["pos", []]];
+        if (_grid regexMatch "^\d+$" && {_digits >= 2} && {_digits % 2 == 0} && {_digits <= 10}) then {
+            // true = centre of the grid square, so the radius is measured from the middle of the
+            // square the operator named rather than its top-left corner.
+            _res set ["pos", [_grid, true] call CBA_fnc_mapGridToPos];
+            _res set ["ok", true];
+        };
+        [_res] call _reply;
     };
 
     case "net_scan": { [[_computer] call FUNC(netScan)] call _reply; };
@@ -267,10 +288,6 @@ switch (_command) do {
 
     // In-window minimap data.
     case "map_data": { [[_computer, _data] call FUNC(mapData)] call _reply; };
-
-    // Cryptography apps: caesar/columnar crypto + cryptanalysis, GUI-side of the CLI tools.
-    case "crypto_run": { [[_data] call FUNC(cryptoRun)] call _reply; };
-    case "crack_run":  { [[_data] call FUNC(crackRun)] call _reply; };
 
     // Native real-world map overlay: CEF cannot host the map control, so open it as a dialog.
     case "map_open": { [_computer, _data] call FUNC(mapOpen); };

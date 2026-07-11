@@ -21,7 +21,7 @@
 ### Removed
 - Zeus **Add Games** and **Add Security Commands** modules (the underlying terminal commands are still available, but they can no longer be added to a mission via a Zeus module)
 - Terminal `chat` and `ipconfig` commands, non-functional/unused since v1.0.0.1
-- `Crypto` and `Crack` apps (they are now in the `Root_Cyberwarfare` repository)
+- `Crypto` and `Crack` apps (they are now in the `Root_Cyberwarfare` tools)
 
 ### Fixed
 - Numerous runtime errors across ArmaOS, Network, and Desktop components found during QA passes

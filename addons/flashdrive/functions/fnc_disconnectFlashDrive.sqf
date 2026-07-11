@@ -40,6 +40,10 @@ private _item = [_occupied, _player] call AE3_flashdrive_fnc_obj2item;
 _occupiedList set [_index, objNull];
 _computer setVariable ["AE3_USB_Interfaces_occupied", _occupiedList, true];
 
+// Tell any open desktop that the volume set changed, so the freed slot becomes connectable again
+// without reopening the laptop (connect/mount/unmount raise the same event).
+["ae3_desktop_volChanged", []] call CBA_fnc_globalEvent;
+
 private _sound = "\z\ae3\addons\flashdrive\audio\usb_connect.ogg";
 if ((typeOf _occupied) find "ROOT_Rubberducky" == 0) then {
     _sound = "\z\root_cyberwarfare\addons\main\audio\ducky_connected.ogg";
