@@ -1,7 +1,7 @@
 // File: fnc_module_saveLaptop.sqf
 #include "..\script_component.hpp"
 /*
- * Author: Root, y0014984, Wasserstoff
+ * Author: Root
  * Description: Eden/Zeus module function that snapshots every synced laptop's full state (filesystem,
  * users, calendar, mail, handles, network config, ...) into a named save slot held in the mission
  * buffer AE3_LAPTOP_SAVES. A Restore Laptop module placed on a fresh laptop later re-applies that

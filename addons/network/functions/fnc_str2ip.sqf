@@ -1,5 +1,6 @@
 // File: fnc_str2ip.sqf
 /**
+ * Author: Root
  * Converts an "a.b.c.d" string into a 4-element integer IP list. Returns [] when the string is not
  * four numeric octets, so callers can validate before routing. The octets are floored to integers
  * so the result compares equal (isEqualTo) to addresses handed out by AE3_network_fnc_dhcp_get.

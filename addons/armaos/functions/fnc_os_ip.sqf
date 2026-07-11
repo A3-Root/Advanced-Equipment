@@ -1,7 +1,7 @@
 // File: fnc_os_ip.sqf
 #include "..\script_component.hpp"
 /*
- * Author: Root, y0014984, Wasserstoff
+ * Author: Root
  * Description: Displays the network configuration (linux style). Replaces the old windows-style
  * ipconfig command; available as both 'ip' and 'ifconfig'. 'ip a' / no argument shows the
  * device address, 'ip r' additionally shows the gateway (connected router).

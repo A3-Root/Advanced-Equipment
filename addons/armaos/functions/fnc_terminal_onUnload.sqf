@@ -1,7 +1,7 @@
 // File: fnc_terminal_onUnload.sqf
 #include "..\script_component.hpp"
 /*
- * Author: Root, Wasserstoff, y0014984
+ * Author: Root
  * Description: Unload handler for the terminal dialog: releases the mutex, removes the
  * per-frame handlers and syncs the serializable terminal state back to the server.
  *

@@ -1,5 +1,6 @@
 // File: fnc_setStaticIp.sqf
 /*
+ * Author: Root
  * Description: Applies a laptop static IP after validating format and duplicate use. Static leases
  * are stored per connected router, so switching networks falls back to DHCP unless that router has
  * its own configured lease.

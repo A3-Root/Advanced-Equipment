@@ -1,7 +1,7 @@
 // File: fnc_laptop_stateVarsExcluded.sqf
 #include "..\script_component.hpp"
 /*
- * Author: Root, y0014984, Wasserstoff
+ * Author: Root
  * Description: Returns the list of laptop object variables that must NOT be copied when snapshotting
  * or restoring a laptop's state. Excludes variables holding TEXT buffers (which cannot serialize),
  * runtime locks/flags that init regenerates, the live power draw/state, and all CODE references

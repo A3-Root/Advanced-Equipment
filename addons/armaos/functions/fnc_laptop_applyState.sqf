@@ -1,7 +1,7 @@
 // File: fnc_laptop_applyState.sqf
 #include "..\script_component.hpp"
 /*
- * Author: Root, y0014984, Wasserstoff
+ * Author: Root
  * Description: Overwrites a laptop's state with a snapshot produced by
  * AE3_armaos_fnc_laptop_captureState: broadcasts every saved variable (filesystem, user list,
  * calendar, mail, network config, handles, etc) onto the target, skipping the runtime/TEXT/CODE

@@ -2,7 +2,7 @@
 #include "..\script_component.hpp"
 #include "\a3\ui_f\hpp\definedikcodes.inc"
 /*
- * Author: Root, Wasserstoff, y0014984
+ * Author: Root
  * Description: KeyDown handler for the terminal console control. Dispatches typing, editing,
  * history, autocomplete, scrolling/zoom and command execution.
  *

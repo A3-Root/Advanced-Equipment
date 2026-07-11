@@ -1,5 +1,6 @@
 // File: fnc_ipInUse.sqf
 /*
+ * Author: Root
  * Description: Checks whether another initialized laptop already owns an IP address.
  *
  * Arguments:

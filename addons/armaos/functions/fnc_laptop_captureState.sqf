@@ -1,7 +1,7 @@
 // File: fnc_laptop_captureState.sqf
 #include "..\script_component.hpp"
 /*
- * Author: Root, y0014984, Wasserstoff
+ * Author: Root
  * Description: Captures a laptop's complete persistent state into a standalone HashMap: every
  * serializable object variable (filesystem, user list, calendar events, mail, network config,
  * messaging handles, etc) except the runtime/TEXT/CODE variables listed by

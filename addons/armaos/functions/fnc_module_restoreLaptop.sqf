@@ -1,7 +1,7 @@
 // File: fnc_module_restoreLaptop.sqf
 #include "..\script_component.hpp"
 /*
- * Author: Root, y0014984, Wasserstoff
+ * Author: Root
  * Description: Eden/Zeus module function that overwrites every synced laptop with a state snapshot
  * previously captured by a Save Laptop module into the named slot (mission buffer AE3_LAPTOP_SAVES).
  * The target laptop receives the saved filesystem, users, calendar, mail, handles and network config,

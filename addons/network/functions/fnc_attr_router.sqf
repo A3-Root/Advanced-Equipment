@@ -1,5 +1,6 @@
 // File: fnc_attr_router.sqf
 /**
+ * Author: Root
  * Eden object-attribute helper for routers. Applies one wireless setting (network name, gateway,
  * range or password) once the router has finished initialising, so the values entered in the 3DEN
  * attribute editor take effect at mission start regardless of init ordering. A blank gateway/name

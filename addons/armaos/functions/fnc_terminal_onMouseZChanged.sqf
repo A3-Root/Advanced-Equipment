@@ -1,7 +1,7 @@
 // File: fnc_terminal_onMouseZChanged.sqf
 #include "..\script_component.hpp"
 /*
- * Author: Root, Wasserstoff, y0014984
+ * Author: Root
  * Description: MouseZChanged (scroll wheel) handler for the terminal console control.
  *
  * Arguments:
