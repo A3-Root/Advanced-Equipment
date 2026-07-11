@@ -14,6 +14,17 @@
   A3.on("dev_list", function (p) { if (p && listSubs[p.type] != null) listSubs[p.type](p.items || []); });
   A3.on("dev_result", function (p) { if (p && resultSubs[p.type] != null) resultSubs[p.type](p); });
 
+  // The desktop is served through the embedded browser, where localStorage can be unavailable and
+  // throws on access. Fall back to an in-memory store so pins simply live for the session instead of
+  // taking the whole app down.
+  var memStore = {};
+  function storeGet(key) {
+    try { return localStorage.getItem(key); } catch (e) { return memStore[key] != null ? memStore[key] : null; }
+  }
+  function storeSet(key, value) {
+    try { localStorage.setItem(key, value); } catch (e) { memStore[key] = value; }
+  }
+
   function iconMarkup(path) {
     return '<span class="app-img" data-icon-path="' + escAttr(path) + '"></span>';
   }
@@ -58,13 +69,19 @@
             (extra.globalActions ? '<span class="globals"></span>' : '') +
             (extra.filters ? '<button class="btn filters">Filters</button>' : '') +
             '<button class="btn refresh">&#8635;</button></div>' +
+          (extra.filters ?
+            '<div class="filterbar" style="display:none;gap:6px;padding:6px 12px;align-items:center">' +
+              '<input class="input fgrid" placeholder="Grid reference" style="flex:1">' +
+              '<input class="input fdist" type="number" min="0" placeholder="Max distance (m)" style="width:150px">' +
+              '<button class="btn fapply">Apply</button><button class="btn fclear">Clear</button></div>' : '') +
           '<ul class="list devs"><li class="muted pad">Loading...</li></ul>' +
           '<div class="dev-status" style="min-height:22px;padding:8px 12px;font-weight:600"></div>';
         var devs = body.querySelector(".devs");
         var status = body.querySelector(".dev-status");
         var allItems = [], filterGrid = "", filterDistance = 0;
         var pinKey = "rootcw_pins_" + extra.type;
-        var pins = JSON.parse(localStorage.getItem(pinKey) || "[]");
+        var pins = [];
+        try { pins = JSON.parse(storeGet(pinKey) || "[]") || []; } catch (e) { pins = []; }
 
         // Prominent, clearly-coloured result feedback (Root_CW general #2): success green, failure
         // orange-red, so low-battery / overload / not-allowed messages can't be missed.
@@ -203,7 +220,7 @@
             top.innerHTML = icoHtml + '<span style="flex:1">' + esc(d.label || d.name || ("#" + d.id)) + statusHtml + gridHtml + "</span>";
             if (extra.filters) {
               var pb = document.createElement("button"); pb.className = "btn"; pb.textContent = pins.indexOf(String(d.id)) >= 0 ? "Unpin" : "Pin"; pb.style.marginLeft = "6px";
-              pb.addEventListener("click", function () { var i = pins.indexOf(String(d.id)); if (i >= 0) pins.splice(i, 1); else pins.push(String(d.id)); localStorage.setItem(pinKey, JSON.stringify(pins)); render(allItems); });
+              pb.addEventListener("click", function () { var i = pins.indexOf(String(d.id)); if (i >= 0) pins.splice(i, 1); else pins.push(String(d.id)); storeSet(pinKey, JSON.stringify(pins)); render(allItems); });
               top.appendChild(pb);
             }
             if (d.pos && d.pos.length >= 2) {
@@ -242,14 +259,27 @@
         }
         listSubs[extra.type] = render;
 
+        // Filters live in an inline row inside the app: the embedded browser never services
+        // window.prompt, so a dialog-based filter would silently do nothing.
         var filterButton = body.querySelector(".filters");
-        if (filterButton) filterButton.addEventListener("click", function () {
-          var grid = window.prompt("Grid reference (leave blank for all devices)", filterGrid);
-          if (grid === null) return;
-          var distance = window.prompt("Maximum distance in metres (leave blank for any distance)", filterDistance || "");
-          if (distance === null) return;
-          filterGrid = String(grid || "").trim().toLowerCase(); filterDistance = Number(distance) || 0; render(allItems);
-        });
+        var filterBar = body.querySelector(".filterbar");
+        if (filterButton && filterBar) {
+          var gridInput = filterBar.querySelector(".fgrid");
+          var distInput = filterBar.querySelector(".fdist");
+          filterButton.addEventListener("click", function () {
+            filterBar.style.display = filterBar.style.display === "none" ? "flex" : "none";
+          });
+          filterBar.querySelector(".fapply").addEventListener("click", function () {
+            filterGrid = String(gridInput.value || "").trim().toLowerCase();
+            filterDistance = Number(distInput.value) || 0;
+            render(allItems);
+          });
+          filterBar.querySelector(".fclear").addEventListener("click", function () {
+            gridInput.value = ""; distInput.value = "";
+            filterGrid = ""; filterDistance = 0;
+            render(allItems);
+          });
+        }
         resultSubs[extra.type] = function (r) {
           setStatus(r.msg || (r.ok ? "OK" : "Failed"), r.ok);
           // Also raise a prominent toast so blocked/failed actions (low battery, overload not allowed,

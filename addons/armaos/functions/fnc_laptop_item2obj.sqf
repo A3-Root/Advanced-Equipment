@@ -23,16 +23,16 @@ params ["_player", "_item", ["_pos", [], [[]]]];
 [missionNamespace, "AE3_LAPTOP_ITEM"] call AE3_main_fnc_getRemoteVar;
 private _buffer = missionNamespace getVariable ["AE3_LAPTOP_ITEM", createHashMap];
 
-if (!(_item in _buffer)) exitWith {
+// A base laptop item taken from the arsenal or a loadout (scopeArsenal != 0) was never a world object,
+// so it has no buffer entry. Spawn a fresh laptop from its paired object class instead of refusing:
+// the normal object init seeds its filesystem and battery. The per-instance ID classes (scopeArsenal = 0)
+// always carry a buffer entry and take the restore path below.
+private _isFreshItem = !(_item in _buffer)
+	&& {(getNumber (configFile >> "CfgWeapons" >> _item >> "scopeArsenal")) != 0}
+	&& {(getText (configFile >> "CfgWeapons" >> _item >> "ae3_vehicle")) isNotEqualTo ""};
+
+if (!(_item in _buffer) && {!_isFreshItem}) exitWith {
 	hint "Laptop data not found. Item may be corrupted.";
-	objNull
-};
-
-private _itemNamespace = _buffer get _item;
-private _type = _itemNamespace get "AE3_OBJECT_TYPE";
-
-if (isNil "_type" || {_type == ""}) exitWith {
-	hint "Laptop type data missing. Cannot deploy.";
 	objNull
 };
 
@@ -43,6 +43,22 @@ if (_pos isEqualTo []) then {
 	// Get terrain height at deployment position
 	private _terrainHeight = getTerrainHeightASL [_pos select 0, _pos select 1];
 	_pos set [2, _terrainHeight];
+};
+
+if (_isFreshItem) exitWith {
+	private _objType = getText (configFile >> "CfgWeapons" >> _item >> "ae3_vehicle");
+	private _fresh = createVehicle [_objType, _pos, [], 0, "CAN_COLLIDE"];
+	_fresh setDir (getDir _player);
+	[_player, _item] remoteExecCall ["CBA_fnc_removeItem", _player];
+	_fresh
+};
+
+private _itemNamespace = _buffer get _item;
+private _type = _itemNamespace get "AE3_OBJECT_TYPE";
+
+if (isNil "_type" || {_type == ""}) exitWith {
+	hint "Laptop type data missing. Cannot deploy.";
+	objNull
 };
 
 if (AE3_DebugMode) then {

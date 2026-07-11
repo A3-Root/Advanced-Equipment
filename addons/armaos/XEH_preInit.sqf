@@ -446,6 +446,16 @@ if (hasInterface) then
 
 // Add ACE self-action for deploying laptops from inventory
 if (!isDedicated) then {
+	// A laptop item that never was a world object: the arsenal / loadout base class (scopeArsenal != 0)
+	// rather than one of the per-instance Item_Laptop_AE3_ID_N classes. It carries no tracked object and
+	// no item buffer entry, so it is deployed by spawning a fresh laptop from its paired object class.
+	missionNamespace setVariable ["AE3_armaos_isFreshLaptopItem", {
+		params ["_item"];
+		(_item isKindOf ["Item_Laptop_AE3", configFile >> "CfgWeapons"])
+		&& {(getNumber (configFile >> "CfgWeapons" >> _item >> "scopeArsenal")) != 0}
+		&& {(getText (configFile >> "CfgWeapons" >> _item >> "ae3_vehicle")) isNotEqualTo ""}
+	}];
+
 	[
 		{
 			// Add deploy laptop self-action when ACE interactions are ready
@@ -456,11 +466,13 @@ if (!isDedicated) then {
 				"",
 				{},  // No direct action - uses children
 				{
-					// condition - only show if player has a laptop item in inventory
+					// condition - only show if player has a laptop item in inventory (a packed laptop or
+					// a fresh arsenal one)
 					params ["_player", "_player", "_params"];
+					private _isFresh = missionNamespace getVariable ["AE3_armaos_isFreshLaptopItem", {false}];
 					private _hasLaptop = false;
 					{
-						if (_x find "Item_Laptop_AE3_ID_" == 0) exitWith {
+						if (_x find "Item_Laptop_AE3_ID_" == 0 || {[_x] call _isFresh}) exitWith {
 							_hasLaptop = true;
 						};
 					} forEach (items _player);
@@ -471,11 +483,12 @@ if (!isDedicated) then {
 					params ["_player", "_player", "_params"];
 
 					// Build list of laptop items
+					private _isFresh = missionNamespace getVariable ["AE3_armaos_isFreshLaptopItem", {false}];
 					private _laptopItems = [];
 					private _actions = [];
 
 					{
-						if (_x find "Item_Laptop_AE3_ID_" == 0) then {
+						if (_x find "Item_Laptop_AE3_ID_" == 0 || {[_x] call _isFresh}) then {
 							_laptopItems pushBack _x;
 						};
 					} forEach (items _player);
@@ -483,25 +496,31 @@ if (!isDedicated) then {
 					// Create an action for each laptop
 					{
 						private _itemClass = _x;
+						private _laptopName = "";
 
-						// Extract ID from item class name (e.g., "Item_Laptop_AE3_ID_5" -> "5")
-						private _idStr = _itemClass select [19]; // Skip "Item_Laptop_AE3_ID_" (19 chars)
-
-						// Get custom name from laptop object if in stable mode
-						private _customName = "";
-						private _laptopTracker = missionNamespace getVariable ["AE3_LAPTOP_STABLE_TRACKER", createHashMap];
-						if (_itemClass in _laptopTracker) then {
-							private _laptopObj = _laptopTracker get _itemClass;
-							if (!isNull _laptopObj) then {
-								_customName = _laptopObj getVariable ["AE3_laptop_customName", ""];
-							};
-						};
-
-						// Format action label: "CustomName (RootBook X)" or "RootBook X" if no custom name
-						private _laptopName = if (_customName != "") then {
-							format ["%1 (RootBook %2)", _customName, _idStr]
+						if ([_itemClass] call _isFresh) then {
+							// Fresh arsenal laptop: no ID, no stored name - label it with its item name.
+							_laptopName = getText (configFile >> "CfgWeapons" >> _itemClass >> "displayName");
 						} else {
-							format ["RootBook %1", _idStr]
+							// Extract ID from item class name (e.g., "Item_Laptop_AE3_ID_5" -> "5")
+							private _idStr = _itemClass select [19]; // Skip "Item_Laptop_AE3_ID_" (19 chars)
+
+							// Get custom name from laptop object if in stable mode
+							private _customName = "";
+							private _laptopTracker = missionNamespace getVariable ["AE3_LAPTOP_STABLE_TRACKER", createHashMap];
+							if (_itemClass in _laptopTracker) then {
+								private _laptopObj = _laptopTracker get _itemClass;
+								if (!isNull _laptopObj) then {
+									_customName = _laptopObj getVariable ["AE3_laptop_customName", ""];
+								};
+							};
+
+							// Format action label: "CustomName (RootBook X)" or "RootBook X" if no custom name
+							_laptopName = if (_customName != "") then {
+								format ["%1 (RootBook %2)", _customName, _idStr]
+							} else {
+								format ["RootBook %1", _idStr]
+							};
 						};
 
 						// Create action for this specific laptop
@@ -516,6 +535,13 @@ if (!isDedicated) then {
 								[_player, _params] spawn {
 									params ["_player", "_params"];
 									private _itemToDeploy = _params select 0;
+
+									// A fresh arsenal laptop has no packed object to unhide, so it is created
+									// straight from its item class regardless of the deployment mode.
+									private _isFresh = missionNamespace getVariable ["AE3_armaos_isFreshLaptopItem", {false}];
+									if ([_itemToDeploy] call _isFresh) exitWith {
+										[_player, _itemToDeploy] call AE3_armaos_fnc_laptop_item2obj;
+									};
 
 									// Check deployment type setting: 0 = Stable, 1 = Experimental
 									private _deploymentType = missionNamespace getVariable ["AE3_DeploymentType", 0];
@@ -557,6 +583,24 @@ if (!isDedicated) then {
 			// object carrying its state in AE3_LAPTOP_STABLE_TRACKER.
 			private _useFromInventory = {
 				params ["_itemClass", "_mode"];
+
+				// A fresh arsenal laptop has no packed object yet: create it, then immediately pack it
+				// through the normal pickup path so it becomes a hidden, tracked Item_Laptop_AE3_ID_N
+				// laptop like any other - and can be used from the inventory from here on.
+				private _isFresh = missionNamespace getVariable ["AE3_armaos_isFreshLaptopItem", {false}];
+				if ([_itemClass] call _isFresh) then {
+					private _spawned = [player, _itemClass] call AE3_armaos_fnc_laptop_item2obj;
+					if (isNull _spawned) exitWith {};
+					[_spawned, player] call AE3_armaos_fnc_laptop_pickup_stable;
+					private _tracked = missionNamespace getVariable ["AE3_LAPTOP_STABLE_TRACKER", createHashMap];
+					_itemClass = "";
+					{
+						if (_y isEqualTo _spawned) exitWith { _itemClass = _x; };
+					} forEach _tracked;
+					if (_itemClass isEqualTo "") exitWith {};
+				};
+				if (_itemClass isEqualTo "") exitWith {};
+
 				private _tracker = missionNamespace getVariable ["AE3_LAPTOP_STABLE_TRACKER", createHashMap];
 				private _laptop = _tracker getOrDefault [_itemClass, objNull];
 				if (isNull _laptop) exitWith {};
@@ -579,6 +623,13 @@ if (!isDedicated) then {
 				// networked stand-in model (the laptop's non-AE3 base class - same model, no simulation
 				// or interactions) attached to the operator, so nearby and late-joining players see it
 				// too. It is removed as soon as the session ends, the player dies, or the laptop is gone.
+				// While packed, the laptop object sits hidden near the map origin. Anything that measures
+				// range from the laptop (wifi scan, server connect, power scan) finds nothing there, so
+				// carry the hidden object with the operator for the session and park it back afterwards.
+				private _hidePos = getPosATL _laptop;
+				_laptop setVariable ["AE3_laptop_hidePos", _hidePos, true];
+				[_laptop, [player, [0, 0, -5]]] remoteExec ["attachTo", _laptop];
+
 				[_laptop, player] remoteExec ["AE3_armaos_fnc_inventoryProp_spawn", 2];
 				[_laptop] spawn {
 					params ["_laptop"];
@@ -589,6 +640,13 @@ if (!isDedicated) then {
 						|| {(_laptop getVariable ["AE3_computer_mutex", objNull]) isNotEqualTo player}
 					};
 					[_laptop] remoteExec ["AE3_armaos_fnc_inventoryProp_remove", 2];
+					if (!isNull _laptop) then {
+						private _parkPos = _laptop getVariable ["AE3_laptop_hidePos", []];
+						_laptop remoteExec ["detach", _laptop];
+						if (_parkPos isNotEqualTo []) then {
+							[_laptop, _parkPos] remoteExec ["setPosATL", _laptop];
+						};
+					};
 				};
 
 				if (_mode isEqualTo "cli") then {
@@ -605,19 +663,22 @@ if (!isDedicated) then {
 				"",
 				{},
 				{
-					// condition - stable mode + a held laptop that has a tracked object
+					// condition - stable mode + a held laptop that has a tracked object, or a fresh arsenal
+					// laptop (which is packed into a tracked one the moment it is used)
 					params ["_player"];
 					if ((missionNamespace getVariable ["AE3_DeploymentType", 0]) != 0) exitWith { false };
+					private _isFresh = missionNamespace getVariable ["AE3_armaos_isFreshLaptopItem", {false}];
 					private _tracker = missionNamespace getVariable ["AE3_LAPTOP_STABLE_TRACKER", createHashMap];
 					private _has = false;
 					{
-						if (_x find "Item_Laptop_AE3_ID_" == 0 && {!isNull (_tracker getOrDefault [_x, objNull])}) exitWith { _has = true; };
+						if ((_x find "Item_Laptop_AE3_ID_" == 0 && {!isNull (_tracker getOrDefault [_x, objNull])}) || {[_x] call _isFresh}) exitWith { _has = true; };
 					} forEach (items _player);
 					_has
 				},
 				{
 					// children - a Terminal and (when the desktop addon is present) a Desktop entry per laptop
 					params ["_player"];
+					private _isFresh = missionNamespace getVariable ["AE3_armaos_isFreshLaptopItem", {false}];
 					private _tracker = missionNamespace getVariable ["AE3_LAPTOP_STABLE_TRACKER", createHashMap];
 					private _hasDesktop = !isNil "AE3_desktop_fnc_desktop_openWeb";
 					private _actions = [];
@@ -625,13 +686,19 @@ if (!isDedicated) then {
 					{
 						private _itemClass = _x;
 						private _laptopObj = _tracker getOrDefault [_itemClass, objNull];
-						if ((_itemClass find "Item_Laptop_AE3_ID_" == 0) && {!isNull _laptopObj}) then {
-							private _idStr = _itemClass select [19];
-							private _customName = _laptopObj getVariable ["AE3_laptop_customName", ""];
-							private _laptopName = if (_customName != "") then {
-								format ["%1 (RootBook %2)", _customName, _idStr]
+						private _fresh = [_itemClass] call _isFresh;
+						if (((_itemClass find "Item_Laptop_AE3_ID_" == 0) && {!isNull _laptopObj}) || _fresh) then {
+							private _laptopName = "";
+							if (_fresh) then {
+								_laptopName = getText (configFile >> "CfgWeapons" >> _itemClass >> "displayName");
 							} else {
-								format ["RootBook %1", _idStr]
+								private _idStr = _itemClass select [19];
+								private _customName = _laptopObj getVariable ["AE3_laptop_customName", ""];
+								_laptopName = if (_customName != "") then {
+									format ["%1 (RootBook %2)", _customName, _idStr]
+								} else {
+									format ["RootBook %1", _idStr]
+								};
 							};
 
 							private _cliChild = [

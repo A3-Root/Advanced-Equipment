@@ -54,11 +54,27 @@ switch (_op) do {
                 _vols pushBack createHashMapFromArray [["id", _x], ["label", format ["USB Slot %1", _x]], ["type", "free"], ["mounted", false]];
             };
         } forEach _interfaces;
+        // Only real flash drives are connectable: use the same predicate as the ACE Connect menu
+        // (direct parent Item_FlashDisk_AE3), which excludes laptop items and other ae3_vehicle carriers.
+        // Identical drive classes are collapsed into a single entry carrying how many are held.
+        private _driveClass = configFile >> "CfgWeapons" >> "Item_FlashDisk_AE3";
         private _available = [];
+        private _seen = createHashMap;
         {
             private _item = _x;
-            if ((getText (configFile >> "CfgWeapons" >> _item >> "ae3_vehicle")) isNotEqualTo "") then {
-                _available pushBack createHashMapFromArray [["item", _item], ["label", getText (configFile >> "CfgWeapons" >> _item >> "displayName")]];
+            if (inheritsFrom (configFile >> "CfgWeapons" >> _item) isEqualTo _driveClass) then {
+                private _index = _seen getOrDefault [_item, -1];
+                if (_index < 0) then {
+                    _available pushBack createHashMapFromArray [
+                        ["item", _item],
+                        ["label", getText (configFile >> "CfgWeapons" >> _item >> "displayName")],
+                        ["count", 1]
+                    ];
+                    _seen set [_item, (count _available) - 1];
+                } else {
+                    private _entry = _available select _index;
+                    _entry set ["count", (_entry getOrDefault ["count", 1]) + 1];
+                };
             };
         } forEach (items player);
         _res set ["availableDrives", _available];

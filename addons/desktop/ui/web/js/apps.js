@@ -2022,8 +2022,9 @@
         A3.request("vol_list", {}).then(function (res) {
           volsEl.innerHTML = "";
           (res && res.volumes || []).forEach(function (v) {
+            var sub = v.type === "usb" ? (v.mounted ? "USB &middot; mounted" : "USB &middot; not mounted") : (v.type === "free" ? "Empty USB slot" : "Local disk");
             var card = h('<div class="mc-vol"><div class="mc-name">' + esc(v.label) + '</div>' +
-              '<div class="mc-sub">' + (v.type === "usb" ? (v.mounted ? "USB &middot; mounted" : "USB &middot; not mounted") : "Local disk") + '</div>' +
+              '<div class="mc-sub">' + sub + '</div>' +
               '<div class="mc-actions"></div></div>');
             var acts = card.querySelector(".mc-actions");
             if (v.type === "usb") {
@@ -2034,23 +2035,30 @@
                 var mt = h('<button class="btn accent">Mount</button>'); mt.addEventListener("click", function (e) { e.stopPropagation(); A3.request("vol_mount", { interface: v.id }).then(function () { setTimeout(loadVols, 400); }); }); acts.appendChild(mt);
               }
             }
-            card.addEventListener("click", function () { if (v.type !== "usb" || v.mounted) openIn(v.path); });
+            card.addEventListener("click", function () { if (v.type === "system" || (v.type === "usb" && v.mounted)) openIn(v.path); });
             volsEl.appendChild(card);
           });
+          // One card per drive class held in the inventory (not one per slot-drive combination).
+          // Connect uses the first free interface; the server re-checks that it is still free.
           var available = (res && res.availableDrives) || [];
-          if (available.length) {
-            (res && res.volumes || []).filter(function (v) { return v.type === "usb" && !v.id; }).forEach(function () {});
-            var free = Object.keys((res && res.volumes || []).reduce(function (out, v) { if (v.type === "usb") out[v.id] = true; return out; }, {}));
-            (res && res.volumes || []).filter(function (v) { return v.type === "free"; }).forEach(function (slot) {
-              available.forEach(function (drive) {
-                var card = h('<div class="mc-vol"><div class="mc-name">' + esc(drive.label || drive.item) + '</div><div class="mc-sub">Available removable drive</div><div class="mc-actions"></div></div>');
-                var connect = h('<button class="btn accent">Connect</button>');
-                connect.addEventListener("click", function (e) { e.stopPropagation(); A3.request("vol_connect", { interface: slot.id, item: drive.item }).then(function () { setTimeout(loadVols, 400); }); });
-                card.querySelector(".mc-actions").appendChild(connect);
-                volsEl.appendChild(card);
+          var freeSlots = (res && res.volumes || []).filter(function (v) { return v.type === "free"; });
+          available.forEach(function (drive) {
+            var n = Number(drive.count) || 1;
+            var name = esc(drive.label || drive.item) + (n > 1 ? " &times;" + n : "");
+            var card = h('<div class="mc-vol"><div class="mc-name">' + name + '</div><div class="mc-sub">Available removable drive</div><div class="mc-actions"></div></div>');
+            var connect = h('<button class="btn accent">Connect</button>');
+            if (!freeSlots.length) {
+              connect.disabled = true;
+              connect.title = "No free USB slot";
+            } else {
+              connect.addEventListener("click", function (e) {
+                e.stopPropagation();
+                A3.request("vol_connect", { interface: freeSlots[0].id, item: drive.item }).then(function () { setTimeout(loadVols, 400); });
               });
-            });
-          }
+            }
+            card.querySelector(".mc-actions").appendChild(connect);
+            volsEl.appendChild(card);
+          });
           if (!volsEl.children.length) volsEl.innerHTML = '<div class="pad muted">No volumes</div>';
         }).catch(function () { volsEl.innerHTML = '<div class="pad muted">Unavailable</div>'; });
       }
