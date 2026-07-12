@@ -31,7 +31,8 @@ if (!isNil "_filesystem") then {
 };
 
 // Restore the running screen texture (GUI idle image) and release the laptop.
-_computer setObjectTextureGlobal [1, "\z\ae3\addons\armaos\textures\Laptop_PowerOn.paa"];
-_computer setVariable ["AE3_computer_mutex", objNull, true];
+[_computer, "\z\ae3\addons\armaos\textures\Laptop_PowerOn.paa"] call AE3_armaos_fnc_computer_release;
 
-[_computer, "inUse", false] remoteExecCall ["AE3_interaction_fnc_manageAce3Interactions", 2];
+// The session is over, so the watchers that pull a user out of a laptop they can no longer be at (death,
+// unconsciousness, respawn) have nothing left to guard.
+missionNamespace setVariable ["AE3_computer_session", objNull];

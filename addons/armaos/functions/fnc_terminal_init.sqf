@@ -44,6 +44,11 @@ _consoleOutput setVariable ["AE3_computer", _computer];
 _consoleDialog setVariable ["AE3_computer", _computer];
 _consoleDialog displayAddEventHandler ["Unload", { _this call AE3_armaos_fnc_terminal_onUnload }];
 
+// Remember the laptop on the client too. The claim itself is held by the player object, and a respawn
+// hands this client a new one, so the watchers that end a session the user can no longer be in need a
+// reference that outlives the unit that opened it.
+missionNamespace setVariable ["AE3_computer_session", _computer];
+
 // Set dialog title from CBA setting
 _titleControl ctrlSetText AE3_TerminalDialogTitle;
 

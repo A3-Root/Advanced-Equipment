@@ -608,7 +608,7 @@ if (!isDedicated) then {
 
 				// Respect the same access model as the world "Use" actions.
 				if (!isNil "AE3_desktop_fnc_canAccessInterface" && {!([_laptop, player, _mode] call AE3_desktop_fnc_canAccessInterface)}) exitWith {};
-				if (!isNull (_laptop getVariable ["AE3_computer_mutex", objNull])) exitWith {};
+				if (!([_laptop] call AE3_armaos_fnc_computer_isFree)) exitWith {};
 
 				// A laptop packed while switched off is powered on before opening the interface.
 				if ((_laptop getVariable ["AE3_power_powerState", 0]) != 1) then {

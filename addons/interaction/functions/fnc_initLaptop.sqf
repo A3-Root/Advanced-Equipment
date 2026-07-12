@@ -127,7 +127,7 @@ if(!isDedicated) then
                 _allowed &&
                 {alive _target} &&
                 {(_target getVariable ["AE3_power_powerState", 0]) == 1} &&
-                {isNull (_target getVariable ["AE3_computer_mutex", objNull])}
+                {[_target] call AE3_armaos_fnc_computer_isFree}
             }
         ] call ace_interact_menu_fnc_createAction;
         [_laptop, 0, _parentPath, _useAction] call ace_interact_menu_fnc_addActionToObject;
@@ -154,7 +154,7 @@ if(!isDedicated) then
                 {[_target, _player, "gui"] call AE3_desktop_fnc_canAccessInterface} &&
                 {alive _target} &&
                 {(_target getVariable ["AE3_power_powerState", 0]) == 1} &&
-                {isNull (_target getVariable ["AE3_computer_mutex", objNull])}
+                {[_target] call AE3_armaos_fnc_computer_isFree}
             }
         ] call ace_interact_menu_fnc_createAction;
         [_laptop, 0, _parentPath, _useDesktopAction] call ace_interact_menu_fnc_addActionToObject;
@@ -187,7 +187,7 @@ if(!isDedicated) then
             {
                 // condition - only when not in use
                 params ["_target", "_player", "_params"];
-                (alive _target) && (isNull (_target getVariable ["AE3_computer_mutex", objNull]))
+                (alive _target) && ([_target] call AE3_armaos_fnc_computer_isFree)
             }
         ] call ace_interact_menu_fnc_createAction;
         [_laptop, 0, _parentPath, _pickupAction] call ace_interact_menu_fnc_addActionToObject;

@@ -98,7 +98,7 @@ if ((_target getVariable ["AE3_power_powerState", 0]) != 1) exitWith
 	[_computer] call AE3_armaos_fnc_shell_playErrorSound;
 };
 
-if (!isNull (_target getVariable ["AE3_computer_mutex", objNull])) exitWith
+if (!([_target] call AE3_armaos_fnc_computer_isFree)) exitWith
 {
 	[_computer, format [localize "STR_AE3_ArmaOS_Ssh_TargetBusy", _ipString]] call AE3_armaos_fnc_shell_stdout;
 	[_computer] call AE3_armaos_fnc_shell_playErrorSound;

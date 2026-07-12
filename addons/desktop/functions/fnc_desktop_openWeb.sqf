@@ -80,8 +80,11 @@ if (!isNull _computer) then {
     };
 };
 
-// Claim the laptop and show the static "in use" screen for other players (mirrors native open).
+// Claim the laptop and show the static "in use" screen for other players (mirrors native open). The
+// laptop is remembered on the client as well: the claim is held by the player object, and a respawn hands
+// this client a new one, so the release path needs a reference that outlives the unit that made it.
 if (!isNull _computer) then {
+    missionNamespace setVariable ["AE3_computer_session", _computer];
     _computer setVariable ["AE3_computer_mutex", player, true];
     _computer setObjectTextureGlobal [1, "#(argb,8,8,3)color(0.05,0.08,0.12,1,co)"];
     [_computer, "inUse", true] remoteExecCall ["AE3_interaction_fnc_manageAce3Interactions", 2];

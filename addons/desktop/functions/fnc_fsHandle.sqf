@@ -197,7 +197,15 @@ switch (_op) do {
     // clash in the bin is resolved with a numeric suffix so repeated deletes never overwrite.
     case "delete": {
         try {
-            [[], _fs, "/.trash", _fsUser, _fsUser] call AE3_filesystem_fnc_ensureDir;
+            // The bin is root's and writable by everyone: a delete is a move into it, and the mover needs
+            // write on the target directory. Creating it as the deleting user would fail outright (the root
+            // directory is not world-writable) and would lock every other account out of the bin it made.
+            private _created = [[], _fs, "/.trash", "root", "root", [[true, true, true], [true, true, true]]] call AE3_filesystem_fnc_ensureDir;
+            if (!_created) then {
+                // A bin carried over from a device initialized before this may still be owner-only; opening
+                // it back up keeps a delete from failing on a directory the account cannot write to.
+                [[], _fs, "/.trash", "root", [[true, true, true], [true, true, true]]] call AE3_filesystem_fnc_chmod;
+            };
             private _parts = _path splitString "/";
             private _name = _parts param [(count _parts) - 1, ""];
             private _trashName = _name;

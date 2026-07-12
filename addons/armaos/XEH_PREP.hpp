@@ -69,6 +69,9 @@ PREP(computer_addCustomCommand);
 PREP(computer_initWithCommands);
 
 PREP(computer_getLocality);
+PREP(computer_isFree);
+PREP(computer_release);
+PREP(computer_endSession);
 
 /* Device Initialization */
 PREP(device_initComplete);

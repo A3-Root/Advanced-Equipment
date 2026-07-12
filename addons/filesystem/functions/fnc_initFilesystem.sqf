@@ -24,6 +24,12 @@ if(!isServer) exitWith {};
 
 private _filesystem = [createHashMapFromArray [], 'root', [[true, true, true], [true, false, true]]];
 
+// The Recycle Bin is a drop box every account can move its own files into, so it is created up front,
+// owned by root and writable by everyone. The root directory itself is not world-writable, so a regular
+// user could not create it on their first delete, and a bin created with the usual owner-only permissions
+// would refuse the move that a delete performs.
+[[], _filesystem, "/.trash", "root", "root", [[true, true, true], [true, true, true]]] call AE3_filesystem_fnc_createDir;
+
 /* ================================================================================ */
 
 //private _config = configFile >> "AE3_FilesystemObjects";

@@ -66,7 +66,8 @@ if (!isNil "_terminal") then {
 // Standalone terminal: restore the idle screen and release the laptop. Inside the desktop the desktop
 // keeps ownership and cleans up on its own unload.
 if (!_inDesktop) then {
-	_computer setObjectTextureGlobal [1, "\z\ae3\addons\armaos\textures\Laptop_4_to_3_On.paa"];
-	_computer setVariable ["AE3_computer_mutex", objNull, true];
-	[_computer, "inUse", false] remoteExecCall ["AE3_interaction_fnc_manageAce3Interactions", 2];
+	[_computer, "\z\ae3\addons\armaos\textures\Laptop_4_to_3_On.paa"] call AE3_armaos_fnc_computer_release;
+	// The session is over, so the watchers that pull a user out of a laptop they can no longer be at
+	// (death, unconsciousness, respawn) have nothing left to guard.
+	missionNamespace setVariable ["AE3_computer_session", objNull];
 };

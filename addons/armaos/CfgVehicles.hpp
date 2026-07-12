@@ -119,9 +119,9 @@ class CfgVehicles
 			init = "call AE3_interaction_fnc_initLaptop;";
 
 			openAction = "call AE3_interaction_fnc_laptop_open;";
-			openActionCondition = "isNull (_this getVariable ['AE3_computer_mutex', objNull])";
+			openActionCondition = "[_this] call AE3_armaos_fnc_computer_isFree";
 			closeAction = "call AE3_interaction_fnc_laptop_close;";
-			closeActionCondition = "isNull (_this getVariable ['AE3_computer_mutex', objNull])";
+			closeActionCondition = "[_this] call AE3_armaos_fnc_computer_isFree";
 
 			class AE3_ace3Interactions
 			{
@@ -148,11 +148,11 @@ class CfgVehicles
 			init = "(_this + [configFile >> 'AE3_FilesystemObjects']) call AE3_armaos_fnc_device_initComplete;";
 
 			turnOnAction = "call AE3_network_fnc_dhcp_onTurnOn; call AE3_armaos_fnc_computer_turnOn;";
-			turnOnActionCondition = "isNull (_this getVariable ['AE3_computer_mutex', objNull])";
+			turnOnActionCondition = "[_this] call AE3_armaos_fnc_computer_isFree";
 			turnOffAction = "call AE3_armaos_fnc_computer_turnOff;";
-			turnOffActionCondition = "isNull (_this getVariable ['AE3_computer_mutex', objNull])";
+			turnOffActionCondition = "[_this] call AE3_armaos_fnc_computer_isFree";
 			standByAction = "call AE3_armaos_fnc_computer_standby;";
-			standByActionCondition = "isNull (_this getVariable ['AE3_computer_mutex', objNull])";
+			standByActionCondition = "[_this] call AE3_armaos_fnc_computer_isFree";
 
 			class AE3_Consumer
 			{
@@ -295,9 +295,9 @@ class CfgVehicles
 			init = "call AE3_interaction_fnc_initLaptop;";
 
 			openAction = "call AE3_interaction_fnc_laptop_open;";
-			openActionCondition = "isNull (_this getVariable ['AE3_computer_mutex', objNull])";
+			openActionCondition = "[_this] call AE3_armaos_fnc_computer_isFree";
 			closeAction = "call AE3_interaction_fnc_laptop_close;";
-			closeActionCondition = "isNull (_this getVariable ['AE3_computer_mutex', objNull])";
+			closeActionCondition = "[_this] call AE3_armaos_fnc_computer_isFree";
 
       		class AE3_ace3Interactions
 			{
@@ -324,11 +324,11 @@ class CfgVehicles
 			init = "(_this + [configFile >> 'AE3_FilesystemObjects']) call AE3_armaos_fnc_device_initComplete;";
 
 			turnOnAction = "call AE3_network_fnc_dhcp_onTurnOn; call AE3_armaos_fnc_computer_turnOn;";
-			turnOnActionCondition = "isNull (_this getVariable ['AE3_computer_mutex', objNull])";
+			turnOnActionCondition = "[_this] call AE3_armaos_fnc_computer_isFree";
 			turnOffAction = "call AE3_armaos_fnc_computer_turnOff;";
-			turnOffActionCondition = "isNull (_this getVariable ['AE3_computer_mutex', objNull])";
+			turnOffActionCondition = "[_this] call AE3_armaos_fnc_computer_isFree";
 			standByAction = "call AE3_armaos_fnc_computer_standby;";
-			standByActionCondition = "isNull (_this getVariable ['AE3_computer_mutex', objNull])";
+			standByActionCondition = "[_this] call AE3_armaos_fnc_computer_isFree";
 
 			class AE3_Consumer
 			{
@@ -471,9 +471,9 @@ class CfgVehicles
 			init = "call AE3_interaction_fnc_initLaptop;";
 
 			openAction = "call AE3_interaction_fnc_laptop_open;";
-			openActionCondition = "isNull (_this getVariable ['AE3_computer_mutex', objNull])";
+			openActionCondition = "[_this] call AE3_armaos_fnc_computer_isFree";
 			closeAction = "call AE3_interaction_fnc_laptop_close;";
-			closeActionCondition = "isNull (_this getVariable ['AE3_computer_mutex', objNull])";
+			closeActionCondition = "[_this] call AE3_armaos_fnc_computer_isFree";
 
 			class AE3_ace3Interactions
 			{
@@ -500,11 +500,11 @@ class CfgVehicles
 			init = "(_this + [configFile >> 'AE3_FilesystemObjects']) call AE3_armaos_fnc_device_initComplete;";
 
 			turnOnAction = "call AE3_network_fnc_dhcp_onTurnOn; call AE3_armaos_fnc_computer_turnOn;";
-			turnOnActionCondition = "isNull (_this getVariable ['AE3_computer_mutex', objNull])";
+			turnOnActionCondition = "[_this] call AE3_armaos_fnc_computer_isFree";
 			turnOffAction = "call AE3_armaos_fnc_computer_turnOff;";
-			turnOffActionCondition = "isNull (_this getVariable ['AE3_computer_mutex', objNull])";
+			turnOffActionCondition = "[_this] call AE3_armaos_fnc_computer_isFree";
 			standByAction = "call AE3_armaos_fnc_computer_standby;";
-			standByActionCondition = "isNull (_this getVariable ['AE3_computer_mutex', objNull])";
+			standByActionCondition = "[_this] call AE3_armaos_fnc_computer_isFree";
 
 			class AE3_Consumer
 			{
