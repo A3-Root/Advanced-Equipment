@@ -56,14 +56,14 @@ switch (_op) do {
             };
         } forEach _interfaces;
         // Only real flash drives are connectable: use the same predicate as the ACE Connect menu
-        // (direct parent Item_FlashDisk_AE3), which excludes laptop items and other ae3_vehicle carriers.
+        // (any descendant of Item_FlashDisk_AE3, plus the base class itself), which excludes laptop
+        // items and other ae3_vehicle carriers.
         // Identical drive classes are collapsed into a single entry carrying how many are held.
-        private _driveClass = configFile >> "CfgWeapons" >> "Item_FlashDisk_AE3";
         private _available = [];
         private _seen = createHashMap;
         {
             private _item = _x;
-            if (inheritsFrom (configFile >> "CfgWeapons" >> _item) isEqualTo _driveClass) then {
+            if (_item isKindOf ["Item_FlashDisk_AE3", configFile >> "CfgWeapons"]) then {
                 private _index = _seen getOrDefault [_item, -1];
                 if (_index < 0) then {
                     _available pushBack createHashMapFromArray [

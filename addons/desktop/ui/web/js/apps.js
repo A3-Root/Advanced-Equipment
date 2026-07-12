@@ -307,7 +307,7 @@
   // Central computer view: removable volumes (auto-mounted USB), mount/unmount, shortcuts to Network
   // & System properties, plus an embedded file browser - like a real Debian/Ubuntu "Computer".
   Apps.register({
-    id: "mycomputer", title: "My Computer", glyph: (Icons.computer || Icons.files), width: 780, height: 560,
+    id: "mycomputer", title: "My Computer", glyph: (Icons.computer || Icons.files), width: 780, height: 608,
     showInDock: true, singleton: false, showInMenu: false,
     render: function (body, win) {
       body.innerHTML =
