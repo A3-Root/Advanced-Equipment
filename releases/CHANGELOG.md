@@ -1,6 +1,6 @@
 # Changelog
 
-## Update 2 (v2.0.0.0)
+## Major Update 2 (v1.5.0.6)
 
 ### Added
 - **Desktop GUI** environment as a full alternative to the terminal, with CLI <-> desktop switching (`sys_switch_cli` / `desktop` command)
@@ -17,6 +17,7 @@
 - WiFi Network with static IP, DHCP, SSH. It respects subnet boundaries when a device switches networks, falling back to DHCP if its saved static doesn't fit
 - Optional **ZEN (Zeus Enhanced) Dynamic Dialog** support across Zeus modules, with non-ZEN fallback dialogs so Add Website / Save-Restore Laptop still work on dedicated servers without ZEN installed
 - Maintainer-facing code wiki (`.code-wiki/`) and a graphify dependency graph for contributors
+- Use laptop while inside a vehicle or stationary as long as its in the inventory
 
 ### Removed
 - Zeus **Add Games** and **Add Security Commands** modules (the underlying terminal commands are still available, but they can no longer be added to a mission via a Zeus module)
