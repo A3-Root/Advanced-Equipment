@@ -35,7 +35,7 @@ At minimum, dedicated servers that use the GUI/Desktop variant must allow loadin
 
 Subscribe to the mod on Steam Workshop:
 
-- [Advanced Equipment Revamped](https://steamcommunity.com/sharedfiles/filedetails/?id=2888888564)
+- [DEV_ADVANCED_EQUIPMENT](https://steamcommunity.com/sharedfiles/filedetails/?id=3751482007)
 
 Load it with CBA_A3 and ACE3.
 
@@ -158,7 +158,7 @@ hemtt build
 
 ## Links
 
-- [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2888888564)
+- [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3751482007)
 - [Discord](https://discord.gg/qQXg8tB7gr)
 
 ## Special Thanks
