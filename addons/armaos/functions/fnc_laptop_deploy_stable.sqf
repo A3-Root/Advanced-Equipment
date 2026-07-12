@@ -99,6 +99,10 @@ missionNamespace setVariable ["AE3_LAPTOP_STABLE_TRACKER", _laptopTracker, true]
 // Remove the dummy item from player's inventory
 [_player, _itemToDeploy] call CBA_fnc_removeItem;
 
+// The laptop is out of the inventory and standing on the ground, so anything that was acting on it while
+// it was packed away - a charger cabled to it, for one - has nothing to act on any more.
+["AE3_laptop_removedFromInventory", [_player, _itemToDeploy]] call CBA_fnc_globalEvent;
+
 // No deployment hint needed
 
 if (AE3_DebugMode) then {

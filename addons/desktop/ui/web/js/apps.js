@@ -398,11 +398,13 @@
     showOnDesktop: true, showInDock: true,
     render: function (body, win, args) { window.AE3_FileBrowser(body, win, args, {}); }
   });
+  */
 
   // ---------------- File picker ----------------
   // window.AE3_pickFile("open"|"save", { start, filename, title }) -> Promise<path|null>.
   // "open": double-click a file (or select + Choose) resolves its path. "save": browse to a folder,
-  // type a filename, Save resolves "<folder>/<filename>". Reuses the exact Files browser core.
+  // type a filename, Save resolves "<folder>/<filename>". Built on the same AE3_FileBrowser core that
+  // My Computer embeds, so every Open/Save button keeps working without a Files window of its own.
   window.AE3_pickFile = function (mode, opts) {
     opts = opts || {};
     return new Promise(function (resolve) {
@@ -465,7 +467,7 @@
       });
     });
   };
-*/
+
   // ---------------- Notepad ----------------
   Apps.register({
     id: "notepad", title: "Text Editor", glyph: Icons.notepad, width: 620, height: 460,
@@ -2313,7 +2315,7 @@
           '<br>' +
           '<p class="muted">Sir Doctor Professor Colonel Mr Matt The Fifth Senior</p>' +
           '<p class="muted">(Sir. Dr. Pf. Col. Mr. Matt V Sr.)</p>' +
-          '<p class="muted">Also known as A3-Root / xMidnightSnowx / @elpep</p>' +
+          '<p class="muted">Also known as A3-Root / xMidnightSnowx / @elpepe</p>' +
           '<br>' +
           '<p class="muted">Professional Shitposter</p>' +
           '</div>';

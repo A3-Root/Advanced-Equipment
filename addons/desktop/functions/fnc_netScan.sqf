@@ -25,7 +25,16 @@ if (isNull _computer) exitWith { [] };
 private _scanCap = missionNamespace getVariable [QGVAR(wirelessRangeMax), 500];
 private _parent = _computer getVariable ["AE3_network_parent", objNull];
 
-private _routers = (nearestObjects [_computer, [], _scanCap]) select {
+// nearestObjects only finds routers that stand in the world. A router carried by a player - a backpack
+// broadcasting a network - is not one of them, so the registry every router adds itself to on init is
+// scanned alongside it. Both lists then face the same alive, range and power tests, and the union is
+// deduplicated so a router that appears in both is listed once.
+private _candidates = nearestObjects [_computer, [], _scanCap];
+{
+    if !(_x in _candidates) then { _candidates pushBack _x; };
+} forEach (missionNamespace getVariable ["AE3_network_routers", []]);
+
+private _routers = _candidates select {
     (_x != _computer) && {alive _x} && {_x getVariable ["AE3_cap_isRouter", false]} &&
     {(_computer distance _x) <= (_x getVariable ["AE3_network_wirelessRange", 100])} &&
     {(_x getVariable ["AE3_power_powerState", 0]) == 1}

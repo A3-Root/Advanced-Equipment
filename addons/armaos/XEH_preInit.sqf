@@ -620,6 +620,10 @@ if (!isDedicated) then {
 
 				_laptop setVariable ["AE3_computer_mutex", player, true];
 
+				// The laptop is in use rather than packed away, so anything that was acting on it as stowed
+				// kit - a charger cabled to it, for one - is no longer connected to anything.
+				["AE3_laptop_removedFromInventory", [player, _itemClass]] call CBA_fnc_globalEvent;
+
 				// The real laptop stays hidden while it is used straight from the inventory, so spawn a
 				// networked stand-in model (the laptop's non-AE3 base class - same model, no simulation
 				// or interactions) attached to the operator, so nearby and late-joining players see it
