@@ -52,4 +52,10 @@ if (_alive) exitWith {true};
 [_computer] call AE3_armaos_fnc_shell_playErrorSound;
 [_computer] call AE3_armaos_fnc_shell_sshEnd;
 
+// The drop can happen while the operator is sitting at a prompt doing nothing, so the terminal is put
+// back to its own shell here rather than waiting for the next command to redraw it.
+[_computer, "SHELL"] call AE3_armaos_fnc_terminal_setInputMode;
+[_computer] call AE3_armaos_fnc_terminal_setPrompt;
+[_computer, _terminal get "AE3_terminalOutput"] call AE3_armaos_fnc_terminal_updateOutput;
+
 false

@@ -133,6 +133,25 @@ _target setVariable ["AE3_stdoutRedirect", _computer];
 
 _terminal set ["AE3_sshTarget", _target];
 
+// A session outlives the command that opened it, and either end of it can fall over while the operator
+// sits at the prompt: the remote can be shut down, destroyed, packed away or carried out of range, and so
+// can the machine they are sitting at. The session is therefore watched rather than only re-tested when
+// something is typed, so it closes when it dies instead of when it is next used. The watchdog retires
+// itself the moment the session is gone, whichever way it ended.
+private _watchdog = [{
+	params ["_args", "_handle"];
+	_args params ["_computer"];
+
+	private _localTerminal = _computer getVariable ["AE3_terminal", createHashMap];
+	private _sessionOver = isNull (_localTerminal getOrDefault ["AE3_sshTarget", objNull]);
+
+	if (_sessionOver || {!([_computer] call AE3_armaos_fnc_shell_sshAlive)}) then {
+		[_handle] call CBA_fnc_removePerFrameHandler;
+	};
+}, 2, [_computer]] call CBA_fnc_addPerFrameHandler;
+
+_terminal set ["AE3_sshWatchdog", _watchdog];
+
 [_target, "System", format [localize "STR_AE3_ArmaOS_Exception_UserLoginSuccessful", _user] + " (ssh)", "/var/log/auth.log"] call AE3_armaos_fnc_shell_writeToLogfile;
 
 [_computer, format [localize "STR_AE3_ArmaOS_Ssh_Connected", _user, _ipString]] call AE3_armaos_fnc_shell_stdout;

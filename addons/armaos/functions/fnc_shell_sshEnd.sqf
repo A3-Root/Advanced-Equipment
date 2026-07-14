@@ -38,6 +38,14 @@ _target setVariable ["AE3_computer_mutex", objNull, true];
 
 _terminal deleteAt "AE3_sshTarget";
 
+// However the session ended - typed exit, remote shutdown, a drop the watchdog caught - there is nothing
+// left for the watchdog to watch.
+private _watchdog = _terminal getOrDefault ["AE3_sshWatchdog", -1];
+if (_watchdog >= 0) then {
+	[_watchdog] call CBA_fnc_removePerFrameHandler;
+	_terminal deleteAt "AE3_sshWatchdog";
+};
+
 [_computer, localize "STR_AE3_ArmaOS_Ssh_ConnectionClosed"] call AE3_armaos_fnc_shell_stdout;
 
 [_computer] call AE3_armaos_fnc_terminal_updatePromptPointer;

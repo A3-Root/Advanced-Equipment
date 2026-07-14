@@ -20,6 +20,7 @@ PREP(disconnect);
 
 PREP(ping);
 PREP(resolve);
+PREP(wirelessSweep);
 
 PREP(dhcp_get);
 PREP(dhcp_refresh);

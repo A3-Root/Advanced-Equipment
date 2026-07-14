@@ -7,6 +7,11 @@ if (isServer) then
 {
 	["ae3_network_routerOff", { _this call AE3_network_fnc_router_onTurnOff }] call CBA_fnc_addEventHandler;
 
+	// Wireless range is a condition of staying on a network, not just of joining one, and a carried
+	// router moves that range around with it. The connections are therefore re-tested on a timer rather
+	// than trusted from the moment they were made.
+	[AE3_network_fnc_wirelessSweep, 5] call CBA_fnc_addPerFrameHandler;
+
 	// Instant messaging: record the message on BOTH ends in dedicated per-peer chat threads under
 	// /var/chat/<peerIP> (separate from /var/mail so the Messenger and Email apps never cross-feed
     // Each line is "<dir>|HH:MM|<text>" with dir o(ut)/i(n); text newlines are
