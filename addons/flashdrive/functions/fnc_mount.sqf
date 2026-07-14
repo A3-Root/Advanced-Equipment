@@ -78,6 +78,24 @@ try
 		true
 	] call AE3_filesystem_fnc_chown;
 
+	// A drive is built with the same root permissions a laptop's filesystem gets: owned by root, and
+	// readable but not writable by anyone else. That is right for a machine's own root directory and
+	// wrong for a removable drive, which is there to be written to - only the account the drive was
+	// chowned to could put a file on it, and every other account on the same laptop was refused. Every
+	// directory on the drive is opened to all of them, which is what makes a copy onto the drive land,
+	// since creating an entry is a write against the directory that will hold it. Files are left with
+	// whatever permissions they were given, so a drive carrying deliberately locked or encrypted
+	// content still carries it locked.
+	private _openDirs = {
+		params ["_fsObject", "_apply"];
+		if (!((_fsObject select 0) isEqualType createHashMap)) exitWith {};
+		_fsObject set [2, [[true, true, true], [true, true, true]]];
+		{
+			[_y, _apply] call _apply;
+		} forEach (_fsObject select 0);
+	};
+	[_fdFilesystem, _openDirs] call _openDirs;
+
 	_computer setVariable ["AE3_filesystem", _filesystem, [_computer] call AE3_armaos_fnc_computer_getLocality];
 
 	_mountedList set [_index, true];
