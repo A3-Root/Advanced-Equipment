@@ -37,13 +37,11 @@ if (!(_item in _buffer) && {!_isFreshItem}) exitWith {
 	objNull
 };
 
-// Determine deployment position
+// Determine deployment position. Terrain height is not the surface a player is standing on once they are
+// inside a building, so the floor in front of them is looked for instead: a laptop deployed on an upper
+// storey is put down on that storey rather than dropped towards the ground under the building.
 if (_pos isEqualTo []) then {
-	// Deploy in front of player on the ground
-	_pos = _player modelToWorld [0, 1.5, 0];
-	// Get terrain height at deployment position
-	private _terrainHeight = getTerrainHeightASL [_pos select 0, _pos select 1];
-	_pos set [2, _terrainHeight];
+	_pos = [_player] call AE3_armaos_fnc_laptop_deployPos;
 };
 
 if (_isFreshItem) exitWith {

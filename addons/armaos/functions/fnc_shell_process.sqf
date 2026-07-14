@@ -45,6 +45,18 @@ if (_commandElements isNotEqualTo []) then
 			[_computer] call AE3_armaos_fnc_shell_sshEnd;
 		};
 
+		// The far end of a session can go away between one command and the next - shut down, destroyed,
+		// packed up, or unplugged from its network - and a command sent after that would be run against a
+		// machine that is no longer there to run it. The session is re-tested here and closed when it no
+		// longer holds, before anything is executed against it.
+		if (_sshActive && {!([_computer] call AE3_armaos_fnc_shell_sshAlive)}) exitWith
+		{
+			[_computer, "SHELL"] call AE3_armaos_fnc_terminal_setInputMode;
+			[_computer] call AE3_armaos_fnc_terminal_updatePromptPointer;
+			[_computer] call AE3_armaos_fnc_terminal_setPrompt;
+			[_computer, _terminal get "AE3_terminalOutput"] call AE3_armaos_fnc_terminal_updateOutput;
+		};
+
 		// Interactive/graphical commands are blocked over SSH (sshCompatible = 0)
 		if (_sshActive && {!([_rawCommand] call AE3_armaos_fnc_shell_isSshCompatible)}) exitWith
 		{

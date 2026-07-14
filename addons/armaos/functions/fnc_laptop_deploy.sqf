@@ -56,9 +56,9 @@ if (count _laptopItems > 1) then {
 	];
 };
 
-// Calculate deployment position in front of player
-private _deployPos = _player modelToWorld [0, 1.5, 0];
-_deployPos set [2, 0]; // Place on ground level
+// Put the laptop down on the surface in front of the player rather than at terrain height, so a laptop
+// deployed on an upper floor rests on that floor instead of dropping through the building.
+private _deployPos = [_player] call AE3_armaos_fnc_laptop_deployPos;
 
 // Deploy the laptop
 private _deployedLaptop = [_player, _itemToDeploy, _deployPos] call AE3_armaos_fnc_laptop_item2obj;

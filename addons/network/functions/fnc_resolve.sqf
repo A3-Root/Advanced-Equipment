@@ -43,11 +43,14 @@ if (_target isEqualTo [127, 0, 0, 1] || {_target isEqualTo _srcAddr}) exitWith
 private _srcSub = [_srcAddr select 0, _srcAddr select 1, _srcAddr select 2];
 private _tgtSub = [_target select 0, _target select 1, _target select 2];
 
-// Find the router that owns the target subnet.
+// Find the router that owns the target subnet. A router that has been switched off carries no traffic,
+// so it owns nothing: a subnet whose router is down is unreachable rather than silently still routed.
+// Routers that take no part in the power system have no power state to read and are always up.
 private _routers = missionNamespace getVariable ["AE3_network_routers", []];
 private _tgtRouter = objNull;
 {
 	if (isNull _x || {!alive _x}) then {continue};
+	if ((_x getVariable ["AE3_power_powerState", 1]) != 1) then {continue};
 	private _ra = _x getVariable ["AE3_network_address", []];
 	if (count _ra == 4 && {[_ra select 0, _ra select 1, _ra select 2] isEqualTo _tgtSub}) exitWith {_tgtRouter = _x};
 } forEach _routers;

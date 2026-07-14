@@ -1379,6 +1379,10 @@
                 <German>Verbindung geschlossen.</German>
                 <Chinesesimp>连接已关闭.</Chinesesimp>
             </Key>
+            <Key ID="STR_AE3_ArmaOS_Ssh_ConnectionLost">
+                <Original>Connection to %1 closed by remote host.</Original>
+                <English>Connection to %1 closed by remote host.</English>
+            </Key>
             <Key ID="STR_AE3_ArmaOS_Ssh_ConnectionRefused">
                 <Original>ssh: connect to host %1: Connection refused</Original>
                 <English>ssh: connect to host %1: Connection refused</English>
