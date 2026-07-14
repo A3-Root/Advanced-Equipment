@@ -65,7 +65,8 @@
       menu: extra.menu || "Tools", external: true,
       render: function (body, win) {
         body.innerHTML =
-          '<div class="toolbar"><span class="muted" style="flex:1">' + esc(desc.title) + '</span>' +
+          '<div class="toolbar"><span class="muted" style="flex:1">' + esc(desc.title) +
+              ' <span class="devcount"></span></span>' +
             (extra.globalActions ? '<span class="globals"></span>' : '') +
             (extra.filters ? '<button class="btn filters">Filters</button>' : '') +
             '<button class="btn refresh">&#8635;</button></div>' +
@@ -78,6 +79,10 @@
           '<div class="dev-status" style="min-height:22px;padding:8px 12px;font-weight:600"></div>';
         var devs = body.querySelector(".devs");
         var status = body.querySelector(".dev-status");
+        var countLabel = body.querySelector(".devcount");
+        // The rows the filter currently leaves on screen. Global actions act on exactly these, so what a
+        // button labelled "All Off" switches is what the operator can see, not the whole network.
+        var visibleItems = [];
         // filterOrigin holds the world position of the grid reference once the engine has resolved it.
         // With both a grid and a distance set, the distance is measured from that grid square instead
         // of from the player, so the pair reads as "everything within N metres of this grid".
@@ -109,7 +114,11 @@
                 });
                 return;
               }
-              A3.send("dev_action", { app: desc.id, type: extra.type, id: "", action: a.id, path: "" });
+              A3.send("dev_action", {
+                app: desc.id, type: extra.type, id: "", action: a.id, path: "",
+                ids: visibleItems.map(function (d) { return d.id; }),
+                filtered: visibleItems.length !== allItems.length
+              });
               setStatus(a.label + "...");
             });
             glWrap.appendChild(b);
@@ -208,6 +217,14 @@
             var distOk = !filterDistance || (Number(d.distance) >= 0 && Number(d.distance) <= filterDistance);
             return gridOk && distOk;
           }).sort(function (a, b) { return (pins.indexOf(String(b.id)) >= 0) - (pins.indexOf(String(a.id)) >= 0); });
+          visibleItems = items;
+          // How much of the network the operator is looking at: the rows on screen against everything the
+          // laptop can reach, so a filter that hides devices says so rather than looking like an empty net.
+          if (countLabel) {
+            countLabel.textContent = (items.length === allItems.length)
+              ? ("(" + allItems.length + (allItems.length === 1 ? " device)" : " devices)"))
+              : ("(showing " + items.length + " of " + allItems.length + ")");
+          }
           devs.innerHTML = "";
           if (!items.length) { devs.innerHTML = '<li class="muted pad">No devices</li>'; return; }
           items.forEach(function (d) {
