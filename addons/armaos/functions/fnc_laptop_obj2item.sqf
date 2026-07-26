@@ -1,3 +1,4 @@
+// File: fnc_laptop_obj2item.sqf
 /*
  * Author: Root
  * Description: Converts a laptop object to an inventory item, preserving all state (filesystem, terminal, network, power).
@@ -148,6 +149,14 @@ if (AE3_DebugMode) then {
 
 // Store original object class type for recreation
 _itemNamespace set ["AE3_OBJECT_TYPE", typeOf _object];
+
+// Preserve the internal battery percentage separately from the runtime battery object reference so
+// inventory-side charging can update a stable value while the laptop is packed.
+private _battery = _object getVariable ["AE3_power_internal", objNull];
+if (!isNull _battery) then {
+    private _batteryInfo = [_battery, false] call AE3_power_fnc_getBatteryLevel;
+    _itemNamespace set ["ROOT_EWO_BATTERY_PERCENT", _batteryInfo param [1, 0]];
+};
 
 // Store position and orientation for potential re-deployment at same location
 _itemNamespace set ["AE3_ORIGINAL_POS", getPosATL _object];

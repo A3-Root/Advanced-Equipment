@@ -1,3 +1,4 @@
+// File: fnc_checkBatteryLevelAction.sqf
 /*
  * Author: Root, y0014984, Wasserstoff
  * Description: ACE3 interaction action that displays battery charge level via hint. Wrapper function that calls getBatteryLevel with hint enabled.
@@ -16,4 +17,4 @@
 
 params["_entity"];
 
-private _result = [_entity, true] call AE3_power_fnc_getBatteryLevel;
+[_entity, true] call AE3_power_fnc_getBatteryLevel;

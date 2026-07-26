@@ -1,3 +1,4 @@
+// File: fnc_terminal_getAllowedKeysRU.sqf
 /*
  * Author: Root
  * Description: Returns the allowed keyboard key mappings for Russian (RU) layout.

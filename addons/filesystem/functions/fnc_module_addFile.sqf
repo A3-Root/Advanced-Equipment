@@ -1,3 +1,4 @@
+// File: fnc_module_addFile.sqf
 /*
  * Author: Root, y0014984
  * Description: Module function for adding files to devices via Eden editor. Supports code compilation and encryption. Triggered after mission start for synced objects. Only runs on server and ignores Zeus-placed modules. Module is deleted after processing.
@@ -33,14 +34,14 @@ if (_activated) then
 	private _owner = _module getVariable ["AE3_Module_AddFile_Owner", ""];
 	private _permissions = [
 		[
-			_module getVariable "AE3_Module_AddFile_OwnerExecute",
 			_module getVariable "AE3_Module_AddFile_OwnerRead",
-			_module getVariable "AE3_Module_AddFile_OwnerWrite"
+			_module getVariable "AE3_Module_AddFile_OwnerWrite",
+			_module getVariable "AE3_Module_AddFile_OwnerExecute"
 		],
 		[
-			_module getVariable "AE3_Module_AddFile_EveryoneExecute",
 			_module getVariable "AE3_Module_AddFile_EveryoneRead",
-			_module getVariable "AE3_Module_AddFile_EveryoneWrite"
+			_module getVariable "AE3_Module_AddFile_EveryoneWrite",
+			_module getVariable "AE3_Module_AddFile_EveryoneExecute"
 		]
 	];
 	private _isEncrypted = _module getVariable "AE3_Module_AddFile_IsEncrypted";
@@ -56,7 +57,7 @@ if (_activated) then
 	if((_path find " ") != -1) exitWith { deleteVehicle _module; false; };
 	if((_owner find " ") != -1) exitWith { deleteVehicle _module; false; };
 
-	[_module, _syncedObjects, _path, _content, _isCode, _owner, _permissions, _isEncrypted, _encryptionAlgorithm, _encryptionKey] spawn 
+	[_module, _syncedObjects, _path, _content, _isCode, _owner, _permissions, _isEncrypted, _encryptionAlgorithm, _encryptionKey] spawn
 	{
 		params ["_module", "_syncedObjects", "_path", "_content", "_isCode", "_owner", "_permissions", "_isEncrypted", "_encryptionAlgorithm", "_encryptionKey"];
 

@@ -1,3 +1,4 @@
+// File: fnc_unmount.sqf
 /*
  * Author: Root, Wasserstoff
  * Description: Unmounts a filesystem from a mount point by replacing it with an empty directory. Requires write permission on the mount point. Used for detaching external storage devices safely.
@@ -29,7 +30,7 @@ private _moutingPoint = _dir select 2;
 if(!(_moutingPoint in (_current select 0))) throw (format [localize "STR_AE3_Filesystem_Exception_NotFound", _moutingPoint]);
 _current = _current select 0;
 
-[_current get _moutingPoint, _user, 2] call AE3_filesystem_fnc_hasPermission;
+[_current get _moutingPoint, _user, 1] call AE3_filesystem_fnc_hasPermission;
 
 private _old = _current get _moutingPoint;
 

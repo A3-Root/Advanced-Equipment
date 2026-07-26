@@ -1,0 +1,104 @@
+// File: fnc_app_settings.sqf
+#include "..\script_component.hpp"
+/*
+ * Author: Root
+ * Description: Desktop "Settings" app: per-laptop theme selection and interface mode switch.
+ * The theme is stored on the laptop (public) so it persists for all users of this laptop.
+ *
+ * Arguments:
+ * 0: _winId <NUMBER>
+ * 1: _ctrlGroup <CONTROL>
+ * 2: _computer <OBJECT>
+ * 3: _args <ANY>
+ *
+ * Return Value:
+ * App callbacks <HASHMAP>
+ *
+ * Public: No
+ */
+
+params ["_winId", "_ctrlGroup", "_computer", "_args"];
+
+private _session = uiNamespace getVariable ["AE3_desktop_session", createHashMap];
+private _display = _session getOrDefault ["display", displayNull];
+private _theme = _session getOrDefault ["theme", createHashMap];
+
+(ctrlPosition _ctrlGroup) params ["", "", "_w", "_h"];
+
+private _label = _display ctrlCreate ["RscText", -1, _ctrlGroup];
+_label ctrlSetPosition [0.01, 0.045, _w - 0.02, 0.035];
+_label ctrlSetText (localize "STR_AE3_Desktop_Settings_Theme");
+_label ctrlSetTextColor (_theme getOrDefault ["accent", [1,1,1,1]]);
+_label ctrlCommit 0;
+
+private _listCtrl = _display ctrlCreate ["RscListBox", -1, _ctrlGroup];
+_listCtrl ctrlSetPosition [0.01, 0.085, _w - 0.02, (_h - 0.30) * 0.5];
+_listCtrl ctrlCommit 0;
+
+{
+	private _index = _listCtrl lbAdd (getText (_x >> "displayName"));
+	_listCtrl lbSetData [_index, configName _x];
+} forEach ("isClass _x" configClasses (configFile >> "CfgAE3Themes"));
+
+_listCtrl setVariable ["AE3_computer", _computer];
+_listCtrl ctrlAddEventHandler ["LBDblClick", {
+	params ["_listCtrl", "_index"];
+
+	private _computer = _listCtrl getVariable "AE3_computer";
+	_computer setVariable ["AE3_desktopTheme", _listCtrl lbData _index, true];
+
+	// Re-open the desktop to apply the theme everywhere
+	private _display = ctrlParent _listCtrl;
+	_display closeDisplay 1;
+	[_computer getVariable ["AE3_computer_mutex", player], _computer] call
+	{
+		params ["_player", "_computer"];
+		_computer setVariable ["AE3_computer_mutex", _player, true];
+		[_computer] spawn AE3_desktop_fnc_desktop_open;
+	};
+}];
+
+/* ---------------------------------------- */
+/* Wallpaper picker (images registered via AE3_desktop_fnc_registerMedia) */
+
+private _wpLabel = _display ctrlCreate ["RscText", -1, _ctrlGroup];
+_wpLabel ctrlSetPosition [0.01, 0.095 + (_h - 0.30) * 0.5, _w - 0.02, 0.035];
+_wpLabel ctrlSetText (localize "STR_AE3_Desktop_Settings_Wallpaper");
+_wpLabel ctrlSetTextColor (_theme getOrDefault ["accent", [1,1,1,1]]);
+_wpLabel ctrlCommit 0;
+
+private _wpListCtrl = _display ctrlCreate ["RscListBox", -1, _ctrlGroup];
+_wpListCtrl ctrlSetPosition [0.01, 0.135 + (_h - 0.30) * 0.5, _w - 0.02, (_h - 0.30) * 0.5 - 0.05];
+_wpListCtrl ctrlCommit 0;
+
+private _noneIndex = _wpListCtrl lbAdd (localize "STR_AE3_Desktop_Settings_WallpaperNone");
+_wpListCtrl lbSetData [_noneIndex, ""];
+
+{
+	private _index = _wpListCtrl lbAdd _x;
+	_wpListCtrl lbSetData [_index, _x];
+} forEach (missionNamespace getVariable ["AE3_Desktop_WallpaperList", []]);
+
+_wpListCtrl setVariable ["AE3_computer", _computer];
+_wpListCtrl ctrlAddEventHandler ["LBDblClick", {
+	params ["_wpListCtrl", "_index"];
+
+	private _computer = _wpListCtrl getVariable "AE3_computer";
+	_computer setVariable ["AE3_desktopWallpaper", _wpListCtrl lbData _index, true];
+
+	// Re-open the desktop to apply the wallpaper
+	private _display = ctrlParent _wpListCtrl;
+	_display closeDisplay 1;
+	[_computer getVariable ["AE3_computer_mutex", player], _computer] call
+	{
+		params ["_player", "_computer"];
+		_computer setVariable ["AE3_computer_mutex", _player, true];
+		[_computer] spawn AE3_desktop_fnc_desktop_open;
+	};
+}];
+
+// NOTE: there is intentionally no interface-switch control here - which interfaces a
+// laptop offers (and to whom) is decided by the mission maker via AE3_interfaceMode and
+// the AE3_*AccessCondition variables (see AE3_desktop_fnc_canAccessInterface).
+
+createHashMap

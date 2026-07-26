@@ -1,3 +1,4 @@
+// File: fnc_laptop_nameDialog_OK.sqf
 /*
  * Author: Root
  * Description: Handles OK button press in laptop naming dialog

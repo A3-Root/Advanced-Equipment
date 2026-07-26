@@ -1,7 +1,25 @@
+// File: XEH_preInit.sqf
 #include "script_component.hpp"
 #include "XEH_PREP.hpp"
 
+// Detect the optional Zeus Enhanced dialog framework once at load. When present, AE3's Zeus modules
+// route their input through ZEN's Dynamic Dialog instead of the built-in curator dialogs. Read
+// elsewhere as EGVAR(main,hasZenDialog); ZEN is never a required addon, so this stays runtime-only.
+GVAR(hasZenDialog) = isClass (configFile >> "CfgPatches" >> "zen_dialog");
+
 ["All", "deleted", {_this call AE3_main_fnc_terminateDevice}] call CBA_fnc_addClassEventHandler;
+
+// Zeus device operations: curator clients request ops via server event; the server ensures the
+// target device is initialized, executes the op and reports back to the requesting curator only.
+if (isServer) then
+{
+	["ae3_main_zeusDeviceOp", { _this call AE3_main_fnc_zeus_deviceOpServer }] call CBA_fnc_addEventHandler;
+};
+
+if (hasInterface) then
+{
+	["ae3_main_zeusOpFeedback", { _this call AE3_main_fnc_zeus_deviceOpFeedback }] call CBA_fnc_addEventHandler;
+};
 
 [
 	"AE3_DebugMode", // Settings internal name

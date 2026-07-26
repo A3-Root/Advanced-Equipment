@@ -1,3 +1,4 @@
+// File: fnc_zeus_updateAttributes.sqf
 /*
  * Author: Root, y0014984
  * Description: Handles the Zeus Asset Attributes interface on unload. Runs locally on the Zeus curator's machine.
@@ -28,7 +29,7 @@ if (!isNull _statusUpdateHandle) then { terminate _statusUpdateHandle; };
 if (_exitCode == 1) then
 {
     /* ======================================== */
-    
+
     private _entity = missionNamespace getVariable ["BIS_fnc_initCuratorAttributes_target", objNull];
     if (isNull _entity) exitWith {};
 
@@ -70,7 +71,43 @@ if (_exitCode == 1) then
 
     /* ======================================== */
 
+    // Router wireless settings are applied through the shared router configuration handler.
+    if (_entity getVariable ["AE3_cap_isRouter", false]) then
+    {
+        private _range = parseNumber (ctrlText (_display displayCtrl 1910));
+        private _gateway = ctrlText (_display displayCtrl 1911);
+        private _ssid = ctrlText (_display displayCtrl 1912);
+        private _password = ctrlText (_display displayCtrl 1915);
+        private _extSsh = cbChecked (_display displayCtrl 1321);
+        private _extAllow = ctrlText (_display displayCtrl 1917);
+        [_entity, _ssid, _range, _password, _gateway, _extSsh, _extAllow] remoteExecCall ["AE3_network_fnc_applyRouterConfig", 2];
+        _message = _message + format ["Network name: %1. Wifi range: %2m. Gateway: %3. External SSH: %4.", _ssid, _range, _gateway, ["disabled", "enabled"] select _extSsh];
+    };
+
+    /* ======================================== */
+
+    // Terminal-only attributes: hostname, SSH access, static IP. Broadcast from the server.
+    if (_entity getVariable ["AE3_cap_hasTerminal", false]) then
+    {
+        private _hostname = ctrlText (_display displayCtrl 1913);
+        private _sshEnabled = cbChecked (_display displayCtrl 1320);
+        private _staticIp = ctrlText (_display displayCtrl 1916);
+        if (_hostname isNotEqualTo "") then
+        {
+            [_entity, ["ace_cargo_customName", _hostname, true]] remoteExecCall ["setVariable", 2];
+        };
+        [_entity, ["AE3_ssh_enabled", _sshEnabled, true]] remoteExecCall ["setVariable", 2];
+        [_entity, _staticIp] remoteExecCall ["AE3_network_fnc_setStaticIp", 2];
+        _message = _message + format ["Hostname: %1. SSH: %2. IP: %3.", _hostname, ["disabled", "enabled"] select _sshEnabled, [_staticIp, "DHCP"] select (_staticIp isEqualTo "")];
+    };
+
+    /* ======================================== */
+
     ["AE3 Asset Attributes changed", _message, 5] call BIS_fnc_curatorHint;
 
     /* ======================================== */
+
+    // Nudge any open desktop on the affected laptop to re-read its status so curator changes to
+    // hostname, SSH access, battery, wireless settings or IP show without closing and reopening it.
+    ["ae3_desktop_sysChanged", []] call CBA_fnc_globalEvent;
 };

@@ -1,3 +1,4 @@
+// File: fnc_laptop_pickup_stable.sqf
 /*
  * Author: Root
  * Description: Handles laptop pickup using the stable method. Hides the laptop, disables simulation,
@@ -45,6 +46,12 @@ if (!isNull _mutex) then {
 
 	// Clear the mutex
 	_target setVariable ["AE3_computer_mutex", objNull, true];
+};
+
+// Return any connected flash drives to the picker's inventory first, so none is left behind attached
+// to the hidden laptop where it could be taken and then act on a laptop that is no longer in the world.
+if (!isNil "AE3_flashdrive_fnc_disconnectAllDrives") then {
+	[_target, _player] call AE3_flashdrive_fnc_disconnectAllDrives;
 };
 
 // Get or create the global laptop tracking hashmap

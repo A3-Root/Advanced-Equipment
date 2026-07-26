@@ -1,3 +1,4 @@
+// File: fnc_setBatteryLevel.sqf
 /*
  * Author: Root, y0014984
  * Description: Sets the battery level of a given battery to a specified percentage. Must be executed on the server. The value is automatically clamped between 0 and 100 percent.
@@ -26,5 +27,8 @@ private _batteryCapacity = _battery getVariable "AE3_power_batteryCapacity";
 private _batteryLevel = _batteryCapacity * (_batteryLevelPercent / 100);
 
 _battery setVariable ["AE3_power_batteryLevel", _batteryLevel];
+
+// Nudge any open desktop System panel to re-read the new battery level live.
+["ae3_desktop_sysChanged", []] call CBA_fnc_globalEvent;
 
 true;

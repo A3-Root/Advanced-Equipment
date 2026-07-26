@@ -5,7 +5,8 @@ class CfgWeapons {
 	class Item_FlashDisk_AE3 : CBA_MiscItem
 	{
 		author[] = {"Wasserstoff"};
-        scope = 1;
+        scope = 2;        // visible (was 1: hidden from arsenals)
+        scopeArsenal = 2; // available in ACE3/Virtual Arsenal
         displayName = "$STR_AE3_Flashdrive_DisplayName";
         descriptionShort = "$STR_AE3_Flashdrive_DescrShort";
 		useActionTitle = "$STR_AE3_Flashdrive_UseActionTitle";

@@ -82,7 +82,7 @@
                 <French>césar : utilisez uniquement les touches numériques comprises entre 1 et 25 || colonnaire : longueur de clé minimale 2</French>
                 <Italian>caesar: Usa solo numeri tra 1 e 25 || columnar: lunghezza minima 2</Italian>
                 <Russian>caesar: only use numeric keys between 1 and 25 || columnar: minimal key length 2</Russian>
-                <German>caesar: nur numerische Schlüssel zwischen 1 und 25 || columnar: minimale Schlüssellänge 2 </German>
+                <German>caesar: nur numerische Schlüssel zwischen 1 und 25 || columnar: minimale Schlüssellänge 2</German>
                 <Chinesesimp>凯撒密码: 只能使用1到25之间的数字密钥 || 列移位密码: 密钥的最小长度为2</Chinesesimp>
             </Key>
             <Key ID="STR_AE3_Filesystem_Config_ExeByOtherDisplayName">

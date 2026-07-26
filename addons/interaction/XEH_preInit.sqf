@@ -1,3 +1,4 @@
+// File: XEH_preInit.sqf
 #include "script_component.hpp"
 #include "XEH_PREP.hpp"
 
@@ -15,7 +16,12 @@ AE3_interaction_fnc_ensureEquipmentParent = {
         diag_log format ["[AE3 DEBUG] [%1] Call stack: %2", time, diag_stacktrace];
     };
 
-    if (!_hasParent) then {
+    if (_hasParent) then {
+        if (AE3_DebugMode) then {
+            diag_log format ["[AE3 DEBUG] [%1] Parent action already exists for %2, skipping", time, _object];
+        };
+        false
+    } else {
         // Set flag IMMEDIATELY to prevent race conditions between multiple init systems
         // This must happen before any other code to ensure atomicity
         if (AE3_DebugMode) then {
@@ -85,11 +91,6 @@ AE3_interaction_fnc_ensureEquipmentParent = {
         // Flag was already set at the beginning of this block to prevent race conditions
 
         true
-    } else {
-        if (AE3_DebugMode) then {
-            diag_log format ["[AE3 DEBUG] [%1] Parent action already exists for %2, skipping", time, _object];
-        };
-        false
     };
 };
 

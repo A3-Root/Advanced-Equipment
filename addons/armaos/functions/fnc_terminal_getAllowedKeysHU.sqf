@@ -1,3 +1,4 @@
+// File: fnc_terminal_getAllowedKeysHU.sqf
 /*
  * Author: Root
  * Description: Returns the allowed keyboard key mappings for Hungarian (HU) layout.
@@ -127,7 +128,7 @@ private _allowedKeys = createHashMapFromArray
 	[format ["%1-%2-%3-%4", DIK_LBRACKET, false, false, true], "÷"],
 	[format ["%1-%2-%3-%4", DIK_RBRACKET, false, false, false], "ú"],
 	[format ["%1-%2-%3-%4", DIK_RBRACKET, true, false, false], "Ú"],
-	[format ["%1-%2-%3-%4", DIK_RBRACKET, false, false, true], "×"],
+	[format ["%1-%2-%3-%4", DIK_RBRACKET, false, false, true], "x"],
 	[format ["%1-%2-%3-%4", DIK_BACKSLASH, false, false, false], "ű"],
 	[format ["%1-%2-%3-%4", DIK_BACKSLASH, true, false, false], "Ű"],
 	[format ["%1-%2-%3-%4", DIK_BACKSLASH, false, false, true], "¤"],

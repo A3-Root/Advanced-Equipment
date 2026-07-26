@@ -22,8 +22,30 @@
                 <German>IP-Adresse</German>
                 <Chinesesimp>IP地址</Chinesesimp>
             </Key>
+            <Key ID="STR_AE3_Network_Msg_Received">
+                <Original>New message from %1 - read with: cat /var/mail/inbox</Original>
+                <English>New message from %1 - read with: cat /var/mail/inbox</English>
+                <French>Nouveau message de %1 - lire avec : cat /var/mail/inbox</French>
+                <Italian>Nuovo messaggio da %1 - leggi con: cat /var/mail/inbox</Italian>
+                <Russian>New message from %1 - read with: cat /var/mail/inbox</Russian>
+                <German>Neue Nachricht von %1 - lesen mit: cat /var/mail/inbox</German>
+                <Chinesesimp>来自%1的新消息 - 使用cat /var/mail/inbox阅读</Chinesesimp>
+            </Key>
         </Container>
         <Container name="Interaction">
+            <Key ID="STR_AE3_Network_Interaction_Cancel">
+                <Original>Cancel</Original>
+                <English>Cancel</English>
+            </Key>
+            <Key ID="STR_AE3_Network_Interaction_ConfigureRouter">
+                <Original>Configure router</Original>
+                <English>Configure router</English>
+                <French>Configurer le routeur</French>
+                <Italian>Configura router</Italian>
+                <Russian>Настроить роутер</Russian>
+                <German>Router konfigurieren</German>
+                <Chinesesimp>配置路由器.</Chinesesimp>
+            </Key>
             <Key ID="STR_AE3_Network_Interaction_ConnectToRouter">
                 <Original>Connect to router</Original>
                 <English>Connect to router</English>
@@ -41,6 +63,14 @@
                 <Russian>Отключить от роутера</Russian>
                 <German>Trenne von Router</German>
                 <Chinesesimp>断开路由器.</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Network_Interaction_EnterPassword">
+                <Original>Enter router password</Original>
+                <English>Enter router password</English>
+            </Key>
+            <Key ID="STR_AE3_Network_Interaction_WrongPassword">
+                <Original>Incorrect router password</Original>
+                <English>Incorrect router password</English>
             </Key>
         </Container>
     </Package>

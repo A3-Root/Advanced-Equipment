@@ -1,3 +1,4 @@
+// File: fnc_killDebugOverlay.sqf
 /*
  * Author: Root, y0014984
  * Description: Removes all onEachFrame event handlers and cleans up debug overlays for AE3 objects.
@@ -18,7 +19,6 @@
 params ["_ae3Objects"];
 
 {
-	private _obj = _x select 0;
     private _control = _x select 1;
 
     if (_control isNotEqualTo controlNull) then

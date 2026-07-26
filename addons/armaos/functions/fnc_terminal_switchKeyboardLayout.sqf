@@ -1,3 +1,4 @@
+// File: fnc_terminal_switchKeyboardLayout.sqf
 /*
  * Author: Root, Wasserstoff, y0014984
  * Description: Cycles through available keyboard layouts (US, DE, FR, IT, RU, AR, HE, HU, TR).
@@ -18,7 +19,6 @@
 
 params ["_computer", "_languageButton", "_consoleOutput"];
 
-private _terminal = _computer getVariable "AE3_terminal";
 private _terminalKeyboardLayout = _computer getVariable "AE3_terminalKeyboardLayout";
 
 private _availableLanguages = ["AR", "DE", "FR", "HE", "HU", "IT", "RU", "TR", "US"];

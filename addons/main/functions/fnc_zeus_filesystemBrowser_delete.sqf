@@ -1,3 +1,4 @@
+// File: fnc_zeus_filesystemBrowser_delete.sqf
 /*
  * Author: Root
  * Description: Deletes the currently selected file or folder in the Zeus filesystem browser. Validates that the item is not a

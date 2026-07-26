@@ -1,3 +1,4 @@
+// File: fnc_disconnect.sqf
 /**
  * PUBLIC
  *

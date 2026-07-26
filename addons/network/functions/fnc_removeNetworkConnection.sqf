@@ -1,3 +1,4 @@
+// File: fnc_removeNetworkConnection.sqf
 /**
  * PUBLIC
  *
@@ -31,7 +32,7 @@ if (!(isNull _networkProvider)) then
     };
 
     // set network provider to "network disconnected" if it has no connected children and no connected parent-parent
-    if (count _connectedDevices == 0) then
+    if (_connectedDevices isEqualTo []) then
     {
         private __networkProviderParent = _networkProvider getVariable ["AE3_network_parent", objNull];
         if (isNull __networkProviderParent) then
@@ -51,6 +52,7 @@ if (count call {_networkConsumer getVariable ["AE3_network_children", []]} == 0)
 };
 
 // reset ip address of network consumer
+_networkConsumer setVariable ["AE3_network_staticIp", "", true];
 _networkConsumer setVariable ["AE3_network_address", [127, 0, 0, 1], true];
 
 true;

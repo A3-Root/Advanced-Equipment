@@ -1,3 +1,4 @@
+// File: fnc_retro_showSplashScreen.sqf
 /*
  * Author: Root, y0014984
  * Description: Displays a retro splash screen animation on the terminal.

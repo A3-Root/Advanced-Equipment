@@ -1,3 +1,4 @@
+// File: fnc_zeus_standbyDevice.sqf
 /*
  * Author: Root, y0014984
  * Description: Puts a device into standby mode through the Zeus Asset Attributes Interface. Triggered by the "Standby" button in the Zeus interface.

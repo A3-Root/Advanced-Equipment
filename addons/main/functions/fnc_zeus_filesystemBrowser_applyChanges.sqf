@@ -1,3 +1,4 @@
+// File: fnc_zeus_filesystemBrowser_applyChanges.sqf
 /*
  * Author: Root
  * Description: Applies owner and permission changes to the currently selected file or folder in the Zeus filesystem browser.
@@ -52,8 +53,8 @@ try
 	private _everyoneExecute = cbChecked (_display displayCtrl 1315);
 
 	private _newPermissions = [
-		[_ownerExecute, _ownerRead, _ownerWrite],
-		[_everyoneExecute, _everyoneRead, _everyoneWrite]
+		[_ownerRead, _ownerWrite, _ownerExecute],
+		[_everyoneRead, _everyoneWrite, _everyoneExecute]
 	];
 
 	// Update the item

@@ -1,3 +1,4 @@
+// File: fnc_initNetworkDevice.sqf
 /**
  * Initializes a network device (e.g. Computer, Server, usw.).
  *
@@ -17,13 +18,13 @@ private _childs =
 {
 	params ["_target", "_player", "_params"]; 
 
-	_routers = (nearestObjects [_target, [], 10]) select {!isNil{_x getVariable "AE3_network_children"} && _x != _target};
+	private _routers = (nearestObjects [_target, [], 10]) select {!isNil{_x getVariable "AE3_network_children"} && _x != _target};
 	private _actions = []; 
 	{ 
 		private _childStatement = 
 		{ 
 			params ["_target", "_player", "_parent"]; 
-			[_target, _parent] call AE3_network_fnc_connect_device2router;
+			[_target, _parent, AE3_network_fnc_connect_device2router] call AE3_network_fnc_promptConnect;
 		}; 
 
 		private _aceCargoName = [_x, true] call ace_cargo_fnc_getNameItem; // changed from {typeOf _x} to this function
@@ -92,8 +93,10 @@ if (!isDedicated) then
 };
 
 
- if (isServer) then 
+ if (isServer) then
  {
+	 _entity setVariable ["AE3_cap_isNetworkClient", true, true];
+
 	 _entity setVariable ["AE3_network_address", _address, true];
 	 _entity setVariable ["AE3_network_parent", _parent, true];
 

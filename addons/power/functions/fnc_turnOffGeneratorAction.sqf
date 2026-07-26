@@ -1,3 +1,4 @@
+// File: fnc_turnOffGeneratorAction.sqf
 /*
  * Author: Root, y0014984, Wasserstoff
  * Description: ACE3 interaction action that turns off a fuel generator with progress bar and sound effects. Removes provider handler, plays stop sound, turns off connected devices, and updates interactions. In Zeus mode or if silent, stops immediately without progress bar. Handles progress bar cancellation with restart sound.
@@ -71,7 +72,7 @@ else
 			terminate _stopSoundHandle;
 
 			// start sound will be played
-			private _startSoundHandle = [_entity] spawn AE3_power_fnc_playGeneratorStartSound;			
+			[_entity] spawn AE3_power_fnc_playGeneratorStartSound;
 		},
 		(localize "STR_AE3_Power_Interaction_TurnOff" + "...")
 	] call ace_common_fnc_progressBar;

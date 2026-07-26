@@ -1,3 +1,4 @@
+// File: fnc_initInteraction.sqf
 /*
  * Author: Root, Wasserstoff, y0014984
  * Description: Initializes interactive equipment with ACE3 actions for opening/closing and animation points.
@@ -32,8 +33,8 @@ private _openWrapper =
 {
 	params['_target', ['_args', []]];
 
-	_openFnc =  _target getVariable "AE3_interaction_fnc_open";
-	_result = [_target] + _args call _openFnc;
+	private _openFnc =  _target getVariable "AE3_interaction_fnc_open";
+	private _result = [_target] + _args call _openFnc;
 	if(isNil '_result') then {_result = false};
 
 	if(_result) then
@@ -48,8 +49,8 @@ private _closeWrapper =
 {
 	params['_target', ['_args', []]];
 
-	_closeFnc =  _target getVariable "AE3_interaction_fnc_close";
-	_result = [_target] + _args call _closeFnc;
+	private _closeFnc =  _target getVariable "AE3_interaction_fnc_close";
+	private _result = [_target] + _args call _closeFnc;
 	if(isNil '_result') then {_result = false};
 
 	if(_result) then
@@ -75,7 +76,19 @@ if (!isDedicated) then
 		diag_log format ["[AE3 DEBUG] [%1] Call stack: %2", time, diag_stacktrace];
 	};
 
-	if (!_equipmentActionsAdded) then {
+	if (_equipmentActionsAdded) then {
+		if (AE3_DebugMode) then {
+			diag_log format ["[AE3 DEBUG] [%1] Equipment actions already added for %2, skipping", time, _equipment];
+
+			// Even though we're skipping, count the existing actions to see if there are duplicates
+			private _actionsCount = 0;
+			private _existingActions = _equipment getVariable ["ace_interact_menu_Act_SelfActions", []];
+			if (_existingActions isEqualType []) then {
+				_actionsCount = count _existingActions;
+			};
+			diag_log format ["[AE3 DEBUG] [%1] Current ACE actions on object: %2", time, _actionsCount];
+		};
+	} else {
 		// Mark that we're adding the equipment actions IMMEDIATELY to prevent race conditions
 		if (AE3_DebugMode) then {
 			diag_log format ["[AE3 DEBUG] [%1] initInteraction: SETTING equipmentActionsAdded flag to TRUE for %2", time, _equipment];
@@ -113,7 +126,7 @@ if (!isDedicated) then
 					private _animationModifiedCtrl = _params select 2;
 					private _animationModifiedAlt = _params select 3;
 
-					_handle = [_target, _animationMain, _animationModifiedShift, _animationModifiedCtrl, _animationModifiedAlt] spawn AE3_interaction_fnc_animateInteraction;
+					[_target, _animationMain, _animationModifiedShift, _animationModifiedCtrl, _animationModifiedAlt] spawn AE3_interaction_fnc_animateInteraction;
 				},
 				{
 					alive _target;
@@ -135,7 +148,7 @@ if (!isDedicated) then
 		// Add open/close action directly under Equipment action
 		if (!((_openFnc isEqualTo {}) || (_closeFnc isEqualTo {}))) then
 		{
-			_open = ["AE3_openAction", localize "STR_AE3_Interaction_General_Open", "",
+			private _open = ["AE3_openAction", localize "STR_AE3_Interaction_General_Open", "",
 						{
 							params ["_target", "_player", "_params"];
 
@@ -153,7 +166,7 @@ if (!isDedicated) then
 						{(_target call (_target getVariable ["AE3_interaction_fnc_openActionCondition", {true}])) and (alive _target) and (_target getVariable "AE3_interaction_closeState" == 1)},
 						{}] call ace_interact_menu_fnc_createAction;
 
-			_close = ["AE3_closeAction", localize "STR_AE3_Interaction_General_Close", "",
+			private _close = ["AE3_closeAction", localize "STR_AE3_Interaction_General_Close", "",
 						{
 							params ["_target", "_player", "_params"];
 
@@ -185,18 +198,6 @@ if (!isDedicated) then
 				_actionsAfterCount = count _existingActionsAfter;
 			};
 			diag_log format ["[AE3 DEBUG] [%1] ACE actions after adding equipment actions: %2 (added %3 actions)", time, _actionsAfterCount, _actionsAfterCount - _actionsBeforeCount];
-		};
-	} else {
-		if (AE3_DebugMode) then {
-			diag_log format ["[AE3 DEBUG] [%1] Equipment actions already added for %2, skipping", time, _equipment];
-
-			// Even though we're skipping, count the existing actions to see if there are duplicates
-			private _actionsCount = 0;
-			private _existingActions = _equipment getVariable ["ace_interact_menu_Act_SelfActions", []];
-			if (_existingActions isEqualType []) then {
-				_actionsCount = count _existingActions;
-			};
-			diag_log format ["[AE3 DEBUG] [%1] Current ACE actions on object: %2", time, _actionsCount];
 		};
 	};
 };

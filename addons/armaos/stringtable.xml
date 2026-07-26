@@ -508,51 +508,6 @@
                 <German>ändert rekursiv den Besitzer</German>
                 <Chinesesimp>递归改变所有者</Chinesesimp>
             </Key>
-            <Key ID="STR_AE3_ArmaOS_CommandHelp_Crack_algorithm">
-                <Original>sets the algorithm</Original>
-                <English>sets the algorithm</English>
-                <French>définit l'algorithme</French>
-                <Italian>Imposta l'algoritmo</Italian>
-                <Russian>устанавливает алгоритм</Russian>
-                <German>setzt den Algorithmus</German>
-                <Chinesesimp>设置算法</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_CommandHelp_Crack_mode">
-                <Original>sets the mode</Original>
-                <English>sets the mode</English>
-                <French>définit le mode</French>
-                <Italian>imposta la modalità</Italian>
-                <Russian>устанавливает режим</Russian>
-                <German>setzt den Modus</German>
-                <Chinesesimp>设置模式</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_CommandHelp_Crypto_algorithm">
-                <Original>sets the algorithm</Original>
-                <English>sets the algorithm</English>
-                <French>définit l'algorithme</French>
-                <Italian>Imposta l'algoritmo</Italian>
-                <Russian>устанавливает алгоритм</Russian>
-                <German>setzt den Algorithmus</German>
-                <Chinesesimp>设置算法</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_CommandHelp_Crypto_key">
-                <Original>sets the key/password/pin</Original>
-                <English>sets the key/password/pin</English>
-                <French>définit la clé/le mot de passe/le code PIN</French>
-                <Italian>imposta la chiave/password/pin</Italian>
-                <Russian>устанавливает ключ/пароль/пин-код</Russian>
-                <German>setzt den Schlüssel/Passwort/PIN</German>
-                <Chinesesimp>设置key/password/pin</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_CommandHelp_Crypto_mode">
-                <Original>sets the mode</Original>
-                <English>sets the mode</English>
-                <French>définit le mode</French>
-                <Italian>Imposta la modalità</Italian>
-                <Russian>устанавливает режим</Russian>
-                <German>setzt den Modus</German>
-                <Chinesesimp>设置模式</Chinesesimp>
-            </Key>
             <Key ID="STR_AE3_ArmaOS_CommandHelp_Echo_backslash">
                 <Original>enables interpretation of backslash escapes</Original>
                 <English>enables interpretation of backslash escapes</English>
@@ -609,31 +564,40 @@
             </Key>
         </Container>
         <Container name="Config">
-            <Key ID="STR_AE3_ArmaOS_Config_AddGamesDisplayName">
-                <Original>AE3 Add Games</Original>
-                <English>AE3 Add Games</English>
-                <French>AE3 Ajouter des jeux</French>
-                <Italian>AE3 Aggiungi giochi</Italian>
-                <Russian>AE3 Add Games</Russian>
-                <German>AE3 Spiele hinzufügen</German>
-                <Chinesesimp>AE3添加游戏</Chinesesimp>
+            <Key ID="STR_AE3_ArmaOS_CommandHelp_Grep_ignoreCase">
+                <Original>ignore case distinctions in the pattern</Original>
+                <English>ignore case distinctions in the pattern</English>
+                <French>ignorer la casse dans le motif</French>
+                <Italian>ignora maiuscole/minuscole nel pattern</Italian>
+                <Russian>ignore case distinctions in the pattern</Russian>
+                <German>Groß-/Kleinschreibung im Muster ignorieren</German>
+                <Chinesesimp>忽略模式中的大小写</Chinesesimp>
             </Key>
-            <Key ID="STR_AE3_ArmaOS_Config_AddSecurityCommandsDisplayName">
-                <Original>AE3 Add Security Commands</Original>
-                <English>AE3 Add Security Commands</English>
-                <French>AE3 Ajouter des commandes de sécurité</French>
-                <Italian>AE3 Aggiungi comandi di sicurezza</Italian>
-                <Russian>AE3 Add Security Commands</Russian>
-                <German>AE3 Security-Befehle hinzufügen</German>
-                <Chinesesimp>AE3添加安全命令</Chinesesimp>
+            <Key ID="STR_AE3_ArmaOS_CommandHelp_Grep_invert">
+                <Original>select non-matching lines</Original>
+                <English>select non-matching lines</English>
+                <French>sélectionner les lignes non correspondantes</French>
+                <Italian>seleziona le righe non corrispondenti</Italian>
+                <Russian>select non-matching lines</Russian>
+                <German>nicht übereinstimmende Zeilen auswählen</German>
+                <Chinesesimp>选择不匹配的行</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_ArmaOS_CommandHelp_Unlock_permanent">
+                <Original>permanently remove the protection (rewrites the file)</Original>
+                <English>permanently remove the protection (rewrites the file)</English>
+                <French>supprimer définitivement la protection (réécrit le fichier)</French>
+                <Italian>rimuove definitivamente la protezione (riscrive il file)</Italian>
+                <Russian>permanently remove the protection (rewrites the file)</Russian>
+                <German>Schutz dauerhaft entfernen (Datei wird neu geschrieben)</German>
+                <Chinesesimp>永久移除保护(重写文件)</Chinesesimp>
             </Key>
             <Key ID="STR_AE3_ArmaOS_Config_AddUserDisplayName">
-                <Original>AE3 Add User</Original>
-                <English>AE3 Add User</English>
-                <French>AE3 Ajouter un utilisateur</French>
-                <Italian>AE3 Aggiungi utente</Italian>
-                <Russian>AE3 Add User</Russian>
-                <German>AE3 Benutzer hinzufügen</German>
+                <Original>AE3: Add User</Original>
+                <English>AE3: Add User</English>
+                <French>AE3: Ajouter un utilisateur</French>
+                <Italian>AE3: Aggiungi utente</Italian>
+                <Russian>AE3: Add User</Russian>
+                <German>AE3: Benutzer hinzufügen</German>
                 <Chinesesimp>AE3添加用户</Chinesesimp>
             </Key>
             <Key ID="STR_AE3_ArmaOS_Config_BatteryDisplayName">
@@ -735,42 +699,6 @@
                 <German>Verwendung cp: 'cp [alter Pfad] [neuer Pfad]' kopiert eine Datei in neuen Pfad.</German>
                 <Chinesesimp>cp说明: 'cp [old path] [new path]' 将文件复制到新路径.</Chinesesimp>
             </Key>
-            <Key ID="STR_AE3_ArmaOS_Config_CommandCrackDescr">
-                <Original>Trys to decrypt text with a given algorythm using multiple methods like bruteforce or statistics.</Original>
-                <English>Trys to decrypt text with a given algorythm using multiple methods like bruteforce or statistics.</English>
-                <French>Essaie de déchiffrer du texte avec un algorithme donné en utilisant plusieurs méthodes comme la force brute ou les statistiques.</French>
-                <Italian>Cerca di decriptare il testo con l'algoritmo indicato utilizzando multipli metodi come forza bruta o statistiche.</Italian>
-                <Russian>Пытается расшифровать текст с заданным алгоритмом, используя брутфорс или статистику</Russian>
-                <German>Versucht den angegebenen Text durch verschiedene Methoden wie per Bruteforce oder über Statistiken zu entschlüsseln.</German>
-                <Chinesesimp>尝试使用多种指定算法(如bruteforce或statistics)解密文本.</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_Config_CommandCrackMan">
-                <Original>Usage crack: 'crack -a [algorythm] -m [mode] [text]' prints the results to stdout.</Original>
-                <English>Usage crack: 'crack -a [algorythm] -m [mode] [text]' prints the results to stdout.</English>
-                <French>Utilisation crack: 'crack -a [algorythme] -m [mode] [textee]' affiche les résultats sur stdout.</French>
-                <Italian>Utilizzo crack: 'crack -a [algoritmo] -m [modalità] [testo]' mostra il risultato a console.</Italian>
-                <Russian>Использование crack: crack -a [algorythm] -m [mode] [text]' выводит результаты на stdout</Russian>
-                <German>Verwendung crack: 'crack -a [Algorythmus] -m [Modus] [Text]' gibt die Ergebnisse nach stdout aus.</German>
-                <Chinesesimp>crack说明: 'crack -a [algorythm] -m [mode] [text]' 将结果打印到标准输出流.</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_Config_CommandCryptoDescr">
-                <Original>Encrypts/decrypts text with a given algorythm and key.</Original>
-                <English>Encrypts/decrypts text with a given algorythm and key.</English>
-                <French>Chiffre/déchiffre du texte avec un algorithme et une clé donnés.</French>
-                <Italian>Encripta/Decrypta testo con un algoritmo e chiave fornito.</Italian>
-                <Russian>Шифрует/дешифрует текст с заданным алгоритмом и ключом.</Russian>
-                <German>Ver-/Entschlüsselt text mit dem angegebenen Algorythmus und Schlüssel.</German>
-                <Chinesesimp>使用指定的算法和密钥加密/解密文本.</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_Config_CommandCryptoMan">
-                <Original>Usage crypto: 'crypto -a [algorythm] -k [key] -m [mode] [text]' prints the processed text to stdout.</Original>
-                <English>Usage crypto: 'crypto -a [algorythm] -k [key] -m [mode] [text]' prints the processed text to stdout.</English>
-                <French>Utilisation crypto: 'crypto -a [algorythme] -k [clé] -m [mode] [texte]' affiche le texte traité sur stdout.</French>
-                <Italian>utilizza crypto: 'crypto -a [algorythm] -k [key] -m [mode] [text]' mostra il processo in testo.</Italian>
-                <Russian>Использование crypto: 'crypto -a [algorythm] -k [key] -m [mode] [text]' выводит обработанный текст на stdout.</Russian>
-                <German>Verwendung crypto: 'crypto -a [Algorythmus] -k [Schlüssel] -m [Modus] [Text]' gibt den verarbeiteten Text nach stdout aus.</German>
-                <Chinesesimp>crypto说明: 'crypto -a [algorythm] -k [key] -m [mode] [text]' 将处理后的文本打印到标准输出流.</Chinesesimp>
-            </Key>
             <Key ID="STR_AE3_ArmaOS_Config_CommandDateDescr">
                 <Original>Prints the date.</Original>
                 <English>Prints the date.</English>
@@ -843,6 +771,24 @@
                 <German>Verwendung find: 'find [Name]' gibt die Ergebnisse nach stdout aus.</German>
                 <Chinesesimp>find说明: 'find [Name]' 将结果打印到标准输出流.</Chinesesimp>
             </Key>
+            <Key ID="STR_AE3_ArmaOS_Config_CommandGrepDescr">
+                <Original>Search file contents for lines matching a pattern.</Original>
+                <English>Search file contents for lines matching a pattern.</English>
+                <French>Recherche les lignes correspondant à un motif dans des fichiers.</French>
+                <Italian>Cerca nei file le righe che corrispondono a un pattern.</Italian>
+                <Russian>Search file contents for lines matching a pattern.</Russian>
+                <German>Durchsucht Dateiinhalte nach Zeilen, die einem Muster entsprechen.</German>
+                <Chinesesimp>在文件内容中搜索匹配模式的行.</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_ArmaOS_Config_CommandGrepMan">
+                <Original>Usage grep: 'grep -i -v PATTERN FILEPATH...' prints lines of the given files matching the regular expression PATTERN. -i ignores case, -v inverts the match.</Original>
+                <English>Usage grep: 'grep -i -v PATTERN FILEPATH...' prints lines of the given files matching the regular expression PATTERN. -i ignores case, -v inverts the match.</English>
+                <French>Utilisation grep: 'grep -i -v MOTIF FICHIER...' affiche les lignes correspondant à l'expression régulière MOTIF. -i ignore la casse, -v inverse la correspondance.</French>
+                <Italian>Utilizza grep: 'grep -i -v PATTERN FILE...' stampa le righe che corrispondono all'espressione regolare PATTERN. -i ignora maiuscole/minuscole, -v inverte la corrispondenza.</Italian>
+                <Russian>Usage grep: 'grep -i -v PATTERN FILEPATH...' prints lines of the given files matching the regular expression PATTERN. -i ignores case, -v inverts the match.</Russian>
+                <German>Verwendung grep: 'grep -i -v MUSTER DATEI...' gibt Zeilen aus, die dem regulären Ausdruck MUSTER entsprechen. -i ignoriert Groß-/Kleinschreibung, -v invertiert die Suche.</German>
+                <Chinesesimp>grep说明:'grep -i -v 模式 文件...'打印匹配正则表达式的行.-i忽略大小写,-v反向匹配.</Chinesesimp>
+            </Key>
             <Key ID="STR_AE3_ArmaOS_Config_CommandHelpDescr">
                 <Original>Prints all installed programs.</Original>
                 <English>Prints all installed programs.</English>
@@ -879,7 +825,7 @@
                 <German>Verwendung history: 'history' listet die letzten Befehle seit dem Start des Computers.</German>
                 <Chinesesimp>history说明:'history'列出自计算机启动以来的最后一个命令.</Chinesesimp>
             </Key>
-            <Key ID="STR_AE3_ArmaOS_Config_CommandIpconfigDescr">
+            <Key ID="STR_AE3_ArmaOS_Config_CommandIpDescr">
                 <Original>Returns the current ip configuration.</Original>
                 <English>Returns the current ip configuration.</English>
                 <French>Renvoie la configuration IP actuelle.</French>
@@ -888,14 +834,14 @@
                 <German>Liefert die aktuelle IP-Konfiguration zurück.</German>
                 <Chinesesimp>返回当前ip配置.</Chinesesimp>
             </Key>
-            <Key ID="STR_AE3_ArmaOS_Config_CommandIpconfigMan">
-                <Original>Usage ipconfig: 'ipconfig' returns the current ip configuration.</Original>
-                <English>Usage ipconfig: 'ipconfig' returns the current ip configuration.</English>
-                <French>Utilisation ipconfig: 'ipconfig' renvoie la configuration IP actuelle.</French>
-                <Italian>utilizza ipconfig: 'ipconfig' mostra l'attuale configurazione ip.</Italian>
-                <Russian>Использование ipconfig: 'ipconfig' выводит текущую кофигурацию IP</Russian>
-                <German>Verwendung ipconfig: 'ipconfig' liefert die aktuelle IP-Konfiguration zurück.</German>
-                <Chinesesimp>ipconfig说明:'ipconfig'返回当前ip配置.</Chinesesimp>
+            <Key ID="STR_AE3_ArmaOS_Config_CommandIpMan">
+                <Original>Usage ip: 'ip' or 'ifconfig' returns the current ip configuration, 'ip r' additionally shows the gateway.</Original>
+                <English>Usage ip: 'ip' or 'ifconfig' returns the current ip configuration, 'ip r' additionally shows the gateway.</English>
+                <French>Utilisation ip: 'ip' ou 'ifconfig' renvoie la configuration IP actuelle, 'ip r' affiche aussi la passerelle.</French>
+                <Italian>Utilizza ip: 'ip' o 'ifconfig' mostra l'attuale configurazione ip, 'ip r' mostra anche il gateway.</Italian>
+                <Russian>Usage ip: 'ip' or 'ifconfig' returns the current ip configuration, 'ip r' additionally shows the gateway.</Russian>
+                <German>Verwendung ip: 'ip' oder 'ifconfig' liefert die aktuelle IP-Konfiguration zurück, 'ip r' zeigt zusätzlich das Gateway.</German>
+                <Chinesesimp>ip说明:'ip'或'ifconfig'返回当前ip配置,'ip r'还会显示网关.</Chinesesimp>
             </Key>
             <Key ID="STR_AE3_ArmaOS_Config_CommandLsDescr">
                 <Original>Display the content of a directory.</Original>
@@ -987,6 +933,24 @@
                 <German>Verwendung mount: 'mount [Name]' hängt den USB Stick in den gegebenen Port ein.</German>
                 <Chinesesimp>mount说明: 'mount [interface name]' 装载给定的接口.</Chinesesimp>
             </Key>
+            <Key ID="STR_AE3_ArmaOS_Config_CommandMsgDescr">
+                <Original>Send an instant message to another computer.</Original>
+                <English>Send an instant message to another computer.</English>
+                <French>Envoie un message instantané à un autre ordinateur.</French>
+                <Italian>Invia un messaggio istantaneo a un altro computer.</Italian>
+                <Russian>Send an instant message to another computer.</Russian>
+                <German>Sendet eine Sofortnachricht an einen anderen Computer.</German>
+                <Chinesesimp>向另一台计算机发送即时消息.</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_ArmaOS_Config_CommandMsgMan">
+                <Original>Usage msg: 'msg TARGET-IP MESSAGE...' sends a message over the network. Received messages are stored in /var/mail/inbox (read with cat).</Original>
+                <English>Usage msg: 'msg TARGET-IP MESSAGE...' sends a message over the network. Received messages are stored in /var/mail/inbox (read with cat).</English>
+                <French>Utilisation msg: 'msg IP-CIBLE MESSAGE...' envoie un message via le réseau. Les messages reçus sont stockés dans /var/mail/inbox.</French>
+                <Italian>Utilizza msg: 'msg IP-DESTINAZIONE MESSAGGIO...' invia un messaggio via rete. I messaggi ricevuti sono in /var/mail/inbox.</Italian>
+                <Russian>Usage msg: 'msg TARGET-IP MESSAGE...' sends a message over the network. Received messages are stored in /var/mail/inbox.</Russian>
+                <German>Verwendung msg: 'msg ZIEL-IP NACHRICHT...' sendet eine Nachricht über das Netzwerk. Empfangene Nachrichten stehen in /var/mail/inbox.</German>
+                <Chinesesimp>msg说明:'msg 目标IP 消息...'通过网络发送消息.收到的消息存储在/var/mail/inbox中.</Chinesesimp>
+            </Key>
             <Key ID="STR_AE3_ArmaOS_Config_CommandMvDescr">
                 <Original>Moves a file or folder.</Original>
                 <English>Moves a file or folder.</English>
@@ -1077,6 +1041,24 @@
                 <German>Retro Spiel Snake - benutze die Option --big für eine doppelte Blockgröße</German>
                 <Chinesesimp>贪吃蛇 - 使用参数 --big 使区块大小翻倍</Chinesesimp>
             </Key>
+            <Key ID="STR_AE3_ArmaOS_Config_CommandSshDescr">
+                <Original>Open a remote shell session on another computer.</Original>
+                <English>Open a remote shell session on another computer.</English>
+                <French>Ouvre une session shell distante sur un autre ordinateur.</French>
+                <Italian>Apre una sessione shell remota su un altro computer.</Italian>
+                <Russian>Open a remote shell session on another computer.</Russian>
+                <German>Öffnet eine entfernte Shell-Sitzung auf einem anderen Computer.</German>
+                <Chinesesimp>在另一台计算机上打开远程shell会话.</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_ArmaOS_Config_CommandSshMan">
+                <Original>Usage ssh: 'ssh USER@IP PASSWORD' connects to the remote computer. Entered commands run on the remote machine; 'exit' ends the session. Interactive programs are blocked.</Original>
+                <English>Usage ssh: 'ssh USER@IP PASSWORD' connects to the remote computer. Entered commands run on the remote machine; 'exit' ends the session. Interactive programs are blocked.</English>
+                <French>Utilisation ssh: 'ssh UTILISATEUR@IP MOTDEPASSE' se connecte à l'ordinateur distant. Les commandes s'exécutent sur la machine distante ; 'exit' termine la session.</French>
+                <Italian>Utilizza ssh: 'ssh UTENTE@IP PASSWORD' si connette al computer remoto. I comandi vengono eseguiti sulla macchina remota; 'exit' termina la sessione.</Italian>
+                <Russian>Usage ssh: 'ssh USER@IP PASSWORD' connects to the remote computer. Entered commands run on the remote machine; 'exit' ends the session.</Russian>
+                <German>Verwendung ssh: 'ssh BENUTZER@IP PASSWORT' verbindet mit dem entfernten Computer. Befehle laufen auf der entfernten Maschine; 'exit' beendet die Sitzung.</German>
+                <Chinesesimp>ssh说明:'ssh 用户@IP 密码'连接到远程计算机.输入的命令在远程计算机上运行;'exit'结束会话.</Chinesesimp>
+            </Key>
             <Key ID="STR_AE3_ArmaOS_Config_CommandStandbyDescr">
                 <Original>Puts the computer in standby mode.</Original>
                 <English>Puts the computer in standby mode.</English>
@@ -1094,6 +1076,24 @@
                 <Russian>Использование standby: 'standby' переводит компьютер в режим ожидания</Russian>
                 <German>Verwendung standby: 'standby' aktiviert den Ruhezustand des Computers.</German>
                 <Chinesesimp>standby说明:'standby'切换至待机模式.</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_ArmaOS_Config_CommandSudoDescr">
+                <Original>Execute a command as root.</Original>
+                <English>Execute a command as root.</English>
+                <French>Exécute une commande en tant que root.</French>
+                <Italian>Esegue un comando come root.</Italian>
+                <Russian>Execute a command as root.</Russian>
+                <German>Führt einen Befehl als root aus.</German>
+                <Chinesesimp>以root身份执行命令.</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_ArmaOS_Config_CommandSudoMan">
+                <Original>Usage sudo: 'sudo COMMAND ARGS...' executes the command as root. The current user must be listed in /etc/sudoers.</Original>
+                <English>Usage sudo: 'sudo COMMAND ARGS...' executes the command as root. The current user must be listed in /etc/sudoers.</English>
+                <French>Utilisation sudo: 'sudo COMMANDE ARGS...' exécute la commande en tant que root. L'utilisateur doit figurer dans /etc/sudoers.</French>
+                <Italian>Utilizza sudo: 'sudo COMANDO ARG...' esegue il comando come root. L'utente deve essere elencato in /etc/sudoers.</Italian>
+                <Russian>Usage sudo: 'sudo COMMAND ARGS...' executes the command as root. The current user must be listed in /etc/sudoers.</Russian>
+                <German>Verwendung sudo: 'sudo BEFEHL ARGS...' führt den Befehl als root aus. Der Benutzer muss in /etc/sudoers stehen.</German>
+                <Chinesesimp>sudo说明:'sudo 命令 参数...'以root身份执行命令.当前用户必须在/etc/sudoers中.</Chinesesimp>
             </Key>
             <Key ID="STR_AE3_ArmaOS_Config_CommandTouchDescr">
                 <Original>Creates an empty file.</Original>
@@ -1131,6 +1131,24 @@
                 <German>Verwendung umount: 'umount [Name]' hängt USB Stick in gegebenem Port aus.</German>
                 <Chinesesimp>umount说明: 'umount [interface name]'卸载给定的接口.</Chinesesimp>
             </Key>
+            <Key ID="STR_AE3_ArmaOS_Config_CommandUnlockDescr">
+                <Original>Open a password-protected file.</Original>
+                <English>Open a password-protected file.</English>
+                <French>Ouvre un fichier protégé par mot de passe.</French>
+                <Italian>Apre un file protetto da password.</Italian>
+                <Russian>Open a password-protected file.</Russian>
+                <German>Öffnet eine passwortgeschützte Datei.</German>
+                <Chinesesimp>打开受密码保护的文件.</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_ArmaOS_Config_CommandUnlockMan">
+                <Original>Usage unlock: 'unlock FILEPATH PASSWORD' prints the protected content. 'unlock -p FILEPATH PASSWORD' permanently removes the protection (requires write permission).</Original>
+                <English>Usage unlock: 'unlock FILEPATH PASSWORD' prints the protected content. 'unlock -p FILEPATH PASSWORD' permanently removes the protection (requires write permission).</English>
+                <French>Utilisation unlock : 'unlock FICHIER MOTDEPASSE' affiche le contenu protégé. 'unlock -p FICHIER MOTDEPASSE' supprime définitivement la protection.</French>
+                <Italian>Utilizzo unlock: 'unlock FILE PASSWORD' stampa il contenuto protetto. 'unlock -p FILE PASSWORD' rimuove definitivamente la protezione.</Italian>
+                <Russian>Usage unlock: 'unlock FILEPATH PASSWORD' prints the protected content. 'unlock -p FILEPATH PASSWORD' permanently removes the protection.</Russian>
+                <German>Verwendung unlock: 'unlock DATEI PASSWORT' gibt den geschützten Inhalt aus. 'unlock -p DATEI PASSWORT' entfernt den Schutz dauerhaft.</German>
+                <Chinesesimp>unlock说明:'unlock 文件 密码'打印受保护的内容.'unlock -p 文件 密码'永久移除保护.</Chinesesimp>
+            </Key>
             <Key ID="STR_AE3_ArmaOS_Config_CommandWhoamiDescr">
                 <Original>Returns the current user.</Original>
                 <English>Returns the current user.</English>
@@ -1158,15 +1176,6 @@
                 <German>Laptop</German>
                 <Chinesesimp>笔记本电脑</Chinesesimp>
             </Key>
-            <Key ID="STR_AE3_ArmaOS_Config_ModuleAddGamesDescription">
-                <Original>This module adds games to an armaOS computer. Simply sync this module to a supported computer.</Original>
-                <English>This module adds games to an armaOS computer. Simply sync this module to a supported computer.</English>
-                <French>Ce module ajoute des jeux à un ordinateur armaOS. Synchronisez simplement ce module avec un ordinateur pris en charge.</French>
-                <Italian>Questo modulo aggiunge giochi ad un computer armaOS. Semplicemente sincronizza questo modulo ad un computer supportato.</Italian>
-                <Russian>Этот модуль добавляет компьютерные игры в armaOS. Просто синхронизируйте этот модуль с поддерживаемым компьютером.</Russian>
-                <German>Dieses Modul fügt einem armaOS Computer Spiele hinzu. Synchronisiere einfach dieses Modul mit einem unterstützten Computer.</German>
-                <Chinesesimp>这个模块将游戏添加到armaOS电脑中.只需将这个模块同步到目标电脑上.</Chinesesimp>
-            </Key>
             <Key ID="STR_AE3_ArmaOS_Config_ModuleAddGamesSnakeTooltip">
                 <Original>The 'snake' game. Eat fruits while getting longer and longer. Don't collide with yourself or the walls.</Original>
                 <English>The 'snake' game. Eat fruits while getting longer and longer. Don't collide with yourself or the walls.</English>
@@ -1176,33 +1185,6 @@
                 <German>Das 'snake' Spiel. Iss Früchte während du immer länger wirst. Vermeide mit der Wand oder dir selbst zu kollidieren.</German>
                 <Chinesesimp>The 'snake' game. Eat fruits while getting longer and longer. Don't collide with yourself or the walls.</Chinesesimp>
             </Key>
-            <Key ID="STR_AE3_ArmaOS_Config_ModuleAddSecurityCommandsCrackTooltip">
-                <Original>The 'crack' command allows you to crack encrypted messages.</Original>
-                <English>The 'crack' command allows you to crack encrypted messages.</English>
-                <French>La commande 'crack' vous permet de cracker des messages cryptés.</French>
-                <Italian>Il comando 'crack' permettte di craccare messaggi cryptati.</Italian>
-                <Russian>Команда "взломать" позволяет вам взламывать зашифрованные сообщения.</Russian>
-                <German>Der 'crack' Befehl ermöglicht verschlüsselte Nachrichten zu knacken.</German>
-                <Chinesesimp>'crack'命令能让你破解加密的信息.</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_Config_ModuleAddSecurityCommandsCryptoTooltip">
-                <Original>The 'crypto' command allows you to encrypt and decrypt messages.</Original>
-                <English>The 'crypto' command allows you to encrypt and decrypt messages.</English>
-                <French>La commande 'crypto' permet de chiffrer et de déchiffrer les messages.</French>
-                <Italian>Il comando 'crypto' permette di criptare e decryptare messaggi.</Italian>
-                <Russian>Команда "crypto" позволяет вам шифровать и расшифровывать сообщения.</Russian>
-                <German>Der 'crypto' Befehl ermöglicht Nachrichten zu ver- und entschlüsseln.</German>
-                <Chinesesimp>'crypto' 命令能让你对信息进行加密和解密.</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_Config_ModuleAddSecurityCommandsDescription">
-                <Original>This module adds security commands to an armaOS computer. Simply sync this module to a supported computer.</Original>
-                <English>This module adds security commands to an armaOS computer. Simply sync this module to a supported computer.</English>
-                <French>Ce module ajoute des commandes de sécurité à un ordinateur armaOS. Synchronisez simplement ce module avec un ordinateur pris en charge.</French>
-                <Italian>Questo modulo aggiunge comandi di security ad un computer armaOS. Semplicemente sincronizza il modulo con un computer supportato.</Italian>
-                <Russian>Этот модуль добавляет команды безопасности к компьютеру armaOS. Просто синхронизируйте этот модуль с поддерживаемым компьютером.</Russian>
-                <German>Dieses Modul fügt Security-Befehle zu einem armaOS Computer hinzu. Synchronisiere einfach dieses Modul mit einem unterstützten Computer.</German>
-                <Chinesesimp>这个模块将安全指令添加到armaOS电脑中.只需将这个模块同步到目标电脑上.</Chinesesimp>
-            </Key>
             <Key ID="STR_AE3_ArmaOS_Config_ModuleAddUserDescription">
                 <Original>This module defines users for an armaOS computer. Simply sync one or more of these modules to a supported computer.</Original>
                 <English>This module defines users for an armaOS computer. Simply sync one or more of these modules to a supported computer.</English>
@@ -1211,6 +1193,14 @@
                 <Russian>Этот модуль определяет пользователей для компьютера с armaOS. Просто синхронизируйте один или несколько из этих модулей с поддерживаемым компьютером.</Russian>
                 <German>Dieses Modul definiert Benutzer für einen armaOS Computer. Synchronisiere einfach ein oder mehrere dieser Module mit einem unterstützten Computer.</German>
                 <Chinesesimp>此模块定义armaOS计算机的用户.只需将这些模块中的一个或多个同步到指定的计算机.</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_ArmaOS_Config_ModuleRestoreLaptopDescription">
+                <Original>Overwrites the synced laptop with the data stored under the named save slot, replacing a laptop that was lost or disabled.</Original>
+                <English>Overwrites the synced laptop with the data stored under the named save slot, replacing a laptop that was lost or disabled.</English>
+            </Key>
+            <Key ID="STR_AE3_ArmaOS_Config_ModuleSaveLaptopDescription">
+                <Original>Captures all of the synced laptop's data (files, users, calendar, emails, network settings) into the named save slot.</Original>
+                <English>Captures all of the synced laptop's data (files, users, calendar, emails, network settings) into the named save slot.</English>
             </Key>
             <Key ID="STR_AE3_ArmaOS_Config_PasswordDisplayName">
                 <Original>Password</Original>
@@ -1229,6 +1219,22 @@
                 <Russian>Пароль для авторизации пользователя, например '123456', 'password' или 'Qf5:xxR12#fTG'</Russian>
                 <German>Kennwort eines authorisierten Benutzers, zum Beispiel '123456', 'password' oder 'Qf5:xxR12#fTG'</German>
                 <Chinesesimp>授权用户的密码,例如'114514','password'或'Qf5:xxR12#fTG'</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_ArmaOS_Config_RestoreLaptopDisplayName">
+                <Original>AE3: Restore Laptop</Original>
+                <English>AE3: Restore Laptop</English>
+            </Key>
+            <Key ID="STR_AE3_ArmaOS_Config_SaveLaptopDisplayName">
+                <Original>AE3: Save Laptop</Original>
+                <English>AE3: Save Laptop</English>
+            </Key>
+            <Key ID="STR_AE3_ArmaOS_Config_SaveSlotDisplayName">
+                <Original>Save Slot</Original>
+                <English>Save Slot</English>
+            </Key>
+            <Key ID="STR_AE3_ArmaOS_Config_SaveSlotTooltip">
+                <Original>Name of the slot the laptop snapshot is stored under. Use the same name on the Restore Laptop module.</Original>
+                <English>Name of the slot the laptop snapshot is stored under. Use the same name on the Restore Laptop module.</English>
             </Key>
             <Key ID="STR_AE3_ArmaOS_Config_UseDisplayName">
                 <Original>Use</Original>
@@ -1257,569 +1263,247 @@
                 <German>Name eines authorisierten Benutzers, zum Beispiel 'admin', 'guest' oder 'stavros'</German>
                 <Chinesesimp>授权用户的名称,例如'admin','guest'或'stavros'.</Chinesesimp>
             </Key>
-        </Container>
-        <Container name="Crack">
-            <Key ID="STR_AE3_ArmaOS_Crack_ErrorModeExample">
-                <Original>Example: crack -m=bruteforce -a=caesar input.txt</Original>
-                <English>Example: crack -m=bruteforce -a=caesar input.txt</English>
-                <French>Exemple: crack -m=bruteforce -a=caesar input.txt</French>
-                <Italian>Esempio: crack -m=bruteforce -a=caesar input.txt</Italian>
-                <Russian>Пример: crack -m=bruteforce -a=caesar input.txt</Russian>
-                <German>Beispiel: crack -m=bruteforce -a=caesar input.txt</German>
-                <Chinesesimp>示例: crack -m=bruteforce -a=caesar input.txt</Chinesesimp>
+            <Key ID="STR_AE3_ArmaOS_EdenAttributes_GuiModeDisplayName">
+                <Original>Interface (CLI / GUI / Both)</Original>
+                <English>Interface (CLI / GUI / Both)</English>
+                <French>Interface (CLI / GUI / Les deux)</French>
+                <Italian>Interfaccia (CLI / GUI / Entrambe)</Italian>
+                <Russian>Interface (CLI / GUI / Both)</Russian>
+                <German>Oberfläche (CLI / GUI / Beide)</German>
+                <Chinesesimp>界面(CLI / GUI / 两者)</Chinesesimp>
             </Key>
-            <Key ID="STR_AE3_ArmaOS_Crack_ErrorModeRequired">
-                <Original>Error: Mode (-m) is required. Use 'bruteforce', 'statistics', or 'key'.</Original>
-                <English>Error: Mode (-m) is required. Use 'bruteforce', 'statistics', or 'key'.</English>
-                <French>Erreur: Le mode (-m) est requis. Utilisez 'bruteforce', 'statistics' ou 'key'.</French>
-                <Italian>Errore: La modalità (-m) è richiesta. Usa 'bruteforce', 'statistics' o 'key'.</Italian>
-                <Russian>Ошибка: Требуется режим (-m). Используйте 'bruteforce', 'statistics' или 'key'.</Russian>
-                <German>Fehler: Modus (-m) ist erforderlich. Verwende 'bruteforce', 'statistics' oder 'key'.</German>
-                <Chinesesimp>错误: 模式 (-m) 必需.使用 'bruteforce', 'statistics' 或 'key'.</Chinesesimp>
+            <Key ID="STR_AE3_ArmaOS_EdenAttributes_GuiModeTooltip">
+                <Original>Which interfaces this laptop offers. Default uses the AE3_Desktop_DefaultMode CBA setting. Per-player access is controlled by the mission maker (AE3_desktop_fnc_setInterfaceAccess).</Original>
+                <English>Which interfaces this laptop offers. Default uses the AE3_Desktop_DefaultMode CBA setting. Per-player access is controlled by the mission maker (AE3_desktop_fnc_setInterfaceAccess).</English>
+                <French>Interfaces offertes par cet ordinateur. Default utilise le paramètre CBA AE3_Desktop_DefaultMode. L'accès par joueur est contrôlé par le créateur de mission.</French>
+                <Italian>Quali interfacce offre questo laptop. Default usa l'impostazione CBA AE3_Desktop_DefaultMode. L'accesso per giocatore è controllato dal mission maker.</Italian>
+                <Russian>Which interfaces this laptop offers. Default uses the AE3_Desktop_DefaultMode CBA setting.</Russian>
+                <German>Welche Oberflächen dieser Laptop anbietet. Default nutzt die CBA-Einstellung AE3_Desktop_DefaultMode. Der Zugriff pro Spieler wird vom Missionsbauer gesteuert.</German>
+                <Chinesesimp>此笔记本电脑提供的界面.Default使用AE3_Desktop_DefaultMode CBA设置.每个玩家的访问权限由任务制作者控制.</Chinesesimp>
             </Key>
-            <Key ID="STR_AE3_ArmaOS_Crack_HelpAlgoCaesar">
-                <Original>caesar    - Caesar cipher</Original>
-                <English>caesar - Caesar cipher</English>
-                <French>caesar - Chiffrement de César</French>
-                <Italian>caesar - Cifrario di Cesare</Italian>
-                <Russian>caesar - Шифр Цезаря</Russian>
-                <German>caesar - Caesar-Verschlüsselung</German>
-                <Chinesesimp>caesar - 凯撒密码</Chinesesimp>
+            <Key ID="STR_AE3_ArmaOS_EdenAttributes_ModeBoth">
+                <Original>Both (CLI + GUI)</Original>
+                <English>Both (CLI + GUI)</English>
+                <French>Les deux (CLI + GUI)</French>
+                <Italian>Entrambe (CLI + GUI)</Italian>
+                <Russian>Both (CLI + GUI)</Russian>
+                <German>Beide (CLI + GUI)</German>
+                <Chinesesimp>两者(CLI + GUI)</Chinesesimp>
             </Key>
-            <Key ID="STR_AE3_ArmaOS_Crack_HelpAlgoColumnar">
-                <Original>columnar  - Columnar transposition</Original>
-                <English>columnar - Columnar transposition</English>
-                <French>columnar - Transposition en colonnes</French>
-                <Italian>columnar - Trasposizione a colonne</Italian>
-                <Russian>columnar - Столбцовая перестановка</Russian>
-                <German>columnar - Spaltentransposition</German>
-                <Chinesesimp>columnar - 列移位密码</Chinesesimp>
+            <Key ID="STR_AE3_ArmaOS_EdenAttributes_ModeDefault">
+                <Original>Default (CBA setting)</Original>
+                <English>Default (CBA setting)</English>
+                <French>Défaut (paramètre CBA)</French>
+                <Italian>Predefinito (impostazione CBA)</Italian>
+                <Russian>Default (CBA setting)</Russian>
+                <German>Standard (CBA-Einstellung)</German>
+                <Chinesesimp>默认(CBA设置)</Chinesesimp>
             </Key>
-            <Key ID="STR_AE3_ArmaOS_Crack_HelpAlgorithms">
-                <Original>Algorithms:</Original>
-                <English>Algorithms:</English>
-                <French>Algorithmes:</French>
-                <Italian>Algoritmi:</Italian>
-                <Russian>Алгоритмы:</Russian>
-                <German>Algorithmen:</German>
-                <Chinesesimp>算法:</Chinesesimp>
+            <Key ID="STR_AE3_ArmaOS_EdenAttributes_StaticIpDisplayName">
+                <Original>Static IP (blank = DHCP)</Original>
+                <English>Static IP (blank = DHCP)</English>
             </Key>
-            <Key ID="STR_AE3_ArmaOS_Crack_HelpDescription">
-                <Original>Description:</Original>
-                <English>Description:</English>
-                <French>Description:</French>
-                <Italian>Descrizione:</Italian>
-                <Russian>Описание:</Russian>
-                <German>Beschreibung:</German>
-                <Chinesesimp>描述:</Chinesesimp>
+            <Key ID="STR_AE3_ArmaOS_EdenAttributes_StaticIpTooltip">
+                <Original>Assign a fixed IP address. Leave blank to use DHCP from the connected router. Format: 192.168.1.5</Original>
+                <English>Assign a fixed IP address. Leave blank to use DHCP from the connected router. Format: 192.168.1.5</English>
             </Key>
-            <Key ID="STR_AE3_ArmaOS_Crack_HelpDescriptionText">
-                <Original>Decrypt encrypted text without knowing the key using various cryptanalysis methods.</Original>
-                <English>Decrypt encrypted text without knowing the key using various cryptanalysis methods.</English>
-                <French>Déchiffrer du texte chiffré sans connaître la clé en utilisant diverses méthodes de cryptanalyse.</French>
-                <Italian>Decripta testo cifrato senza conoscere la chiave usando vari metodi di crittoanalisi.</Italian>
-                <Russian>Расшифровка зашифрованного текста без знания ключа с использованием различных методов криптоанализа.</Russian>
-                <German>Entschlüssele verschlüsselten Text ohne Kenntnis des Schlüssels unter Verwendung verschiedener Kryptoanalyse-Methoden.</German>
-                <Chinesesimp>使用各种密码分析方法在不知道密钥的情况下解密加密文本.</Chinesesimp>
+            <Key ID="STR_AE3_ArmaOS_Msg_Sent">
+                <Original>Message sent to %1</Original>
+                <English>Message sent to %1</English>
+                <French>Message envoyé à %1</French>
+                <Italian>Messaggio inviato a %1</Italian>
+                <Russian>Message sent to %1</Russian>
+                <German>Nachricht gesendet an %1</German>
+                <Chinesesimp>消息已发送至%1</Chinesesimp>
             </Key>
-            <Key ID="STR_AE3_ArmaOS_Crack_HelpExample1">
-                <Original>  crack -m=bruteforce -a=caesar encrypted.txt</Original>
-                <English>  crack -m=bruteforce -a=caesar encrypted.txt</English>
-                <French>  crack -m=bruteforce -a=caesar encrypted.txt</French>
-                <Italian>  crack -m=bruteforce -a=caesar encrypted.txt</Italian>
-                <Russian>  crack -m=bruteforce -a=caesar encrypted.txt</Russian>
-                <German>  crack -m=bruteforce -a=caesar encrypted.txt</German>
-                <Chinesesimp>  crack -m=bruteforce -a=caesar encrypted.txt</Chinesesimp>
+            <Key ID="STR_AE3_ArmaOS_Result_Gateway">
+                <Original>Default Gateway: %1</Original>
+                <English>Default Gateway: %1</English>
+                <French>Passerelle par défaut : %1</French>
+                <Italian>Gateway predefinito: %1</Italian>
+                <Russian>Default Gateway: %1</Russian>
+                <German>Standardgateway: %1</German>
+                <Chinesesimp>默认网关: %1</Chinesesimp>
             </Key>
-            <Key ID="STR_AE3_ArmaOS_Crack_HelpExample2">
-                <Original>  crack -m=statistics -a=caesar "KHOOR ZRUOG"</Original>
-                <English>  crack -m=statistics -a=caesar "KHOOR ZRUOG"</English>
-                <French>  crack -m=statistics -a=caesar "KHOOR ZRUOG"</French>
-                <Italian>  crack -m=statistics -a=caesar "KHOOR ZRUOG"</Italian>
-                <Russian>  crack -m=statistics -a=caesar "KHOOR ZRUOG"</Russian>
-                <German>  crack -m=statistics -a=caesar "KHOOR ZRUOG"</German>
-                <Chinesesimp>  crack -m=statistics -a=caesar "KHOOR ZRUOG"</Chinesesimp>
+            <Key ID="STR_AE3_ArmaOS_Result_NoGateway">
+                <Original>No gateway configured</Original>
+                <English>No gateway configured</English>
+                <French>Aucune passerelle configurée</French>
+                <Italian>Nessun gateway configurato</Italian>
+                <Russian>No gateway configured</Russian>
+                <German>Kein Gateway konfiguriert</German>
+                <Chinesesimp>未配置网关</Chinesesimp>
             </Key>
-            <Key ID="STR_AE3_ArmaOS_Crack_HelpExample3">
-                <Original>  crack -m=key -a=columnar encrypted.txt</Original>
-                <English>  crack -m=key -a=columnar encrypted.txt</English>
-                <French>  crack -m=key -a=columnar encrypted.txt</French>
-                <Italian>  crack -m=key -a=columnar encrypted.txt</Italian>
-                <Russian>  crack -m=key -a=columnar encrypted.txt</Russian>
-                <German>  crack -m=key -a=columnar encrypted.txt</German>
-                <Chinesesimp>  crack -m=key -a=columnar encrypted.txt</Chinesesimp>
+            <Key ID="STR_AE3_ArmaOS_Ssh_AlreadyConnected">
+                <Original>ssh: a session is already active - end it with 'exit' first</Original>
+                <English>ssh: a session is already active - end it with 'exit' first</English>
+                <French>ssh : une session est déjà active - terminez-la d'abord avec 'exit'</French>
+                <Italian>ssh: una sessione è già attiva - terminala prima con 'exit'</Italian>
+                <Russian>ssh: a session is already active - end it with 'exit' first</Russian>
+                <German>ssh: Es ist bereits eine Sitzung aktiv - zuerst mit 'exit' beenden</German>
+                <Chinesesimp>ssh: 会话已激活 - 请先使用'exit'结束</Chinesesimp>
             </Key>
-            <Key ID="STR_AE3_ArmaOS_Crack_HelpExample4">
-                <Original>  crack -m=bruteforce -a=columnar -o=results.txt /tmp/secret.txt</Original>
-                <English>  crack -m=bruteforce -a=columnar -o=results.txt /tmp/secret.txt</English>
-                <French>  crack -m=bruteforce -a=columnar -o=results.txt /tmp/secret.txt</French>
-                <Italian>  crack -m=bruteforce -a=columnar -o=results.txt /tmp/secret.txt</Italian>
-                <Russian>  crack -m=bruteforce -a=columnar -o=results.txt /tmp/secret.txt</Russian>
-                <German>  crack -m=bruteforce -a=columnar -o=results.txt /tmp/secret.txt</German>
-                <Chinesesimp>  crack -m=bruteforce -a=columnar -o=results.txt /tmp/secret.txt</Chinesesimp>
+            <Key ID="STR_AE3_ArmaOS_Ssh_AuthFailed">
+                <Original>ssh: authentication failed for %1@%2</Original>
+                <English>ssh: authentication failed for %1@%2</English>
+                <French>ssh : échec de l'authentification pour %1@%2</French>
+                <Italian>ssh: autenticazione fallita per %1@%2</Italian>
+                <Russian>ssh: authentication failed for %1@%2</Russian>
+                <German>ssh: Authentifizierung fehlgeschlagen für %1@%2</German>
+                <Chinesesimp>ssh: %1@%2认证失败</Chinesesimp>
             </Key>
-            <Key ID="STR_AE3_ArmaOS_Crack_HelpExamples">
-                <Original>Examples:</Original>
-                <English>Examples:</English>
-                <French>Exemples:</French>
-                <Italian>Esempi:</Italian>
-                <Russian>Примеры:</Russian>
-                <German>Beispiele:</German>
-                <Chinesesimp>示例:</Chinesesimp>
+            <Key ID="STR_AE3_ArmaOS_Ssh_CommandBlocked">
+                <Original>%1: cannot be run over ssh (interactive program)</Original>
+                <English>%1: cannot be run over ssh (interactive program)</English>
+                <French>%1 : ne peut pas être exécuté via ssh (programme interactif)</French>
+                <Italian>%1: non può essere eseguito via ssh (programma interattivo)</Italian>
+                <Russian>%1: cannot be run over ssh (interactive program)</Russian>
+                <German>%1: kann nicht über ssh ausgeführt werden (interaktives Programm)</German>
+                <Chinesesimp>%1: 无法通过ssh运行(交互式程序)</Chinesesimp>
             </Key>
-            <Key ID="STR_AE3_ArmaOS_Crack_HelpModeBruteforce">
-                <Original>bruteforce  - Try all possible keys</Original>
-                <English>bruteforce - Try all possible keys</English>
-                <French>bruteforce - Essayer toutes les clés possibles</French>
-                <Italian>bruteforce - Prova tutte le chiavi possibili</Italian>
-                <Russian>bruteforce - Попробовать все возможные ключи</Russian>
-                <German>bruteforce - Alle möglichen Schlüssel ausprobieren</German>
-                <Chinesesimp>bruteforce - 尝试所有可能的密钥</Chinesesimp>
+            <Key ID="STR_AE3_ArmaOS_Ssh_Connected">
+                <Original>Connected as %1@%2 - end the session with 'exit'</Original>
+                <English>Connected as %1@%2 - end the session with 'exit'</English>
+                <French>Connecté en tant que %1@%2 - terminez la session avec 'exit'</French>
+                <Italian>Connesso come %1@%2 - termina la sessione con 'exit'</Italian>
+                <Russian>Connected as %1@%2 - end the session with 'exit'</Russian>
+                <German>Verbunden als %1@%2 - Sitzung mit 'exit' beenden</German>
+                <Chinesesimp>已连接为%1@%2 - 使用'exit'结束会话</Chinesesimp>
             </Key>
-            <Key ID="STR_AE3_ArmaOS_Crack_HelpModeKey">
-                <Original>key         - Find possible key lengths (columnar only)</Original>
-                <English>key - Find possible key lengths (columnar only)</English>
-                <French>key - Trouver les longueurs de clé possibles (columnar uniquement)</French>
-                <Italian>key - Trova lunghezze chiave possibili (solo columnar)</Italian>
-                <Russian>key - Найти возможные длины ключа (только для columnar)</Russian>
-                <German>key - Mögliche Schlüssellängen finden (nur columnar)</German>
-                <Chinesesimp>key - 查找可能的密钥长度 (仅 columnar)</Chinesesimp>
+            <Key ID="STR_AE3_ArmaOS_Ssh_ConnectionClosed">
+                <Original>Connection closed.</Original>
+                <English>Connection closed.</English>
+                <French>Connexion fermée.</French>
+                <Italian>Connessione chiusa.</Italian>
+                <Russian>Connection closed.</Russian>
+                <German>Verbindung geschlossen.</German>
+                <Chinesesimp>连接已关闭.</Chinesesimp>
             </Key>
-            <Key ID="STR_AE3_ArmaOS_Crack_HelpModeStatistics">
-                <Original>statistics  - Use frequency analysis</Original>
-                <English>statistics - Use frequency analysis</English>
-                <French>statistics - Utiliser l'analyse de fréquence</French>
-                <Italian>statistics - Usa analisi di frequenza</Italian>
-                <Russian>statistics - Использовать частотный анализ</Russian>
-                <German>statistics - Häufigkeitsanalyse verwenden</German>
-                <Chinesesimp>statistics - 使用频率分析</Chinesesimp>
+            <Key ID="STR_AE3_ArmaOS_Ssh_ConnectionLost">
+                <Original>Connection to %1 closed by remote host.</Original>
+                <English>Connection to %1 closed by remote host.</English>
             </Key>
-            <Key ID="STR_AE3_ArmaOS_Crack_HelpModes">
-                <Original>Modes:</Original>
-                <English>Modes:</English>
-                <French>Modes:</French>
-                <Italian>Modalità:</Italian>
-                <Russian>Режимы:</Russian>
-                <German>Modi:</German>
-                <Chinesesimp>模式:</Chinesesimp>
+            <Key ID="STR_AE3_ArmaOS_Ssh_ConnectionRefused">
+                <Original>ssh: connect to host %1: Connection refused</Original>
+                <English>ssh: connect to host %1: Connection refused</English>
+                <French>ssh : connexion à l'hôte %1 : connexion refusée</French>
+                <Italian>ssh: connessione a %1: connessione rifiutata</Italian>
+                <Russian>ssh: connect to host %1: Connection refused</Russian>
+                <German>ssh: Verbindung zu Host %1: Verbindung abgelehnt</German>
+                <Chinesesimp>ssh: 连接主机%1: 连接被拒绝</Chinesesimp>
             </Key>
-            <Key ID="STR_AE3_ArmaOS_Crack_HelpNote">
-                <Original>Note:</Original>
-                <English>Note:</English>
-                <French>Remarque:</French>
-                <Italian>Nota:</Italian>
-                <Russian>Примечание:</Russian>
-                <German>Hinweis:</German>
-                <Chinesesimp>注意:</Chinesesimp>
+            <Key ID="STR_AE3_ArmaOS_Ssh_InvalidAddress">
+                <Original>Invalid address: %1</Original>
+                <English>Invalid address: %1</English>
+                <French>Adresse invalide : %1</French>
+                <Italian>Indirizzo non valido: %1</Italian>
+                <Russian>Invalid address: %1</Russian>
+                <German>Ungültige Adresse: %1</German>
+                <Chinesesimp>无效地址: %1</Chinesesimp>
             </Key>
-            <Key ID="STR_AE3_ArmaOS_Crack_HelpNote1">
-                <Original>- Bruteforce mode tries all possible keys (can be slow)</Original>
-                <English>- Bruteforce mode tries all possible keys (can be slow)</English>
-                <French>- Le mode bruteforce essaie toutes les clés possibles (peut être lent)</French>
-                <Italian>- La modalità bruteforce prova tutte le chiavi possibili (può essere lento)</Italian>
-                <Russian>- Режим bruteforce пробует все возможные ключи (может быть медленным)</Russian>
-                <German>- Bruteforce-Modus probiert alle möglichen Schlüssel aus (kann langsam sein)</German>
-                <Chinesesimp>- Bruteforce 模式尝试所有可能的密钥 (可能很慢)</Chinesesimp>
+            <Key ID="STR_AE3_ArmaOS_Ssh_NoRoute">
+                <Original>ssh: connect to host %1: No route to host</Original>
+                <English>ssh: connect to host %1: No route to host</English>
+                <French>ssh : connexion à l'hôte %1 : aucune route vers l'hôte</French>
+                <Italian>ssh: connessione a %1: nessuna rotta verso l'host</Italian>
+                <Russian>ssh: connect to host %1: No route to host</Russian>
+                <German>ssh: Verbindung zu Host %1: Keine Route zum Host</German>
+                <Chinesesimp>ssh: 连接主机%1: 无法路由到主机</Chinesesimp>
             </Key>
-            <Key ID="STR_AE3_ArmaOS_Crack_HelpNote2">
-                <Original>- Statistics mode uses character frequency analysis</Original>
-                <English>- Statistics mode uses character frequency analysis</English>
-                <French>- Le mode statistics utilise l'analyse de fréquence des caractères</French>
-                <Italian>- La modalità statistics usa l'analisi di frequenza dei caratteri</Italian>
-                <Russian>- Режим statistics использует частотный анализ символов</Russian>
-                <German>- Statistics-Modus verwendet Zeichenhäufigkeitsanalyse</German>
-                <Chinesesimp>- Statistics 模式使用字符频率分析</Chinesesimp>
+            <Key ID="STR_AE3_ArmaOS_Ssh_TargetBusy">
+                <Original>ssh: host %1 is busy (terminal in use)</Original>
+                <English>ssh: host %1 is busy (terminal in use)</English>
+                <French>ssh : l'hôte %1 est occupé (terminal utilisé)</French>
+                <Italian>ssh: l'host %1 è occupato (terminale in uso)</Italian>
+                <Russian>ssh: host %1 is busy (terminal in use)</Russian>
+                <German>ssh: Host %1 ist belegt (Terminal in Benutzung)</German>
+                <Chinesesimp>ssh: 主机%1忙碌(终端使用中)</Chinesesimp>
             </Key>
-            <Key ID="STR_AE3_ArmaOS_Crack_HelpNote3">
-                <Original>- Key mode finds possible key lengths for columnar cipher</Original>
-                <English>- Key mode finds possible key lengths for columnar cipher</English>
-                <French>- Le mode key trouve les longueurs de clé possibles pour le chiffrement en colonnes</French>
-                <Italian>- La modalità key trova lunghezze chiave possibili per il cifrario a colonne</Italian>
-                <Russian>- Режим key находит возможные длины ключа для столбцовой перестановки</Russian>
-                <German>- Key-Modus findet mögliche Schlüssellängen für Spaltentransposition</German>
-                <Chinesesimp>- Key 模式查找列移位密码的可能密钥长度</Chinesesimp>
+            <Key ID="STR_AE3_ArmaOS_Ssh_Usage">
+                <Original>usage: ssh USER@IP PASSWORD</Original>
+                <English>usage: ssh USER@IP PASSWORD</English>
+                <French>utilisation : ssh UTILISATEUR@IP MOTDEPASSE</French>
+                <Italian>utilizzo: ssh UTENTE@IP PASSWORD</Italian>
+                <Russian>usage: ssh USER@IP PASSWORD</Russian>
+                <German>Verwendung: ssh BENUTZER@IP PASSWORT</German>
+                <Chinesesimp>用法: ssh 用户@IP 密码</Chinesesimp>
             </Key>
-            <Key ID="STR_AE3_ArmaOS_Crack_HelpNote4">
-                <Original>- Larger messages provide better results for cryptanalysis</Original>
-                <English>- Larger messages provide better results for cryptanalysis</English>
-                <French>- Les messages plus longs fournissent de meilleurs résultats pour la cryptanalyse</French>
-                <Italian>- Messaggi più grandi forniscono risultati migliori per la crittoanalisi</Italian>
-                <Russian>- Большие сообщения дают лучшие результаты для криптоанализа</Russian>
-                <German>- Größere Nachrichten liefern bessere Ergebnisse für die Kryptoanalyse</German>
-                <Chinesesimp>- 较大的消息为密码分析提供更好的结果</Chinesesimp>
+            <Key ID="STR_AE3_ArmaOS_Sudo_NotInSudoers">
+                <Original>%1 is not in the sudoers file. This incident will be reported.</Original>
+                <English>%1 is not in the sudoers file. This incident will be reported.</English>
+                <French>%1 n'est pas dans le fichier sudoers. Cet incident sera signalé.</French>
+                <Italian>%1 non è nel file sudoers. L'incidente verrà segnalato.</Italian>
+                <Russian>%1 is not in the sudoers file. This incident will be reported.</Russian>
+                <German>%1 ist nicht in der sudoers-Datei. Dieser Vorfall wird gemeldet.</German>
+                <Chinesesimp>%1不在sudoers文件中.此事件将被报告.</Chinesesimp>
             </Key>
-            <Key ID="STR_AE3_ArmaOS_Crack_HelpParamAlgorithm">
-                <Original>-a &lt;algorithm&gt; - Encryption algorithm (default: caesar)</Original>
-                <English>-a &lt;algorithm&gt; - Encryption algorithm (default: caesar)</English>
-                <French>-a &lt;algorithme&gt; - Algorithme de chiffrement (par défaut: caesar)</French>
-                <Italian>-a &lt;algoritmo&gt; - Algoritmo di cifratura (predefinito: caesar)</Italian>
-                <Russian>-a &lt;алгоритм&gt; - Алгоритм шифрования (по умолчанию: caesar)</Russian>
-                <German>-a &lt;Algorithmus&gt; - Verschlüsselungsalgorithmus (Standard: caesar)</German>
-                <Chinesesimp>-a &lt;算法&gt; - 加密算法 (默认: caesar)</Chinesesimp>
+            <Key ID="STR_AE3_ArmaOS_Sudo_Usage">
+                <Original>usage: sudo COMMAND ARGS...</Original>
+                <English>usage: sudo COMMAND ARGS...</English>
+                <French>utilisation : sudo COMMANDE ARGS...</French>
+                <Italian>utilizzo: sudo COMANDO ARG...</Italian>
+                <Russian>usage: sudo COMMAND ARGS...</Russian>
+                <German>Verwendung: sudo BEFEHL ARGS...</German>
+                <Chinesesimp>用法: sudo 命令 参数...</Chinesesimp>
             </Key>
-            <Key ID="STR_AE3_ArmaOS_Crack_HelpParamInput">
-                <Original>&lt;input&gt;        - Input file path or quoted string (required)</Original>
-                <English>&lt;input&gt; - Input file path or quoted string (required)</English>
-                <French>&lt;entrée&gt; - Chemin du fichier d'entrée ou chaîne entre guillemets (requis)</French>
-                <Italian>&lt;input&gt; - Percorso file input o stringa tra virgolette (richiesto)</Italian>
-                <Russian>&lt;ввод&gt; - Путь к входному файлу или строка в кавычках (обязательно)</Russian>
-                <German>&lt;Eingabe&gt; - Pfad zur Eingabedatei oder String in Anführungszeichen (erforderlich)</German>
-                <Chinesesimp>&lt;输入&gt; - 输入文件路径或引号字符串 (必需)</Chinesesimp>
+            <Key ID="STR_AE3_ArmaOS_Transfer_Done">
+                <Original>Transfer complete</Original>
+                <English>Transfer complete</English>
+                <French>Transfert terminé</French>
+                <Italian>Trasferimento completato</Italian>
+                <Russian>Transfer complete</Russian>
+                <German>Übertragung abgeschlossen</German>
+                <Chinesesimp>传输完成</Chinesesimp>
             </Key>
-            <Key ID="STR_AE3_ArmaOS_Crack_HelpParamMode">
-                <Original>-m &lt;mode&gt;      - Crack mode: bruteforce, statistics, or key (required)</Original>
-                <English>-m &lt;mode&gt; - Crack mode: bruteforce, statistics, or key (required)</English>
-                <French>-m &lt;mode&gt; - Mode crack: bruteforce, statistics ou key (requis)</French>
-                <Italian>-m &lt;modalità&gt; - Modalità crack: bruteforce, statistics o key (richiesto)</Italian>
-                <Russian>-m &lt;режим&gt; - Режим взлома: bruteforce, statistics или key (обязательно)</Russian>
-                <German>-m &lt;Modus&gt; - Crack-Modus: bruteforce, statistics oder key (erforderlich)</German>
-                <Chinesesimp>-m &lt;模式&gt; - 破解模式: bruteforce, statistics 或 key (必需)</Chinesesimp>
+            <Key ID="STR_AE3_ArmaOS_Transfer_Started">
+                <Original>Transferring %1 KB at %2 KB/s ...</Original>
+                <English>Transferring %1 KB at %2 KB/s ...</English>
+                <French>Transfert de %1 Ko à %2 Ko/s ...</French>
+                <Italian>Trasferimento di %1 KB a %2 KB/s ...</Italian>
+                <Russian>Transferring %1 KB at %2 KB/s ...</Russian>
+                <German>Übertrage %1 KB mit %2 KB/s ...</German>
+                <Chinesesimp>正在以%2 KB/s传输%1 KB ...</Chinesesimp>
             </Key>
-            <Key ID="STR_AE3_ArmaOS_Crack_HelpParamOutput">
-                <Original>-o &lt;output&gt;    - Save output to file (optional)</Original>
-                <English>-o &lt;output&gt; - Save output to file (optional)</English>
-                <French>-o &lt;sortie&gt; - Enregistrer la sortie dans un fichier (optionnel)</French>
-                <Italian>-o &lt;output&gt; - Salva output su file (opzionale)</Italian>
-                <Russian>-o &lt;вывод&gt; - Сохранить результат в файл (необязательно)</Russian>
-                <German>-o &lt;Ausgabe&gt; - Ausgabe in Datei speichern (optional)</German>
-                <Chinesesimp>-o &lt;输出&gt; - 将输出保存到文件 (可选)</Chinesesimp>
+            <Key ID="STR_AE3_ArmaOS_Unlock_LockedNotice">
+                <Original>%1: password protected - use: unlock %1 PASSWORD</Original>
+                <English>%1: password protected - use: unlock %1 PASSWORD</English>
+                <French>%1 : protégé par mot de passe - utilisez : unlock %1 MOTDEPASSE</French>
+                <Italian>%1: protetto da password - usa: unlock %1 PASSWORD</Italian>
+                <Russian>%1: password protected - use: unlock %1 PASSWORD</Russian>
+                <German>%1: passwortgeschützt - verwenden: unlock %1 PASSWORT</German>
+                <Chinesesimp>%1: 受密码保护 - 使用: unlock %1 密码</Chinesesimp>
             </Key>
-            <Key ID="STR_AE3_ArmaOS_Crack_HelpParameters">
-                <Original>Parameters:</Original>
-                <English>Parameters:</English>
-                <French>Paramètres:</French>
-                <Italian>Parametri:</Italian>
-                <Russian>Параметры:</Russian>
-                <German>Parameter:</German>
-                <Chinesesimp>参数:</Chinesesimp>
+            <Key ID="STR_AE3_ArmaOS_Unlock_NotLocked">
+                <Original>%1 is not password protected</Original>
+                <English>%1 is not password protected</English>
+                <French>%1 n'est pas protégé par mot de passe</French>
+                <Italian>%1 non è protetto da password</Italian>
+                <Russian>%1 is not password protected</Russian>
+                <German>%1 ist nicht passwortgeschützt</German>
+                <Chinesesimp>%1未受密码保护</Chinesesimp>
             </Key>
-            <Key ID="STR_AE3_ArmaOS_Crack_HelpSyntax">
-                <Original>Syntax:</Original>
-                <English>Syntax:</English>
-                <French>Syntaxe:</French>
-                <Italian>Sintassi:</Italian>
-                <Russian>Синтаксис:</Russian>
-                <German>Syntax:</German>
-                <Chinesesimp>语法:</Chinesesimp>
+            <Key ID="STR_AE3_ArmaOS_Unlock_Permanent">
+                <Original>%1 unlocked permanently</Original>
+                <English>%1 unlocked permanently</English>
+                <French>%1 déverrouillé définitivement</French>
+                <Italian>%1 sbloccato definitivamente</Italian>
+                <Russian>%1 unlocked permanently</Russian>
+                <German>%1 dauerhaft entsperrt</German>
+                <Chinesesimp>%1已永久解锁</Chinesesimp>
             </Key>
-            <Key ID="STR_AE3_ArmaOS_Crack_HelpSyntaxText">
-                <Original>crack -m &lt;mode&gt; [-a &lt;algorithm&gt;] [-o &lt;output&gt;] &lt;input&gt;</Original>
-                <English>crack -m &lt;mode&gt; [-a &lt;algorithm&gt;] [-o &lt;output&gt;] &lt;input&gt;</English>
-                <French>crack -m &lt;mode&gt; [-a &lt;algorithme&gt;] [-o &lt;sortie&gt;] &lt;entrée&gt;</French>
-                <Italian>crack -m &lt;modalità&gt; [-a &lt;algoritmo&gt;] [-o &lt;output&gt;] &lt;input&gt;</Italian>
-                <Russian>crack -m &lt;режим&gt; [-a &lt;алгоритм&gt;] [-o &lt;вывод&gt;] &lt;ввод&gt;</Russian>
-                <German>crack -m &lt;Modus&gt; [-a &lt;Algorithmus&gt;] [-o &lt;Ausgabe&gt;] &lt;Eingabe&gt;</German>
-                <Chinesesimp>crack -m &lt;模式&gt; [-a &lt;算法&gt;] [-o &lt;输出&gt;] &lt;输入&gt;</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_Crack_HelpTitle">
-                <Original>CRACK COMMAND HELP</Original>
-                <English>CRACK COMMAND HELP</English>
-                <French>AIDE COMMANDE CRACK</French>
-                <Italian>AIUTO COMANDO CRACK</Italian>
-                <Russian>СПРАВКА КОМАНДЫ CRACK</Russian>
-                <German>CRACK BEFEHL HILFE</German>
-                <Chinesesimp>CRACK 命令帮助</Chinesesimp>
+            <Key ID="STR_AE3_ArmaOS_Unlock_WrongPassword">
+                <Original>unlock: wrong password. This incident will be reported.</Original>
+                <English>unlock: wrong password. This incident will be reported.</English>
+                <French>unlock : mot de passe incorrect. Cet incident sera signalé.</French>
+                <Italian>unlock: password errata. L'incidente verrà segnalato.</Italian>
+                <Russian>unlock: wrong password. This incident will be reported.</Russian>
+                <German>unlock: falsches Passwort. Dieser Vorfall wird gemeldet.</German>
+                <Chinesesimp>unlock: 密码错误.此事件将被报告.</Chinesesimp>
             </Key>
         </Container>
-        <Container name="Crypto">
-            <Key ID="STR_AE3_ArmaOS_Crypto_ErrorModeExample">
-                <Original>Example: crypto -m=encrypt -k 3 input.txt</Original>
-                <English>Example: crypto -m=encrypt -k 3 input.txt</English>
-                <French>Exemple: crypto -m=encrypt -k 3 input.txt</French>
-                <Italian>Esempio: crypto -m=encrypt -k 3 input.txt</Italian>
-                <Russian>Пример: crypto -m=encrypt -k 3 input.txt</Russian>
-                <German>Beispiel: crypto -m=encrypt -k 3 input.txt</German>
-                <Chinesesimp>示例: crypto -m=encrypt -k 3 input.txt</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_Crypto_ErrorModeRequired">
-                <Original>Error: Mode (-m) is required. Use 'encrypt' or 'decrypt'.</Original>
-                <English>Error: Mode (-m) is required. Use 'encrypt' or 'decrypt'.</English>
-                <French>Erreur: Le mode (-m) est requis. Utilisez 'encrypt' ou 'decrypt'.</French>
-                <Italian>Errore: La modalità (-m) è richiesta. Usa 'encrypt' o 'decrypt'.</Italian>
-                <Russian>Ошибка: Требуется режим (-m). Используйте 'encrypt' или 'decrypt'.</Russian>
-                <German>Fehler: Modus (-m) ist erforderlich. Verwende 'encrypt' oder 'decrypt'.</German>
-                <Chinesesimp>错误: 模式 (-m) 必需.使用 'encrypt' 或 'decrypt'.</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_Crypto_HelpAlgoCaesar">
-                <Original>caesar    - Caesar cipher (key: integer shift value)</Original>
-                <English>caesar    - Caesar cipher (key: integer shift value)</English>
-                <French>caesar    - Chiffrement de César (clé: valeur de décalage entière)</French>
-                <Italian>caesar    - Cifrario di Cesare (chiave: valore intero di spostamento)</Italian>
-                <Russian>caesar    - Шифр Цезаря (ключ: целочисленное значение сдвига)</Russian>
-                <German>caesar    - Caesar-Verschlüsselung (Schlüssel: ganzzahliger Verschiebungswert)</German>
-                <Chinesesimp>caesar    - 凯撒密码 (密钥: 整数偏移值)</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_Crypto_HelpAlgoColumnar">
-                <Original>columnar  - Columnar transposition (key: string, length &gt; 1)</Original>
-                <English>columnar  - Columnar transposition (key: string, length &gt; 1)</English>
-                <French>columnar  - Transposition en colonnes (clé: chaîne, longueur &gt; 1)</French>
-                <Italian>columnar  - Trasposizione a colonne (chiave: stringa, lunghezza &gt; 1)</Italian>
-                <Russian>columnar  - Столбцовая перестановка (ключ: строка, длина &gt; 1)</Russian>
-                <German>columnar  - Spaltentransposition (Schlüssel: String, Länge &gt; 1)</German>
-                <Chinesesimp>columnar  - 列移位密码 (密钥: 字符串, 长度 &gt; 1)</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_Crypto_HelpAlgorithms">
-                <Original>Algorithms:</Original>
-                <English>Algorithms:</English>
-                <French>Algorithmes:</French>
-                <Italian>Algoritmi:</Italian>
-                <Russian>Алгоритмы:</Russian>
-                <German>Algorithmen:</German>
-                <Chinesesimp>算法:</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_Crypto_HelpDescription">
-                <Original>Description:</Original>
-                <English>Description:</English>
-                <French>Description:</French>
-                <Italian>Descrizione:</Italian>
-                <Russian>Описание:</Russian>
-                <German>Beschreibung:</German>
-                <Chinesesimp>描述:</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_Crypto_HelpDescriptionText">
-                <Original>Encrypt or decrypt text using specified algorithm and key.</Original>
-                <English>Encrypt or decrypt text using specified algorithm and key.</English>
-                <French>Chiffrer ou déchiffrer du texte en utilisant l'algorithme et la clé spécifiés.</French>
-                <Italian>Cripta o decripta testo usando l'algoritmo e la chiave specificati.</Italian>
-                <Russian>Шифрование или дешифрование текста с использованием указанного алгоритма и ключа.</Russian>
-                <German>Text mit angegebenem Algorithmus und Schlüssel verschlüsseln oder entschlüsseln.</German>
-                <Chinesesimp>使用指定的算法和密钥加密或解密文本.</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_Crypto_HelpExample1">
-                <Original>  crypto -m=encrypt -k=3 -a=caesar "HELLO WORLD"</Original>
-                <English>  crypto -m=encrypt -k=3 -a=caesar "HELLO WORLD"</English>
-                <French>  crypto -m=encrypt -k=3 -a=caesar "HELLO WORLD"</French>
-                <Italian>  crypto -m=encrypt -k=3 -a=caesar "HELLO WORLD"</Italian>
-                <Russian>  crypto -m=encrypt -k=3 -a=caesar "HELLO WORLD"</Russian>
-                <German>  crypto -m=encrypt -k=3 -a=caesar "HELLO WORLD"</German>
-                <Chinesesimp>  crypto -m=encrypt -k=3 -a=caesar "HELLO WORLD"</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_Crypto_HelpExample2">
-                <Original>  crypto -m=decrypt -k=3 -a=caesar secret.txt</Original>
-                <English>  crypto -m=decrypt -k=3 -a=caesar secret.txt</English>
-                <French>  crypto -m=decrypt -k=3 -a=caesar secret.txt</French>
-                <Italian>  crypto -m=decrypt -k=3 -a=caesar secret.txt</Italian>
-                <Russian>  crypto -m=decrypt -k=3 -a=caesar secret.txt</Russian>
-                <German>  crypto -m=decrypt -k=3 -a=caesar secret.txt</German>
-                <Chinesesimp>  crypto -m=decrypt -k=3 -a=caesar secret.txt</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_Crypto_HelpExample3">
-                <Original>  crypto -m=encrypt -k=PASSWORD -a=columnar -o=encrypted.txt message.txt</Original>
-                <English>  crypto -m=encrypt -k=PASSWORD -a=columnar -o=encrypted.txt message.txt</English>
-                <French>  crypto -m=encrypt -k=PASSWORD -a=columnar -o=encrypted.txt message.txt</French>
-                <Italian>  crypto -m=encrypt -k=PASSWORD -a=columnar -o=encrypted.txt message.txt</Italian>
-                <Russian>  crypto -m=encrypt -k=PASSWORD -a=columnar -o=encrypted.txt message.txt</Russian>
-                <German>  crypto -m=encrypt -k=PASSWORD -a=columnar -o=encrypted.txt message.txt</German>
-                <Chinesesimp>  crypto -m=encrypt -k=PASSWORD -a=columnar -o=encrypted.txt message.txt</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_Crypto_HelpExample4">
-                <Original>  crypto -m=decrypt -k=PASSWORD -a=columnar /tmp/encrypted.txt</Original>
-                <English>  crypto -m=decrypt -k=PASSWORD -a=columnar /tmp/encrypted.txt</English>
-                <French>  crypto -m=decrypt -k=PASSWORD -a=columnar /tmp/encrypted.txt</French>
-                <Italian>  crypto -m=decrypt -k=PASSWORD -a=columnar /tmp/encrypted.txt</Italian>
-                <Russian>  crypto -m=decrypt -k=PASSWORD -a=columnar /tmp/encrypted.txt</Russian>
-                <German>  crypto -m=decrypt -k=PASSWORD -a=columnar /tmp/encrypted.txt</German>
-                <Chinesesimp>  crypto -m=decrypt -k=PASSWORD -a=columnar /tmp/encrypted.txt</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_Crypto_HelpExamples">
-                <Original>Examples:</Original>
-                <English>Examples:</English>
-                <French>Exemples:</French>
-                <Italian>Esempi:</Italian>
-                <Russian>Примеры:</Russian>
-                <German>Beispiele:</German>
-                <Chinesesimp>示例:</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_Crypto_HelpModeDecrypt">
-                <Original>decrypt - Decrypt ciphertext</Original>
-                <English>decrypt - Decrypt ciphertext</English>
-                <French>decrypt - Déchiffrer le texte chiffré</French>
-                <Italian>decrypt - Decripta testo cifrato</Italian>
-                <Russian>decrypt - Расшифровать зашифрованный текст</Russian>
-                <German>decrypt - Verschlüsselten Text entschlüsseln</German>
-                <Chinesesimp>decrypt - 解密密文</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_Crypto_HelpModeEncrypt">
-                <Original>encrypt - Encrypt plaintext</Original>
-                <English>encrypt - Encrypt plaintext</English>
-                <French>encrypt - Chiffrer le texte en clair</French>
-                <Italian>encrypt - Cripta testo in chiaro</Italian>
-                <Russian>encrypt - Зашифровать открытый текст</Russian>
-                <German>encrypt - Klartext verschlüsseln</German>
-                <Chinesesimp>encrypt - 加密明文</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_Crypto_HelpModes">
-                <Original>Modes:</Original>
-                <English>Modes:</English>
-                <French>Modes:</French>
-                <Italian>Modalità:</Italian>
-                <Russian>Режимы:</Russian>
-                <German>Modi:</German>
-                <Chinesesimp>模式:</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_Crypto_HelpNote">
-                <Original>Note:</Original>
-                <English>Note:</English>
-                <French>Remarque:</French>
-                <Italian>Nota:</Italian>
-                <Russian>Примечание:</Russian>
-                <German>Hinweis:</German>
-                <Chinesesimp>注意:</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_Crypto_HelpNote1">
-                <Original>- Input can be a file path or a quoted string</Original>
-                <English>- Input can be a file path or a quoted string</English>
-                <French>- L'entrée peut être un chemin de fichier ou une chaîne entre guillemets</French>
-                <Italian>- L'input può essere un percorso file o una stringa tra virgolette</Italian>
-                <Russian>- Входные данные могут быть путём к файлу или строкой в кавычках</Russian>
-                <German>- Die Eingabe kann ein Dateipfad oder ein String in Anführungszeichen sein</German>
-                <Chinesesimp>- 输入可以是文件路径或引号字符串</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_Crypto_HelpNote2">
-                <Original>- Use quotes around strings containing spaces</Original>
-                <English>- Use quotes around strings containing spaces</English>
-                <French>- Utilisez des guillemets autour des chaînes contenant des espaces</French>
-                <Italian>- Usare virgolette per stringhe contenenti spazi</Italian>
-                <Russian>- Используйте кавычки для строк, содержащих пробелы</Russian>
-                <German>- Verwende Anführungszeichen um Strings mit Leerzeichen</German>
-                <Chinesesimp>- 在包含空格的字符串周围使用引号</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_Crypto_HelpNote3">
-                <Original>- Caesar cipher requires an integer key (shift value)</Original>
-                <English>- Caesar cipher requires an integer key (shift value)</English>
-                <French>- Le chiffrement de César nécessite une clé entière (valeur de décalage)</French>
-                <Italian>- Il cifrario di Cesare richiede una chiave intera (valore di spostamento)</Italian>
-                <Russian>- Шифр Цезаря требует целочисленный ключ (значение сдвига)</Russian>
-                <German>- Caesar-Verschlüsselung benötigt einen ganzzahligen Schlüssel (Verschiebungswert)</German>
-                <Chinesesimp>- 凯撒密码需要整数密钥 (偏移值)</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_Crypto_HelpNote4">
-                <Original>- Columnar cipher requires a string key with length &gt; 1</Original>
-                <English>- Columnar cipher requires a string key with length &gt; 1</English>
-                <French>- Le chiffrement en colonnes nécessite une clé de chaîne de longueur &gt; 1</French>
-                <Italian>- Il cifrario a colonne richiede una chiave stringa di lunghezza &gt; 1</Italian>
-                <Russian>- Столбцовая перестановка требует строковый ключ длиной &gt; 1</Russian>
-                <German>- Spaltentransposition benötigt einen String-Schlüssel mit Länge &gt; 1</German>
-                <Chinesesimp>- 列移位密码需要长度 &gt; 1 的字符串密钥</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_Crypto_HelpParamAlgorithm">
-                <Original>-a &lt;algorithm&gt; - Encryption algorithm (default: caesar)</Original>
-                <English>-a &lt;algorithm&gt; - Encryption algorithm (default: caesar)</English>
-                <French>-a &lt;algorithme&gt; - Algorithme de chiffrement (par défaut: caesar)</French>
-                <Italian>-a &lt;algoritmo&gt;  - Algoritmo di cifratura (predefinito: caesar)</Italian>
-                <Russian>-a &lt;алгоритм&gt;  - Алгоритм шифрования (по умолчанию: caesar)</Russian>
-                <German>-a &lt;Algorithmus&gt; - Verschlüsselungsalgorithmus (Standard: caesar)</German>
-                <Chinesesimp>-a &lt;算法&gt;      - 加密算法 (默认: caesar)</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_Crypto_HelpParamInput">
-                <Original>&lt;input&gt;        - Input file path or quoted string (required)</Original>
-                <English>&lt;input&gt;        - Input file path or quoted string (required)</English>
-                <French>&lt;entrée&gt;       - Chemin du fichier d'entrée ou chaîne entre guillemets (requis)</French>
-                <Italian>&lt;input&gt;        - Percorso file input o stringa tra virgolette (richiesto)</Italian>
-                <Russian>&lt;ввод&gt;         - Путь к входному файлу или строка в кавычках (обязательно)</Russian>
-                <German>&lt;Eingabe&gt;      - Pfad zur Eingabedatei oder String in Anführungszeichen (erforderlich)</German>
-                <Chinesesimp>&lt;输入&gt;        - 输入文件路径或引号字符串 (必需)</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_Crypto_HelpParamKey">
-                <Original>-k &lt;key&gt;       - Encryption/decryption key (required)</Original>
-                <English>-k &lt;key&gt;       - Encryption/decryption key (required)</English>
-                <French>-k &lt;clé&gt;       - Clé de chiffrement/déchiffrement (requis)</French>
-                <Italian>-k &lt;chiave&gt;    - Chiave di cifratura/decifratura (richiesto)</Italian>
-                <Russian>-k &lt;ключ&gt;      - Ключ шифрования/дешифрования (обязательно)</Russian>
-                <German>-k &lt;Schlüssel&gt; - Verschlüsselungs-/Entschlüsselungsschlüssel (erforderlich)</German>
-                <Chinesesimp>-k &lt;密钥&gt;      - 加密/解密密钥 (必需)</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_Crypto_HelpParamMode">
-                <Original>-m &lt;mode&gt;      - Operation mode: encrypt or decrypt (required)</Original>
-                <English>-m &lt;mode&gt;      - Operation mode: encrypt or decrypt (required)</English>
-                <French>-m &lt;mode&gt;      - Mode d'opération: encrypt ou decrypt (requis)</French>
-                <Italian>-m &lt;modalità&gt;  - Modalità operazione: encrypt o decrypt (richiesto)</Italian>
-                <Russian>-m &lt;режим&gt;     - Режим операции: encrypt или decrypt (обязательно)</Russian>
-                <German>-m &lt;Modus&gt;      - Betriebsmodus: encrypt oder decrypt (erforderlich)</German>
-                <Chinesesimp>-m &lt;模式&gt;      - 操作模式: encrypt 或 decrypt (必需)</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_Crypto_HelpParamOutput">
-                <Original>-o &lt;output&gt;    - Save output to file (optional)</Original>
-                <English>-o &lt;output&gt;    - Save output to file (optional)</English>
-                <French>-o &lt;sortie&gt;    - Enregistrer la sortie dans un fichier (optionnel)</French>
-                <Italian>-o &lt;output&gt;    - Salva output su file (opzionale)</Italian>
-                <Russian>-o &lt;вывод&gt;     - Сохранить результат в файл (необязательно)</Russian>
-                <German>-o &lt;Ausgabe&gt;   - Ausgabe in Datei speichern (optional)</German>
-                <Chinesesimp>-o &lt;输出&gt;     - 将输出保存到文件 (可选)</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_Crypto_HelpParameters">
-                <Original>Parameters:</Original>
-                <English>Parameters:</English>
-                <French>Paramètres:</French>
-                <Italian>Parametri:</Italian>
-                <Russian>Параметры:</Russian>
-                <German>Parameter:</German>
-                <Chinesesimp>参数:</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_Crypto_HelpSyntax">
-                <Original>Syntax:</Original>
-                <English>Syntax:</English>
-                <French>Syntaxe:</French>
-                <Italian>Sintassi:</Italian>
-                <Russian>Синтаксис:</Russian>
-                <German>Syntax:</German>
-                <Chinesesimp>语法:</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_Crypto_HelpSyntaxText">
-                <Original>crypto -m &lt;mode&gt; -k &lt;key&gt; [-a &lt;algorithm&gt;] [-o &lt;output&gt;] &lt;input&gt;</Original>
-                <English>crypto -m &lt;mode&gt; -k &lt;key&gt; [-a &lt;algorithm&gt;] [-o &lt;output&gt;] &lt;input&gt;</English>
-                <French>crypto -m &lt;mode&gt; -k &lt;clé&gt; [-a &lt;algorithme&gt;] [-o &lt;sortie&gt;] &lt;entrée&gt;</French>
-                <Italian>crypto -m &lt;modalità&gt; -k &lt;chiave&gt; [-a &lt;algoritmo&gt;] [-o &lt;output&gt;] &lt;input&gt;</Italian>
-                <Russian>crypto -m &lt;режим&gt; -k &lt;ключ&gt; [-a &lt;алгоритм&gt;] [-o &lt;вывод&gt;] &lt;ввод&gt;</Russian>
-                <German>crypto -m &lt;Modus&gt; -k &lt;Schlüssel&gt; [-a &lt;Algorithmus&gt;] [-o &lt;Ausgabe&gt;] &lt;Eingabe&gt;</German>
-                <Chinesesimp>crypto -m &lt;模式&gt; -k &lt;密钥&gt; [-a &lt;算法&gt;] [-o &lt;输出&gt;] &lt;输入&gt;</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_Crypto_HelpTitle">
-                <Original>CRYPTO COMMAND HELP</Original>
-                <English>CRYPTO COMMAND HELP</English>
-                <French>AIDE COMMANDE CRYPTO</French>
-                <Italian>AIUTO COMANDO CRYPTO</Italian>
-                <Russian>СПРАВКА КОМАНДЫ CRYPTO</Russian>
-                <German>CRYPTO BEFEHL HILFE</German>
-                <Chinesesimp>CRYPTO 命令帮助</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_Crypto_HintUseQuotes">
-                <Original>Hint: Use quotes around multi-word strings: crypto -m=encrypt -k=3 "my message"</Original>
-                <English>Hint: Use quotes around multi-word strings: crypto -m=encrypt -k=3 "my message"</English>
-                <French>Astuce: Utilisez des guillemets autour des chaînes de plusieurs mots: crypto -m=encrypt -k=3 "mon message"</French>
-                <Italian>Suggerimento: Usa virgolette per stringhe multi-parola: crypto -m=encrypt -k=3 "mio messaggio"</Italian>
-                <Russian>Подсказка: Используйте кавычки для многословных строк: crypto -m=encrypt -k=3 "моё сообщение"</Russian>
-                <German>Hinweis: Verwende Anführungszeichen um mehrwortige Strings: crypto -m=encrypt -k=3 "meine Nachricht"</German>
-                <Chinesesimp>提示: 在多词字符串周围使用引号: crypto -m=encrypt -k=3 "我的消息"</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_Crypto_WarningAlgorithmInInput">
-                <Original>WARNING: Input contains algorithm name. Did you include extra arguments by mistake?</Original>
-                <English>WARNING: Input contains algorithm name. Did you include extra arguments by mistake?</English>
-                <French>AVERTISSEMENT: L'entrée contient un nom d'algorithme. Avez-vous inclus des arguments supplémentaires par erreur?</French>
-                <Italian>AVVISO: L'input contiene il nome dell'algoritmo. Hai incluso argomenti extra per errore?</Italian>
-                <Russian>ПРЕДУПРЕЖДЕНИЕ: Входные данные содержат имя алгоритма. Вы случайно добавили лишние аргументы?</Russian>
-                <German>WARNUNG: Eingabe enthält Algorithmennamen. Hast du versehentlich zusätzliche Argumente eingefügt?</German>
-                <Chinesesimp>警告: 输入包含算法名称.您是否错误地包含了额外的参数?</Chinesesimp>
-            </Key>
-        </Container>
+        <Container name="Crack"></Container>
+        <Container name="Crypto"></Container>
         <Container name="Exceptions">
-            <Key ID="STR_AE3_ArmaOS_Exception_CaesarCipherKeyCrackNotAvailable">
-                <Original>The key-method can not be used with the caesar cipher</Original>
-                <English>The key-method can not be used with the caesar cipher</English>
-                <French>La méthode clé ne peut pas être utilisée avec le chiffrement César</French>
-                <Russian>Ключевой метод нельзя использовать с шифром Цезаря.</Russian>
-                <German>Die Schlüssel-Methode ist für die Cäsar Chiffre nicht verfügbar</German>
-                <Chinesesimp>密钥方法不能与凯撒密码一起使用</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_Exception_CaesarCypherNeedsIntegerGreaterNullAsKey">
-                <Original>Caesar Cypher needs an integer greater then 0 as key.</Original>
-                <English>Caesar Cypher needs an integer greater then 0 as key</English>
-                <French>Le chiffrement de César a besoin d'un chiffre supérieur à 0 comme clé.</French>
-                <Italian>Caesar Cypeher ha bisogno di un numero intero superiore di 0 come chiave.</Italian>
-                <Russian>Шифр Цезаря требует в качестве ключа целое число больше 0.</Russian>
-                <German>Die Cäsar Chiffre benötigt eine Ganzzahl größer 0 als Schlüssel.</German>
-                <Chinesesimp>凯撒密码需要一个大于0的整数作为密钥.</Chinesesimp>
-            </Key>
             <Key ID="STR_AE3_ArmaOS_Exception_CantScanFolderMissionPermissions">
                 <Original>Can't scan %1 folders due to missing permissions.</Original>
                 <English>Can't scan %1 folders due to missing permissions.</English>
@@ -1828,47 +1512,6 @@
                 <Russian>Не удается просканировать папки %1 из-за отсутствия разрешений.</Russian>
                 <German>Wegen fehlender Berechtigungen kann das Verzeichnis %1 nicht durchsucht werden.</German>
                 <Chinesesimp>缺少扫描 %1 文件夹的权限.</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_Exception_ColumnarCipherLengthOfKeyAndMessageDoNotMatch">
-                <Original>The lengths of key and message do not match a complete transposition</Original>
-                <English>The lengths of key and message do not match a complete transposition</English>
-                <French>Les longueurs de clé et de message ne correspondent pas à une transposition complète</French>
-                <Russian>Длина ключа и сообщения не соответствует полной транспозиции</Russian>
-                <German>Die Längen von Schlüssel und Nachricht stimmen nicht mit einer vollständigen Transposition überein</German>
-                <Chinesesimp>秘钥和信息的长度不匹配完全变位</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_Exception_ColumnarCipherMessageLengthIsPrime">
-                <Original>The message is %1 characters long. Since %1 is a prime number, the message was not encrypted by a complete columnar transposition</Original>
-                <English>The message is %1 characters long. Since %1 is a prime number, the message was not encrypted by a complete columnar transposition</English>
-                <French>Le message contient %1 caractères. Étant donné que %1 est un nombre premier, le message n'a pas été chiffré par une transposition en colonne complète</French>
-                <Russian>Сообщение содержит %1 символов. Поскольку %1 — простое число, сообщение не было зашифровано с помощью полной перестановки столбцов.</Russian>
-                <German>Die Nachricht is %1 Zeichen lang. Da %1 eine Primzahl ist, kann die Nachricht nicht durch eine komplette Spaltentransposition verschlüsselt worden sein</German>
-                <Chinesesimp>信息的长度是 %1 个字符.且由于 %1 是素数,所以消息没有通过完全列移位进行加密</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_Exception_ColumnarCipherNeedsStringLengthGreaterOneAsKey">
-                <Original>The Columnar Transposition Cipher needs a key with at least 2 characters</Original>
-                <English>The Columnar Transposition Cipher needs a key with at least 2 characters</English>
-                <French>Le chiffrement à transposition en colonne nécessite une clé d'au moins 2 caractères</French>
-                <Russian>Для столбцового транспозиционного шифра требуется ключ, состоящий как минимум из 2 символов.</Russian>
-                <German>Die Spaltentranspositions Chiffre benötigt einen Schlüssel der mindestens 2 Zeichen enthält</German>
-                <Chinesesimp>列移位密码的密钥需要包含至少2个字符</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_Exception_ColumnarCipherStatisticsCrackNotAvailable">
-                <Original>The statistics-method can not be used with the columnar cipher</Original>
-                <English>The statistics-method can not be used with the columnar cipher</English>
-                <French>La méthode statistique ne peut pas être utilisée avec le chiffrement en colonnes</French>
-                <Russian>Статистический метод нельзя использовать со столбцовым шифром.</Russian>
-                <German>Die Statistik-Methode ist für die Spaltentransposition nicht verfügbar</German>
-                <Chinesesimp>统计法不能与列移位密码一起使用</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_Exception_CommandHasMissingMessage">
-                <Original>Command '%1' has unknown or missing message</Original>
-                <English>Command '%1' has unknown or missing message</English>
-                <French>Commande '%1' a un message inconnu ou manquant</French>
-                <Italian>Comando '%1' ha messaggi mancanti o sconosciuti</Italian>
-                <Russian>Команда '%1' имеет неизвестное или отсутствующее сообщение</Russian>
-                <German>Befehl '%1' hat unbekannte oder fehlende Nachricht</German>
-                <Chinesesimp>命令 '%1' 包含未知信息或丢失信息</Chinesesimp>
             </Key>
             <Key ID="STR_AE3_ArmaOS_Exception_CommandNotFound">
                 <Original>Command '%1' not found.</Original>
@@ -2007,6 +1650,10 @@
                 <German>Laptop nehmen</German>
                 <Chinesesimp>拿走笔记本电脑</Chinesesimp>
             </Key>
+            <Key ID="STR_AE3_ArmaOS_Laptop_Use">
+                <Original>Use laptop</Original>
+                <English>Use laptop</English>
+            </Key>
             <Key ID="STR_AE3_ArmaOS_Result_Bitten">
                 <Original>Bitten. Game over!</Original>
                 <English>Bitten. Game over!</English>
@@ -2015,76 +1662,6 @@
                 <Russian>Bitten. Game over!</Russian>
                 <German>Gebissen. Game over!</German>
                 <Chinesesimp>Bitten. 游戏结束!</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_Result_BruteForceTest">
-                <Original>Test %1: %2</Original>
-                <English>Test %1: %2</English>
-                <French>Test %1: %2</French>
-                <Italian>Test %1: %2</Italian>
-                <Russian>Test %1: %2</Russian>
-                <German>Test %1: %2</German>
-                <Chinesesimp>测试 %1: %2</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_Result_CharacterFoundPossibleKey">
-                <Original>Character '%1' found %2 times (Possible key, if this is an 'E': %3)</Original>
-                <English>Character '%1' found %2 times (Possible key, if this is an 'E': %3)</English>
-                <French>Caractère '%1' trouvé %2 fois (Clé possible, s'il s'agit d'un 'E' : %3)</French>
-                <Italian>Carattere '%1' trovato %2 volte (Possibile chiave,se questa è una 'E': %3)</Italian>
-                <Russian>Символ '%1' найден %2 раза (Possible key, if this is an 'E': %3)</Russian>
-                <German>Zeichen '%1' %2 mal gefunden (Möglicher Schlüssel, falls dies ein 'E' ist: %3)</German>
-                <Chinesesimp>找到字符 '%1'  %2 次(如果这是 'E',可能的秘钥为: %3)</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_Result_ColumnarColRow">
-                <Original>Columns: %1, Rows: %2</Original>
-                <English>Columns: %1, Rows: %2</English>
-                <French>Colonnes: %1, Lignes: %2</French>
-                <Russian>Columns: %1, Rows: %2</Russian>
-                <German>Spalten: %1, Zeilen: %2</German>
-                <Chinesesimp>Columns: %1, Rows: %2</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_Result_ColumnarKeyLengths">
-                <Original>Possible Key-Lengths are:</Original>
-                <English>Possible Key-Lengths are:</English>
-                <French>Les longueurs de clé possibles sont :</French>
-                <Russian>Possible Key-Lengths are:</Russian>
-                <German>Mögliche Schlüssellängen sind:</German>
-                <Chinesesimp>Possible Key-Lengths are:</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_Result_CrackCharacterStats">
-                <Original>Character '%1' appears %2 times (possible key: %3)</Original>
-                <English>Character '%1' appears %2 times (possible key: %3)</English>
-                <French>Le caractère '%1' apparaît %2 fois (clé possible: %3)</French>
-                <Italian>Il carattere '%1' appare %2 volte (chiave possibile: %3)</Italian>
-                <Russian>Символ '%1' встречается %2 раз (возможный ключ: %3)</Russian>
-                <German>Zeichen '%1' erscheint %2 mal (möglicher Schlüssel: %3)</German>
-                <Chinesesimp>字符 '%1' 出现 %2 次 (可能的密钥: %3)</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_Result_CrackColumnarLayout">
-                <Original>Columns: %1, Rows: %2</Original>
-                <English>Columns: %1, Rows: %2</English>
-                <French>Colonnes: %1, Lignes: %2</French>
-                <Italian>Colonne: %1, Righe: %2</Italian>
-                <Russian>Столбцы: %1, Строки: %2</Russian>
-                <German>Spalten: %1, Zeilen: %2</German>
-                <Chinesesimp>列: %1, 行: %2</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_Result_CrackKeyTest">
-                <Original>Key %1: %2</Original>
-                <English>Key %1: %2</English>
-                <French>Clé %1: %2</French>
-                <Italian>Chiave %1: %2</Italian>
-                <Russian>Ключ %1: %2</Russian>
-                <German>Schlüssel %1: %2</German>
-                <Chinesesimp>密钥 %1: %2</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_Result_CrackPossibleKeyLengths">
-                <Original>Possible key lengths:</Original>
-                <English>Possible key lengths:</English>
-                <French>Longueurs de clé possibles:</French>
-                <Italian>Lunghezze chiave possibili:</Italian>
-                <Russian>Возможные длины ключа:</Russian>
-                <German>Mögliche Schlüssellängen:</German>
-                <Chinesesimp>可能的密钥长度:</Chinesesimp>
             </Key>
             <Key ID="STR_AE3_ArmaOS_Result_Date">
                 <Original>Date: %1-%2-%3 %4</Original>
@@ -2184,15 +1761,6 @@
                 <Russian>Ответ от %1: Время: %2 мс</Russian>
                 <German>Antwort von %1: Zeit: %2 ms</German>
                 <Chinesesimp>来自 %1 的应答: 时间: %2 毫秒</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_ArmaOS_Result_ResultsWrittenTo">
-                <Original>Results written to: %1</Original>
-                <English>Results written to: %1</English>
-                <French>Résultats écrits dans: %1</French>
-                <Italian>Risultati scritti in: %1</Italian>
-                <Russian>Результаты записаны в: %1</Russian>
-                <German>Ergebnisse geschrieben nach: %1</German>
-                <Chinesesimp>结果已写入: %1</Chinesesimp>
             </Key>
             <Key ID="STR_AE3_ArmaOS_Result_SnakeDuration">
                 <Original>duration: %1 s</Original>

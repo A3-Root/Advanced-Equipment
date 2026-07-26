@@ -1,3 +1,4 @@
+// File: fnc_fuelConsumption.sqf
 /*
  * Author: Root, Wasserstoff
  * Description: Calculates and updates the fuel level for a fuel-powered generator. Called every second by the power provider handler. Consumes fuel based on the configured consumption rate and returns whether the generator can still run. Fuel consumption is in liters per hour, converted to per-second rate.
@@ -15,8 +16,6 @@
  */
 
 params ["_generator"];
-
-private _class = typeOf _generator;
 
 private _fuelConsumption = _generator getVariable 'AE3_power_fuelConsumption';
 private _fuelCapacity = _generator getVariable 'AE3_power_fuelCapacity';

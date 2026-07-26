@@ -5,7 +5,7 @@ class AE3_FilesystemObject
     path = "/tmp/example.txt"; // Absolute path
     content = ""; // file content - string or code
     owner = "root"; // name of owner
-    permissions[] = {{1, 1, 1}, {0, 1, 0}}; // [[owner execute, owner read, owner write], [others execute, others read, others write]] true = 1 and 0 = false
+    permissions[] = {{1, 1, 1}, {1, 0, 0}}; // [[owner read, owner write, owner execute], [others read, others write, others execute]] true = 1 and 0 = false
 };
 
 class AE3_FilesystemObjects
@@ -22,14 +22,14 @@ class AE3_FilesystemObjects
         type = "Folder";
         path = "/mnt";
         owner = "root";
-        permissions[] = {{1, 1, 1}, {1, 1, 0}};
+        permissions[] = {{1, 1, 1}, {1, 0, 1}};
     };
     class Var : AE3_FilesystemObject
     {
         type = "Folder";
         path = "/var";
         owner = "root";
-        permissions[] = {{1, 1, 1}, {1, 1, 0}};
+        permissions[] = {{1, 1, 1}, {1, 0, 1}};
     };
         class Syslog : AE3_FilesystemObject
         {
@@ -37,7 +37,7 @@ class AE3_FilesystemObjects
             path = "/var/log/syslog";
             content = "";
             owner = "root";
-            permissions[] = {{1, 1, 1}, {0, 1, 0}};
+            permissions[] = {{1, 1, 1}, {1, 0, 0}};
         };
         class Authlog : AE3_FilesystemObject
         {
@@ -45,28 +45,43 @@ class AE3_FilesystemObjects
             path = "/var/log/auth.log";
             content = "";
             owner = "root";
-            permissions[] = {{1, 1, 1}, {0, 1, 0}};
+            permissions[] = {{1, 1, 1}, {1, 0, 0}};
+        };
+    class Etc : AE3_FilesystemObject
+    {
+        type = "Folder";
+        path = "/etc";
+        owner = "root";
+        permissions[] = {{1, 1, 1}, {1, 0, 1}};
+    };
+        class Sudoers : AE3_FilesystemObject
+        {
+            type = "File";
+            path = "/etc/sudoers";
+            content = "";
+            owner = "root";
+            permissions[] = {{1, 1, 0}, {0, 0, 0}};
         };
     class Home : AE3_FilesystemObject
     {
         type = "Folder";
         path = "/home";
         owner = "root";
-        permissions[] = {{1, 1, 1}, {1, 1, 0}};
+        permissions[] = {{1, 1, 1}, {1, 0, 1}};
     };
     class Sbin : AE3_FilesystemObject
     {
         type = "Folder";
         path = "/sbin";
         owner = "root";
-        permissions[] = {{1, 1, 1}, {1, 1, 0}};
+        permissions[] = {{1, 1, 1}, {1, 0, 1}};
     };
     class Bin : AE3_FilesystemObject
     {
         type = "Folder";
         path = "/bin";
         owner = "root";
-        permissions[] = {{1, 1, 1}, {1, 1, 0}};
+        permissions[] = {{1, 1, 1}, {1, 0, 1}};
     };
     class Root : AE3_FilesystemObject
     {
@@ -80,13 +95,13 @@ class AE3_FilesystemObjects
         type = "Folder";
         path = "/sys";
         owner = "root";
-        permissions[] = {{1, 1, 1}, {1, 1, 0}};
+        permissions[] = {{1, 1, 1}, {1, 0, 1}};
     };
         class BatteryCapacity : AE3_FilesystemObject
         {
             type = "File";
             path = "/sys/battery/capacity";
             owner = "root";
-            permissions[] = {{1, 1, 1}, {0, 1, 0}};
+            permissions[] = {{1, 1, 1}, {1, 0, 0}};
         };
 };

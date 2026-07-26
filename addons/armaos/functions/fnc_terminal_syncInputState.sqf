@@ -1,3 +1,4 @@
+// File: fnc_terminal_syncInputState.sqf
 /*
  * Author: Root
  * Description: Synchronizes only the input state (input buffer, cursor position, prompt) to nearby players for real-time typing display.
@@ -25,7 +26,7 @@ private _inUse = _settingsAce3 getOrDefault ["inUse", false, true];
 if (!_inUse) exitWith {};
 
 // Debounce keystroke synchronization based on CBA setting
-private _debounceInterval = missionNamespace getVariable ["AE3_UiKeystrokeSyncInterval", 0.1];
+private _debounceInterval = missionNamespace getVariable ["AE3_UiKeystrokeSyncInterval", 0.3];
 
 // Get last sync time for this computer
 private _lastSyncTime = _computer getVariable ["AE3_lastKeystrokeSyncTime", -999];
@@ -64,7 +65,10 @@ private _terminalInputBuffer = _terminal getOrDefault ["AE3_terminalInputBuffer"
 private _beforeCursor = _terminalInputBuffer select 0;
 private _afterCursor = _terminalInputBuffer select 1;
 private _input = _beforeCursor + _afterCursor;
+// Unicode-safe character count for the cursor position (user input may contain unicode)
+forceUnicode 1;
 private _cursorPosition = count _beforeCursor;
+forceUnicode -1;
 private _prompt = _terminal getOrDefault ["AE3_terminalPrompt", ""];
 
 // Send lightweight input state to nearby players

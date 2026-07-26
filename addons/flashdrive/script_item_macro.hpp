@@ -528,7 +528,9 @@
         displayName = QUOTE(DESC IDN); \
         descriptionShort = QUOTE(DESC IDN); \
         scope = 1; \
+        scopeArsenal = 0; \
         scopeCurator = 0; \
+        ace_arsenal_uniqueBase = QUOTE(CLASSNAME); \
         class Armory { disabled = 1; }; \
     }
 

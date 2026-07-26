@@ -1,3 +1,4 @@
+// File: fnc_retro_addEventHandler.sqf
 /*
  * Author: Root, y0014984
  * Description: Adds keyboard event handlers to a retro graphics canvas for interactive applications.
@@ -20,9 +21,9 @@ params ["_dialog"];
 
 /* ================================================================================ */
 
-private _result = _dialog displayAddEventHandler
+_dialog displayAddEventHandler
 [
-	"KeyDown", 
+	"KeyDown",
 	{
 		params ["_dialog", "_key", "_shift", "_ctrl", "_alt"];
 

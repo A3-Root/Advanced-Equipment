@@ -1,3 +1,4 @@
+// File: fnc_laptop_deploy_stable.sqf
 /*
  * Author: Root
  * Description: Handles deploying a laptop using the stable method. Unhides the laptop object,
@@ -71,16 +72,9 @@ if (AE3_DebugMode) then {
 	diag_log format ["[AE3 DEBUG] [%1] laptop_deploy_stable: Deploying laptop %2 from item %3", time, _laptop, _itemToDeploy];
 };
 
-// Calculate deployment position 1.5m in front of player at ground level
-private _playerPos = getPosATL _player;
-private _playerDir = getDir _player;
-
-// Calculate position 1.5m in front of player
-private _deployPos = [
-	(_playerPos select 0) + (1.5 * sin _playerDir),
-	(_playerPos select 1) + (1.5 * cos _playerDir),
-	0.05  // Small offset above ground to prevent clipping
-];
+// Put the laptop down on the surface in front of the player rather than at terrain height, so a laptop
+// deployed on an upper floor rests on that floor instead of dropping through the building.
+private _deployPos = [_player] call AE3_armaos_fnc_laptop_deployPos;
 
 if (AE3_DebugMode) then {
 	diag_log format ["[AE3 DEBUG] [%1] laptop_deploy_stable: Deploying at position %2", time, _deployPos];
@@ -97,6 +91,10 @@ missionNamespace setVariable ["AE3_LAPTOP_STABLE_TRACKER", _laptopTracker, true]
 
 // Remove the dummy item from player's inventory
 [_player, _itemToDeploy] call CBA_fnc_removeItem;
+
+// The laptop is out of the inventory and standing on the ground, so anything that was acting on it while
+// it was packed away - a charger cabled to it, for one - has nothing to act on any more.
+["AE3_laptop_removedFromInventory", [_player, _itemToDeploy]] call CBA_fnc_globalEvent;
 
 // No deployment hint needed
 

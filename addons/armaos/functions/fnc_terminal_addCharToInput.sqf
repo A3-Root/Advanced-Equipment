@@ -1,3 +1,4 @@
+// File: fnc_terminal_addCharToInput.sqf
 /*
  * Author: Root, Wasserstoff
  * Description: Adds a character to the terminal input buffer at the current cursor position.

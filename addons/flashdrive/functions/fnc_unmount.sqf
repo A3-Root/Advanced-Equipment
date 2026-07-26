@@ -1,3 +1,4 @@
+// File: fnc_unmount.sqf
 /*
  * Author: Root, Wasserstoff
  * Description: Unmounts a flash drive from a USB interface, saving the filesystem state back to the drive and removing the mount point from /mnt/<interface>
@@ -37,7 +38,7 @@ private _parent = [
 	"root"
 ] call AE3_filesystem_fnc_getParentDir;
 
-private _parent = (_parent select 1) select 0;
+_parent = (_parent select 1) select 0;
 
 if (!(_interface in _parent)) exitWith {};
 
@@ -55,4 +56,7 @@ _flashdrive setVariable ["AE3_filesystem", _fdFilesystem, 2];
 _computer setVariable ["AE3_filesystem", _filesystem, [_computer] call AE3_armaos_fnc_computer_getLocality];
 
 _mountedList set [_index, false];
-_computer setVariable ["AE3_USB_Interfaces_mounted", _mountedList, 2];
+_computer setVariable ["AE3_USB_Interfaces_mounted", _mountedList, [_computer] call AE3_armaos_fnc_computer_getLocality];
+
+// Nudge any open "My Computer" view to re-list now that the unmount has completed on the server.
+["ae3_desktop_volChanged", []] call CBA_fnc_globalEvent;

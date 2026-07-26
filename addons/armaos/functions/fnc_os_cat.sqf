@@ -1,3 +1,4 @@
+// File: fnc_os_cat.sqf
 /*
  * Author: Root, y0014984
  * Description: Displays the contents of one or more files to the terminal output. Supports -n flag for line numbering. Similar to Unix cat command.
@@ -32,7 +33,7 @@ private _commandSyntax =
 ];
 private _commandSettings = [_commandName, _commandOpts, _commandSyntax];
 
-private _ae3OptsSuccess = false; private _ae3OptsThings = [];
+private _ae3OptsSuccess = false; private _ae3OptsThings = []; private _numbered = false;
 [] params ([_computer, _options, _commandSettings] call AE3_armaos_fnc_shell_getOpts);
 
 if (!_ae3OptsSuccess) exitWith {};
@@ -50,11 +51,19 @@ private _result = [];
 
 	try
 	{
-		_content = [_pointer, _filesystem, _path, _username, 1] call AE3_filesystem_fnc_getFile;
+		private _content = [_pointer, _filesystem, _path, _username, 0] call AE3_filesystem_fnc_getFile;
 
-		if(!(_content isEqualType "")) exitWith 
+		if(!(_content isEqualType "")) exitWith
 		{
 			_result pushBack (format [localize "STR_AE3_ArmaOS_Exception_UnableToRead", _path]);
+			_result;
+		};
+
+		// Password-protected files are not readable with cat
+		(([_content] call AE3_armaos_fnc_shell_parseLockedFile)) params ["_locked"];
+		if (_locked) exitWith
+		{
+			_result pushBack (format [localize "STR_AE3_ArmaOS_Unlock_LockedNotice", _path]);
 			_result;
 		};
 

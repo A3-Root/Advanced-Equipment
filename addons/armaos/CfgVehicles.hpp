@@ -1,7 +1,34 @@
-class CfgVehicles 
+// Laptop software toggles exposed as 3DEN object attributes (replacing the old Add Games module).
+// Each checkbox installs the game on the laptop at mission start once it has finished initialising.
+// Shared by every laptop variant.
+#define AE3_LAPTOP_SOFTWARE_ATTRIBUTES \
+	class AE3_Game_Snake \
+	{ \
+		displayName = "Snake (game)"; \
+		tooltip = "$STR_AE3_ArmaOS_Config_ModuleAddGamesSnakeTooltip"; \
+		property = "AE3_Game_Snake"; \
+		control = "Checkbox"; \
+		expression = "[_this, _value] call AE3_armaos_fnc_attr_addGames;"; \
+		defaultValue = "false"; \
+		typeName = "BOOL"; \
+		condition = "1"; \
+	}; \
+	class AE3_LaptopStartOn \
+	{ \
+		displayName = "Powered On At Start"; \
+		tooltip = "Switch the laptop on automatically when the mission starts."; \
+		property = "AE3_LaptopStartOn"; \
+		control = "Checkbox"; \
+		expression = "private _on = _value in [true, 1]; _this setVariable ['AE3_power_startOn', _on, true]; if (_on) then {[{ params ['_computer']; !alive _computer || {(_computer getVariable ['AE3_power_initDone', false]) && {!isNil {_computer getVariable 'AE3_power_fnc_turnOnWrapper'}}} }, { params ['_computer']; if (alive _computer && {(_computer getVariable ['AE3_power_powerState', 0]) != 1}) then {[_computer] call AE3_power_fnc_turnOnDevice;}; }, [_this]] call CBA_fnc_waitUntilAndExecute;};"; \
+		defaultValue = "false"; \
+		typeName = "BOOL"; \
+		condition = "1"; \
+	};
+
+class CfgVehicles
 {
 	/* ================================================================================ */
-	
+
 	// LAPTOP BLACK
 	class Land_Laptop_03_black_F;
 	class Land_Laptop_03_black_F_AE3: Land_Laptop_03_black_F
@@ -11,6 +38,7 @@ class CfgVehicles
 		scopeCurator = 2; // Zeus visability; 2 will show it in the menu, 0 will hide it.
 
 		editorCategory = "AE3_Assets";
+		editorSubcategory = "AE3_Sub_Laptop";
 
 		curatorInfoTypeEmpty = "AE3_UserInterface_Zeus_Asset_Details";
 
@@ -35,6 +63,51 @@ class CfgVehicles
 				condition = "1"; // Condition for attribute to appear (see the table below)
 				typeName = "NUMBER"; // Defines data type of saved value, can be STRING, NUMBER or BOOL. Used only when control is "Combo", "Edit" or their variants
 			};
+
+			class AE3_EdenAttribute_InterfaceMode
+			{
+				displayName = "$STR_AE3_ArmaOS_EdenAttributes_GuiModeDisplayName"; // Name assigned to UI control class Title
+				tooltip = "$STR_AE3_ArmaOS_EdenAttributes_GuiModeTooltip"; // Tooltip assigned to UI control class Title
+				property = "AE3_EdenAttribute_InterfaceMode"; // Unique config property name saved in SQM
+				control = "Combo"; // UI control base class displayed in Edit Attributes window
+
+				// Which interfaces this laptop offers; 'default' keeps the mission-wide
+				// CBA setting AE3_Desktop_DefaultMode. Who may use which interface is
+				// controlled via AE3_desktop_fnc_setInterfaceAccess (see GUI-Laptop-Guide).
+				expression = "if (_value != 'default') then { _this setVariable ['AE3_interfaceMode', _value, true]; };";
+
+				defaultValue = """default""";
+
+				unique = 0;
+				condition = "1";
+				typeName = "STRING";
+
+				class Values
+				{
+					class ModeDefault { name = "$STR_AE3_ArmaOS_EdenAttributes_ModeDefault"; value = "default"; };
+					class ModeCli     { name = "CLI";  value = "cli"; };
+					class ModeGui     { name = "GUI";  value = "gui"; };
+					class ModeBoth    { name = "$STR_AE3_ArmaOS_EdenAttributes_ModeBoth"; value = "both"; };
+				};
+			};
+
+			class AE3_EdenAttribute_StaticIp
+			{
+				displayName = "$STR_AE3_ArmaOS_EdenAttributes_StaticIpDisplayName";
+				tooltip = "$STR_AE3_ArmaOS_EdenAttributes_StaticIpTooltip";
+				property = "AE3_EdenAttribute_StaticIp";
+				control = "Edit";
+
+				expression = "_this setVariable ['AE3_network_staticIpDefault', _value, true];";
+
+				defaultValue = """""";
+
+				unique = 0;
+				condition = "1";
+				typeName = "STRING";
+			};
+
+			AE3_LAPTOP_SOFTWARE_ATTRIBUTES
 		};
 
 		class AE3_Equipment
@@ -46,10 +119,10 @@ class CfgVehicles
 			init = "call AE3_interaction_fnc_initLaptop;";
 
 			openAction = "call AE3_interaction_fnc_laptop_open;";
-			openActionCondition = "isNull (_this getVariable ['AE3_computer_mutex', objNull])";
+			openActionCondition = "[_this] call AE3_armaos_fnc_computer_isFree";
 			closeAction = "call AE3_interaction_fnc_laptop_close;";
-			closeActionCondition = "isNull (_this getVariable ['AE3_computer_mutex', objNull])";
-      
+			closeActionCondition = "[_this] call AE3_armaos_fnc_computer_isFree";
+
 			class AE3_ace3Interactions
 			{
 					class AE3_aceCarrying
@@ -75,11 +148,11 @@ class CfgVehicles
 			init = "(_this + [configFile >> 'AE3_FilesystemObjects']) call AE3_armaos_fnc_device_initComplete;";
 
 			turnOnAction = "call AE3_network_fnc_dhcp_onTurnOn; call AE3_armaos_fnc_computer_turnOn;";
-			turnOnActionCondition = "isNull (_this getVariable ['AE3_computer_mutex', objNull])";
+			turnOnActionCondition = "[_this] call AE3_armaos_fnc_computer_isFree";
 			turnOffAction = "call AE3_armaos_fnc_computer_turnOff;";
-			turnOffActionCondition = "isNull (_this getVariable ['AE3_computer_mutex', objNull])";
+			turnOffActionCondition = "[_this] call AE3_armaos_fnc_computer_isFree";
 			standByAction = "call AE3_armaos_fnc_computer_standby;";
-			standByActionCondition = "isNull (_this getVariable ['AE3_computer_mutex', objNull])";
+			standByActionCondition = "[_this] call AE3_armaos_fnc_computer_isFree";
 
 			class AE3_Consumer
 			{
@@ -141,6 +214,7 @@ class CfgVehicles
 		scopeCurator = 2; // Zeus visability; 2 will show it in the menu, 0 will hide it.
 
 		editorCategory = "AE3_Assets";
+		editorSubcategory = "AE3_Sub_Laptop";
 
 		curatorInfoTypeEmpty = "AE3_UserInterface_Zeus_Asset_Details";
 
@@ -165,6 +239,51 @@ class CfgVehicles
 				condition = "1"; // Condition for attribute to appear (see the table below)
 				typeName = "NUMBER"; // Defines data type of saved value, can be STRING, NUMBER or BOOL. Used only when control is "Combo", "Edit" or their variants
 			};
+
+			class AE3_EdenAttribute_InterfaceMode
+			{
+				displayName = "$STR_AE3_ArmaOS_EdenAttributes_GuiModeDisplayName"; // Name assigned to UI control class Title
+				tooltip = "$STR_AE3_ArmaOS_EdenAttributes_GuiModeTooltip"; // Tooltip assigned to UI control class Title
+				property = "AE3_EdenAttribute_InterfaceMode"; // Unique config property name saved in SQM
+				control = "Combo"; // UI control base class displayed in Edit Attributes window
+
+				// Which interfaces this laptop offers; 'default' keeps the mission-wide
+				// CBA setting AE3_Desktop_DefaultMode. Who may use which interface is
+				// controlled via AE3_desktop_fnc_setInterfaceAccess (see GUI-Laptop-Guide).
+				expression = "if (_value != 'default') then { _this setVariable ['AE3_interfaceMode', _value, true]; };";
+
+				defaultValue = """default""";
+
+				unique = 0;
+				condition = "1";
+				typeName = "STRING";
+
+				class Values
+				{
+					class ModeDefault { name = "$STR_AE3_ArmaOS_EdenAttributes_ModeDefault"; value = "default"; };
+					class ModeCli     { name = "CLI";  value = "cli"; };
+					class ModeGui     { name = "GUI";  value = "gui"; };
+					class ModeBoth    { name = "$STR_AE3_ArmaOS_EdenAttributes_ModeBoth"; value = "both"; };
+				};
+			};
+
+			class AE3_EdenAttribute_StaticIp
+			{
+				displayName = "$STR_AE3_ArmaOS_EdenAttributes_StaticIpDisplayName";
+				tooltip = "$STR_AE3_ArmaOS_EdenAttributes_StaticIpTooltip";
+				property = "AE3_EdenAttribute_StaticIp";
+				control = "Edit";
+
+				expression = "_this setVariable ['AE3_network_staticIpDefault', _value, true];";
+
+				defaultValue = """""";
+
+				unique = 0;
+				condition = "1";
+				typeName = "STRING";
+			};
+
+			AE3_LAPTOP_SOFTWARE_ATTRIBUTES
 		};
 
 		class AE3_Equipment
@@ -176,10 +295,10 @@ class CfgVehicles
 			init = "call AE3_interaction_fnc_initLaptop;";
 
 			openAction = "call AE3_interaction_fnc_laptop_open;";
-			openActionCondition = "isNull (_this getVariable ['AE3_computer_mutex', objNull])";
+			openActionCondition = "[_this] call AE3_armaos_fnc_computer_isFree";
 			closeAction = "call AE3_interaction_fnc_laptop_close;";
-			closeActionCondition = "isNull (_this getVariable ['AE3_computer_mutex', objNull])";
-      
+			closeActionCondition = "[_this] call AE3_armaos_fnc_computer_isFree";
+
       		class AE3_ace3Interactions
 			{
 				class AE3_aceCarrying
@@ -205,11 +324,11 @@ class CfgVehicles
 			init = "(_this + [configFile >> 'AE3_FilesystemObjects']) call AE3_armaos_fnc_device_initComplete;";
 
 			turnOnAction = "call AE3_network_fnc_dhcp_onTurnOn; call AE3_armaos_fnc_computer_turnOn;";
-			turnOnActionCondition = "isNull (_this getVariable ['AE3_computer_mutex', objNull])";
+			turnOnActionCondition = "[_this] call AE3_armaos_fnc_computer_isFree";
 			turnOffAction = "call AE3_armaos_fnc_computer_turnOff;";
-			turnOffActionCondition = "isNull (_this getVariable ['AE3_computer_mutex', objNull])";
+			turnOffActionCondition = "[_this] call AE3_armaos_fnc_computer_isFree";
 			standByAction = "call AE3_armaos_fnc_computer_standby;";
-			standByActionCondition = "isNull (_this getVariable ['AE3_computer_mutex', objNull])";
+			standByActionCondition = "[_this] call AE3_armaos_fnc_computer_isFree";
 
 			class AE3_Consumer
 			{
@@ -261,7 +380,7 @@ class CfgVehicles
 	};
 
 	/* ================================================================================ */
-	
+
 	// LAPTOP SAND
 	class Land_Laptop_03_sand_F;
 	class Land_Laptop_03_sand_F_AE3: Land_Laptop_03_sand_F
@@ -271,9 +390,10 @@ class CfgVehicles
 		scopeCurator = 2; // Zeus visability; 2 will show it in the menu, 0 will hide it.
 
 		editorCategory = "AE3_Assets";
+		editorSubcategory = "AE3_Sub_Laptop";
 
 		curatorInfoTypeEmpty = "AE3_UserInterface_Zeus_Asset_Details";
-  	
+
 		// Eden Editor Attributes
 		class Attributes
 		{
@@ -295,6 +415,51 @@ class CfgVehicles
 				condition = "1"; // Condition for attribute to appear (see the table below)
 				typeName = "NUMBER"; // Defines data type of saved value, can be STRING, NUMBER or BOOL. Used only when control is "Combo", "Edit" or their variants
 			};
+
+			class AE3_EdenAttribute_InterfaceMode
+			{
+				displayName = "$STR_AE3_ArmaOS_EdenAttributes_GuiModeDisplayName"; // Name assigned to UI control class Title
+				tooltip = "$STR_AE3_ArmaOS_EdenAttributes_GuiModeTooltip"; // Tooltip assigned to UI control class Title
+				property = "AE3_EdenAttribute_InterfaceMode"; // Unique config property name saved in SQM
+				control = "Combo"; // UI control base class displayed in Edit Attributes window
+
+				// Which interfaces this laptop offers; 'default' keeps the mission-wide
+				// CBA setting AE3_Desktop_DefaultMode. Who may use which interface is
+				// controlled via AE3_desktop_fnc_setInterfaceAccess (see GUI-Laptop-Guide).
+				expression = "if (_value != 'default') then { _this setVariable ['AE3_interfaceMode', _value, true]; };";
+
+				defaultValue = """default""";
+
+				unique = 0;
+				condition = "1";
+				typeName = "STRING";
+
+				class Values
+				{
+					class ModeDefault { name = "$STR_AE3_ArmaOS_EdenAttributes_ModeDefault"; value = "default"; };
+					class ModeCli     { name = "CLI";  value = "cli"; };
+					class ModeGui     { name = "GUI";  value = "gui"; };
+					class ModeBoth    { name = "$STR_AE3_ArmaOS_EdenAttributes_ModeBoth"; value = "both"; };
+				};
+			};
+
+			class AE3_EdenAttribute_StaticIp
+			{
+				displayName = "$STR_AE3_ArmaOS_EdenAttributes_StaticIpDisplayName";
+				tooltip = "$STR_AE3_ArmaOS_EdenAttributes_StaticIpTooltip";
+				property = "AE3_EdenAttribute_StaticIp";
+				control = "Edit";
+
+				expression = "_this setVariable ['AE3_network_staticIpDefault', _value, true];";
+
+				defaultValue = """""";
+
+				unique = 0;
+				condition = "1";
+				typeName = "STRING";
+			};
+
+			AE3_LAPTOP_SOFTWARE_ATTRIBUTES
 		};
 
 		class AE3_Equipment
@@ -306,9 +471,9 @@ class CfgVehicles
 			init = "call AE3_interaction_fnc_initLaptop;";
 
 			openAction = "call AE3_interaction_fnc_laptop_open;";
-			openActionCondition = "isNull (_this getVariable ['AE3_computer_mutex', objNull])";
+			openActionCondition = "[_this] call AE3_armaos_fnc_computer_isFree";
 			closeAction = "call AE3_interaction_fnc_laptop_close;";
-			closeActionCondition = "isNull (_this getVariable ['AE3_computer_mutex', objNull])";
+			closeActionCondition = "[_this] call AE3_armaos_fnc_computer_isFree";
 
 			class AE3_ace3Interactions
 			{
@@ -335,11 +500,11 @@ class CfgVehicles
 			init = "(_this + [configFile >> 'AE3_FilesystemObjects']) call AE3_armaos_fnc_device_initComplete;";
 
 			turnOnAction = "call AE3_network_fnc_dhcp_onTurnOn; call AE3_armaos_fnc_computer_turnOn;";
-			turnOnActionCondition = "isNull (_this getVariable ['AE3_computer_mutex', objNull])";
+			turnOnActionCondition = "[_this] call AE3_armaos_fnc_computer_isFree";
 			turnOffAction = "call AE3_armaos_fnc_computer_turnOff;";
-			turnOffActionCondition = "isNull (_this getVariable ['AE3_computer_mutex', objNull])";
+			turnOffActionCondition = "[_this] call AE3_armaos_fnc_computer_isFree";
 			standByAction = "call AE3_armaos_fnc_computer_standby;";
-			standByActionCondition = "isNull (_this getVariable ['AE3_computer_mutex', objNull])";
+			standByActionCondition = "[_this] call AE3_armaos_fnc_computer_isFree";
 
 			class AE3_Consumer
 			{
@@ -398,7 +563,6 @@ class CfgVehicles
 		class AttributesBase
 		{
 			class Edit;					// Default edit box (i.e., text input field)
-			class Checkbox;
 			class ModuleDescription;	// Module description
 		};
 		// Description base classes, for more information see below
@@ -482,149 +646,174 @@ class CfgVehicles
 
 	/* ================================================================================ */
 
-	// MODULE ADD SECURITY COMMANDS
-	class AE3_AddSecurityCommands: Module_F
+	// MODULE SAVE LAPTOP
+	class AE3_SaveLaptop: Module_F
 	{
-		// Standard object definitions
-		scope = 2; // Editor visibility; 2 will show it in the menu, 1 will hide it.
-		scopeCurator = 2; // Zeus visability; 2 will show it in the menu, 0 will hide it.
-		displayName = "$STR_AE3_ArmaOS_Config_AddSecurityCommandsDisplayName"; // Name displayed in the menu
-		icon = "\z\ae3\addons\armaos\ui\AE3_Module_Icon_addSecurityCommands_v2.paa"; // Map icon. Delete this entry to use the default icon
+		scope = 2;
+		scopeCurator = 2;
+		displayName = "$STR_AE3_ArmaOS_Config_SaveLaptopDisplayName";
+		icon = "\z\ae3\addons\armaos\ui\AE3_Module_Icons_addUser.paa";
 		category = "AE3_armaosModules";
 
-		portrait = "\z\ae3\addons\armaos\ui\AE3_Module_Icon_addSecurityCommands_v2.paa"; // seems to be used by Zeus as icon
-
-		// Name of function triggered once conditions are met
-		function = "AE3_armaos_fnc_module_addSecurityCommands";
-		// Execution priority, modules with lower number are executed first. 0 is used when the attribute is undefined
+		function = "AE3_armaos_fnc_module_saveLaptop";
 		functionPriority = 1;
-		// 0 for server only execution, 1 for global execution, 2 for persistent global execution
-		isGlobal = 1;
-		// 1 for module waiting until all synced triggers are activated
+		isGlobal = 0; // server-only execution; the snapshot lives in the server-side buffer
 		isTriggerActivated = 1;
-		// 1 if modules is to be disabled once it is activated (i.e., repeated trigger activation won't work)
 		isDisposable = 1;
-		// 1 to run init function in Eden Editor as well
 		is3DEN = 0;
 
-		// Menu displayed when the module is placed or double-clicked on by Zeus
-		curatorInfoType = "AE3_UserInterface_Zeus_Module_AddSecurityCommands";
-
-		// Module attributes, uses https://community.bistudio.com/wiki/Eden_Editor:_Configuring_Attributes#Entity_Specific
 		class Attributes: AttributesBase
 		{
-
-			// Arguments shared by specific module type (have to be mentioned in order to be present)
-			class AE3_ModuleAddSecurityCommands_IsCrypto: Checkbox
+			class AE3_ModuleSaveSlot: Edit
 			{
-				property = "AE3_Module_AddSecurityCommands_Crypto";
-				displayName = "crypto";
-				tooltip = "$STR_AE3_ArmaOS_Config_ModuleAddSecurityCommandsCryptoTooltip";
-				typeName = "BOOL"; // Value type, can be "NUMBER", "STRING" or "BOOL"
-				// Default text filled in the input box
-				// Because it is an expression, to return a String one must have a string within a string
-				defaultValue = 1;
+				property = "AE3_ModuleSaveSlot";
+				displayName = "$STR_AE3_ArmaOS_Config_SaveSlotDisplayName";
+				tooltip = "$STR_AE3_ArmaOS_Config_SaveSlotTooltip";
+				typeName = "STRING";
+				defaultValue = """slot1""";
 			};
-
-			// Arguments shared by specific module type (have to be mentioned in order to be present)
-			class AE3_ModuleAddSecurityCommands_IsCrack: Checkbox
-			{
-				property = "AE3_Module_AddSecurityCommands_Crack";
-				displayName = "crack";
-				tooltip = "$STR_AE3_ArmaOS_Config_ModuleAddSecurityCommandsCrackTooltip";
-				typeName = "BOOL"; // Value type, can be "NUMBER", "STRING" or "BOOL"
-				// Default text filled in the input box
-				// Because it is an expression, to return a String one must have a string within a string
-				defaultValue = 1;
-			};
-
-			class ModuleDescription: ModuleDescription{}; // Module description should be shown last
+			class ModuleDescription: ModuleDescription{};
 		};
 
-		// Module description. Must inherit from base class, otherwise pre-defined entities won't be available
 		class ModuleDescription: ModuleDescription
 		{
-			description = "$STR_AE3_ArmaOS_Config_ModuleAddSecurityCommandsDescription"; // Short description, will be formatted as structured text
-
-			sync[] = { "Land_Laptop_03_sand_F_AE3" }; // LocationArea_F // Array of synced entities (can contain base classes)
+			description = "$STR_AE3_ArmaOS_Config_ModuleSaveLaptopDescription";
+			sync[] = { "Land_Laptop_03_sand_F_AE3" };
 
 			class Land_Laptop_03_sand_F_AE3
 			{
-				description[] = { // Multi-line descriptions are supported
-					"First line",
-					"Second line"
+				description[] = {
+					"Captures this laptop's files, users, calendar, emails and network settings",
+					"into the named save slot."
 				};
-				position = 1; // Position is taken into effect
-				direction = 1; // Direction is taken into effect
-				optional = 0; // Synced entity is optional
-				duplicate = 0; // Multiple entities of this type can be synced
+				position = 1;
+				direction = 0;
+				optional = 0;
+				duplicate = 0;
 			};
 		};
 	};
 
 	/* ================================================================================ */
 
-	// MODULE ADD GAMES
-	class AE3_AddGames: Module_F
+	// MODULE RESTORE LAPTOP
+	class AE3_RestoreLaptop: Module_F
 	{
-		// Standard object definitions
-		scope = 2; // Editor visibility; 2 will show it in the menu, 1 will hide it.
-		scopeCurator = 2; // Zeus visability; 2 will show it in the menu, 0 will hide it.
-		displayName = "$STR_AE3_ArmaOS_Config_AddGamesDisplayName"; // Name displayed in the menu
-		icon = "\z\ae3\addons\armaos\ui\AE3_Module_Icons_addGames.paa"; // Map icon. Delete this entry to use the default icon
+		scope = 2;
+		scopeCurator = 2;
+		displayName = "$STR_AE3_ArmaOS_Config_RestoreLaptopDisplayName";
+		icon = "\z\ae3\addons\armaos\ui\AE3_Module_Icons_addUser.paa";
 		category = "AE3_armaosModules";
 
-		// Name of function triggered once conditions are met
-		function = "AE3_armaos_fnc_module_addGames";
-		// Execution priority, modules with lower number are executed first. 0 is used when the attribute is undefined
+		function = "AE3_armaos_fnc_module_restoreLaptop";
 		functionPriority = 1;
-		// 0 for server only execution, 1 for global execution, 2 for persistent global execution
-		isGlobal = 1;
-		// 1 for module waiting until all synced triggers are activated
+		isGlobal = 0; // server-only execution; reads the server-side snapshot buffer
 		isTriggerActivated = 1;
-		// 1 if modules is to be disabled once it is activated (i.e., repeated trigger activation won't work)
 		isDisposable = 1;
-		// 1 to run init function in Eden Editor as well
 		is3DEN = 0;
 
-		// Menu displayed when the module is placed or double-clicked on by Zeus
-		curatorInfoType = "AE3_UserInterface_Zeus_Module_AddGames";
-
-		// Module attributes, uses https://community.bistudio.com/wiki/Eden_Editor:_Configuring_Attributes#Entity_Specific
 		class Attributes: AttributesBase
 		{
-
-			// Arguments shared by specific module type (have to be mentioned in order to be present)
-			class AE3_ModuleAddGames_IsSnake: Checkbox
+			class AE3_ModuleSaveSlot: Edit
 			{
-				property = "AE3_Module_AddGames_Snake";
-				displayName = "snake";
-				tooltip = "$STR_AE3_ArmaOS_Config_ModuleAddGamesSnakeTooltip";
-				typeName = "BOOL"; // Value type, can be "NUMBER", "STRING" or "BOOL"
-				// Default text filled in the input box
-				// Because it is an expression, to return a String one must have a string within a string
-				defaultValue = 1;
+				property = "AE3_ModuleSaveSlot";
+				displayName = "$STR_AE3_ArmaOS_Config_SaveSlotDisplayName";
+				tooltip = "$STR_AE3_ArmaOS_Config_SaveSlotTooltip";
+				typeName = "STRING";
+				defaultValue = """slot1""";
 			};
-
-			class ModuleDescription: ModuleDescription{}; // Module description should be shown last
+			class ModuleDescription: ModuleDescription{};
 		};
 
-		// Module description. Must inherit from base class, otherwise pre-defined entities won't be available
 		class ModuleDescription: ModuleDescription
 		{
-			description = "$STR_AE3_ArmaOS_Config_ModuleAddGamesDescription"; // Short description, will be formatted as structured text
-			sync[] = { "Land_Laptop_03_sand_F_AE3" }; // LocationArea_F // Array of synced entities (can contain base classes)
+			description = "$STR_AE3_ArmaOS_Config_ModuleRestoreLaptopDescription";
+			sync[] = { "Land_Laptop_03_sand_F_AE3" };
 
 			class Land_Laptop_03_sand_F_AE3
 			{
-				description[] = { // Multi-line descriptions are supported
-					"First line",
-					"Second line"
+				description[] = {
+					"Overwrites this fresh laptop with the contents saved under the named slot,",
+					"replacing a laptop that was lost or disabled."
 				};
-				position = 1; // Position is taken into effect
-				direction = 1; // Direction is taken into effect
-				optional = 0; // Synced entity is optional
-				duplicate = 0; // Multiple entities of this type can be synced
+				position = 1;
+				direction = 0;
+				optional = 0;
+				duplicate = 0;
+			};
+		};
+	};
+
+	/* ================================================================================ */
+
+	// MODULE ADD CALENDAR EVENT
+	class AE3_AddCalendarEvent: Module_F
+	{
+		scope = 2;
+		scopeCurator = 2;
+		displayName = "AE3: Add Calendar Event";
+		icon = "\z\ae3\addons\armaos\ui\AE3_Module_Icons_addUser.paa";
+		category = "AE3_armaosModules";
+
+		function = "AE3_armaos_fnc_module_addCalendarEvent";
+		functionPriority = 1;
+		isGlobal = 1;
+		isTriggerActivated = 1;
+		isDisposable = 1;
+		is3DEN = 0;
+
+		curatorInfoType = "AE3_UserInterface_Zeus_Module_AddCalendarEvent";
+
+		class Attributes: AttributesBase
+		{
+			// property names match exactly what AE3_armaos_fnc_module_addCalendarEvent reads.
+			class AE3_ModuleCalendar_Date: Edit
+			{
+				property = "AE3_ModuleCalendar_Date";
+				displayName = "Date (YYYY-MM-DD)";
+				tooltip = "ISO date the event is shown on, e.g. 2026-06-24";
+				typeName = "STRING";
+				defaultValue = """2026-06-24""";
+			};
+			class AE3_ModuleCalendar_Title: Edit
+			{
+				property = "AE3_ModuleCalendar_Title";
+				displayName = "Title";
+				tooltip = "Short event title";
+				typeName = "STRING";
+				defaultValue = """Meeting""";
+			};
+			class AE3_ModuleCalendar_Location: Edit
+			{
+				property = "AE3_ModuleCalendar_Location";
+				displayName = "Location";
+				tooltip = "Optional location text";
+				typeName = "STRING";
+				defaultValue = """""";
+			};
+			class AE3_ModuleCalendar_Body: Edit
+			{
+				property = "AE3_ModuleCalendar_Body";
+				displayName = "Details";
+				tooltip = "Optional longer description / intel body";
+				typeName = "STRING";
+				defaultValue = """""";
+			};
+			class ModuleDescription: ModuleDescription{};
+		};
+
+		class ModuleDescription: ModuleDescription
+		{
+			description = "Adds a calendar/intel event (date, title, location, details) to every synced computer. Shown in the laptop Calendar app.";
+			sync[] = { "Land_Laptop_03_sand_F_AE3" };
+
+			class Land_Laptop_03_sand_F_AE3
+			{
+				description[] = { "Target computer" };
+				position = 1;
+				direction = 1;
+				optional = 0;
+				duplicate = 0;
 			};
 		};
 	};

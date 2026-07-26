@@ -1,3 +1,5 @@
+// File: fnc_device_addFile.sqf
+#include "..\script_component.hpp"
 /*
  * Author: Root, y0014984
  * Description: Adds a file to a device's filesystem (laptop or flash drive). Supports code compilation and encryption. Must run on server. Logs error if file already exists, throws exception for other errors.
@@ -8,10 +10,16 @@
  * 2: _content <STRING> - File content (plain text or code string)
  * 3: _isCode <BOOL> - If true, content will be compiled as code
  * 4: _owner <STRING> - Owner of the file
- * 5: _permissions <ARRAY> - Permissions [[owner x,r,w],[everyone x,r,w]]
+ * 5: _permissions <ARRAY> - Permissions [[owner r,w,x],[everyone r,w,x]]
  * 6: _isEncrypted <BOOL> (Optional, default: false) - If true, content will be encrypted
  * 7: _encryptionAlgorithm <STRING> (Optional) - Encryption algorithm ("caesar" or "columnar")
  * 8: _encryptionKey <STRING> (Optional) - Encryption key
+ * 9: _overwrite <BOOL> (Optional, default: false) - If true, an existing file whose name matches
+ *    case-INSENSITIVELY in the target directory is removed first (so the new file replaces it)
+ * 10: _isPicture <BOOL> (Optional, default: false) - If true, _content is treated as a raw base64
+ *    image and stored as an inline picture marker for the in-OS web viewer (overrides code/encryption)
+ * 11: _pictureType <STRING> (Optional, default: "auto") - Image MIME hint: "auto" (detect from the
+ *    base64 magic bytes), or one of "png"/"jpeg"/"gif"/"bmp"/"webp" to force it
  *
  * Return Value:
  * None
@@ -24,47 +32,108 @@
  * Public: Yes
  */
 
-params ["_computer", "_path", "_content", "_isCode", "_owner", "_permissions", ["_isEncrypted", false], ["_encryptionAlgorithm", nil], ["_encryptionKey", nil]];
+params ["_computer", "_path", "_content", "_isCode", "_owner", "_permissions", ["_isEncrypted", false], ["_encryptionAlgorithm", nil], ["_encryptionKey", nil], ["_overwrite", false], ["_isPicture", false], ["_pictureType", "auto"]];
 
 if (!isServer) exitWith {};
 
 // Validate computer object
 if (isNull _computer) exitWith {
-	diag_log format ["AE3 ERROR: fnc_device_addFile called with null computer object. Path: %1", _path];
-	["AE3 ERROR: Cannot add file to null computer object. Path: %1", _path] call BIS_fnc_error;
+	ERROR_1("device_addFile called with null computer object. Path: %1",_path);
 };
 
 private _filesystem = _computer getVariable ["AE3_filesystem", nil];
 
 // Validate filesystem exists
 if (isNil "_filesystem") exitWith {
-	diag_log format ["AE3 ERROR: Computer %1 has no filesystem initialized. Cannot add file: %2", _computer, _path];
-	["AE3 ERROR: Computer has no filesystem. Please wait for initialization to complete and try again."] call BIS_fnc_error;
+	ERROR_2("Computer %1 has no filesystem initialized. Cannot add file: %2",_computer,_path);
+};
+
+// Inline base64 picture: store the raw base64 as a media marker the in-OS web viewer renders as a
+// data URL. Used when the source image cannot be shipped as a real texture in the mission. This path
+// overrides code/encryption (both would corrupt the payload) and is size-capped, since the content
+// rides the network filesystem sync and the CEF ExecJS transport.
+if (_isPicture) then
+{
+	_isCode = false;
+	_isEncrypted = false;
+
+	if !(_content isEqualType "") exitWith { _content = ""; };
+
+	// Strip an optional "data:<mime>;base64," URL prefix and all whitespace/newlines so only the raw
+	// base64 alphabet remains (the marker splits on "|", which base64 never contains).
+	private _b64 = _content;
+	private _comma = _b64 find ";base64,";
+	if (_comma != -1) then { _b64 = _b64 select [_comma + 8]; };
+	_b64 = _b64 regexReplace ["\s+", ""];
+
+	if ((count _b64) > AE3_MAX_PICTURE_B64) exitWith
+	{
+		ERROR_2("Picture file %1 rejected: base64 length %2 exceeds the maximum",_path,count _b64);
+	};
+
+	// Resolve the MIME type: honor an explicit hint, otherwise detect from the base64 magic prefix.
+	private _type = toLower _pictureType;
+	private _mime = switch (_type) do
+	{
+		case "png":  { "image/png" };
+		case "jpeg": { "image/jpeg" };
+		case "jpg":  { "image/jpeg" };
+		case "gif":  { "image/gif" };
+		case "bmp":  { "image/bmp" };
+		case "webp": { "image/webp" };
+		default { "" };
+	};
+
+	if (_mime isEqualTo "") then
+	{
+		private _head = _b64 select [0, 8];
+		_mime = call
+		{
+			if ((_head select [0, 5]) isEqualTo "iVBOR") exitWith { "image/png" };
+			if ((_head select [0, 4]) isEqualTo "/9j/") exitWith { "image/jpeg" };
+			if ((_head select [0, 6]) isEqualTo "R0lGOD") exitWith { "image/gif" };
+			if ((_head select [0, 5]) isEqualTo "UklGR") exitWith { "image/webp" };
+			if ((_head select [0, 2]) isEqualTo "Qk") exitWith { "image/bmp" };
+			"image/png"
+		};
+	};
+
+	_content = AE3_MEDIA_B64_PREFIX + _mime + "|" + _b64;
 };
 
 if(_isCode) then
 {
 	_content = compile _content;
+
+	// Code files (executables) must never be encrypted - encryption would destroy the compiled
+	// CODE value and make the command unexecutable. Silently override and log.
+	if (_isEncrypted) then
+	{
+		WARNING_1("Encryption requested for code file %1 - ignored (code files cannot be encrypted)",_path);
+		_isEncrypted = false;
+	};
 };
 
-if (_isEncrypted) then 
+if (_isEncrypted) then
 {
 	private _mode = "encrypt";
-
+	private _hasCipher = true;
+	private _addonAlgorithm = _encryptionAlgorithm;
+	private _addonHandler = {};
 	private _crypto_fnc = {};
 
 	switch (_encryptionAlgorithm) do
 	{
 		case "caesar":
 		{
-			_crypto_fnc = 
+			_crypto_fnc =
 			{
 				params ["_encryptionKey", "_mode", "_row"];
 
-				_encryptionKey = _encryptionKey call BIS_fnc_parseNumber; // needs a number
-				_encryptionKey = round _encryptionKey; // needs an integer
-				if (_encryptionKey < 1) then { _encryptionKey = 1; }; // needs to be >= 1
-				if (_encryptionKey > 25) then { _encryptionKey = 25; }; // needs to be <= 25
+				_encryptionKey = _encryptionKey call BIS_fnc_parseNumber;
+				_encryptionKey = round _encryptionKey;
+				if (_encryptionKey < 1) then { _encryptionKey = 1; };
+				if (_encryptionKey > 25) then { _encryptionKey = 25; };
 
 				[_encryptionKey, _mode, _row] call AE3_armaos_fnc_encryption_caesar;
 			};
@@ -77,24 +146,65 @@ if (_isEncrypted) then
 
 				_row = _row regexReplace [" ", "_"];
 
-				while {(count _encryptionKey) < 2 } do 
+				while {(count _encryptionKey) < 2 } do
 				{
-					_encryptionKey = _encryptionKey + "_"; // min. length 2
+					_encryptionKey = _encryptionKey + "_";
 				};
 
 				[_encryptionKey, _mode, _row] call AE3_armaos_fnc_encryption_columnar;
 			};
 		};
+		default
+		{
+			private _handlers = missionNamespace getVariable ["AE3_filesystem_encryptionHandlers", createHashMap];
+			_addonHandler = _handlers getOrDefault [_encryptionAlgorithm, {}];
+			if (_addonHandler isEqualTo {}) then
+			{
+				_hasCipher = false;
+				WARNING_1("Unknown file encryption algorithm %1 - storing plaintext",_encryptionAlgorithm);
+			}
+			else
+			{
+				_crypto_fnc =
+				{
+					params ["_encryptionKey", "_mode", "_row"];
+					[_addonAlgorithm, _mode, _row, _encryptionKey] call _addonHandler;
+				};
+			};
+		};
 	};
 
-	_content = _content splitString endl;
-
+	if (_hasCipher) then
 	{
-		private _row = [_encryptionKey, _mode, _x] call _crypto_fnc;
-		_content set [_forEachIndex, _row];
-	} forEach _content;
+		_content = _content splitString endl;
 
-	_content = _content joinString endl;
+		{
+			private _row = [_encryptionKey, _mode, _x] call _crypto_fnc;
+			_content set [_forEachIndex, _row];
+		} forEach _content;
+
+		_content = _content joinString endl;
+	};
+};
+
+// Overwrite mode (used by media registration): remove any case-insensitive name match in the target
+// directory first, so "Intel.PNG" replaces an existing "intel.png" instead of coexisting or being
+// skipped as "already exists".
+if (_overwrite) then
+{
+    private _parts = (_path splitString "/") select { _x isNotEqualTo "" };
+    if (_parts isNotEqualTo []) then
+    {
+        private _fname = _parts deleteAt (count _parts - 1);
+        try
+        {
+            private _pdir = [_parts, _filesystem] call AE3_filesystem_fnc_resolvePntr;
+            private _pcontent = _pdir select 0;
+            {
+                if ((toLower _x) isEqualTo (toLower _fname)) exitWith { _pcontent deleteAt _x; };
+            } forEach (keys _pcontent);
+        } catch {};
+    };
 };
 
 // throws exception if file already exists
@@ -115,12 +225,11 @@ catch
     private _normalizedException = _exception regexReplace ["'(.+)'", "'%1'"];
     if (_normalizedException isEqualTo (localize "STR_AE3_Filesystem_Exception_AlreadyExists")) then
     {
-        diag_log format ["AE3: File already exists: %1", _exception];
-		["AE3: File already exists: %1", _exception] call BIS_fnc_error;
+        INFO_1("File already exists, skipping: %1",_exception);
     }
     else
     {
-        diag_log format ["AE3 ERROR: Failed to create file %1: %2", _path, _exception];
+        ERROR_2("Failed to create file %1: %2",_path,_exception);
         throw _exception;
     };
 };

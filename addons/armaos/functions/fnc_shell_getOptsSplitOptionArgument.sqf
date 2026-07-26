@@ -1,3 +1,4 @@
+// File: fnc_shell_getOptsSplitOptionArgument.sqf
 /*
  * Author: Root, y0014984
  * Description: Splits an option-argument pair (e.g., '--key=value' into ['--key', 'value']).

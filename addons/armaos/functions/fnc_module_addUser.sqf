@@ -1,3 +1,4 @@
+// File: fnc_module_addUser.sqf
 /*
  * Author: Root, y0014984, Wasserstoff
  * Description: Eden/Zeus module function to add a user account to all synced computers. Only runs on server when placed in Eden editor. Module is deleted after processing.

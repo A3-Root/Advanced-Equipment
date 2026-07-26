@@ -1,3 +1,4 @@
+// File: fnc_terminal_updateBatteryStatus.sqf
 /*
  * Author: Root, y0014984
  * Description: Updates the battery status display in the terminal header.
@@ -26,7 +27,7 @@ private _outputCtrl = _consoleDialog displayCtrl 1100;
 uiNamespace setVariable ["AE3_Battery", _battery];
 uiNamespace setVariable ["AE3_ConsoleOutput", _outputCtrl];
 
-_handle = 
+private _handle =
     [
         {
             (_this select 0) params ["_computer", "_battery", "_batteryCtrl"];
@@ -39,6 +40,9 @@ _handle =
 
                 private _params = [_battery] call AE3_power_fnc_getBatteryLevel;
                 _params params ["_batteryLevel", "_batteryLevelPercent"];
+
+                // Keep /sys/battery/capacity content in sync (server-side filesystem)
+                ["ae3_armaos_updateBatterySysFile", [netId _computer, _batteryLevelPercent]] call CBA_fnc_serverEvent;
 
                 private _value = 0;
 

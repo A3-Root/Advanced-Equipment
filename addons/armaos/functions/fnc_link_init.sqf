@@ -1,3 +1,4 @@
+// File: fnc_link_init.sqf
 /*
  * Author: Root, y0014984, Wasserstoff
  * Description: Initializes command links from config for a computer, loading all available commands.
@@ -39,7 +40,7 @@ private _functions = ("inheritsFrom _x == (configFile >> 'OsFunction')" configCl
 		try
 		{
 			[[], _filesystem, (getText (_x >> "path")), (compile getText (_x >> "code")), "root", "root",
-			[[true, true, true], [true, false, false]]] call AE3_filesystem_fnc_createFile;
+			[[true, true, true], [false, false, true]]] call AE3_filesystem_fnc_createFile;
 		}catch {};
 
 		[_computer, _commandName, getText (_x >> "path"), getText (_x >> "description"), getText (_x >> "man")] call AE3_armaos_fnc_link_add;

@@ -1,3 +1,4 @@
+// File: fnc_terminal_uiOnTex_init.sqf
 /*
  * Author: Root, y0014984
  * Description: Initializes UI-on-Texture rendering for a computer object. Creates a workaround display to preload images and sets the object texture to use the UI render target.
@@ -15,6 +16,9 @@
  */
 
 params ["_computer"];
+
+// HC and dedicated server must never create displays
+if (!hasInterface) exitWith {};
 
 // Prevent multiple simultaneous initializations of the same laptop
 private _isInitializing = _computer getVariable ["AE3_UiOnTexInitializing", false];

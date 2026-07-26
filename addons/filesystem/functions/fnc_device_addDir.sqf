@@ -1,3 +1,5 @@
+// File: fnc_device_addDir.sqf
+#include "..\script_component.hpp"
 /*
  * Author: Root, y0014984
  * Description: Adds a directory to a device's filesystem (laptop or flash drive). Must run on server. Logs error if directory already exists, throws exception for other errors.
@@ -6,7 +8,7 @@
  * 0: _device <OBJECT> - Device object (computer or flash drive)
  * 1: _path <STRING> - Path to new directory
  * 2: _owner <STRING> - Owner of the directory
- * 3: _permissions <ARRAY> - Permissions [[owner x,r,w],[everyone x,r,w]]
+ * 3: _permissions <ARRAY> - Permissions [[owner r,w,x],[everyone r,w,x]]
  *
  * Return Value:
  * None
@@ -41,8 +43,7 @@ catch
     private _normalizedException = _exception regexReplace ["'(.+)'", "'%1'"];
     if (_normalizedException isEqualTo (localize "STR_AE3_Filesystem_Exception_AlreadyExists")) then
     {
-        diag_log format ["AE3 exception: %1", _exception];
-        ["AE3 exception: %1", _exception] call BIS_fnc_error;
+        INFO_1("Directory already exists, skipping: %1",_exception);
     }
     else
     {

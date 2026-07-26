@@ -11,8 +11,9 @@ class CfgPatches
                 "Land_Laptop_03_olive_F_AE3",
                 "Land_Laptop_03_sand_F_AE3",
                 "AE3_AddUser",
-                "AE3_AddSecurityCommands",
-                "AE3_AddGames"
+                "AE3_AddCalendarEvent",
+                "AE3_SaveLaptop",
+                "AE3_RestoreLaptop"
             };
         weapons[] = {"Item_Laptop_AE3"};
         requiredVersion = REQUIRED_VERSION;
@@ -39,3 +40,6 @@ class CfgPatches
 
 // Advanced Equipment Dialog Definitions
 #include "dialog.hpp"
+
+// Built-in Zeus module dialogs (used when Zeus Enhanced is not loaded)
+#include "CfgUserInterfaceZeus.hpp"

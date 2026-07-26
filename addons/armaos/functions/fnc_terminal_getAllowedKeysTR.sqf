@@ -1,3 +1,4 @@
+// File: fnc_terminal_getAllowedKeysTR.sqf
 /*
  * Author: Root
  * Description: Returns the allowed keyboard key mappings for Turkish (TR) layout.

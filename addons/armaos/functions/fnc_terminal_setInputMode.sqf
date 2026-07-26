@@ -1,3 +1,4 @@
+// File: fnc_terminal_setInputMode.sqf
 /*
  * Author: Root, Wasserstoff
  * Description: Sets the terminal input mode (SHELL, INPUT, LOGIN, PASSWORD, etc.).

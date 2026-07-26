@@ -1,3 +1,4 @@
+// File: fnc_terminal_updateBufferVisible.sqf
 /*
  * Author: Root, y0014984
  * Description: Updates the visible portion of the terminal buffer based on scroll position and screen size.
@@ -18,8 +19,14 @@ params ["_computer"];
 
 private _terminal = _computer getVariable "AE3_terminal";
 
+// Defensive: a laptop that never opened a CLI shell has no initialized terminal/buffer. Bail rather
+// than crash on "count <Number>" at the buffer math below.
+if (isNil "_terminal" || {!(_terminal isEqualType createHashMap)}) exitWith {};
+
 private _terminalBuffer = _terminal get "AE3_terminalBuffer";
 private _terminalRenderedBuffer = _terminal get "AE3_terminalRenderedBuffer";
+
+if (!(_terminalBuffer isEqualType []) || {!(_terminalRenderedBuffer isEqualType [])}) exitWith {};
 
 private _size = _terminal get "AE3_terminalSize";
 private _terminalMaxRows = (_terminal get "AE3_terminalMaxRows") * 0.75 / _size;
@@ -28,7 +35,7 @@ private _terminalApplication = _terminal get "AE3_terminalApplication";
 
 private _terminalInputBuffer = ["", ""];
 
-if (!isNil { _terminal get "AE3_terminalInputBuffer" }) then 
+if (!isNil { _terminal get "AE3_terminalInputBuffer" }) then
 {
 	_terminalInputBuffer = _terminal get "AE3_terminalInputBuffer";
 };

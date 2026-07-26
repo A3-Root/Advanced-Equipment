@@ -1,8 +1,11 @@
+// File: fnc_zeus_module_addUser.sqf
+#include "..\script_component.hpp"
 /*
  * Author: Root, y0014984
  * Description: Handles the Zeus 'Add User' module interface events (onLoad/onUnload). Runs locally on the Zeus curator's machine.
  * Creates a new user account on the target computer with the specified username and password.
- * The module must be placed on a computer object and will be deleted after processing.
+ * The module must be placed on a computer object and will be deleted after processing. When Zeus Enhanced is loaded,
+ * the input is gathered through a ZEN Dynamic Dialog instead of the built-in dialog.
  *
  * Arguments:
  * 0: _display <DISPLAY> - The Zeus module display
@@ -30,22 +33,27 @@ if (_event isEqualTo "onLoad") exitWith
     private _result = [_display] call AE3_main_fnc_zeus_checkForComputer;
     _result params ["_status", "_computer"];
 
-    if (_status isEqualTo "SUCCESS") then
+    if (_status isNotEqualTo "SUCCESS") exitWith { _display closeDisplay 2; }; // 2 = cancel
+
+    // Hand off to ZEN's Dynamic Dialog when Zeus Enhanced is present; the module lifecycle then
+    // belongs to the ZEN builder, so the legacy onUnload below is skipped via the zenHandled flag.
+    if (EGVAR(main,hasZenDialog)) exitWith
     {
-        // add computer variable to display namespace
-        _display setVariable ["AE3_linkedComputer", _computer];
-    }
-    else
-    {
-        // close display
-        _display closeDisplay 2; // 2 = cancel
+        _module setVariable [QGVAR(zenHandled), true];
+        _display closeDisplay 2;
+        [FUNC(zen_module_addUser), [_module, _computer]] call CBA_fnc_execNextFrame;
     };
+
+    // add computer variable to display namespace
+    _display setVariable ["AE3_linkedComputer", _computer];
 };
 
 /* ---------------------------------------- */
 
 if (_event isEqualTo "onUnload") exitWith
 {
+    if (_module getVariable [QGVAR(zenHandled), false]) exitWith {}; // ZEN owns the lifecycle
+
     private _computer = _display getVariable ["AE3_linkedComputer", objNull];
     if ((isNull _computer) || (_exitCode == 2)) exitWith
     {
@@ -68,27 +76,11 @@ if (_event isEqualTo "onUnload") exitWith
     // check for not allowed spaces in username
     if((_username find " ") != -1) exitWith { [objNull, localize "STR_AE3_Main_Zeus_UsernameContainsSpaces"] call BIS_fnc_showCuratorFeedbackMessage; };
 
-    // Wait for filesystem to be ready before adding user
-    [_computer, _username, _password, _module] spawn {
-        params ["_computer", "_username", "_password", "_module"];
+    // Server ensures the filesystem is initialized (on demand) and reports back via
+    // "ae3_main_zeusOpFeedback" - no client-side polling (fixes timeouts on dedicated)
+    ["ae3_main_zeusDeviceOp", [netId _computer, "addUser", [_username, _password], clientOwner]] call CBA_fnc_serverEvent;
 
-        // Wait for filesystem initialization (10 second timeout)
-        private _filesystemReady = [_computer, 10] call AE3_main_fnc_waitForFilesystem;
-
-        if (!_filesystemReady) exitWith {
-            [objNull, "Filesystem not ready. Please wait and try again."] call BIS_fnc_showCuratorFeedbackMessage;
-            deleteVehicle _module;
-        };
-
-        // Add user to computer
-        [_computer, _username, _password] remoteExecCall ["AE3_armaos_fnc_computer_addUser", 2];
-
-        private _message = format ["'%1': %2 '%3': %4", localize "STR_AE3_Main_Zeus_Username", _username, localize "STR_AE3_Main_Zeus_Password", _password];
-        [localize "STR_AE3_Main_Zeus_UserAdded", _message, 5] call BIS_fnc_curatorHint;
-
-        // Delete module
-        deleteVehicle _module;
-    };
+    deleteVehicle _module;
 };
 
 /* ---------------------------------------- */

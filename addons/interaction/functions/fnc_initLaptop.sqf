@@ -1,3 +1,4 @@
+// File: fnc_initLaptop.sqf
 /*
  * Author: Root, y0014984
  * Description: Initializes a laptop by setting the open/closed animation state and adding the "Use Terminal"
@@ -61,7 +62,19 @@ if(!isDedicated) then
         diag_log format ["[AE3 DEBUG] [%1] ACE actions on laptop BEFORE initLaptop processing: %2", time, _actionsBeforeCount];
     };
 
-    if (!_laptopActionsAdded) then {
+    if (_laptopActionsAdded) then {
+        if (AE3_DebugMode) then {
+            diag_log format ["[AE3 DEBUG] [%1] Laptop actions already added for %2, skipping", time, _laptop];
+
+            // DEBUG: Count actions even when skipping to detect duplicates
+            private _actionsCount = 0;
+            private _existingActions = _laptop getVariable ["ace_interact_menu_Act_SelfActions", []];
+            if (_existingActions isEqualType []) then {
+                _actionsCount = count _existingActions;
+            };
+            diag_log format ["[AE3 DEBUG] [%1] Current ACE actions on laptop: %2", time, _actionsCount];
+        };
+    } else {
         // Mark that we're adding the actions IMMEDIATELY to prevent race conditions
         if (AE3_DebugMode) then {
             diag_log format ["[AE3 DEBUG] [%1] initLaptop: SETTING laptopActionsAdded flag to TRUE for %2", time, _laptop];
@@ -80,7 +93,12 @@ if(!isDedicated) then
             _parentPath = ["ACE_MainActions"];
         };
 
-        // Add "Use Terminal" action directly under Laptop action (no submenu)
+        // The available interfaces (CLI terminal / GUI desktop) and who may use them are
+        // decided by the mission maker (AE3_interfaceMode + AE3_*AccessCondition via
+        // AE3_desktop_fnc_setInterfaceMode / fnc_setInterfaceAccess) - there is intentionally
+        // no player-facing switch. Without the desktop addon, only the CLI action exists.
+
+        // "Use Terminal" (CLI)
         private _useAction =
         [
             "AE3_UseTerminalAction", // internal name
@@ -91,19 +109,58 @@ if(!isDedicated) then
                 params ["_target", "_player", "_params"];
 
                 _target setVariable ["AE3_computer_mutex", _player, true];
-                _handle = [_target] spawn AE3_armaos_fnc_terminal_init;
+                [_target] spawn AE3_armaos_fnc_terminal_init;
             },
             {
                 // condition
                 params ["_target", "_player", "_params"];
 
-                (alive _target) && (_target getVariable "AE3_power_powerState" == 1) &&
-                (isNull (_target getVariable ["AE3_computer_mutex", objNull]))
+                private _allowed = if (isNil "AE3_desktop_fnc_canAccessInterface") then
+                {
+                    true // desktop addon absent: classic behavior, CLI always available
+                }
+                else
+                {
+                    [_target, _player, "cli"] call AE3_desktop_fnc_canAccessInterface
+                };
+
+                _allowed &&
+                {alive _target} &&
+                {(_target getVariable ["AE3_power_powerState", 0]) == 1} &&
+                {[_target] call AE3_armaos_fnc_computer_isFree}
             }
         ] call ace_interact_menu_fnc_createAction;
         [_laptop, 0, _parentPath, _useAction] call ace_interact_menu_fnc_addActionToObject;
+
+        // "Use Desktop" (GUI) - only functional when the desktop addon is loaded
+        private _useDesktopAction =
+        [
+            "AE3_UseDesktopAction",
+            localize "STR_AE3_Interaction_UseDesktop",
+            "",
+            {
+                // statement
+                params ["_target", "_player", "_params"];
+
+                _target setVariable ["AE3_computer_mutex", _player, true];
+                // GUI is the web (CEF) desktop; openWeb claims the laptop and handles cleanup on close.
+                [_target] spawn (missionNamespace getVariable ["AE3_desktop_fnc_desktop_openWeb", {}]);
+            },
+            {
+                // condition
+                params ["_target", "_player", "_params"];
+
+                !isNil "AE3_desktop_fnc_canAccessInterface" &&
+                {[_target, _player, "gui"] call AE3_desktop_fnc_canAccessInterface} &&
+                {alive _target} &&
+                {(_target getVariable ["AE3_power_powerState", 0]) == 1} &&
+                {[_target] call AE3_armaos_fnc_computer_isFree}
+            }
+        ] call ace_interact_menu_fnc_createAction;
+        [_laptop, 0, _parentPath, _useDesktopAction] call ace_interact_menu_fnc_addActionToObject;
+
         if (AE3_DebugMode) then {
-            diag_log format ["[AE3 DEBUG] [%1] Added Use Terminal action for %2 under path: %3", time, _laptop, _parentPath];
+            diag_log format ["[AE3 DEBUG] [%1] Added Use Terminal/Desktop actions for %2 under path: %3", time, _laptop, _parentPath];
         };
 
         // Add "Pickup to Inventory" action
@@ -130,10 +187,11 @@ if(!isDedicated) then
             {
                 // condition - only when not in use
                 params ["_target", "_player", "_params"];
-                (alive _target) && (isNull (_target getVariable ["AE3_computer_mutex", objNull]))
+                (alive _target) && ([_target] call AE3_armaos_fnc_computer_isFree)
             }
         ] call ace_interact_menu_fnc_createAction;
         [_laptop, 0, _parentPath, _pickupAction] call ace_interact_menu_fnc_addActionToObject;
+
         if (AE3_DebugMode) then {
             diag_log format ["[AE3 DEBUG] [%1] Added Pickup action for %2", time, _laptop];
 
@@ -144,18 +202,6 @@ if(!isDedicated) then
                 _actionsAfterCount = count _existingActionsAfter;
             };
             diag_log format ["[AE3 DEBUG] [%1] ACE actions on laptop AFTER adding laptop actions: %2 (added %3 actions)", time, _actionsAfterCount, _actionsAfterCount - _actionsBeforeCount];
-        };
-    } else {
-        if (AE3_DebugMode) then {
-            diag_log format ["[AE3 DEBUG] [%1] Laptop actions already added for %2, skipping", time, _laptop];
-
-            // DEBUG: Count actions even when skipping to detect duplicates
-            private _actionsCount = 0;
-            private _existingActions = _laptop getVariable ["ace_interact_menu_Act_SelfActions", []];
-            if (_existingActions isEqualType []) then {
-                _actionsCount = count _existingActions;
-            };
-            diag_log format ["[AE3 DEBUG] [%1] Current ACE actions on laptop: %2", time, _actionsCount];
         };
     };
 };

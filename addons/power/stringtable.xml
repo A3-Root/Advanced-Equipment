@@ -294,43 +294,5 @@
                 <Chinesesimp>打开</Chinesesimp>
             </Key>
         </Container>
-        <Container name="Terminal">
-            <Key ID="STR_AE3_Power_Terminal_PowerConsumptionModeBattery">
-                <Original>Battery Mode</Original>
-                <English>Battery Mode</English>
-                <French>Mode batterie</French>
-                <Italian>Modalita' batteria</Italian>
-                <Russian>Режим батареи</Russian>
-                <German>Batteriebetrieb</German>
-                <Chinesesimp>电池模式</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_Power_Terminal_PowerConsumptionModePowerAdapter">
-                <Original>Power Adapter Mode</Original>
-                <English>Power Adapter Mode</English>
-                <French>Mode adaptateur secteur</French>
-                <Italian>Modalità adattatore di potenza</Italian>
-                <Russian>Работа от сети</Russian>
-                <German>Netzbetrieb</German>
-                <Chinesesimp>电源模式</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_Power_Terminal_PowerConsumptionModeUnknown">
-                <Original>Unknown Mode</Original>
-                <English>Unknown Mode</English>
-                <French>Mode inconnu</French>
-                <Italian>Modalità sconosciuta</Italian>
-                <Russian>Неизвестный режим работы</Russian>
-                <German>unbekannter Betriebsmodus</German>
-                <Chinesesimp>未知模式</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_Power_Terminal_TerminalTitle">
-                <Original>TERMINAL - %1%2 (%3)</Original>
-                <English>TERMINAL - %1%2 (%3)</English>
-                <French>TERMINAL - %1%2 (%3)</French>
-                <Italian>TERMINALE - %1%2 (%3)</Italian>
-                <Russian>TERMINAL - %1%2 (%3)</Russian>
-                <German>TERMINAL - %1%2 (%3)</German>
-                <Chinesesimp>终端 - %1%2 (%3)</Chinesesimp>
-            </Key>
-        </Container>
     </Package>
 </Project>

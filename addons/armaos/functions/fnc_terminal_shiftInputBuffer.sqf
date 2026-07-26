@@ -1,3 +1,4 @@
+// File: fnc_terminal_shiftInputBuffer.sqf
 /*
  * Author: Root, Wasserstoff
  * Description: Shifts the terminal input buffer left or right for cursor movement.
@@ -28,6 +29,9 @@ if (!isNil { _terminal get "AE3_terminalInputBuffer" }) then
 
 if(_terminalInputBuffer select (parseNumber _right) isEqualTo "") exitWith {};
 
+// Unicode-safe: cursor math slices strings by character, not byte (user input may contain unicode)
+forceUnicode 1;
+
 if (_right) then
 {
 	if(_end) then
@@ -48,4 +52,6 @@ if (_right) then
 		_terminalInputBuffer set [1, ((_terminalInputBuffer select 0) select [(count (_terminalInputBuffer select 0)) - 1, (count (_terminalInputBuffer select 0))]) + (_terminalInputBuffer select 1)];
 		_terminalInputBuffer set [0, (_terminalInputBuffer select 0) select [0, (count (_terminalInputBuffer select 0)) - 1]];
 	}
-}
+};
+
+forceUnicode -1;

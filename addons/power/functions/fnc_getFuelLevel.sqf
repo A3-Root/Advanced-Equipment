@@ -1,3 +1,4 @@
+// File: fnc_getFuelLevel.sqf
 /*
  * Author: Root, y0014984
  * Description: Returns the current fuel level of a generator in absolute liters and as a percentage of capacity. Uses Arma 3's fuel command to get current level.

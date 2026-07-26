@@ -1,3 +1,4 @@
+// File: fnc_os_mkdir.sqf
 /*
  * Author: Root, y0014984
  * Description: Creates a new directory at the specified path. Similar to Unix mkdir command.
@@ -42,8 +43,6 @@ private _terminal = _computer getVariable "AE3_terminal";
 private _username = _terminal get "AE3_terminalLoginUser";
 
 private _obj = _ae3OptsThings select 0;
-private _result = [];
-_result = [_obj];
 
 try
 {

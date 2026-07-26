@@ -8,6 +8,7 @@ class CfgVehicles
 		scopeCurator = 2; // Zeus visability; 2 will show it in the menu, 0 will hide it.
 
 		editorCategory = "AE3_Assets";
+		editorSubcategory = "AE3_Sub_Lights";
 
 		curatorInfoTypeEmpty = "AE3_UserInterface_Zeus_Asset_Details";
 
@@ -66,6 +67,7 @@ class CfgVehicles
 		scopeCurator = 2; // Zeus visability; 2 will show it in the menu, 0 will hide it.
 
 		editorCategory = "AE3_Assets";
+		editorSubcategory = "AE3_Sub_Lights";
 
 		curatorInfoTypeEmpty = "AE3_UserInterface_Zeus_Asset_Details";
 		
@@ -126,6 +128,7 @@ class CfgVehicles
 		scopeCurator = 2; // Zeus visability; 2 will show it in the menu, 0 will hide it.
 
 		editorCategory = "AE3_Assets";
+		editorSubcategory = "AE3_Sub_Lights";
 
 		curatorInfoTypeEmpty = "AE3_UserInterface_Zeus_Asset_Details";
 		
@@ -223,6 +226,7 @@ class CfgVehicles
 		scopeCurator = 2; // Zeus visability; 2 will show it in the menu, 0 will hide it.
 
 		editorCategory = "AE3_Assets";
+		editorSubcategory = "AE3_Sub_Lights";
 
 		curatorInfoTypeEmpty = "AE3_UserInterface_Zeus_Asset_Details";
 		
@@ -320,6 +324,7 @@ class CfgVehicles
 		scopeCurator = 2; // Zeus visability; 2 will show it in the menu, 0 will hide it.
 
 		editorCategory = "AE3_Assets";
+		editorSubcategory = "AE3_Sub_Lights";
 
 		curatorInfoTypeEmpty = "AE3_UserInterface_Zeus_Asset_Details";
 		
@@ -417,6 +422,7 @@ class CfgVehicles
 		scopeCurator = 2; // Zeus visability; 2 will show it in the menu, 0 will hide it.
 
 		editorCategory = "AE3_Assets";
+		editorSubcategory = "AE3_Sub_Lights";
 
 		curatorInfoTypeEmpty = "AE3_UserInterface_Zeus_Asset_Details";
 		
@@ -514,6 +520,7 @@ class CfgVehicles
 		scopeCurator = 2; // Zeus visability; 2 will show it in the menu, 0 will hide it.
 
 		editorCategory = "AE3_Assets";
+		editorSubcategory = "AE3_Sub_Lights";
 
 		curatorInfoTypeEmpty = "AE3_UserInterface_Zeus_Asset_Details";
 		
@@ -644,6 +651,7 @@ class CfgVehicles
 		scopeCurator = 2; // Zeus visability; 2 will show it in the menu, 0 will hide it.
 
 		editorCategory = "AE3_Assets";
+		editorSubcategory = "AE3_Sub_Lights";
 
 		curatorInfoTypeEmpty = "AE3_UserInterface_Zeus_Asset_Details";
 		
@@ -774,6 +782,7 @@ class CfgVehicles
 		scopeCurator = 2; // Zeus visability; 2 will show it in the menu, 0 will hide it.
 
 		editorCategory = "AE3_Assets";
+		editorSubcategory = "AE3_Sub_Lights";
 
 		curatorInfoTypeEmpty = "AE3_UserInterface_Zeus_Asset_Details";
 		
@@ -904,6 +913,7 @@ class CfgVehicles
 		scopeCurator = 2; // Zeus visability; 2 will show it in the menu, 0 will hide it.
 
 		editorCategory = "AE3_Assets";
+		editorSubcategory = "AE3_Sub_Lights";
 
 		curatorInfoTypeEmpty = "AE3_UserInterface_Zeus_Asset_Details";
 		
@@ -1034,6 +1044,7 @@ class CfgVehicles
 		scopeCurator = 2; // Zeus visability; 2 will show it in the menu, 0 will hide it.
 
 		editorCategory = "AE3_Assets";
+		editorSubcategory = "AE3_Sub_Lights";
 
 		curatorInfoTypeEmpty = "AE3_UserInterface_Zeus_Asset_Details";
 		
@@ -1230,6 +1241,7 @@ class CfgVehicles
 		scopeCurator = 2; // Zeus visability; 2 will show it in the menu, 0 will hide it.
 
 		editorCategory = "AE3_Assets";
+		editorSubcategory = "AE3_Sub_Lights";
 
 		curatorInfoTypeEmpty = "AE3_UserInterface_Zeus_Asset_Details";
 		
@@ -1426,6 +1438,7 @@ class CfgVehicles
 		scopeCurator = 2; // Zeus visability; 2 will show it in the menu, 0 will hide it.
 
 		editorCategory = "AE3_Assets";
+		editorSubcategory = "AE3_Sub_Lights";
 
 		curatorInfoTypeEmpty = "AE3_UserInterface_Zeus_Asset_Details";
 		
@@ -1622,6 +1635,7 @@ class CfgVehicles
 		scopeCurator = 2; // Zeus visability; 2 will show it in the menu, 0 will hide it.
 
 		editorCategory = "AE3_Assets";
+		editorSubcategory = "AE3_Sub_Lights";
 
 		curatorInfoTypeEmpty = "AE3_UserInterface_Zeus_Asset_Details";
 		
@@ -1818,6 +1832,7 @@ class CfgVehicles
 		scopeCurator = 2; // Zeus visability; 2 will show it in the menu, 0 will hide it.
 
 		editorCategory = "AE3_Assets";
+		editorSubcategory = "AE3_Sub_Furniture";
 
 		curatorInfoTypeEmpty = "AE3_UserInterface_Zeus_Asset_Details";
 		
@@ -1953,6 +1968,7 @@ class CfgVehicles
 		scopeCurator = 2; // Zeus visability; 2 will show it in the menu, 0 will hide it.
 
 		editorCategory = "AE3_Assets";
+		editorSubcategory = "AE3_Sub_Furniture";
 
 		curatorInfoTypeEmpty = "AE3_UserInterface_Zeus_Asset_Details";
 		
@@ -2088,6 +2104,7 @@ class CfgVehicles
 		scopeCurator = 2; // Zeus visability; 2 will show it in the menu, 0 will hide it.
 
 		editorCategory = "AE3_Assets";
+		editorSubcategory = "AE3_Sub_Furniture";
 
 		curatorInfoTypeEmpty = "AE3_UserInterface_Zeus_Asset_Details";
 		
@@ -2222,6 +2239,7 @@ class CfgVehicles
 		scopeCurator = 2; // Zeus visability; 2 will show it in the menu, 0 will hide it.
 
 		editorCategory = "AE3_Assets";
+		editorSubcategory = "AE3_Sub_Furniture";
 		
 		//Sitting
 		acex_sitting_canSit = 1;  // Enable sitting
@@ -2258,6 +2276,7 @@ class CfgVehicles
 		scopeCurator = 2; // Zeus visability; 2 will show it in the menu, 0 will hide it.
 
 		editorCategory = "AE3_Assets";
+		editorSubcategory = "AE3_Sub_Furniture";
 		
 		//Sitting
 		acex_sitting_canSit = 1;  // Enable sitting
@@ -2294,6 +2313,7 @@ class CfgVehicles
 		scopeCurator = 2; // Zeus visability; 2 will show it in the menu, 0 will hide it.
 
 		editorCategory = "AE3_Assets";
+		editorSubcategory = "AE3_Sub_Furniture";
 		
 		//Sitting
 		acex_sitting_canSit = 1;  // Enable sitting

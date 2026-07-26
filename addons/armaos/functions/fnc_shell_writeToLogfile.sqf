@@ -1,3 +1,4 @@
+// File: fnc_shell_writeToLogfile.sqf
 /*
  * Author: Root, y0014984
  * Description: Writes a log entry to the terminal's log file for debugging and audit purposes.
@@ -38,11 +39,11 @@ private _dateString = format
 
 private _dayTimeString = [dayTime, "HH:MM:SS"] call BIS_fnc_timeToString;
 
-private _logMessage = format ["%1 %2 (%3): %4", _dateString, _dayTimeString, _sender, _logMessage];
-_logMessage = _logMessage + endl;
+private _logLine = format ["%1 %2 (%3): %4", _dateString, _dayTimeString, _sender, _logMessage];
+_logLine = _logLine + endl;
 
 
-[_pointer, _filesystem, _logFile, _user, _logMessage, true] call AE3_filesystem_fnc_writeToFile;
+[_pointer, _filesystem, _logFile, _user, _logLine, true] call AE3_filesystem_fnc_writeToFile;
 
 
 

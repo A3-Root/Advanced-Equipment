@@ -1,3 +1,4 @@
+// File: fnc_terminal_switchTerminalDesign.sqf
 /*
  * Author: Root, y0014984
  * Description: Cycles through available terminal designs.
@@ -37,7 +38,7 @@ else
 private _designs = _terminal get "AE3_terminalDesigns";
 
 // cycle through the designs
-private _currentDesignIndex = _currentDesignIndex + 1;
+_currentDesignIndex = _currentDesignIndex + 1;
 if (_currentDesignIndex == (count _designs)) then { _currentDesignIndex = 0; };
 
 private _currentDesign = _designs select _currentDesignIndex;
@@ -60,8 +61,6 @@ else
 	// As client in a multiplayer session
 	["AE3_TerminalDesign", _currentDesignIndex, 0, "client", true] call CBA_settings_fnc_set;
 };
-
-private _consoleOutput = _consoleDialog displayCtrl 1100;
 
 // set focus to text field, otherwise focus stays on button and prohibits additional text input
 ctrlSetFocus _consoleOutput;

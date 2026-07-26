@@ -1,3 +1,4 @@
+// File: fnc_laptop_open.sqf
 /*
  * Author: Root, y0014984
  * Description: Opens a laptop by animating the lid to the open position (animation phase 0).

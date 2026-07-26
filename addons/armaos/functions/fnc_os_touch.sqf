@@ -1,3 +1,4 @@
+// File: fnc_os_touch.sqf
 /*
  * Author: Root
  * Description: Creates an empty file with the given name in the current directory. Similar to Unix touch command.

@@ -1,0 +1,211 @@
+// File: fnc_intel_updateFields.sqf
+#include "..\script_component.hpp"
+/*
+ * Author: Root
+ * Description: Applies the per-type field layout for the Add Intel UI to a container, which may be a
+ * dialog display (Zeus curator dialog) or a controls group (3DEN attribute control). The intel type
+ * is read from the type combo (IDC 1702) and the labels, the media-kind picker, the email-only rows
+ * and the lockedfile permission grid are shown, hidden and repositioned to match. Reused so the Zeus
+ * dialog and the 3DEN module attribute behave identically.
+ *
+ * Arguments:
+ * 0: _container <DISPLAY|CONTROL> - The intel dialog display or the 3DEN attribute controls group
+ *
+ * Return Value:
+ * None
+ *
+ * Example:
+ * [_display] call AE3_desktop_fnc_intel_updateFields;
+ *
+ * Public: No
+ */
+
+params ["_container"];
+
+// Resolve child controls from either a controls group (3DEN attribute) or a dialog display (Zeus).
+private _getCtrl = if (_container isEqualType controlNull) then
+{
+	{ _container controlsGroupCtrl _this }
+}
+else
+{
+	{ _container displayCtrl _this }
+};
+
+private _combo = 1702 call _getCtrl;
+private _type = _combo lbData (lbCurSel _combo);
+
+private _labels = switch (_type) do
+{
+	case "webpage":    { [localize "STR_AE3_Desktop_Intel_LabelUrl", localize "STR_AE3_Desktop_Intel_LabelTitle", localize "STR_AE3_Desktop_Intel_LabelContent"] };
+	case "history":    { [localize "STR_AE3_Desktop_Intel_LabelUrl", localize "STR_AE3_Desktop_Intel_LabelTime", ""] };
+	case "media":      { [localize "STR_AE3_Desktop_Intel_LabelSource", localize "STR_AE3_Desktop_Intel_LabelMediaType", "Destination folder:"] };
+	case "lockedfile": { [localize "STR_AE3_Desktop_Intel_LabelDest", localize "STR_AE3_Desktop_Intel_LabelPassword", localize "STR_AE3_Desktop_Intel_LabelContent"] };
+	default            { [localize "STR_AE3_Desktop_Intel_LabelFrom", localize "STR_AE3_Desktop_Intel_LabelTo", localize "STR_AE3_Desktop_Intel_LabelSubject"] };
+};
+(1710 call _getCtrl) ctrlSetText (_labels select 0);
+(1711 call _getCtrl) ctrlSetText (_labels select 1);
+(1712 call _getCtrl) ctrlSetText (_labels select 2);
+
+private _isEmail = _type isEqualTo "email";
+private _isLocked = _type isEqualTo "lockedfile";
+// Media uses the kind dropdown (1602) in place of the second text field (1402).
+private _isMedia = _type isEqualTo "media";
+(1602 call _getCtrl) ctrlShow _isMedia;
+(1402 call _getCtrl) ctrlShow (!_isMedia);
+// Media-only base64 image box. Present only in the Zeus dialog, not the 3DEN attribute group, so
+// resolve defensively and skip when the control is absent.
+private _b64Edit = 1420 call _getCtrl;
+if (!isNull _b64Edit) then
+{
+	_b64Edit ctrlShow _isMedia;
+	_b64Edit ctrlEnable _isMedia;
+	(1721 call _getCtrl) ctrlShow _isMedia;
+};
+	// The filesystem-path picker button (beside field 1401) only makes sense for the two types whose
+	// first field is a filesystem path: media source and locked-file destination.
+	(1720 call _getCtrl) ctrlShow (_isLocked || _isMedia);
+	// Place the Browse button next to whichever field carries the laptop filesystem path: the first
+	// field (1401) for locked files, the third field (1403, the save-to path) for media. The other
+	// path-capable field is restored to full width. Geometry only applies to the Zeus dialog; the
+	// 3DEN attribute control group has no Browse button. Full-width reference comes from label 1710.
+	if (!(_container isEqualType controlNull)) then
+	{
+		private _pRef = ctrlPosition (1710 call _getCtrl);
+		private _fullX = _pRef select 0;
+		private _fullW = _pRef select 2;
+		{
+			private _pe = ctrlPosition (_x call _getCtrl);
+			(_x call _getCtrl) ctrlSetPosition [_fullX, _pe select 1, _fullW, _pe select 3];
+			(_x call _getCtrl) ctrlCommit 0;
+		} forEach [1401, 1403];
+
+		if (_isLocked || _isMedia) then
+		{
+			private _fsIdc = [1401, 1403] select _isMedia;
+			private _pe = ctrlPosition (_fsIdc call _getCtrl);
+			private _bw = (ctrlPosition (1720 call _getCtrl)) select 2;
+			private _gap = _bw * 0.15;
+			private _editW = (_pe select 2) - _bw - _gap;
+			(_fsIdc call _getCtrl) ctrlSetPosition [_pe select 0, _pe select 1, _editW, _pe select 3];
+			(_fsIdc call _getCtrl) ctrlCommit 0;
+			(1720 call _getCtrl) ctrlSetPosition [(_pe select 0) + _editW + _gap, _pe select 1, _bw, _pe select 3];
+			(1720 call _getCtrl) ctrlCommit 0;
+		};
+	};
+(1713 call _getCtrl) ctrlSetText (localize "STR_AE3_Desktop_Intel_LabelBody");
+// email-only: body field
+{
+	(_x call _getCtrl) ctrlShow _isEmail;
+} forEach [1713, 1404];
+// shared: received-time row (email) / owner-name row (lockedfile)
+{
+	(_x call _getCtrl) ctrlShow (_isEmail || _isLocked || _isMedia);
+} forEach [1714, 1405];
+// email + media: the two checkbox rows. Email uses them for sender/recipient address creation;
+// media reuses them for the native-RscPicture fallback (1317) and the mod-path hint (1318).
+{
+	(_x call _getCtrl) ctrlShow (_isEmail || _isMedia);
+} forEach [1717, 1317, 1718, 1318];
+{
+	(_x call _getCtrl) ctrlEnable (_isEmail || _isMedia);
+} forEach [1317, 1318];
+// lockedfile-only: permission column headers and all six permission checkboxes
+{
+	(_x call _getCtrl) ctrlShow _isLocked;
+} forEach [1715, 1716, 1301, 1302, 1303, 1304, 1305, 1306];
+// Keep Tab navigation on the visible input controls only. Static labels never take focus, and a
+// control hidden for the current type is also disabled so the engine skips it in the tab ring
+// (ctrlShow alone leaves a hidden control focusable). Visible inputs stay enabled.
+{
+	(_x call _getCtrl) ctrlEnable false;
+} forEach [1710, 1711, 1712, 1713, 1714, 1715, 1716, 1717, 1718];
+(1602 call _getCtrl) ctrlEnable _isMedia;
+(1402 call _getCtrl) ctrlEnable (!_isMedia);
+(1404 call _getCtrl) ctrlEnable _isEmail;
+(1405 call _getCtrl) ctrlEnable (_isEmail || _isLocked || _isMedia);
+{
+	(_x call _getCtrl) ctrlEnable _isLocked;
+} forEach [1301, 1302, 1303, 1304, 1305, 1306];
+if (_isEmail) then
+{
+	(1714 call _getCtrl) ctrlSetText (localize "STR_AE3_Desktop_Intel_LabelReceivedTime");
+	(1717 call _getCtrl) ctrlSetText (localize "STR_AE3_Desktop_Intel_LabelCreateFromHandle");
+	(1718 call _getCtrl) ctrlSetText (localize "STR_AE3_Desktop_Intel_LabelCreateToHandle");
+	(1405 call _getCtrl) ctrlSetText "";
+	(1317 call _getCtrl) cbSetChecked false;
+	(1318 call _getCtrl) cbSetChecked false;
+	// Derive one grid-row height from the y gap between body label (IDC 1713, y=11.2) and body field
+	// (IDC 1404, y=12.2) so the received-time row can be placed without the all-caps grid macros.
+	private _pLabel = ctrlPosition (1713 call _getCtrl);
+	private _pBody  = ctrlPosition (1404 call _getCtrl);
+	private _gH = (_pBody select 1) - (_pLabel select 1); // 1 grid row
+	// Shrink body to h=2 rows so the received-time row fits directly below before the checkboxes.
+	(1404 call _getCtrl) ctrlSetPosition [_pBody select 0, _pBody select 1, _pBody select 2, 2 * _gH];
+	(1404 call _getCtrl) ctrlCommit 0;
+	private _rowY = (_pBody select 1) + (2.3 * _gH);
+	private _p14 = ctrlPosition (1714 call _getCtrl);
+	private _p15 = ctrlPosition (1405 call _getCtrl);
+	(1714 call _getCtrl) ctrlSetPosition [_p14 select 0, _rowY, _p14 select 2, _p14 select 3];
+	(1405 call _getCtrl) ctrlSetPosition [_p15 select 0, _rowY, _p15 select 2, _p15 select 3];
+	(1714 call _getCtrl) ctrlCommit 0;
+	(1405 call _getCtrl) ctrlCommit 0;
+};
+if (_isLocked) then
+{
+	(1714 call _getCtrl) ctrlSetText (localize "STR_AE3_Desktop_Intel_LabelOwner");
+	(1715 call _getCtrl) ctrlSetText (localize "STR_AE3_Desktop_Intel_LabelOwner");
+	(1716 call _getCtrl) ctrlSetText (localize "STR_AE3_Desktop_Intel_LabelEveryone");
+	// Restore the owner row to its config-defined position (body_y + 1 grid row).
+	private _pLabel = ctrlPosition (1713 call _getCtrl);
+	private _pBody  = ctrlPosition (1404 call _getCtrl);
+	private _gH = (_pBody select 1) - (_pLabel select 1);
+	private _origY = (_pBody select 1) + _gH;
+	private _p14 = ctrlPosition (1714 call _getCtrl);
+	private _p15 = ctrlPosition (1405 call _getCtrl);
+	(1714 call _getCtrl) ctrlSetPosition [_p14 select 0, _origY, _p14 select 2, _p14 select 3];
+	(1405 call _getCtrl) ctrlSetPosition [_p15 select 0, _origY, _p15 select 2, _p15 select 3];
+	(1714 call _getCtrl) ctrlCommit 0;
+	(1405 call _getCtrl) ctrlCommit 0;
+};
+if (_isMedia) then
+{
+	// Relabel the two shared checkboxes for the media options and start them unchecked.
+	(1717 call _getCtrl) ctrlSetText (localize "STR_AE3_Desktop_Intel_LabelTryWebView");
+	(1718 call _getCtrl) ctrlSetText (localize "STR_AE3_Desktop_Intel_LabelModPath");
+	(1317 call _getCtrl) cbSetChecked false;
+	(1318 call _getCtrl) cbSetChecked false;
+
+	// Reuse the shared row (1714 label / 1405 edit) as the destination file name. Combined with the
+	// Browse-picked folder (field 1403) this forms the save path; a same-name (case-insensitive) file
+	// is overwritten.
+	(1714 call _getCtrl) ctrlSetText "File Name with Extension (overwrites same name):";
+	private _pLabel = ctrlPosition (1713 call _getCtrl);
+	private _pBody  = ctrlPosition (1404 call _getCtrl);
+	private _gH = (_pBody select 1) - (_pLabel select 1);
+	// When the base64 box exists (Zeus dialog), lift the file-name row directly under the destination
+	// folder so the tall paste box can occupy the space below it. Otherwise (3DEN attribute, no box)
+	// keep the original position at body_y + 1 grid row.
+	private _b64Media = 1420 call _getCtrl;
+	private _origY = if (isNull _b64Media) then { (_pBody select 1) + _gH } else { _pLabel select 1 };
+	private _p14 = ctrlPosition (1714 call _getCtrl);
+	private _p15 = ctrlPosition (1405 call _getCtrl);
+	(1714 call _getCtrl) ctrlSetPosition [_p14 select 0, _origY, _p14 select 2, _p14 select 3];
+	(1405 call _getCtrl) ctrlSetPosition [_p15 select 0, _origY, _p15 select 2, _p15 select 3];
+	(1714 call _getCtrl) ctrlCommit 0;
+	(1405 call _getCtrl) ctrlCommit 0;
+
+	// Lay out the base64 paste box (label + tall edit) below the file-name row, spanning full width.
+	if (!isNull _b64Media) then
+	{
+		private _b64Label = 1721 call _getCtrl;
+		private _pRef = ctrlPosition (1710 call _getCtrl);
+		private _fullX = _pRef select 0;
+		private _fullW = _pRef select 2;
+		_b64Label ctrlSetText (localize "STR_AE3_Desktop_Intel_LabelBase64");
+		_b64Label ctrlSetPosition [_fullX, _origY + (1.2 * _gH), _fullW, _gH];
+		_b64Media ctrlSetPosition [_fullX, _origY + (2.2 * _gH), _fullW, 2.4 * _gH];
+		_b64Label ctrlCommit 0;
+		_b64Media ctrlCommit 0;
+	};
+};

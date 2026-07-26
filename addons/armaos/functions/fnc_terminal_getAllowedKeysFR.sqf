@@ -1,3 +1,4 @@
+// File: fnc_terminal_getAllowedKeysFR.sqf
 /*
  * Author: Root, y0014984
  * Description: Returns the allowed keyboard key mappings for French (FR) layout.

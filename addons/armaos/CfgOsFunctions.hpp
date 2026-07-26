@@ -130,12 +130,20 @@ class CfgOsFunctions
 		code = "call AE3_armaos_fnc_os_ping";
 	};
 
-	class ipconfig : OsFunction
+	class ip : OsFunction
 	{
-		path = "/sbin/ipconfig";
-		description = "$STR_AE3_ArmaOS_Config_CommandIpconfigDescr";
-		man = "$STR_AE3_ArmaOS_Config_CommandIpconfigMan";
-		code = "call AE3_armaos_fnc_os_ipconfig";
+		path = "/sbin/ip";
+		description = "$STR_AE3_ArmaOS_Config_CommandIpDescr";
+		man = "$STR_AE3_ArmaOS_Config_CommandIpMan";
+		code = "call AE3_armaos_fnc_os_ip";
+	};
+
+	class ifconfig : OsFunction
+	{
+		path = "/sbin/ifconfig";
+		description = "$STR_AE3_ArmaOS_Config_CommandIpDescr";
+		man = "$STR_AE3_ArmaOS_Config_CommandIpMan";
+		code = "call AE3_armaos_fnc_os_ip";
 	};
 
 	class exit : OsFunction
@@ -152,6 +160,14 @@ class CfgOsFunctions
 		description = "$STR_AE3_ArmaOS_Config_CommandShutdownDescr";
 		man = "$STR_AE3_ArmaOS_Config_CommandShutdownMan";
 		code = "call AE3_armaos_fnc_os_shutdown";
+	};
+
+	class desktop : OsFunction
+	{
+		path = "/bin/desktop";
+		description = "Switch from the terminal to the GUI desktop interface.";
+		man = "Usage: desktop\n\nCloses the terminal and opens the graphical desktop on this device. Requires the desktop addon and GUI interface access.";
+		code = "call AE3_armaos_fnc_os_desktop";
 	};
 
 	class standby : OsFunction
@@ -204,5 +220,41 @@ class CfgOsFunctions
 		description = "$STR_AE3_ArmaOS_Config_CommandChownDescr";
 		man = "$STR_AE3_ArmaOS_Config_CommandChownMan";
 		code = "call AE3_armaos_fnc_os_chown";
+	};
+	class ssh : OsFunction
+	{
+		path = "/sbin/ssh";
+		description = "$STR_AE3_ArmaOS_Config_CommandSshDescr";
+		man = "$STR_AE3_ArmaOS_Config_CommandSshMan";
+		code = "call AE3_armaos_fnc_os_ssh";
+		sshCompatible = 0; // no nested ssh
+	};
+	class msg : OsFunction
+	{
+		path = "/sbin/msg";
+		description = "$STR_AE3_ArmaOS_Config_CommandMsgDescr";
+		man = "$STR_AE3_ArmaOS_Config_CommandMsgMan";
+		code = "call AE3_armaos_fnc_os_msg";
+	};
+	class unlock : OsFunction
+	{
+		path = "/bin/unlock";
+		description = "$STR_AE3_ArmaOS_Config_CommandUnlockDescr";
+		man = "$STR_AE3_ArmaOS_Config_CommandUnlockMan";
+		code = "call AE3_armaos_fnc_os_unlock";
+	};
+	class grep : OsFunction
+	{
+		path = "/bin/grep";
+		description = "$STR_AE3_ArmaOS_Config_CommandGrepDescr";
+		man = "$STR_AE3_ArmaOS_Config_CommandGrepMan";
+		code = "call AE3_armaos_fnc_os_grep";
+	};
+	class sudo : OsFunction
+	{
+		path = "/bin/sudo";
+		description = "$STR_AE3_ArmaOS_Config_CommandSudoDescr";
+		man = "$STR_AE3_ArmaOS_Config_CommandSudoMan";
+		code = "call AE3_armaos_fnc_os_sudo";
 	};
 };

@@ -1,11 +1,13 @@
-class CfgVehicles 
+class CfgVehicles
 {
 	/* ================================================================================ */
 
 	class Logic;
 	class Module_F: Logic
 	{
-		class AttributesBase {};
+		class AttributesBase
+		{
+		};
 		// Description base classes, for more information see below
 		class ModuleDescription {};
 	};

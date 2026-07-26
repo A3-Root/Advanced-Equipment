@@ -1,13 +1,80 @@
+# =========================
+# HEMTT
+# =========================
+*.biprivatekey
+*.hemttprivatekey
 *.pbo
 .hemttout
 hemtt
 hemtt.exe
-*.biprivatekey
-*.md
-**/*.json
-!README*.md
-!releases/CHANGELOG.md
-!wiki/*
-*.exe
-*.txt
 releases/ae3-latest.zip
+releases/@ae3
+
+# =========================
+# Documentation / Wiki / Text
+# =========================
+*.md
+*.txt
+*.json
+!README*.md
+!wiki/*
+!wiki/**/*.md
+!.github/PULL_REQUEST_TEMPLATE.md
+TODO
+!releases/CHANGELOG.md
+!NOTEPAD.txt
+logs/**/*
+.codex
+!.code-wiki/
+!.code-wiki/**
+.bak
+reference_files
+!graphify-out/
+!graphify-out/wiki/
+!graphify-out/wiki/**
+cache
+.graphify_python
+.graphify_root
+!.graphify_labels.json
+!cost.json
+!graph.json
+!manifest.json
+!gallery.md
+!brief.md
+!feed.md
+
+
+# =========================
+# Python
+# =========================
+__pycache__/
+
+# =========================
+# Dependencies / Scripts
+# =========================
+!.sh
+!.bat
+!requirements.txt
+
+# =========================
+# System / Environment
+# =========================
+build/.env
+!.env.example
+*.code-workspace
+.vscode/**/*
+.env
+*.exe
+.agents
+
+# =========================
+# General / Miscellaneous
+# =========================
+
+
+
+# =========================
+# Build artifacts / Logs
+# =========================
+*.log
+*.rpt

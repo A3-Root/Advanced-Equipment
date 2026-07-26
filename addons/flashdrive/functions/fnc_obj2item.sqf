@@ -1,3 +1,4 @@
+// File: fnc_obj2item.sqf
 /*
  * Author: Root, Wasserstoff
  * Description: Converts a world object to an inventory item, preserving all object variables in the item's namespace and deleting the object from the world
@@ -41,7 +42,7 @@ if (_id == -1) then
 _item = _item + (str _id);
 
 /* Copy variables */
-_itemNamespace = createHashMap;
+private _itemNamespace = createHashMap;
 {
 	_itemNamespace set [_x, _object getVariable _x];
 } forEach allVariables _object;
@@ -54,3 +55,5 @@ missionNamespace setVariable ["AE3_ITEM", _buffer];
 [_player, _item, true] remoteExecCall ["CBA_fnc_addItem", _player];
 
 deleteVehicle _object;
+
+_item

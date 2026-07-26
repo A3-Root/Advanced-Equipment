@@ -1,8 +1,11 @@
+// File: fnc_zeus_module_addFile.sqf
+#include "..\script_component.hpp"
 /*
  * Author: Root, y0014984
  * Description: Handles the Zeus 'Add File' module interface events (onLoad/onUnload). Runs locally on the Zeus curator's machine.
  * Creates a new file on the target computer's filesystem with specified content, permissions, and optional encryption.
- * The module must be placed on an object with a filesystem and will be deleted after processing.
+ * The module must be placed on an object with a filesystem and will be deleted after processing. When Zeus Enhanced is loaded,
+ * the input is gathered through a ZEN Dynamic Dialog instead of the built-in dialog.
  *
  * Arguments:
  * 0: _display <DISPLAY> - The Zeus module display
@@ -30,22 +33,26 @@ if (_event isEqualTo "onLoad") exitWith
     private _result = [_display] call AE3_main_fnc_zeus_checkForComputer;
     _result params ["_status", "_computer"];
 
-    if (_status isEqualTo "SUCCESS") then
+    if (_status isNotEqualTo "SUCCESS") exitWith { _display closeDisplay 2; }; // 2 = cancel
+
+    // Hand off to ZEN's Dynamic Dialog when Zeus Enhanced is present.
+    if (EGVAR(main,hasZenDialog)) exitWith
     {
-        // add computer variable to display namespace
-        _display setVariable ["AE3_linkedComputer", _computer];
-    }
-    else
-    {
-        // close display
-        _display closeDisplay 2; // 2 = cancel
+        _module setVariable [QGVAR(zenHandled), true];
+        _display closeDisplay 2;
+        [FUNC(zen_module_addFile), [_module, _computer]] call CBA_fnc_execNextFrame;
     };
+
+    // add computer variable to display namespace
+    _display setVariable ["AE3_linkedComputer", _computer];
 };
 
 /* ---------------------------------------- */
 
 if (_event isEqualTo "onUnload") exitWith
 {
+    if (_module getVariable [QGVAR(zenHandled), false]) exitWith {}; // ZEN owns the lifecycle
+
     private _computer = _display getVariable ["AE3_linkedComputer", objNull];
     if ((isNull _computer) || (_exitCode == 2)) exitWith
     {
@@ -77,12 +84,12 @@ if (_event isEqualTo "onUnload") exitWith
     private _everyoneRead = cbChecked _everyoneReadCtrl;
     private _everyoneWrite = cbChecked _everyoneWriteCtrl;
     private _everyoneExecute = cbChecked _everyoneExecuteCtrl;
-    private _permissions = [[_ownerExecute, _ownerRead, _ownerWrite], [_everyoneExecute, _everyoneRead, _everyoneWrite]];
+    private _permissions = [[_ownerRead, _ownerWrite, _ownerExecute], [_everyoneRead, _everyoneWrite, _everyoneExecute]];
     private _enableEncryption = cbChecked _enableEncryptionCtrl;
-    private _encryptionAlgorithm = lbCurSel _encryptionAlgorithmCtrl; // 0 = Caesar; 1 = Columnar
+    private _encryptionAlgorithmIndex = lbCurSel _encryptionAlgorithmCtrl;
+    private _encryptionAlgorithm = _encryptionAlgorithmCtrl lbData _encryptionAlgorithmIndex;
+    if (_encryptionAlgorithm isEqualTo "") then { _encryptionAlgorithm = ["caesar", "columnar"] select (_encryptionAlgorithmIndex max 0 min 1); };
     private _encryptionKey = ctrlText _encryptionKeyCtrl;
-
-    if (_encryptionAlgorithm == 0) then { _encryptionAlgorithm = "caesar"; } else { _encryptionAlgorithm = "columnar"; };
 
     // check for empty but mandatory input fields
     // module is still there an could be opened and filled in with valid input
@@ -95,27 +102,11 @@ if (_event isEqualTo "onUnload") exitWith
     if((_path find " ") != -1) exitWith { [objNull, localize "STR_AE3_Main_Zeus_PathContainsSpaces"] call BIS_fnc_showCuratorFeedbackMessage; };
     if((_owner find " ") != -1) exitWith { [objNull, localize "STR_AE3_Main_Zeus_OwnerContainsSpaces"] call BIS_fnc_showCuratorFeedbackMessage; };
 
-    // Wait for filesystem to be ready before adding file
-    [_computer, _path, _content, _isCode, _owner, _permissions, _enableEncryption, _encryptionAlgorithm, _encryptionKey, _module] spawn {
-        params ["_computer", "_path", "_content", "_isCode", "_owner", "_permissions", "_enableEncryption", "_encryptionAlgorithm", "_encryptionKey", "_module"];
+    // Server ensures the filesystem is initialized (on demand) and reports back via
+    // "ae3_main_zeusOpFeedback" - no client-side polling (fixes timeouts on dedicated)
+    ["ae3_main_zeusDeviceOp", [netId _computer, "addFile", [_path, _content, _isCode, _owner, _permissions, _enableEncryption, _encryptionAlgorithm, _encryptionKey], clientOwner]] call CBA_fnc_serverEvent;
 
-        // Wait for filesystem initialization (10 second timeout)
-        private _filesystemReady = [_computer, 10] call AE3_main_fnc_waitForFilesystem;
-
-        if (!_filesystemReady) exitWith {
-            [objNull, "Filesystem not ready. Please wait and try again."] call BIS_fnc_showCuratorFeedbackMessage;
-            deleteVehicle _module;
-        };
-
-        // Add file to computer
-        [_computer, _path, _content, _isCode, _owner, _permissions, _enableEncryption, _encryptionAlgorithm, _encryptionKey] remoteExecCall ["AE3_filesystem_fnc_device_addFile", 2];
-
-        private _message = format ["%1: %2", localize "STR_AE3_Main_Zeus_Path", _path];
-        [localize "STR_AE3_Main_Zeus_FileAdded", _message, 5] call BIS_fnc_curatorHint;
-
-        // Delete module
-        deleteVehicle _module;
-    };
+    deleteVehicle _module;
 };
 
 /* ---------------------------------------- */

@@ -1,3 +1,4 @@
+// File: fnc_zeus_filesystemBrowser_refresh.sqf
 /*
  * Author: Root
  * Description: Refreshes the Zeus filesystem browser file list. Updates the path display, clears and repopulates the list control
@@ -29,13 +30,24 @@ private _pathCtrl = _display displayCtrl 1400;
 private _pathString = "/" + (_pointer joinString "/");
 _pathCtrl ctrlSetText _pathString;
 
-// Get directory object
-private _dirObj = [_pointer, _filesystem] call AE3_filesystem_fnc_resolvePntr;
-private _dirContent = _dirObj select 0;
-
 // Clear and populate list
 private _listCtrl = _display displayCtrl 1500;
 lbClear _listCtrl;
+
+// The filesystem is the [content, owner, permissions] triple. On a dedicated server the curator's
+// client may not hold it yet (init keeps it server-local and it is fetched asynchronously by
+// fnc_zeus_filesystemBrowser_init), so render an empty listing rather than letting resolvePntr fail
+// on a missing or partial value; the async fetch triggers another refresh once it arrives.
+if (!(_filesystem isEqualType []) || {(count _filesystem) < 1} || {!((_filesystem select 0) isEqualType createHashMap)}) exitWith
+{
+	(_display displayCtrl 1401) ctrlSetText "";
+	(_display displayCtrl 1402) ctrlSetText "";
+	(_display displayCtrl 1403) ctrlSetText "";
+};
+
+// Get directory object
+private _dirObj = [_pointer, _filesystem] call AE3_filesystem_fnc_resolvePntr;
+private _dirContent = _dirObj select 0;
 
 // Add parent directory entry if not at root
 if (count _pointer > 0) then
@@ -67,7 +79,7 @@ _keys sort true;
 		// File - check if executable
 		private _permissions = _obj select 2;
 		private _ownerPerms = _permissions select 0;
-		private _isExecutable = _ownerPerms select 0;
+		private _isExecutable = _ownerPerms select 2;
 
 		if (_isExecutable) then
 		{
@@ -81,6 +93,11 @@ _keys sort true;
 		};
 	};
 } forEach _keys;
+
+// Do not leave a selection: an RscListBox auto-selects index 0 once populated, which would fire
+// onSelect and pre-pick the folder's first item (so "Select Path" returned it without a user click).
+_listCtrl lbSetCurSel -1;
+_display setVariable ["AE3_currentFile", ""];
 
 // Clear file content and properties
 private _contentCtrl = _display displayCtrl 1401;

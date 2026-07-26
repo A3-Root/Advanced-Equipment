@@ -1,3 +1,4 @@
+// File: fnc_terminal_getAllowedKeysAR.sqf
 /*
  * Author: Root
  * Description: Returns the allowed keyboard key mappings for Arabic (AR) layout.
@@ -37,10 +38,10 @@ private _allowedKeys = createHashMapFromArray
 	[format ["%1-%2-%3-%4", DIK_Y, true, false, false], "إ"],
 	[format ["%1-%2-%3-%4", DIK_U, false, false, false], "ع"],
 	[format ["%1-%2-%3-%4", DIK_U, true, false, false], "`"],
-	[format ["%1-%2-%3-%4", DIK_I, false, false, false], "ه"],
+	[format ["%1-%2-%3-%4", DIK_I, false, false, false], "."],
 	[format ["%1-%2-%3-%4", DIK_I, true, false, false], "÷"],
 	[format ["%1-%2-%3-%4", DIK_O, false, false, false], "خ"],
-	[format ["%1-%2-%3-%4", DIK_O, true, false, false], "×"],
+	[format ["%1-%2-%3-%4", DIK_O, true, false, false], "x"],
 	[format ["%1-%2-%3-%4", DIK_P, false, false, false], "ح"],
 	[format ["%1-%2-%3-%4", DIK_P, true, false, false], "؛"],
 	[format ["%1-%2-%3-%4", DIK_LBRACKET, false, false, false], "ج"],
@@ -57,7 +58,7 @@ private _allowedKeys = createHashMapFromArray
 	[format ["%1-%2-%3-%4", DIK_F, true, false, false], "["],
 	[format ["%1-%2-%3-%4", DIK_G, false, false, false], "ل"],
 	[format ["%1-%2-%3-%4", DIK_G, true, false, false], "لأ"],
-	[format ["%1-%2-%3-%4", DIK_H, false, false, false], "ا"],
+	[format ["%1-%2-%3-%4", DIK_H, false, false, false], "i"],
 	[format ["%1-%2-%3-%4", DIK_H, true, false, false], "أ"],
 	[format ["%1-%2-%3-%4", DIK_J, false, false, false], "ت"],
 	[format ["%1-%2-%3-%4", DIK_J, true, false, false], "ـ"],

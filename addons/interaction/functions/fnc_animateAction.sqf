@@ -1,3 +1,4 @@
+// File: fnc_animateAction.sqf
 /*
  * Author: Root, y0014984
  * Description: Adjusts an animatable aspect of an object based on mouse scroll input. Applies min/max clamping

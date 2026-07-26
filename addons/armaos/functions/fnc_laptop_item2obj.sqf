@@ -1,3 +1,4 @@
+// File: fnc_laptop_item2obj.sqf
 /*
  * Author: Root
  * Description: Converts a laptop inventory item back to a world object, restoring all state.
@@ -23,9 +24,32 @@ params ["_player", "_item", ["_pos", [], [[]]]];
 [missionNamespace, "AE3_LAPTOP_ITEM"] call AE3_main_fnc_getRemoteVar;
 private _buffer = missionNamespace getVariable ["AE3_LAPTOP_ITEM", createHashMap];
 
-if (!(_item in _buffer)) exitWith {
+// A base laptop item taken from the arsenal or a loadout (scopeArsenal != 0) was never a world object,
+// so it has no buffer entry. Spawn a fresh laptop from its paired object class instead of refusing:
+// the normal object init seeds its filesystem and battery. The per-instance ID classes (scopeArsenal = 0)
+// always carry a buffer entry and take the restore path below.
+private _isFreshItem = !(_item in _buffer)
+	&& {(getNumber (configFile >> "CfgWeapons" >> _item >> "scopeArsenal")) != 0}
+	&& {(getText (configFile >> "CfgWeapons" >> _item >> "ae3_vehicle")) isNotEqualTo ""};
+
+if (!(_item in _buffer) && {!_isFreshItem}) exitWith {
 	hint "Laptop data not found. Item may be corrupted.";
 	objNull
+};
+
+// Determine deployment position. Terrain height is not the surface a player is standing on once they are
+// inside a building, so the floor in front of them is looked for instead: a laptop deployed on an upper
+// storey is put down on that storey rather than dropped towards the ground under the building.
+if (_pos isEqualTo []) then {
+	_pos = [_player] call AE3_armaos_fnc_laptop_deployPos;
+};
+
+if (_isFreshItem) exitWith {
+	private _objType = getText (configFile >> "CfgWeapons" >> _item >> "ae3_vehicle");
+	private _fresh = createVehicle [_objType, _pos, [], 0, "CAN_COLLIDE"];
+	_fresh setDir (getDir _player);
+	[_player, _item] remoteExecCall ["CBA_fnc_removeItem", _player];
+	_fresh
 };
 
 private _itemNamespace = _buffer get _item;
@@ -34,15 +58,6 @@ private _type = _itemNamespace get "AE3_OBJECT_TYPE";
 if (isNil "_type" || {_type == ""}) exitWith {
 	hint "Laptop type data missing. Cannot deploy.";
 	objNull
-};
-
-// Determine deployment position
-if (_pos isEqualTo []) then {
-	// Deploy in front of player on the ground
-	_pos = _player modelToWorld [0, 1.5, 0];
-	// Get terrain height at deployment position
-	private _terrainHeight = getTerrainHeightASL [_pos select 0, _pos select 1];
-	_pos set [2, _terrainHeight];
 };
 
 if (AE3_DebugMode) then {
@@ -206,12 +221,36 @@ if (isServer) then {
 private _offTexture = "#(argb,8,8,3)color(0,0,0,0.0,co)";
 _object setObjectTextureGlobal [1, _offTexture];
 
+// Apply any charge accumulated while this laptop was carried in inventory after its internal
+// battery has been created by the normal device initialization path.
+private _storedCharge = _itemNamespace getOrDefault ["ROOT_EWO_BATTERY_PERCENT", -1];
+private _internalBattery = _object getVariable ["AE3_power_internal", objNull];
+if (_storedCharge >= 0 && {!isNull _internalBattery}) then {
+    [_internalBattery, _storedCharge] remoteExecCall ["AE3_power_fnc_setBatteryLevel", 2];
+};
+
 if (AE3_DebugMode) then {
 	diag_log format ["[AE3 DEBUG] [%1] laptop_item2obj: Set power state to OFF, close state to OPEN, and texture to OFF state", time];
 };
 
 // Remove item from player inventory
 [_player, _item] remoteExecCall ["CBA_fnc_removeItem", _player];
+
+// Reattach the removable drives that travelled with this laptop. The drive items remain normal
+// inventory items while the laptop is packed, so reconnecting them uses the same authoritative
+// conversion and mount path as an ACE interaction.
+private _savedDrives = _itemNamespace getOrDefault ["AE3_laptop_connectedDrives", []];
+private _interfaces = _object getVariable ["AE3_USB_Interfaces", createHashMap];
+{
+    _x params ["_interface", "_driveItem", ["_wasMounted", false]];
+    private _cfg = _interfaces getOrDefault [_interface, []];
+    if (_cfg isNotEqualTo [] && {_driveItem in (items _player)}) then {
+        [_object, _player, _driveItem, _cfg] call AE3_flashdrive_fnc_connectFlashDrive;
+        if (!_wasMounted) then {
+            [_object, _interface] remoteExecCall ["AE3_flashdrive_fnc_unmount", 2];
+        };
+    };
+} forEach _savedDrives;
 
 // No deployment hint needed
 

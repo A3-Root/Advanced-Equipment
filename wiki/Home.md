@@ -1,167 +1,76 @@
-# Advanced Equipment Revamped (AE3) Framework Wiki
+# Advanced Equipment Wiki
 
-Welcome to the AE3 Framework Developer Documentation. AE3 is an Arma 3 mod framework that implements a terminal-based system called ArmaOS. This wiki provides comprehensive technical documentation for mod developers and mission makers.
+Advanced Equipment Revamped adds usable equipment to Arma 3 missions: laptops, desktop apps, terminal computers, routers, power devices, flash drives, lights, filesystems, browser intel, mail, media, Zeus tools, and 3DEN setup modules.
 
-## What is AE3?
+This wiki is organized by audience first. If you do not write scripts, start with the guides below. If you are building missions through the editor, use the 3DEN and Mission Maker guides. If you are writing SQF or another addon, use the Reference and Developer sections.
 
-AE3 is both a **gameplay mod** and a **framework**. Players can interact with fully functional laptops, manage power systems, operate equipment, and access data through an in-game terminal interface. Developers can extend AE3 through its API.
+## Start Here
 
-- **ArmaOS**: Unix-like terminal interface for in-game computers
-- **Virtual Filesystem**: Hierarchical file system with permissions
-- **Network Simulation**: Router-based networking with DHCP (W.I.P)
-- **Power Management**: Batteries, generators, solar panels with realistic consumption
-- **Zeus/Eden Integration**: Modules for mission makers
-- **ACE3 Interactions**: Dynamic interaction menus for equipment
+- [Getting Started](Getting-Started.md): first mission setup and basic concepts.
+- [Player Guide](Player-Guide.md): what players see and how they use equipment in-game.
+- [Mission Maker Guide](Mission-Maker-Guide.md): planning laptop, power, network, and intel gameplay without scripting.
+- [Eden Editor Guide](Eden-Editor-Guide.md): placing objects, opening attributes, using modules, syncing modules, and editor connections.
+- [Zeus Guide](Zeus-Guide.md): live curator operations during a mission.
+- [Server Admin Guide](Server-Admin-Guide.md): dependencies, server file extension settings, dedicated server notes, and troubleshooting.
 
-## Quick Reference
+## Mission Recipes
 
-### Common Terminal Commands
+Each recipe separates the Eden Editor workflow, Zeus live workflow, and API/script workflow where the feature supports all three. If a feature does not have a true no-code path, the recipe says that directly and points to the correct Reference or Developer page.
 
-```bash
-ls [-l] [PATH]              # List directory contents
-cd [PATH]                   # Change directory
-cat FILE                    # Display file contents
-mkdir PATH                  # Create directory
-rm PATH                     # Delete file/directory
-touch FILE [CONTENT]        # Create file
+- [Create a Laptop](Examples/Create-a-Laptop.md)
+- [Configure GUI vs TUI Access](Examples/Configure-GUI-vs-TUI-Access.md)
+- [Add Files and Folders](Examples/Add-Files-and-Folders.md)
+- [Add Users and Passwords](Examples/Add-Users-and-Passwords.md)
+- [Add Custom Terminal Commands](Examples/Add-Custom-Terminal-Commands.md)
+- [Register Desktop Apps](Examples/Register-Desktop-Apps.md)
+- [Examples Library](Examples/README.md)
+- [Add Webpages and Browser History](Examples/Add-Webpages-and-Browser-History.md)
+- [Browser Sample Pages](Examples/Browser-Sample-Pages.md)
+- [Build a Network](Examples/Build-a-Network.md)
+- [Configure Power](Examples/Configure-Power.md)
+- [Use Flash Drives](Examples/Use-Flash-Drives.md)
+- [Add Intel, Mail, Chat, or Media](Examples/Add-Intel-Mail-Chat-or-Media.md)
+- [Zeus Live Operations](Examples/Zeus-Live-Operations.md)
 
-ipconfig                    # Show network configuration
-ping IP                     # Test network connectivity
-lsusb                       # List USB devices
-mount INTERFACE             # Mount flash drive
-unmount INTERFACE           # Unmount flash drive
+## System Guides
 
-crypto -m=MODE -k=KEY -a=ALG -o=OUTPUT MSG   # Encrypt/decrypt messages
-crack -m=MODE -a=ALG -o=OUTPUT MSG           # Crack encrypted messages
-```
+- [Laptops and Interfaces](Systems/Laptops-and-Interfaces.md)
+- [Desktop GUI](Systems/Desktop-GUI.md)
+- [Terminal TUI](Systems/Terminal-TUI.md)
+- [Browser and Webpages](Systems/Browser-and-Webpages.md)
+- [Filesystem](Systems/Filesystem.md)
+- [Networking](Systems/Networking.md)
+- [Power](Systems/Power.md)
+- [Flash Drives](Systems/Flash-Drives.md)
+- [Lights and Interaction](Systems/Lights-and-Interaction.md)
+- [Intel, Mail, Chat, and Media](Systems/Intel-Mail-Chat-Media.md)
+- [Encryption and Security](Systems/Encryption-and-Security.md)
 
-### Common API Functions
+## Script and API Reference
 
-```sqf
-// Computer Control
-[_computer, "username", "password"] call AE3_armaos_fnc_computer_addUser;
-[_computer] call AE3_armaos_fnc_computer_turnOn;
-[_computer] call AE3_armaos_fnc_computer_turnOff;
+Use these pages when you are writing SQF, configuring addon classes, or building another mod on top of AE3.
 
-// Filesystem Operations
-[[], _filesystem, "/tmp/file.txt", "Hello", "root"] call AE3_filesystem_fnc_createFile;
-[[], _filesystem, "/tmp/logs", "root"] call AE3_filesystem_fnc_createDir;
-private _content = [[], _filesystem, "/tmp/file.txt", "root", 1] call AE3_filesystem_fnc_getFile;
+- [API Overview](Reference/API-Overview.md)
+- [ArmaOS API](Reference/ArmaOS-API.md)
+- [Desktop API](Reference/Desktop-API.md)
+- [Browser API](Reference/Browser-API.md)
+- [Filesystem API](Reference/Filesystem-API.md)
+- [Network API](Reference/Network-API.md)
+- [Power API](Reference/Power-API.md)
+- [Flashdrive API](Reference/Flashdrive-API.md)
+- [Interaction API](Reference/Interaction-API.md)
+- [Zeus API](Reference/Zeus-API.md)
+- [Eden Attributes](Reference/Eden-Attributes.md)
+- [Config Classes](Reference/Config-Classes.md)
+- [Terminal Commands](Reference/Terminal-Commands.md)
+- [Desktop Apps](Reference/Desktop-Apps.md)
 
-// Power Management
-private _batteryInfo = [_battery] call AE3_power_fnc_getBatteryLevel;
-[_generator] call AE3_power_fnc_turnOnDevice;
+## Developer Notes
 
-// Flash Drive
-[_laptop, "usb0", "user"] call AE3_flashdrive_fnc_mount;
-[_laptop, "usb0", "user"] call AE3_flashdrive_fnc_unmount;
-```
-
-## Documentation Navigation
-
-### Core Documentation
-
-- **[Terminal Guide](Terminal-Guide.md)** - Terminal interface, OS commands, and customization
-- **[API Reference](API-Reference.md)** - Complete API documentation for all public functions
-- **[Encryption Examples](Encryption-Examples.md)** - Complete documentation for all encryption methods
-- **[Architecture Guide](Architecture.md)** - System architecture, data structures, and design patterns
-- **[ACE Mutex Guide](ACE-Mutex.md)** - Understanding and using the computer mutex system
-
-### Getting Started
-
-1. Check the [Terminal Guide](Terminal-Guide.md) for OS commands
-2. Read the [Architecture Guide](Architecture.md) to understand how AE3 works
-3. Review the [API Reference](API-Reference.md) for available functions
-4. See [ACE Mutex](ACE-Mutex.md) for concurrency handling
-
-### For Mission Makers
-
-- Use Zeus/Eden modules to register devices and configure networks
-- Add users to computers with the "Add User" module
-- Configure power connections and battery levels
-- Set up network topology with routers and DHCP
-
-### For Mod Developers
-
-- Extend ArmaOS with custom OS commands
-- Create custom filesystem objects
-- Add new power-consuming devices
-- Integrate with the network system
-- Build custom device control interfaces
-
-## Framework Structure
-
-AE3 is organized into modular addons under `addons/`:
-
-```
-addons/
-├── main/           # Core framework, Zeus UI, debug overlay, remote sync
-├── armaos/         # Terminal/shell system, OS commands, UI rendering
-├── filesystem/     # Virtual filesystem with permissions
-├── network/        # Network simulation with routers and DHCP
-├── power/          # Power grid, batteries, generators, solar panels
-├── flashdrive/     # USB flash drive items for data transfer
-└── interaction/    # ACE3 interaction menus for equipment
-```
-
-## Key Features
-
-### Terminal System
-- 20 terminal themes
-- 9 keyboard layouts (AR, DE, FR, HE, HU, IT, RU, TR, US)
-- Command history and autocomplete
-- UI-on-Texture support for in-world laptop screens
-- Multiplayer synchronization
-
-### Filesystem
-- Hierarchical directory structure (Unix-like)
-- Per-file/directory permissions (execute/read/write)
-- User ownership and access control
-- Mount points for external storage
-- Supports files containing strings, code, or any serializable data
-
-### Network [Experimental / W.I.P]
-- Router-based network topology
-- DHCP server for automatic IP assignment
-- Ping functionality for connectivity testing
-- Cyclic connection detection
-- Device visibility based on network access
-
-### Power System
-- Realistic battery consumption
-- Solar panel power generation (time-of-day and orientation-aware)
-- Fuel-powered generators
-- Power connections between devices
-
-## Build System
-
-AE3 uses HEMTT (Arma 3 build tool):
-
-```bash
-hemtt check         # Lint and validate code
-hemtt dev           # Build for development
-hemtt build         # Build for testing
-hemtt release       # Build release version
-```
-
-## Requirements
-
-- **CBA** (Community Base Addons) - settings, events, function compilation
-- **ACE3** - interaction menus and extended ACE functionality
-
-## Performance Notes
-
-- Tested with 67+ players on dedicated servers
-- Terminal updates throttled (configurable, default 0.3s) to reduce network traffic
-- Network topology calculations cached for performance
-- Filesystem operations validate paths before execution
-
-## Support and Contribution
-
-For issues, feature requests, or contributions, see the main repository README.
-
----
-
-**Framework Version**: See `addons/main/script_version.hpp`
-
-**Last Updated**: 2025-11-11
+- [Architecture](Developer/Architecture.md)
+- [Addon Components](Developer/Addon-Components.md)
+- [Locality and Multiplayer](Developer/Locality-and-Multiplayer.md)
+- [Extending Desktop GUI](Developer/Extending-Desktop-GUI.md)
+- [Extending Terminal TUI](Developer/Extending-Terminal-TUI.md)
+- [Extending Browser Webpages](Developer/Extending-Browser-Webpages.md)
+- [Debugging](Developer/Debugging.md)

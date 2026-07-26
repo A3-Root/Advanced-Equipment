@@ -329,6 +329,38 @@
                 <German>AE3 allgemeine Module</German>
                 <Chinesesimp>AE3 主模块</Chinesesimp>
             </Key>
+            <Key ID="STR_AE3_Main_SubcategoryBattery">
+                <Original>Battery</Original>
+                <English>Battery</English>
+            </Key>
+            <Key ID="STR_AE3_Main_SubcategoryFurniture">
+                <Original>Furniture</Original>
+                <English>Furniture</English>
+            </Key>
+            <Key ID="STR_AE3_Main_SubcategoryLaptop">
+                <Original>Laptop</Original>
+                <English>Laptop</English>
+            </Key>
+            <Key ID="STR_AE3_Main_SubcategoryLights">
+                <Original>Lights</Original>
+                <English>Lights</English>
+            </Key>
+            <Key ID="STR_AE3_Main_SubcategoryPower">
+                <Original>Power</Original>
+                <English>Power</English>
+            </Key>
+            <Key ID="STR_AE3_Main_SubcategoryRouters">
+                <Original>Routers</Original>
+                <English>Routers</English>
+            </Key>
+            <Key ID="STR_AE3_Main_SubcategorySolarPanel">
+                <Original>Solar Panel</Original>
+                <English>Solar Panel</English>
+            </Key>
+            <Key ID="STR_AE3_Main_SubcategoryStorage">
+                <Original>Storage</Original>
+                <English>Storage</English>
+            </Key>
         </Container>
         <Container name="Zeus">
             <Key ID="STR_AE3_Main_Zeus_AlreadyInThisDirectory">
@@ -709,6 +741,15 @@
                 <German>Dateisystem-Browser</German>
                 <Chinesesimp>文件系统浏览器</Chinesesimp>
             </Key>
+            <Key ID="STR_AE3_Main_Zeus_FilesystemNotReady">
+                <Original>Filesystem not ready. Please wait and try again.</Original>
+                <English>Filesystem not ready. Please wait and try again.</English>
+                <French>Système de fichiers pas prêt. Veuillez patienter et réessayer.</French>
+                <Italian>Filesystem non pronto. Attendi e riprova.</Italian>
+                <Russian>Filesystem not ready. Please wait and try again.</Russian>
+                <German>Dateisystem nicht bereit. Bitte warten und erneut versuchen.</German>
+                <Chinesesimp>文件系统未就绪。请稍候再试。</Chinesesimp>
+            </Key>
             <Key ID="STR_AE3_Main_Zeus_FolderCreated">
                 <Original>Folder '%1' created successfully.</Original>
                 <English>Folder '%1' created successfully.</English>
@@ -871,49 +912,13 @@
                 <German>Dieses Modul fügt eine Datei zu einem Objekt hinzu, das Dateisysteme unterstützt, wie Computer.</German>
                 <Chinesesimp>此模块将文件添加到支持文件系统的对象(如计算机).</Chinesesimp>
             </Key>
-            <Key ID="STR_AE3_Main_Zeus_Module_AddGames">
-                <Original>AE3 Add Games</Original>
-                <English>AE3 Add Games</English>
-                <French>AE3 Ajouter des jeux</French>
-                <Italian>AE3 Aggiungi giochi</Italian>
-                <Russian>AE3 Add Games</Russian>
-                <German>AE3 Spiele hinzufügen</German>
-                <Chinesesimp>AE3添加游戏</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_Main_Zeus_Module_AddGames_Description">
-                <Original>This module adds games to an armaOS computer.</Original>
-                <English>This module adds games to an armaOS computer.</English>
-                <French>Ce module ajoute des jeux à un ordinateur armaOS.</French>
-                <Italian>Questo modulo aggiunge giochi ad un computer armaOS.</Italian>
-                <Russian>Этот модуль добавляет компьютерные игры в armaOS.</Russian>
-                <German>Dieses Modul fügt einem armaOS Computer Spiele hinzu.</German>
-                <Chinesesimp>这个模块将游戏添加到armaOS电脑中.</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_Main_Zeus_Module_AddSecurityCommands">
-                <Original>AE3 Add Security Commands</Original>
-                <English>AE3 Add Security Commands</English>
-                <French>AE3 Ajouter des commandes de sécurité</French>
-                <Italian>AE3 Aggiungi comandi di sicurezza</Italian>
-                <Russian>AE3 Add Security Commands</Russian>
-                <German>AE3 Security-Befehle hinzufügen</German>
-                <Chinesesimp>AE3添加安全命令</Chinesesimp>
-            </Key>
-            <Key ID="STR_AE3_Main_Zeus_Module_AddSecurityCommands_Description">
-                <Original>This module adds security commands to an armaOS computer.</Original>
-                <English>This module adds security commands to an armaOS computer.</English>
-                <French>Ce module ajoute des commandes de sécurité à un ordinateur armaOS.</French>
-                <Italian>Questo modulo aggiunge comandi di security ad un computer armaOS.</Italian>
-                <Russian>Этот модуль добавляет команды безопасности к компьютеру armaOS.</Russian>
-                <German>Dieses Modul fügt Security-Befehle zu einem armaOS Computer hinzu.</German>
-                <Chinesesimp>这个模块将安全指令添加到armaOS电脑中.</Chinesesimp>
-            </Key>
             <Key ID="STR_AE3_Main_Zeus_Module_AddUser">
-                <Original>AE3 Add User</Original>
-                <English>AE3 Add User</English>
-                <French>AE3 Ajouter un utilisateur</French>
-                <Italian>AE3 Aggiungi utente</Italian>
-                <Russian>AE3 Add User</Russian>
-                <German>AE3 Benutzer hinzufügen</German>
+                <Original>AE3: Add User</Original>
+                <English>AE3: Add User</English>
+                <French>AE3: Ajouter un utilisateur</French>
+                <Italian>AE3: Aggiungi utente</Italian>
+                <Russian>AE3: Add User</Russian>
+                <German>AE3: Benutzer hinzufügen</German>
                 <Chinesesimp>AE3添加用户</Chinesesimp>
             </Key>
             <Key ID="STR_AE3_Main_Zeus_Module_AddUser_Description">
@@ -1042,6 +1047,15 @@
                 <German>Kein Element ausgewählt.</German>
                 <Chinesesimp>未选择项目.</Chinesesimp>
             </Key>
+            <Key ID="STR_AE3_Main_Zeus_NotAe3Device">
+                <Original>This is a vanilla laptop without ArmaOS - place the AE3 variant instead</Original>
+                <English>This is a vanilla laptop without ArmaOS - place the AE3 variant instead</English>
+                <French>Ceci est un ordinateur portable vanilla sans ArmaOS - placez la variante AE3</French>
+                <Italian>Questo è un laptop vanilla senza ArmaOS - posiziona la variante AE3</Italian>
+                <Russian>This is a vanilla laptop without ArmaOS - place the AE3 variant instead</Russian>
+                <German>Dies ist ein Vanilla-Laptop ohne ArmaOS - bitte die AE3-Variante platzieren</German>
+                <Chinesesimp>这是没有ArmaOS的原版笔记本电脑 - 请放置AE3版本</Chinesesimp>
+            </Key>
             <Key ID="STR_AE3_Main_Zeus_ObjectClosed">
                 <Original>Object closed.</Original>
                 <English>Object closed.</English>
@@ -1157,7 +1171,7 @@
                 <Italian>'Percorso' mancante</Italian>
                 <Russian>'Path' missing</Russian>
                 <German>'Pfad' fehlt</German>
-                <Chinesesimp>缺少 'Path' </Chinesesimp>
+                <Chinesesimp>缺少 'Path'</Chinesesimp>
             </Key>
             <Key ID="STR_AE3_Main_Zeus_Permissions">
                 <Original>Permissions</Original>
@@ -1167,6 +1181,10 @@
                 <Russian>Permissions</Russian>
                 <German>Zugriffsrechte</German>
                 <Chinesesimp>权限</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Main_Zeus_PictureTooLarge">
+                <Original>Base64 image is too large (max ~2 million characters).</Original>
+                <English>Base64 image is too large (max ~2 million characters).</English>
             </Key>
             <Key ID="STR_AE3_Main_Zeus_Power">
                 <Original>Power</Original>
@@ -1231,15 +1249,6 @@
                 <German>Speichern</German>
                 <Chinesesimp>保存</Chinesesimp>
             </Key>
-            <Key ID="STR_AE3_Main_Zeus_SecurityCommandsAdded">
-                <Original>AE3 Security Commands added</Original>
-                <English>AE3 Security Commands added</English>
-                <French>AE3 Commandes de sécurité ajoutées</French>
-                <Italian>AE3 Comandi di sicurezza aggiunti</Italian>
-                <Russian>AE3 Security Commands added</Russian>
-                <German>AE3 Spiele hinzugefügt</German>
-                <Chinesesimp>AE3 安全命令已添加</Chinesesimp>
-            </Key>
             <Key ID="STR_AE3_Main_Zeus_SelectDestination">
                 <Original>Select destination folder:</Original>
                 <English>Select destination folder:</English>
@@ -1248,6 +1257,10 @@
                 <Russian>Выберите папку назначения:</Russian>
                 <German>Zielordner auswählen:</German>
                 <Chinesesimp>选择目标文件夹:</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Main_Zeus_SelectPath">
+                <Original>Select Path</Original>
+                <English>Select Path</English>
             </Key>
             <Key ID="STR_AE3_Main_Zeus_Standby">
                 <Original>Standby</Original>
@@ -1292,7 +1305,7 @@
                 <Italian>'A' mancante</Italian>
                 <Russian>'To' missing</Russian>
                 <German>'Nach' fehlt</German>
-                <Chinesesimp>缺少 'To' </Chinesesimp>
+                <Chinesesimp>缺少 'To'</Chinesesimp>
             </Key>
             <Key ID="STR_AE3_Main_Zeus_ToProvider">
                 <Original>To (Provider)</Original>
@@ -1373,7 +1386,7 @@
                 <Italian>'Username' mancante</Italian>
                 <Russian>'Username' missing</Russian>
                 <German>'Benutzname' fehlt</German>
-                <Chinesesimp>缺少 'Username' </Chinesesimp>
+                <Chinesesimp>缺少 'Username'</Chinesesimp>
             </Key>
         </Container>
     </Package>

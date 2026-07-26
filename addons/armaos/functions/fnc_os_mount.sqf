@@ -1,3 +1,4 @@
+// File: fnc_os_mount.sqf
 /*
  * Author: Root, Wasserstoff
  * Description: Mounts a filesystem connected via a USB interface (flash drive). Similar to Unix mount command.

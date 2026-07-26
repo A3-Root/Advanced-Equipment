@@ -1,3 +1,4 @@
+// File: fnc_initBattery.sqf
 /*
  * Author: Root, y0014984, Wasserstoff
  * Description: Initializes a battery with capacity, recharging rate, and initial level. Handles both standalone and internal batteries (like laptop batteries). For internal batteries, automatically connects to parent device and starts charging. Battery capacity and recharging rate are in kWh.
@@ -34,7 +35,7 @@ if(!isDedicated) then {
 				{
 					params ['_target', '_player', '_params'];
 					_params params ['_battery'];
-					_handle = [_battery] spawn AE3_power_fnc_checkBatteryLevelAction;
+					[_battery] spawn AE3_power_fnc_checkBatteryLevelAction;
 				},
 				{alive _target},
 				{},
@@ -58,6 +59,9 @@ if(!isDedicated) then {
 
 if(isServer) then
 {
+	_battery setVariable ['AE3_cap_hasBattery', true, true];
+	_entity setVariable ['AE3_cap_hasBattery', true, true];
+
 	_battery setVariable ['AE3_power_batteryCapacity', _batteryCapacity, true];
 	_battery setVariable ['AE3_power_batteryLevel', _batteryLevel, true];
 	_battery setVariable ['AE3_power_recharging', _recharging, true];

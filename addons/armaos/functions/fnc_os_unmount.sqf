@@ -1,3 +1,4 @@
+// File: fnc_os_unmount.sqf
 /*
  * Author: Root, Wasserstoff
  * Description: Unmounts a filesystem connected via a USB interface (flash drive). Similar to Unix umount command.

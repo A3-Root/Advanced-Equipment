@@ -1,3 +1,4 @@
+// File: fnc_terminal_setTerminalDesign.sqf
 /*
  * Author: Root, y0014984
  * Description: Sets the terminal visual design/theme (ArmaOS, C64, Apple II, Amber, etc.).

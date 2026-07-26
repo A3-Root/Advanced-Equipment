@@ -1,3 +1,4 @@
+// File: fnc_retro_getCanvasWidth.sqf
 /*
  * Author: Root, y0014984
  * Description: Returns the width in pixels of a retro graphics canvas.

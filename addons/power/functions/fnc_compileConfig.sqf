@@ -1,3 +1,4 @@
+// File: fnc_compileConfig.sqf
 /*
  * Author: Root, Wasserstoff
  * Description: Compiles device configuration from config entries into a hashmap. Reads device properties, power interface, battery, generator, solar generator, and consumer configs. Compiles init/action code strings into executable code. Helper function for compileDevice.
@@ -20,7 +21,7 @@ params['_deviceCfg', '_config'];
 
 _config set ['device', [
 		getText (_deviceCfg >> "displayName"),
-		getNumber (_deviceCfg >> "defaultPowerState"),
+		getNumber (_deviceCfg >> "defaultPowerLevel"),
 		compile (getText (_deviceCfg >> "init")),
 		compile (getText (_deviceCfg >> "turnOnAction")),
 		compile ([_deviceCfg, "turnOnActionCondition", "true"] call BIS_fnc_returnConfigEntry),

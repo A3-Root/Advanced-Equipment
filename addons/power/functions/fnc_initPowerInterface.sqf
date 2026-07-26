@@ -1,3 +1,4 @@
+// File: fnc_initPowerInterface.sqf
 /*
  * Author: Root, y0014984, Wasserstoff
  * Description: Initializes power connection interface for a device. Sets up ACE3 interactions for connecting to and disconnecting from nearby power sources. Creates dynamic child menus listing available generators and batteries within 10m. Handles both internal and external power interfaces.
@@ -20,10 +21,10 @@ params["_generator", ["_connectedDevices", nil], ["_internal", false]];
 
 private _childs = 
 {
-	params ["_target", "_player", "_params"]; 
-	_isBattery = !isNil {_target getVariable "AE3_power_batteryCapacity"};
+	params ["_target", "_player", "_params"];
+	private _isBattery = !isNil {_target getVariable "AE3_power_batteryCapacity"};
 
-	_generators = (nearestObjects [_target, [], 10]) select 
+	private _generators = (nearestObjects [_target, [], 10]) select
 	{
 		!isNil{_x getVariable "AE3_power_connectedDevices"} && 
 		_x != _target && 
@@ -39,13 +40,13 @@ private _childs =
 		{ 
 			params ["_target", "_player", "_generator"]; 
 
-			_device = _target getVariable "AE3_power_internal";
+			private _device = _target getVariable "AE3_power_internal";
 			if(isNil "_device") then
 			{
 				_device = _target;
 			};
 
-			_handle = [_device, _generator] spawn AE3_power_fnc_connectToGeneratorAction; 
+			[_device, _generator] spawn AE3_power_fnc_connectToGeneratorAction;
 		}; 
 
 		private _aceCargoName = [_x, true] call ace_cargo_fnc_getNameItem; // changed from {typeOf _x} to this function
@@ -67,7 +68,7 @@ private _connect = ["AE3_ConnectAction", localize "STR_AE3_Power_Interaction_Con
 			] call ace_interact_menu_fnc_createAction;
 
 private _disconnect = ["AE3_DisconnectAction", localize "STR_AE3_Power_Interaction_DisconnectFromPowerSource", "",
-				{params ["_target", "_player", "_params"]; _params params ["_device"]; _handle = [_device] spawn AE3_power_fnc_disconnectFromGeneratorAction;},
+				{params ["_target", "_player", "_params"]; _params params ["_device"]; [_device] spawn AE3_power_fnc_disconnectFromGeneratorAction;},
 				{
 					params ["_target", "_player", "_params"]; 
 					_params params ["_device"];

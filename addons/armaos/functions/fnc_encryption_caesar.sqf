@@ -1,3 +1,4 @@
+// File: fnc_encryption_caesar.sqf
 /*
  * Author: Root, y0014984
  * Description: Encrypts or decrypts a message using Caesar cipher (shift cipher). Shifts each letter by the specified key value. Only processes A-Z characters and spaces.

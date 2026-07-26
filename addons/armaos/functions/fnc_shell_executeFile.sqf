@@ -1,3 +1,4 @@
+// File: fnc_shell_executeFile.sqf
 /*
  * Author: Root, y0014984, Wasserstoff
  * Description: Executes a file from the filesystem. If the file contains executable code, spawns it as a process and waits for completion.
@@ -24,10 +25,9 @@ private _filesystem = _computer getVariable "AE3_filesystem";
 private _terminal = _computer getVariable "AE3_terminal";
 private _username = _terminal get "AE3_terminalLoginUser";
 
-private _result = [format [localize "STR_AE3_ArmaOS_Exception_CommandNotFound", _path]];
-try 
+try
 {
-	private _content = [_pointer, _filesystem, _path, _username, 0] call AE3_filesystem_fnc_getFile;
+	private _content = [_pointer, _filesystem, _path, _username, 2] call AE3_filesystem_fnc_getFile;
 
 	if(_content isEqualType {}) then
 	{
@@ -40,6 +40,11 @@ try
 		waitUntil {
 			isNull _handler;
 		};
+	}
+	else
+	{
+		[_computer, [format [localize "STR_AE3_ArmaOS_Exception_CommandNotFound", _path]]] call AE3_armaos_fnc_shell_stdout;
+		[_computer] call AE3_armaos_fnc_shell_playErrorSound;
 	};
 
 }catch{

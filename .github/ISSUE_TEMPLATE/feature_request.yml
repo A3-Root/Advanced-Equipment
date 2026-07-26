@@ -1,0 +1,73 @@
+name: Feature request
+description: Propose a new feature or behavior change.
+title: "[Feature] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Describe the gameplay, mission-maker, Zeus, server-admin, or developer problem first. Then describe the requested behavior.
+
+  - type: dropdown
+    id: audience
+    attributes:
+      label: Primary audience
+      options:
+        - Players
+        - Mission makers
+        - Zeus
+        - Server admins
+        - Addon developers
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What limitation, workflow issue, or gameplay need does this solve?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: What should AE3 do?
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Mention mission-script, config, Zeus, or addon-level alternatives if applicable.
+
+  - type: dropdown
+    id: system
+    attributes:
+      label: Affected system
+      options:
+        - GUI desktop
+        - TUI terminal
+        - Browser/webpages
+        - Filesystem
+        - Networking
+        - Power
+        - Flash drives
+        - Interaction/lights
+        - Zeus
+        - 3DEN
+        - API/framework
+        - Documentation
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: examples
+    attributes:
+      label: Example usage
+      description: Include SQF, config, 3DEN, Zeus, or player workflow examples if you have them.
+

@@ -1,3 +1,4 @@
+// File: fnc_terminal_uiOnTex_addUpdateAllEventHandler.sqf
 /*
  * Author: Root, y0014984
  * Description: Adds an event handler to update UI-on-Texture when terminal state changes.
@@ -22,7 +23,7 @@ private _updateInterval = missionNamespace getVariable ["AE3_armaos_uiOnTexUpdat
 // Initialize previous state storage for change detection
 private _previousState = createHashMap;
 
-_handle =
+private _handle =
     [
         {
             (_this select 0) params ["_computer", "_consoleDialog", "_previousState"];
@@ -59,7 +60,6 @@ _handle =
                 private _headerCtrl = _consoleDialog displayCtrl 1000;
                 private _consoleCtrl = _consoleDialog displayCtrl 1100;
 
-                private _output = ctrlText _consoleCtrl;
                 private _terminalKeyboardLayout = ctrlText _languageButtonCtrl;
                 private _value = ctrlText _batteryButtonCtrl;
                 private _bgColorHeader = ctrlBackgroundColor _headerBackgroundCtrl;
@@ -114,10 +114,21 @@ _handle =
                         _shouldUpdate = false;
                     } else {
                         _previousState set ["hash", _currentStateHash];
+                        // State changed - everyone needs the new payload
+                        _previousState set ["sentTo", []];
                     };
                 };
 
-                if (_shouldUpdate) then
+                // Even when the state is unchanged, viewers that newly entered range (or JIP'd)
+                // have never received it - force a full send to those clients only
+                private _sentTo = _previousState getOrDefault ["sentTo", []];
+                private _targets = _playersInRange;
+                if (!_shouldUpdate) then
+                {
+                    _targets = _playersInRange select { !((getPlayerUID _x) in _sentTo) };
+                };
+
+                if (_targets isNotEqualTo []) then
                 {
                     [
                         _computer,
@@ -137,7 +148,10 @@ _handle =
                         _value,
                         _terminalMaxColumns,
                         _visibleStartOffset
-                    ] remoteExec ["AE3_armaos_fnc_terminal_uiOnTex_updateAll", _playersInRange];
+                    ] remoteExec ["AE3_armaos_fnc_terminal_uiOnTex_updateAll", _targets];
+
+                    { _sentTo pushBackUnique (getPlayerUID _x) } forEach _targets;
+                    _previousState set ["sentTo", _sentTo];
                 };
             };
         },

@@ -1,3 +1,4 @@
+// File: fnc_turnOnBatteryAction.sqf
 /*
  * Author: Root, y0014984, Wasserstoff
  * Description: ACE3 interaction action that turns on a battery by adding its provider handler. Starts battery calculation loop and updates ACE3 interactions to show "turned on" state.

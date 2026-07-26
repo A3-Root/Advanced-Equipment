@@ -1,3 +1,4 @@
+// File: fnc_checkPowerOutputAction.sqf
 /*
  * Author: Root, y0014984
  * Description: ACE3 interaction action that displays power output via hint. Wrapper function that calls getPowerOutput with hint enabled.
@@ -16,4 +17,4 @@
 
 params["_entity"];
 
-private _powerCap = [_entity, true] call AE3_power_fnc_getPowerOutput;
+[_entity, true] call AE3_power_fnc_getPowerOutput;

@@ -1,3 +1,4 @@
+// File: fnc_os_man.sqf
 /*
  * Author: Root, y0014984, Wasserstoff
  * Description: Displays the manual/help information for a specific command. Similar to Unix man command.

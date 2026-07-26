@@ -1,9 +1,12 @@
+// File: fnc_terminal_init.sqf
 /*
  * Author: Root, Wasserstoff, y0014984
  * Description: Initializes a new terminal session for a computer, setting up all terminal variables and state.
  *
  * Arguments:
- * 0: _computer <OBJECT> - TODO: Add description
+ * 0: _computer <OBJECT> - The computer object
+ * 1: _consoleDialog <DISPLAY> (Optional, default: displayNull) - Host display; when not given,
+ *    the classic terminal dialog is created/used (idd 15984)
  *
  * Return Value:
  * None
@@ -16,25 +19,45 @@
 
 #include "\a3\ui_f\hpp\definedikcodes.inc"
 
-params ["_computer"];
+params ["_computer", ["_consoleDialog", displayNull]];
 
-if (!dialog) then
+if (isNull _consoleDialog) then
 {
-	private _ok = createDialog "AE3_ArmaOS_Main_Dialog";
-	if (!_ok) then {hint localize "STR_AE3_ArmaOS_Exception_DialogFailed"};
-};
+	if (!dialog) then
+	{
+		private _ok = createDialog "AE3_ArmaOS_Main_Dialog";
+		if (!_ok) then {hint localize "STR_AE3_ArmaOS_Exception_DialogFailed"};
+	};
 
-private _consoleDialog = findDisplay 15984;
+	_consoleDialog = findDisplay 15984;
+};
 private _consoleOutput = _consoleDialog displayCtrl 1100;
 private _languageButton = _consoleDialog displayCtrl 1310;
 private _designButton = _consoleDialog displayCtrl 1320;
 private _titleControl = _consoleDialog displayCtrl 1000;
+
+// Store the computer on the display/output control and wire the release handler UP FRONT, before any
+// of the suspending remote-variable fetches below. The handler resolves the laptop from the display,
+// so it is safe to attach this early. If the operator closes the terminal before startup finishes,
+// this guarantees the laptop lock (mutex) is still released and the device never bricks.
+_consoleOutput setVariable ["AE3_computer", _computer];
+_consoleDialog setVariable ["AE3_computer", _computer];
+_consoleDialog displayAddEventHandler ["Unload", { _this call AE3_armaos_fnc_terminal_onUnload }];
+
+// Remember the laptop on the client too. The claim itself is held by the player object, and a respawn
+// hands this client a new one, so the watchers that end a session the user can no longer be in need a
+// reference that outlives the unit that opened it.
+missionNamespace setVariable ["AE3_computer_session", _computer];
 
 // Set dialog title from CBA setting
 _titleControl ctrlSetText AE3_TerminalDialogTitle;
 
 [_computer, "AE3_filesystem"] call AE3_main_fnc_getRemoteVar;
 [_computer, "AE3_filepointer"] call AE3_main_fnc_getRemoteVar;
+
+// The fetches above can suspend; if the terminal was closed meanwhile, stop here. The Unload handler
+// wired above has already released the device.
+if (isNull _consoleDialog) exitWith {};
 
 private _pointer = [];
 if (isNil { _computer getVariable "AE3_filepointer" }) then 
@@ -61,10 +84,6 @@ private _terminal = createHashMapFromArray
 		["AE3_terminalMaxColumns", 80]
 	];
 
-// Only nessecary to allow Event Handlers the access to _computer
-_consoleOutput setVariable ["AE3_computer", _computer];
-_consoleDialog setVariable ["AE3_computer", _computer];
-
 // Keep terminal local to client (no network sync of HashMap)
 // IMPORTANT: Set this BEFORE restoring sync data, as renderLine needs access to it
 _computer setVariable ["AE3_terminal", _terminal];
@@ -89,9 +108,10 @@ if (!isNil "_terminalSyncData") then {
 	_terminal set ["AE3_terminalRenderedBuffer", _renderedBuffer];
 };
 
-_terminal set ["AE3_terminalOutput", _consoleOutput];
+// The sync fetch above can also suspend; abort if the terminal was closed during it.
+if (isNull _consoleDialog) exitWith {};
 
-private _localGameLanguage = language;
+_terminal set ["AE3_terminalOutput", _consoleOutput];
 
 /* ---------------------------------------- */
 
@@ -180,7 +200,7 @@ _consoleDialog setVariable ["AE3_handleUpdateUiOnTexture", _handleUpdateUiOnText
 
 [_consoleDialog, _consoleOutput, _languageButton, _designButton] call AE3_armaos_fnc_terminal_addEventHandler;
 
-_terminalBuffer = _terminal get "AE3_terminalBuffer";
+private _terminalBuffer = _terminal get "AE3_terminalBuffer";
 if (_terminalBuffer isEqualTo []) then
 {
 	[_computer] call AE3_armaos_fnc_terminal_addHeader;

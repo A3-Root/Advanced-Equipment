@@ -1,3 +1,4 @@
+// File: fnc_os_history.sqf
 /*
  * Author: Root, y0014984, Wasserstoff
  * Description: Displays the command history for the current user. Supports -c flag to clear history and -d flag to delete a specific entry. Similar to Unix history command.
@@ -32,7 +33,7 @@ private _commandSyntax =
 ];
 private _commandSettings = [_commandName, _commandOpts, _commandSyntax];
 
-private _ae3OptsSuccess = false; private _unused_ae3OptsThings = [];
+private _ae3OptsSuccess = false;
 private _clear = false; private _deleteAtOffset = -1;
 [] params ([_computer, _options, _commandSettings] call AE3_armaos_fnc_shell_getOpts);
 

@@ -1,3 +1,4 @@
+// File: fnc_compileDevice.sqf
 /*
  * Author: Root, Wasserstoff
  * Description: Compiles the USB interface configuration from config for an object's class. Analogous to ACE3 menu compilation.

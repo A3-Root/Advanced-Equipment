@@ -134,7 +134,7 @@ class AE3_UserInterface_Zeus_Asset_Details
             h = 1 * GUI_GRID_H;
             colorBackground[] = {-1,-1,-1,0.5};
 
-            onLoad = "params ['_control']; private _display = ctrlParent _control; _display setVariable ['batteryTextCtrl', _control]; _control ctrlEnable false;"; 
+            onLoad = "params ['_control']; private _display = ctrlParent _control; _display setVariable ['batteryTextCtrl', _control]; _control ctrlEnable false;";
             //onEditChanged = "params ['_control', '_newText']; private _display = ctrlParent _control; private _slider = _display getVariable 'batterySliderCtrl'; private _newValue = (round (_newText call BIS_fnc_parseNumber)); _slider sliderSetPosition _newValue; _control ctrlSetText format ['%1%2', _newValue, '%'];";
             onKillFocus = "params ['_control']; private _newText = ctrlText _control; _newText = [_newText, '0123456789.,'] call BIS_fnc_filterString; private _display = ctrlParent _control; private _slider = _display getVariable 'batterySliderCtrl'; private _newValue = ((round (_newText call BIS_fnc_parseNumber)) min 100); _slider sliderSetPosition _newValue; _control ctrlSetText format ['%1%2', _newValue, '%'];";
         };
@@ -149,9 +149,286 @@ class AE3_UserInterface_Zeus_Asset_Details
             h = 1 * GUI_GRID_H;
             colorBackground[] = {-1,-1,-1,0.5};
 
-            onLoad = "params ['_control']; private _display = ctrlParent _control; _display setVariable ['fuelTextCtrl', _control]; _control ctrlEnable false;"; 
+            onLoad = "params ['_control']; private _display = ctrlParent _control; _display setVariable ['fuelTextCtrl', _control]; _control ctrlEnable false;";
             //onEditChanged = "params ['_control', '_newText']; private _display = ctrlParent _control; private _slider = _display getVariable 'batterySliderCtrl'; private _newValue = (round (_newText call BIS_fnc_parseNumber)); _slider sliderSetPosition _newValue; _control ctrlSetText format ['%1%2', _newValue, '%'];";
             onKillFocus = "params ['_control']; private _newText = ctrlText _control; _newText = [_newText, '0123456789.,'] call BIS_fnc_filterString; private _display = ctrlParent _control; private _slider = _display getVariable 'fuelSliderCtrl'; private _newValue = ((round (_newText call BIS_fnc_parseNumber)) min 100); _slider sliderSetPosition _newValue; _control ctrlSetText format ['%1%2', _newValue, '%'];";
+        };
+
+        // Router wireless configuration is hidden by default and shown only for router assets.
+        class RscText_1003: RscText
+        {
+            idc = 1003;
+            text = "Wifi Range (m)";
+            x = 0.5 * GUI_GRID_W + GUI_GRID_X;
+            y = 12 * GUI_GRID_H + GUI_GRID_Y;
+            w = 7 * GUI_GRID_W;
+            h = 1 * GUI_GRID_H;
+            style = ST_RIGHT;
+            onLoad = "params ['_control']; _control ctrlShow false;";
+        };
+        class RscEdit_1910: RscEdit
+        {
+            idc = 1910;
+            text = "";
+            x = 8 * GUI_GRID_W + GUI_GRID_X;
+            y = 12 * GUI_GRID_H + GUI_GRID_Y;
+            w = 10 * GUI_GRID_W;
+            h = 1 * GUI_GRID_H;
+            colorBackground[] = {-1,-1,-1,0.5};
+            onLoad = "params ['_control']; _control ctrlShow false; _control ctrlEnable false;";
+        };
+
+        class RscText_1004: RscText
+        {
+            idc = 1004;
+            text = "Default Gateway";
+            x = 0.5 * GUI_GRID_W + GUI_GRID_X;
+            y = 13.5 * GUI_GRID_H + GUI_GRID_Y;
+            w = 7 * GUI_GRID_W;
+            h = 1 * GUI_GRID_H;
+            style = ST_RIGHT;
+            onLoad = "params ['_control']; _control ctrlShow false;";
+        };
+        class RscEdit_1911: RscEdit
+        {
+            idc = 1911;
+            text = "";
+            x = 8 * GUI_GRID_W + GUI_GRID_X;
+            y = 13.5 * GUI_GRID_H + GUI_GRID_Y;
+            w = 10 * GUI_GRID_W;
+            h = 1 * GUI_GRID_H;
+            colorBackground[] = {-1,-1,-1,0.5};
+            onLoad = "params ['_control']; _control ctrlShow false; _control ctrlEnable false;";
+        };
+
+        // Router network name is hidden by default and shown only for router assets.
+        class RscText_1005: RscText
+        {
+            idc = 1005;
+            text = "Network Name";
+            x = 0.5 * GUI_GRID_W + GUI_GRID_X;
+            y = 15 * GUI_GRID_H + GUI_GRID_Y;
+            w = 7 * GUI_GRID_W;
+            h = 1 * GUI_GRID_H;
+            style = ST_RIGHT;
+            onLoad = "params ['_control']; _control ctrlShow false;";
+        };
+        class RscEdit_1912: RscEdit
+        {
+            idc = 1912;
+            text = "";
+            x = 8 * GUI_GRID_W + GUI_GRID_X;
+            y = 15 * GUI_GRID_H + GUI_GRID_Y;
+            w = 14 * GUI_GRID_W;
+            h = 1 * GUI_GRID_H;
+            colorBackground[] = {-1,-1,-1,0.5};
+            onLoad = "params ['_control']; _control ctrlShow false; _control ctrlEnable false;";
+        };
+
+        class RscText_1010: RscText
+        {
+            idc = 1010;
+            text = "Network Password";
+            x = 0.5 * GUI_GRID_W + GUI_GRID_X;
+            y = 16.5 * GUI_GRID_H + GUI_GRID_Y;
+            w = 7 * GUI_GRID_W;
+            h = 1 * GUI_GRID_H;
+            style = ST_RIGHT;
+            onLoad = "params ['_control']; _control ctrlShow false;";
+        };
+        class RscEdit_1915: RscEdit
+        {
+            idc = 1915;
+            text = "";
+            x = 8 * GUI_GRID_W + GUI_GRID_X;
+            y = 16.5 * GUI_GRID_H + GUI_GRID_Y;
+            w = 14 * GUI_GRID_W;
+            h = 1 * GUI_GRID_H;
+            colorBackground[] = {-1,-1,-1,0.5};
+            onLoad = "params ['_control']; _control ctrlShow false; _control ctrlEnable false;";
+        };
+
+        // Router-only external access policy: allow ping/SSH from other gateways, with an optional
+        // allow list of source-gateway regex patterns. Hidden by default; shown for router assets.
+        class RscText_1012: RscText
+        {
+            idc = 1012;
+            text = "Allow External SSH";
+            x = 0.5 * GUI_GRID_W + GUI_GRID_X;
+            y = 18 * GUI_GRID_H + GUI_GRID_Y;
+            w = 7 * GUI_GRID_W;
+            h = 1 * GUI_GRID_H;
+            style = ST_RIGHT;
+            onLoad = "params ['_control']; _control ctrlShow false;";
+        };
+        class RscCheckBox_1321: RscCheckBox
+        {
+            idc = 1321;
+            x = 8 * GUI_GRID_W + GUI_GRID_X;
+            y = 18 * GUI_GRID_H + GUI_GRID_Y;
+            w = 1 * GUI_GRID_W;
+            h = 1 * GUI_GRID_H;
+            colorBackground[] = {-1,-1,-1,0.5};
+            onLoad = "params ['_control']; _control ctrlShow false; _control ctrlEnable false;";
+        };
+        class RscText_1013: RscText
+        {
+            idc = 1013;
+            text = "Allowed IPs";
+            x = 10 * GUI_GRID_W + GUI_GRID_X;
+            y = 18 * GUI_GRID_H + GUI_GRID_Y;
+            w = 7 * GUI_GRID_W;
+            h = 1 * GUI_GRID_H;
+            style = ST_RIGHT;
+            onLoad = "params ['_control']; _control ctrlShow false;";
+        };
+        class RscEdit_1917: RscEdit
+        {
+            idc = 1917;
+            text = "";
+            x = 18 * GUI_GRID_W + GUI_GRID_X;
+            y = 18 * GUI_GRID_H + GUI_GRID_Y;
+            w = 14 * GUI_GRID_W;
+            h = 1 * GUI_GRID_H;
+            colorBackground[] = {-1,-1,-1,0.5};
+            onLoad = "params ['_control']; _control ctrlShow false; _control ctrlEnable false;";
+        };
+
+        // Terminal-only hostname: hidden by default, shown + populated for laptops/computers.
+        class RscText_1006: RscText
+        {
+            idc = 1006;
+            text = "Hostname";
+            x = 0.5 * GUI_GRID_W + GUI_GRID_X;
+            y = 12 * GUI_GRID_H + GUI_GRID_Y;
+            w = 7 * GUI_GRID_W;
+            h = 1 * GUI_GRID_H;
+            style = ST_RIGHT;
+            onLoad = "params ['_control']; _control ctrlShow false;";
+        };
+        class RscEdit_1913: RscEdit
+        {
+            idc = 1913;
+            text = "";
+            x = 8 * GUI_GRID_W + GUI_GRID_X;
+            y = 12 * GUI_GRID_H + GUI_GRID_Y;
+            w = 14 * GUI_GRID_W;
+            h = 1 * GUI_GRID_H;
+            colorBackground[] = {-1,-1,-1,0.5};
+            onLoad = "params ['_control']; _control ctrlShow false; _control ctrlEnable false;";
+        };
+
+        // Terminal-only Allow SSH toggle, and Static IP field on the same row.
+        class RscText_1007: RscText
+        {
+            idc = 1007;
+            text = "Allow SSH";
+            x = 0.5 * GUI_GRID_W + GUI_GRID_X;
+            y = 13.5 * GUI_GRID_H + GUI_GRID_Y;
+            w = 7 * GUI_GRID_W;
+            h = 1 * GUI_GRID_H;
+            style = ST_RIGHT;
+            onLoad = "params ['_control']; _control ctrlShow false;";
+        };
+        class RscCheckBox_1320: RscCheckBox
+        {
+            idc = 1320;
+            x = 8 * GUI_GRID_W + GUI_GRID_X;
+            y = 13.5 * GUI_GRID_H + GUI_GRID_Y;
+            w = 1 * GUI_GRID_W;
+            h = 1 * GUI_GRID_H;
+            colorBackground[] = {-1,-1,-1,0.5};
+            onLoad = "params ['_control']; _control ctrlShow false; _control ctrlEnable false;";
+        };
+        // Terminal-only static IP field: blank = DHCP, non-blank overrides the address on apply.
+        class RscText_1011: RscText
+        {
+            idc = 1011;
+            text = "Static IP";
+            x = 10 * GUI_GRID_W + GUI_GRID_X;
+            y = 13.5 * GUI_GRID_H + GUI_GRID_Y;
+            w = 7 * GUI_GRID_W;
+            h = 1 * GUI_GRID_H;
+            style = ST_RIGHT;
+            onLoad = "params ['_control']; _control ctrlShow false;";
+        };
+        class RscEdit_1916: RscEdit
+        {
+            idc = 1916;
+            text = "";
+            x = 18 * GUI_GRID_W + GUI_GRID_X;
+            y = 13.5 * GUI_GRID_H + GUI_GRID_Y;
+            w = 14 * GUI_GRID_W;
+            h = 1 * GUI_GRID_H;
+            colorBackground[] = {-1,-1,-1,0.5};
+            onLoad = "params ['_control']; _control ctrlShow false; _control ctrlEnable false;";
+        };
+
+        // Terminal-only Wi-Fi router picker: list nearby routers, supply password, connect/disconnect.
+        class RscText_1008: RscText
+        {
+            idc = 1008;
+            text = "Wi-Fi Router";
+            x = 0.5 * GUI_GRID_W + GUI_GRID_X;
+            y = 15 * GUI_GRID_H + GUI_GRID_Y;
+            w = 7 * GUI_GRID_W;
+            h = 1 * GUI_GRID_H;
+            style = ST_RIGHT;
+            onLoad = "params ['_control']; _control ctrlShow false;";
+        };
+        class RscCombo_1600: RscCombo
+        {
+            idc = 1600;
+            x = 8 * GUI_GRID_W + GUI_GRID_X;
+            y = 15 * GUI_GRID_H + GUI_GRID_Y;
+            w = 14 * GUI_GRID_W;
+            h = 1 * GUI_GRID_H;
+            colorBackground[] = {-1,-1,-1,0.5};
+            onLoad = "params ['_control']; _control ctrlShow false; _control ctrlEnable false;";
+        };
+        class RscText_1009: RscText
+        {
+            idc = 1009;
+            text = "Password";
+            x = 0.5 * GUI_GRID_W + GUI_GRID_X;
+            y = 16.5 * GUI_GRID_H + GUI_GRID_Y;
+            w = 7 * GUI_GRID_W;
+            h = 1 * GUI_GRID_H;
+            style = ST_RIGHT;
+            onLoad = "params ['_control']; _control ctrlShow false;";
+        };
+        class RscEdit_1914: RscEdit
+        {
+            idc = 1914;
+            text = "";
+            x = 8 * GUI_GRID_W + GUI_GRID_X;
+            y = 16.5 * GUI_GRID_H + GUI_GRID_Y;
+            w = 14 * GUI_GRID_W;
+            h = 1 * GUI_GRID_H;
+            colorBackground[] = {-1,-1,-1,0.5};
+            onLoad = "params ['_control']; _control ctrlShow false; _control ctrlEnable false;";
+        };
+        class RscButton_2900: RscButton
+        {
+            idc = 2900;
+            x = 8 * GUI_GRID_W + GUI_GRID_X;
+            y = 18 * GUI_GRID_H + GUI_GRID_Y;
+            w = 6.5 * GUI_GRID_W;
+            h = 1.5 * GUI_GRID_H;
+            text = "Connect";
+            onLoad = "params ['_control']; _control ctrlShow false;";
+            onButtonClick = "params ['_control']; [ctrlParent _control] call AE3_main_fnc_zeus_connectToRouter;";
+        };
+        class RscButton_2910: RscButton
+        {
+            idc = 2910;
+            x = 15 * GUI_GRID_W + GUI_GRID_X;
+            y = 18 * GUI_GRID_H + GUI_GRID_Y;
+            w = 6.5 * GUI_GRID_W;
+            h = 1.5 * GUI_GRID_H;
+            text = "Disconnect";
+            onLoad = "params ['_control']; _control ctrlShow false;";
+            onButtonClick = "params ['_control']; [ctrlParent _control] call AE3_main_fnc_zeus_disconnectFromRouter;";
         };
 
         class RscButton_2100: RscButton
@@ -299,7 +576,8 @@ class AE3_UserInterface_Zeus_FilesystemBrowser
 			text = "/";
 			x = -1 * GUI_GRID_W + GUI_GRID_X;
 			y = 3.5 * GUI_GRID_H + GUI_GRID_Y;
-			w = 50.5 * GUI_GRID_W;
+			// Ends before the "Select Path" button (x=39) so the button is never covered in pick mode.
+			w = 39 * GUI_GRID_W;
 			h = 1 * GUI_GRID_H;
 			colorBackground[] = {-1,-1,-1,0.5};
 			canModify = 0;
@@ -539,6 +817,19 @@ class AE3_UserInterface_Zeus_FilesystemBrowser
 			onButtonClick = "[] call AE3_main_fnc_zeus_filesystemBrowser_applyChanges;";
 		};
 
+		// Select-path button: only shown when the browser is opened as a path picker (pick mode),
+		// toggled by AE3_main_fnc_zeus_filesystemBrowser_init. Returns the chosen path to the caller.
+		class RscButton_2900: RscButton
+		{
+			idc = 2900;
+			x = 39 * GUI_GRID_W + GUI_GRID_X;
+			y = 3.5 * GUI_GRID_H + GUI_GRID_Y;
+			w = 10.5 * GUI_GRID_W;
+			h = 1.5 * GUI_GRID_H;
+			text = "$STR_AE3_Main_Zeus_SelectPath";
+			onButtonClick = "[] call AE3_main_fnc_zeus_filesystemBrowser_pickPath;";
+		};
+
 		// Rename button
 		class RscButton_2700: RscButton
 		{
@@ -770,27 +1061,25 @@ class AE3_UserInterface_Zeus_Module_AddUser
 
 /* ================================================================================ */
 
-class AE3_UserInterface_Zeus_Module_AddSecurityCommands
+class AE3_UserInterface_Zeus_Module_AddCalendarEvent
 {
-	idd = 16988;
+	idd = 16995;
 	movingEnable = 1;
 	enableSimulation = 1;
 
-    onLoad = "params ['_display', ['_config', configNull]]; [_display, 0, 'onLoad'] spawn AE3_main_fnc_zeus_module_addSecurityCommands;";
-    onUnload = "params ['_display', '_exitCode']; [_display, _exitCode, 'onUnload'] call AE3_main_fnc_zeus_module_addSecurityCommands;";
+    onLoad = "params ['_display', ['_config', configNull]]; [_display, 0, 'onLoad'] spawn AE3_main_fnc_zeus_module_addCalendarEvent;";
+    onUnload = "params ['_display', '_exitCode']; [_display, _exitCode, 'onUnload'] call AE3_main_fnc_zeus_module_addCalendarEvent;";
 
 	class controlsBackground
 	{
-		// size 40x25
 		class RscText_900: RscText
 		{
-			// Background
 			idc = 900;
 			x = 0 * GUI_GRID_W + GUI_GRID_X;
 			y = 2 * GUI_GRID_H + GUI_GRID_Y;
 			w = 40 * GUI_GRID_W;
 			h = 21 * GUI_GRID_H;
-			colorBackground[] = {0.2,0.2,0.2,1}; // light grey
+			colorBackground[] = {0.2,0.2,0.2,1};
 		};
 	};
 
@@ -799,7 +1088,7 @@ class AE3_UserInterface_Zeus_Module_AddSecurityCommands
         class RscText_1000: RscText
         {
             idc = 1000;
-            text = "$STR_AE3_Main_Zeus_Module_AddSecurityCommands";
+            text = "AE3: Add Calendar Event";
             x = 0 * GUI_GRID_W + GUI_GRID_X;
             y = 0 * GUI_GRID_H + GUI_GRID_Y;
             w = 40 * GUI_GRID_W;
@@ -810,7 +1099,7 @@ class AE3_UserInterface_Zeus_Module_AddSecurityCommands
         class RscText_1400: RscText
         {
             idc = 1400;
-            text = "$STR_AE3_Main_Zeus_Module_AddSecurityCommands_Description";
+            text = "Adds a calendar/intel event to the synced computer(s). Date must be ISO format YYYY-MM-DD.";
             x = 0.5 * GUI_GRID_W + GUI_GRID_X;
             y = 2.5 * GUI_GRID_H + GUI_GRID_Y;
             w = 39 * GUI_GRID_W;
@@ -823,149 +1112,88 @@ class AE3_UserInterface_Zeus_Module_AddSecurityCommands
         class RscText_1001: RscText
         {
             idc = 1001;
-
-            text = "crypto";
+            text = "Date";
             x = 0.5 * GUI_GRID_W + GUI_GRID_X;
             y = 9 * GUI_GRID_H + GUI_GRID_Y;
             w = 7 * GUI_GRID_W;
             h = 1 * GUI_GRID_H;
-
             style = ST_RIGHT;
         };
-
         class RscText_1002: RscText
         {
             idc = 1002;
-
-            text = "crack";
+            text = "Title";
             x = 0.5 * GUI_GRID_W + GUI_GRID_X;
             y = 10.5 * GUI_GRID_H + GUI_GRID_Y;
             w = 7 * GUI_GRID_W;
             h = 1 * GUI_GRID_H;
-
+            style = ST_RIGHT;
+        };
+        class RscText_1003: RscText
+        {
+            idc = 1003;
+            text = "Location";
+            x = 0.5 * GUI_GRID_W + GUI_GRID_X;
+            y = 12 * GUI_GRID_H + GUI_GRID_Y;
+            w = 7 * GUI_GRID_W;
+            h = 1 * GUI_GRID_H;
+            style = ST_RIGHT;
+        };
+        class RscText_1004: RscText
+        {
+            idc = 1004;
+            text = "Details";
+            x = 0.5 * GUI_GRID_W + GUI_GRID_X;
+            y = 13.5 * GUI_GRID_H + GUI_GRID_Y;
+            w = 7 * GUI_GRID_W;
+            h = 1 * GUI_GRID_H;
             style = ST_RIGHT;
         };
 
-        class RscCheckBox_1401: RscCheckBox
+        class RscEdit_1401: RscEdit
         {
             idc = 1401;
+            text = "2026-06-19";
             x = 8 * GUI_GRID_W + GUI_GRID_X;
             y = 9 * GUI_GRID_H + GUI_GRID_Y;
-            w = 1 * GUI_GRID_W;
+            w = 31.5 * GUI_GRID_W;
             h = 1 * GUI_GRID_H;
             colorBackground[] = {-1,-1,-1,0.5};
-
-            checked = 1;
         };
-
-        class RscCheckBox_1402: RscCheckBox
+        class RscEdit_1402: RscEdit
         {
             idc = 1402;
+            text = "Meeting";
             x = 8 * GUI_GRID_W + GUI_GRID_X;
             y = 10.5 * GUI_GRID_H + GUI_GRID_Y;
-            w = 1 * GUI_GRID_W;
+            w = 31.5 * GUI_GRID_W;
             h = 1 * GUI_GRID_H;
             colorBackground[] = {-1,-1,-1,0.5};
-
-            checked = 1;
         };
-
-         class RscButtonMenuOK_2600: RscButtonMenuOK
+        class RscEdit_1403: RscEdit
         {
-            x = 37 * GUI_GRID_W + GUI_GRID_X;
-            y = 23.5 * GUI_GRID_H + GUI_GRID_Y;
-            w = 3 * GUI_GRID_W;
-            h = 1.5 * GUI_GRID_H;
+            idc = 1403;
+            text = "";
+            x = 8 * GUI_GRID_W + GUI_GRID_X;
+            y = 12 * GUI_GRID_H + GUI_GRID_Y;
+            w = 31.5 * GUI_GRID_W;
+            h = 1 * GUI_GRID_H;
+            colorBackground[] = {-1,-1,-1,0.5};
         };
-
-        class RscButtonMenuCancel_2700: RscButtonMenuCancel
+        class RscEdit_1404: RscEdit
         {
-            x = 31 * GUI_GRID_W + GUI_GRID_X;
-            y = 23.5 * GUI_GRID_H + GUI_GRID_Y;
-            w = 5 * GUI_GRID_W;
-            h = 1.5 * GUI_GRID_H;
-        };
-	};
-};
-
-/* ================================================================================ */
-
-class AE3_UserInterface_Zeus_Module_AddGames
-{
-	idd = 16989;
-	movingEnable = 1;
-	enableSimulation = 1;
-
-    onLoad = "params ['_display', ['_config', configNull]]; [_display, 0, 'onLoad'] spawn AE3_main_fnc_zeus_module_addGames;";
-    onUnload = "params ['_display', '_exitCode']; [_display, _exitCode, 'onUnload'] call AE3_main_fnc_zeus_module_addGames;";
-
-	class controlsBackground
-	{
-		// size 40x25
-		class RscText_900: RscText
-		{
-			// Background
-			idc = 900;
-			x = 0 * GUI_GRID_W + GUI_GRID_X;
-			y = 2 * GUI_GRID_H + GUI_GRID_Y;
-			w = 40 * GUI_GRID_W;
-			h = 21 * GUI_GRID_H;
-			colorBackground[] = {0.2,0.2,0.2,1}; // light grey
-		};
-	};
-
-	class controls
-	{
-        class RscText_1000: RscText
-        {
-            idc = 1000;
-            text = "$STR_AE3_Main_Zeus_Module_AddGames";
-            x = 0 * GUI_GRID_W + GUI_GRID_X;
-            y = 0 * GUI_GRID_H + GUI_GRID_Y;
-            w = 40 * GUI_GRID_W;
-            h = 1.5 * GUI_GRID_H;
-            colorBackground[] = {-1,-1,-1,1};
-        };
-
-        class RscText_1400: RscText
-        {
-            idc = 1400;
-            text = "$STR_AE3_Main_Zeus_Module_AddGames_Description";
-            x = 0.5 * GUI_GRID_W + GUI_GRID_X;
-            y = 2.5 * GUI_GRID_H + GUI_GRID_Y;
-            w = 39 * GUI_GRID_W;
-            h = 6 * GUI_GRID_H;
+            idc = 1404;
+            text = "";
+            x = 8 * GUI_GRID_W + GUI_GRID_X;
+            y = 13.5 * GUI_GRID_H + GUI_GRID_Y;
+            w = 31.5 * GUI_GRID_W;
+            h = 4 * GUI_GRID_H;
             colorBackground[] = {-1,-1,-1,0.5};
 			style = ST_MULTI;
 			lineSpacing = 1;
         };
 
-        class RscText_1001: RscText
-        {
-            idc = 1001;
-
-            text = "snake";
-            x = 0.5 * GUI_GRID_W + GUI_GRID_X;
-            y = 9 * GUI_GRID_H + GUI_GRID_Y;
-            w = 7 * GUI_GRID_W;
-            h = 1 * GUI_GRID_H;
-
-            style = ST_RIGHT;
-        };
-
-        class RscCheckBox_1401: RscCheckBox
-        {
-            idc = 1401;
-            x = 8 * GUI_GRID_W + GUI_GRID_X;
-            y = 9 * GUI_GRID_H + GUI_GRID_Y;
-            w = 1 * GUI_GRID_W;
-            h = 1 * GUI_GRID_H;
-            colorBackground[] = {-1,-1,-1,0.5};
-
-            checked = 1;
-        };
-
-         class RscButtonMenuOK_2600: RscButtonMenuOK
+        class RscButtonMenuOK_2600: RscButtonMenuOK
         {
             x = 37 * GUI_GRID_W + GUI_GRID_X;
             y = 23.5 * GUI_GRID_H + GUI_GRID_Y;
@@ -1396,7 +1624,7 @@ class AE3_UserInterface_Zeus_Module_AddFile
                 };
             };
 
-            onLoad = "params ['_control']; private _display = ctrlParent _control; _display setVariable ['algorithmCtrl', _control]; _control ctrlEnable false;";
+            onLoad = "params ['_control']; private _display = ctrlParent _control; _display setVariable ['algorithmCtrl', _control]; lbClear _control; { private _idx = _control lbAdd (_x select 1); _control lbSetData [_idx, _x select 0]; } forEach (missionNamespace getVariable ['AE3_filesystem_encryptionAlgorithms', [['caesar', 'Caesar', true], ['columnar', 'Columnar', true]]]); _control lbSetCurSel 0; _control ctrlEnable false;";
         };
 
         class RscText_1016: RscText

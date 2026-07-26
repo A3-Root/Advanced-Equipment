@@ -13,3 +13,4 @@ PREP(lsInterfaces);
 
 PREP(connectFlashDrive);
 PREP(disconnectFlashDrive);
+PREP(disconnectAllDrives);

@@ -1,3 +1,4 @@
+// File: fnc_connectFlashDrive.sqf
 /*
  * Author: Root, Wasserstoff
  * Description: Physically connects a flash drive item to a computer's USB interface, converting the item to an object and attaching it to the computer
@@ -36,14 +37,22 @@ _object attachTo [_computer, _rel_pos];
 _occupiedList set [_index, _object];
 _computer setVariable ["AE3_USB_Interfaces_occupied", _occupiedList, true];
 
-_object setVariable ['AE3_Flashdrive_Parent', _computer];
-_object setVariable ['AE3_Flashdrive_Interface', _name];
+_object setVariable ['AE3_Flashdrive_Parent', _computer, true];
+_object setVariable ['AE3_Flashdrive_Interface', _name, true];
 
 [_object, "AE3_Flashdrive_takeEH", {
 	params['_flashdrive', '_player'];
 
-	private _computer = _flashDrive getVariable 'AE3_Flashdrive_Parent';
-	private _interface_name = _flashDrive getVariable 'AE3_Flashdrive_Interface';
+	private _computer = _flashdrive getVariable 'AE3_Flashdrive_Parent';
+	private _interface_name = _flashdrive getVariable 'AE3_Flashdrive_Interface';
+
+	// The parent laptop may have been removed (e.g. picked up into inventory) while the drive was
+	// still attached; without it there is nothing to disconnect from, so just drop the handler.
+	if (isNull _computer) exitWith {
+		[_flashDrive, "AE3_Flashdrive_takeEH", _thisScriptedEventHandler] call BIS_fnc_removeScriptedEventHandler;
+		true;
+	};
+
 	private _interfaces = _computer getVariable "AE3_USB_Interfaces";
 
 	[_computer, _player, _interfaces get _interface_name] call AE3_flashdrive_fnc_disconnectFlashDrive;
@@ -52,3 +61,14 @@ _object setVariable ['AE3_Flashdrive_Interface', _name];
 
 	true;
 }] call BIS_fnc_addScriptedEventHandler;
+
+// Auto-mount the freshly connected drive so it shows up in My Computer / the file browser,
+// then nudge any open desktop to refresh its volume list.
+[_computer, _name, "root"] remoteExecCall ["AE3_flashdrive_fnc_mount", 2];
+["ae3_desktop_volChanged", []] call CBA_fnc_globalEvent;
+
+private _sound = "\z\ae3\addons\flashdrive\audio\usb_connect.ogg";
+if ((typeOf _object) find "ROOT_Rubberducky" == 0 || {_flashDrive find "ROOT_Rubberducky" == 0}) then {
+    _sound = "\z\root_cyberwarfare\addons\main\audio\ducky_connected.ogg";
+};
+[_computer, _sound] remoteExecCall ["AE3_desktop_fnc_playDeviceSound", 0];

@@ -1,3 +1,4 @@
+// File: fnc_terminal_buildUiPayload.sqf
 /*
  * Author: Root
  * Description: Builds a trimmed UI-on-Texture payload containing only the lines required to render the current viewport.

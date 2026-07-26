@@ -1,3 +1,4 @@
+// File: fnc_solarCalculation.sqf
 /*
  * Author: Root, Wasserstoff
  * Description: Calculates current solar panel power output based on sun position, panel orientation, and visibility. Uses solar zenith and azimuth angles, panel normal vectors, and line-of-sight checks to determine effective power. Output is scaled by panel orientation efficiency, sun intensity, and occlusion.
@@ -24,7 +25,7 @@ private _normalList = [_solar] call (_solar getVariable "AE3_power_orientationFn
 private _mult = 0;
 
 {
-	_buffer = _x vectorCos _solVec;
+	private _buffer = _x vectorCos _solVec;
 	if (_buffer > 0) then 
 	{
 		_mult = _mult + _buffer;

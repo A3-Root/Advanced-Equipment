@@ -1,669 +1,399 @@
 # Eden Editor Guide
 
-This guide covers how to use the Eden Editor (3DEN) to set up AE3 (Advanced Equipment) missions. Learn how to configure laptops, power grids, network topologies, and filesystems before mission start.
+This guide explains how to configure AE3 in 3DEN without scripting. It covers placing objects, opening attributes, using modules, syncing modules, and creating power/network connections.
 
----
+## Finding AE3 Objects
 
-## Table of Contents
+AE3 objects appear in editor asset categories added by the mod. The exact category names can vary with localization, but the objects include laptops, routers, generators, batteries, solar panels, lights, desks, and flash drives.
 
-- [Overview](#overview)
-- [Getting Started](#getting-started)
-- [Connection Types](#connection-types)
-  - [Power Connections](#power-connections)
-  - [Network Connections](#network-connections)
-- [Setting Up Computers](#setting-up-computers)
-- [Setting Up Power Grids](#setting-up-power-grids)
-- [Setting Up Networks](#setting-up-networks)
-- [Best Practices](#best-practices)
-- [Example Scenarios](#example-scenarios)
-- [Troubleshooting](#troubleshooting)
+Common placed objects:
 
----
+- AE3 laptop.
+- AE3 router variants.
+- Portable generators.
+- Batteries.
+- Solar panels.
+- Portable lights.
+- Flash drive objects.
 
-## Overview
+## Opening Object Attributes
 
-The Eden Editor allows you to set up complete AE3 systems before starting a mission. Unlike Zeus modules (which work during gameplay), Eden Editor configurations are applied when the mission loads.
+To configure an AE3 object:
 
-**Key Capabilities:**
-- Connect devices to power sources visually
-- Create network topologies with routers
-- Pre-configure filesystems and user accounts
-- Set initial battery and fuel levels
-- Design complex cyber warfare scenarios
+1. Place the object.
+2. Double-click it in the 3DEN viewport or entity list.
+3. Scroll through the attributes window.
+4. Look for AE3-specific fields mixed with the normal Arma attributes.
+5. Change the values.
+6. Confirm the attribute window.
 
-**Important:** Most AE3 setup is done via scripting in Eden Editor's init fields or through Zeus during gameplay. Eden Editor primarily provides connection management.
+Object attributes are best for settings that belong to that object: laptop interface mode, static IP, router wireless settings, initial fuel, initial battery level, and powered-on behavior.
 
----
+## Laptop Attributes
 
-## Getting Started
+AE3 laptops have object attributes for the computer itself.
 
-### Placing AE3 Objects
+Important fields:
 
-1. **Open Eden Editor** (Tools → Eden Editor from main menu)
-2. **Create a new mission** or open an existing one
-3. **Place AE3 objects** from the editor:
-   - **Laptops**: Search for "Laptop" in object browser
-   - **Generators**: Search for "Generator"
-   - **Batteries**: Search for "Battery" (if custom AE3 batteries available)
-   - **Routers**: Search for "Router" (if custom AE3 routers available)
-   - **Solar Panels**: Search for "Solar" (if available)
+- Power level: initial internal battery or power state value where available.
+- Interface mode: controls whether players get CLI, GUI, both, or the default interface behavior.
+- Static IP: optional fixed IP address for the laptop when connected to a router.
+- Software-related attributes: command and laptop setup fields exposed by the laptop class.
 
-**Note:** Many AE3 devices use vanilla Arma 3 objects enhanced with AE3 scripts. Look for objects with "AE3" in their names when available.
+Interface mode options:
 
-### Accessing AE3 Connections
+- Default: use the mission/default setting.
+- CLI: terminal command line only.
+- GUI: graphical desktop only.
+- Both: expose both interfaces.
 
-AE3 provides two connection types in Eden Editor:
+Use laptop attributes when every player should see the same base behavior from mission start.
 
-1. **Right-click** on an object in the editor
-2. **Select "Connect"** from context menu
-3. **Choose connection type**:
-   - **AE3: connect device to power source**
-   - **AE3: connect device to network router**
-4. **Click the target object** to complete the connection
+## Router Attributes
 
----
+Routers are configured by double-clicking the router object.
 
-## Connection Types
+Router fields:
 
-### Power Connections
+- Network Name (SSID): the name shown for the wireless network. Blank keeps the default object name.
+- Default Gateway: optional address for the router. Blank keeps auto-assigned subnet behavior.
+- Wifi Range (m): maximum distance for connections.
+- Network Password: password required to connect. Blank means open network.
+- Power level: initial internal battery/power value where available.
+- Powered On At Start: starts the router automatically.
+- Allow External SSH: allows ping/SSH from other gateways.
+- External Allowed IPs: optional allow list for external sources. Blank allows any source when external access is enabled.
 
-**Purpose:** Connect power-consuming devices (laptops, batteries) to power sources (generators, solar panels, batteries).
+For simple missions, set an SSID, optionally set a password, leave gateway blank, and turn on Powered On At Start.
 
-**How to Create:**
-1. **Right-click** the power consumer (e.g., laptop)
-2. Select **Connect → AE3: connect device to power source**
-3. **Click** the power provider (e.g., generator)
-4. **Connection line** appears in red color
+## Power Device Attributes
 
-**Connection Rules:**
-- Laptops can connect to generators, solar panels, or batteries
-- Batteries can connect to generators or solar panels (for charging)
-- One device can connect to multiple power sources
-- Connections are directional: consumer → provider
+Generators, batteries, and solar panels can expose attributes such as:
 
-**Visual Indicators:**
-- Red connection line in Eden Editor
-- Line persists after mission start for visualization
+- Fuel level.
+- Battery/power level.
+- Powered-on-at-start behavior where supported.
 
-**Example:**
-```
-Laptop → Generator (laptop powered by generator)
-Battery → Solar Panel (battery charges from solar panel)
-Laptop → Battery → Generator (laptop uses battery, battery charges from generator)
-```
+Use these attributes to decide whether players can immediately use equipment or must restore power during the mission.
 
-**Automatic Behavior:**
-- When mission starts, connections are established automatically
-- Power flows from provider to consumer
-- Battery charge is managed automatically
-- If generator runs out of fuel, batteries take over (if connected)
+## 3DEN Connection Tools
 
----
+AE3 adds custom editor connection types:
 
-### Network Connections
+- `AE3: connect device to power source`
+- `AE3: connect device to network router`
 
-**Purpose:** Connect devices to routers to create network topologies. Devices on the same network can communicate and hack each other.
+Use these from the 3DEN connection menu, similar to syncing or other editor connection workflows.
 
-**How to Create:**
-1. **Right-click** the network device (e.g., laptop)
-2. Select **Connect → AE3: connect device to network router**
-3. **Click** the router
-4. **Connection line** appears in cyan/teal color
+### Power Connection
 
-**Connection Rules:**
-- Laptops must connect to routers (not directly to each other)
-- Routers can connect to other routers (creating multi-router networks)
-- One device can only connect to one router
-- Cyclic connections (router loops) are detected and prevented
-
-**Visual Indicators:**
-- Cyan/teal connection line in Eden Editor
-- Line persists after mission start
-
-**Example Topologies:**
-```
-Simple Network:
-Laptop1 → Router ← Laptop2
-(Laptop1 and Laptop2 can communicate)
-
-Multi-Router Network:
-Laptop1 → Router1 ← → Router2 ← Laptop2
-(All devices on same network)
-
-Isolated Networks:
-Laptop1 → Router1
-Laptop2 → Router2
-(Laptop1 and Laptop2 CANNOT communicate - different networks)
-```
-
-**Automatic Behavior:**
-- DHCP assigns IP addresses automatically
-- IP addresses are allocated based on network topology
-- Devices can ping and discover each other
-- Hacking commands only work on devices within the same network
-
----
+Purpose: connect a powered consumer to a provider.
 
-## Setting Up Computers
-
-Eden Editor doesn't have dedicated AE3 computer configuration modules. Instead, use **init fields** to configure computers via scripting.
-
-### Basic Computer Initialization
-
-**Step 1:** Place a laptop in Eden Editor
-
-**Step 2:** Right-click → Attributes → Init field
-
-**Step 3:** Add initialization code:
-
-```sqf
-// Basic laptop initialization with user account
-[this, "player", "password123"] call AE3_armaos_fnc_computer_addUser;
-```
+Typical pairs:
 
-### Adding Files in Init Field
-
-```sqf
-// Add a mission briefing file
-[
-    this,
-    "/home/player/briefing.txt",
-    "Mission: Infiltrate the enemy base and retrieve intel.",
-    false,  // not code
-    "player",
-    [[false,true,true],[false,true,false]]  // owner read/write, everyone read
-] call AE3_filesystem_fnc_device_addFile;
-```
-
-### Adding Multiple Users
-
-```sqf
-// Add multiple users
-[this, "admin", "admin123"] call AE3_armaos_fnc_computer_addUser;
-[this, "guest", "guest"] call AE3_armaos_fnc_computer_addUser;
-[this, "operator", "secure_pass"] call AE3_armaos_fnc_computer_addUser;
-```
-
-### Adding Security Commands
-
-```sqf
-// Add crypto and crack tools
-[this, true, true] call AE3_armaos_fnc_computer_addSecurityCommands;
-```
-
-### Adding Games
-
-```sqf
-// Add Snake game
-[this, true] call AE3_armaos_fnc_computer_addGames;
-```
-
-### Complete Laptop Setup Example
-
-```sqf
-// Complete laptop configuration
-private _laptop = this;
-
-// Add users
-[_laptop, "admin", "password123"] call AE3_armaos_fnc_computer_addUser;
-[_laptop, "player", "guest"] call AE3_armaos_fnc_computer_addUser;
-
-// Add mission files
-[
-    _laptop,
-    "/home/admin/intel.txt",
-    "TOP SECRET: Enemy coordinates...",
-    false,
-    "admin",
-    [[false,true,true],[false,false,false]]  // private to admin
-] call AE3_filesystem_fnc_device_addFile;
-
-[
-    _laptop,
-    "/home/player/readme.txt",
-    "Welcome! Type 'help' for available commands.",
-    false,
-    "player",
-    [[false,true,true],[false,true,false]]  // player can edit, everyone can read
-] call AE3_filesystem_fnc_device_addFile;
-
-// Add security tools
-[_laptop, true, true] call AE3_armaos_fnc_computer_addSecurityCommands;
-```
-
-**Important:** Init code runs on mission start, so computers are ready when players access them.
-
----
-
-## Setting Up Power Grids
+- Laptop to generator.
+- Laptop to battery.
+- Router to generator.
+- Light to generator.
+- Battery to solar panel when using a charging setup.
 
-### Simple Generator Setup
+Workflow:
 
-**Components Needed:**
-- 1 Generator
-- 1+ Laptops
+1. Select the connection tool `AE3: connect device to power source`.
+2. Start the connection on the device that needs power.
+3. End the connection on the generator, battery, or solar panel.
+4. Preview the mission and verify the powered device can turn on.
 
-**Steps:**
-1. Place generator in Eden Editor
-2. Place laptop(s) near generator
-3. Create power connections: Laptop → Generator
-4. **(Optional)** Set initial fuel level via init:
-   ```sqf
-   // Set generator to 50% fuel
-   private _fuelLevel = 0.5;
-   [this, _fuelLevel] call AE3_power_fnc_setFuelLevel;
-   ```
-
-**Result:** Laptops will have power as long as generator has fuel.
-
----
-
-### Battery Backup System
-
-**Components Needed:**
-- 1 Generator
-- 1 Battery
-- 1+ Laptops
+### Network Connection
 
-**Steps:**
-1. Place all components
-2. Create connections:
-   - Battery → Generator (battery charges from generator)
-   - Laptop → Battery (laptop draws from battery)
-3. **(Optional)** Set initial battery level:
-   ```sqf
-   // Set battery to 75% charge
-   [this, 0.75] call AE3_power_fnc_setBatteryLevel;
-   ```
+Purpose: connect a network device to a router.
 
-**Result:** Laptop uses battery power. Battery recharges from generator. If generator fails, laptop continues on battery until drained.
+Typical pairs:
 
----
+- Laptop to router.
+- Router to parent router.
 
-### Solar-Powered System
+Workflow:
 
-**Components Needed:**
-- 1 Solar Panel
-- 1 Battery (recommended)
-- 1+ Laptops
+1. Select the connection tool `AE3: connect device to network router`.
+2. Start the connection on the laptop or child router.
+3. End the connection on the router.
+4. Preview the mission.
+5. Check that the laptop can use network features when powered.
 
-**Steps:**
-1. Place solar panel outdoors (sunlight access)
-2. Place battery
-3. Place laptop(s)
-4. Create connections:
-   - Battery → Solar Panel
-   - Laptop → Battery
+## Using AE3 Modules
 
-**Result:** Solar panel charges battery during daytime. Battery powers laptop. System is sustainable during day/night cycles.
+Modules are used to add content or behavior to an object. Most laptop-content modules must be synced to one or more laptops.
 
----
+General module workflow:
 
-### Complex Power Grid
+1. Place the target laptop.
+2. Place the AE3 module.
+3. Double-click the module.
+4. Fill in the module fields.
+5. Sync the module to the laptop.
+6. Preview the mission.
+7. Open the laptop as a player and verify the result.
 
-**Components Needed:**
-- Multiple Generators
-- Multiple Batteries
-- Multiple Laptops
+If nothing happens, first check the sync line.
 
-**Steps:**
-1. Place components in a logical layout
-2. Create connection hierarchy:
-   ```
-   Generator1 → Battery1 → Laptop1
-   Generator1 → Battery2 → Laptop2
-   Generator2 → Battery2
-   (Battery2 has redundant power from both generators)
-   ```
+## Laptop Content Modules
 
-**Result:** Redundant power sources for critical systems.
+These modules are used to populate laptop content.
 
----
+### AE3: Add User
 
-## Setting Up Networks
+Adds a login user to a synced laptop.
 
-### Simple Local Network
+Fields:
 
-**Components Needed:**
-- 1 Router
-- 2+ Laptops
+- Username.
+- Password.
 
-**Steps:**
-1. Place router in central location
-2. Place laptops around router
-3. Create network connections: Each Laptop → Router
-4. Create power connections for all devices
+Sync target:
 
-**Result:** All laptops can communicate, ping each other, and access each other's systems (if permissions allow).
+- AE3 laptop.
 
----
+Use this before expecting players to log in with those credentials.
 
-### Multi-Router Network
+### AE3: Add Directory
 
-**Components Needed:**
-- 2+ Routers
-- Multiple Laptops
+Creates a folder on a synced laptop filesystem.
 
-**Steps:**
-1. Place routers
-2. Connect routers to each other: Router1 ↔ Router2
-3. Connect laptops to their nearest router
-4. Create power connections
-
-**Example:**
-```
-Building A:          Building B:
-Laptop1 →            Laptop3 →
-         Router1 ↔ Router2
-Laptop2 →            Laptop4 →
-```
+Fields:
 
-**Result:** All laptops (1-4) are on the same network and can communicate across routers.
+- Path.
+- Owner.
+- Owner permissions.
+- Everyone permissions.
 
----
+Sync target:
 
-### Isolated Networks (Mission Security)
+- AE3 laptop.
 
-**Purpose:** Create separate networks that cannot communicate (e.g., player network vs enemy network).
+Create folders before adding files inside them.
 
-**Components Needed:**
-- 2 Routers
-- Laptops for each network
+### AE3: Add File
 
-**Steps:**
-1. Place Router1 (Player Network)
-2. Place Router2 (Enemy Network)
-3. **DO NOT** connect Router1 to Router2
-4. Connect player laptops to Router1
-5. Connect enemy laptops to Router2
+Creates a file on a synced laptop filesystem.
 
-**Result:** Player laptops cannot directly hack enemy laptops (different networks). Players must physically access enemy laptops or breach the network.
-
----
-
-## Best Practices
-
-### Organization
-
-- **Name your objects** in Eden Editor for easy identification
-  - Right-click → Attributes → General → Name
-  - Examples: "PlayerLaptop1", "MainGenerator", "EnemyRouter"
-- **Use folders** to organize objects by function
-  - Create folders: "Power Grid", "Player Equipment", "Enemy Network"
-- **Color-code connections** mentally (red = power, cyan = network)
-
-### Performance
-
-- **Limit number of laptops** to 10-20 per mission (more may impact server performance)
-- **Turn off unused laptops** by default (they auto-start otherwise)
-  - Init field: `[this] call AE3_armaos_fnc_computer_turnOff;`
-- **Use efficient network topologies** (avoid redundant router chains)
-
-### Testing
+Fields:
 
-- **Preview mission regularly** to test configurations
-- **Use Zeus interface** during preview to adjust on-the-fly
-- **Test all power connections** by checking Asset Attributes in Zeus
-- **Test network connections** by using `ping` command from laptops
-
-### Documentation
-
-- **Add comments** in init fields to explain configurations
-  ```sqf
-  // Player starting laptop - has all basic tools
-  [this, "player", "password"] call AE3_armaos_fnc_computer_addUser;
-  ```
-- **Document network topology** in mission briefing or separate file
-- **Create mission notes** explaining power grid layout
-
----
-
-## Example Scenarios
-
-### Scenario 1: Intelligence Gathering Mission
-
-**Setup:**
-- **Player Laptop**: Fully equipped with security tools
-- **Enemy Laptop**: Contains encrypted intel file
-- **Network**: Both on same network (or players must physically access enemy laptop)
-- **Power**: Both on independent power sources
+- Path.
+- Content.
+- Is Code.
+- Owner.
+- Owner permissions.
+- Everyone permissions.
+- Is Encrypted.
+- Encryption algorithm.
+- Encryption key.
 
-**Eden Setup:**
+Sync target:
 
-```sqf
-// Player Laptop Init:
-[this, "player", "player"] call AE3_armaos_fnc_computer_addUser;
-[this, true, true] call AE3_armaos_fnc_computer_addSecurityCommands;  // crypto + crack
+- AE3 laptop.
 
-// Enemy Laptop Init:
-[this, "admin", "SecurePass123"] call AE3_armaos_fnc_computer_addUser;
-[
-    this,
-    "/home/admin/classified.txt",
-    "Enemy base coordinates: 123456",
-    false,
-    "admin",
-    [[false,true,true],[false,false,false]],  // private to admin
-    true,  // encrypted
-    "columnar",
-    "SECRETKEY"
-] call AE3_filesystem_fnc_device_addFile;
-```
+For normal mission notes, leave Is Code off. Use encryption only when players are expected to solve an encryption/security step.
 
-**Connections:**
-- PlayerLaptop → PlayerRouter
-- EnemyLaptop → PlayerRouter (same network for hacking)
-- All devices → Generators
+### AE3: Add Calendar Event
 
-**Mission:** Players must crack the password, login as admin, decrypt the classified file.
+Adds an event to the laptop Calendar app.
 
----
+Fields:
 
-### Scenario 2: Sabotage Mission
+- Date.
+- Title.
+- Location.
+- Details.
 
-**Setup:**
-- **Player Laptop**: Basic tools
-- **Power Grid**: Enemy base powered by generators
-- **Custom Command**: Players can disable generators via hacking
+Sync target:
 
-**Eden Setup:**
+- AE3 laptop.
 
-```sqf
-// Generator Init (add custom hack command):
-private _generator = this;
-[
-    _generator,
-    "disable",
-    "/bin/disable_generator",
-    {
-        params ["_computer", "_options", "_commandName"];
-        // Turn off generator when command is executed
-        private _generator = _computer;  // assuming laptop is the generator control terminal
-        [_generator] call AE3_power_fnc_turnOff;
-        ["Generator disabled!"] call AE3_armaos_fnc_shell_stdout;
-    },
-    "Disable the generator"
-] call AE3_armaos_fnc_computer_addCustomCommand;
-```
-
-**Connections:**
-- Control Terminal → Network
-- All enemy systems → Generator (so disabling it cuts power)
-
-**Mission:** Players infiltrate, hack control terminal, run `disable` command, causing blackout.
-
----
-
-### Scenario 3: Network Infiltration
+Use calendar entries for appointments, meeting clues, deadlines, or schedule intel.
 
-**Setup:**
-- **Multiple Networks**: Player network, civilian network, enemy network
-- **Objective**: Players must bridge networks to access enemy systems
+### AE3: Add Webpage
 
-**Eden Setup:**
+Adds a page to the desktop Browser app.
 
-```
-Network Topology:
-PlayerLaptop → PlayerRouter
-CivilianServer → CivilianRouter
-EnemyServer → EnemyRouter
+Fields:
 
-(No connections between routers initially)
-```
+- URL.
+- Title.
+- Content.
 
-**Mission Mechanic:**
-- Players must physically travel to civilian server location
-- Access civilian server to install bridge software (custom command)
-- Bridge creates connection: CivilianRouter ↔ EnemyRouter
-- Now players can hack enemy systems remotely
+Sync target:
 
-**Implementation:**
-Use scripting to dynamically create network connection when bridge is activated.
+- AE3 laptop.
 
----
+Use stable, simple URLs such as `intel.root/page` or `facility.local/status`.
 
-## Troubleshooting
+### AE3: Add Browser History
 
-### Connections Not Working After Mission Start
+Adds an entry to the laptop browser history.
 
-**Symptoms:**
-- Laptops have no power despite connections
-- Devices cannot ping each other despite network connections
+Fields:
 
-**Solutions:**
-- Verify connections are correct type (power vs network)
-- Check connection direction (consumer → provider for power)
-- Ensure all devices have power (generators have fuel, batteries are charged)
-- Preview mission and check Asset Attributes in Zeus
+- URL.
+- Time.
 
-### Objects Not Initializing Properly
+Sync target:
 
-**Symptoms:**
-- Init field code doesn't execute
-- Computers have no filesystem
+- AE3 laptop.
 
-**Solutions:**
-- Check for syntax errors in init field code
-- Ensure code runs on server: Wrap in `if (isServer) then { ... }`
-- Add delays if needed: `[this] spawn { sleep 1; /* code here */ };`
-- Verify AE3 mod is loaded in mission
+This does not create the page by itself. Add the webpage separately if players should be able to open it.
 
-### Network Topology Issues
+### AE3: Add Email
 
-**Symptoms:**
-- Some devices can ping, others cannot
-- IP addresses not assigned
+Adds an email to the laptop mail system.
 
-**Solutions:**
-- Check for cyclic router connections (not allowed)
-- Verify all devices connect to routers (not to each other directly)
-- Test with simple topology first (1 router, 2 laptops)
-- Use Zeus Asset Attributes to view IP addresses
+Fields:
 
-### Power Grid Problems
+- From.
+- To.
+- Subject.
+- Body.
+- Received time.
+- Create sender address.
+- Create recipient address.
 
-**Symptoms:**
-- Devices randomly lose power
-- Batteries drain too quickly
+Sync target:
 
-**Solutions:**
-- Check generator fuel levels (set initial fuel in init)
-- Verify power connections are correct direction
-- Ensure generators are turned on (default is on, but check)
-- Monitor power consumption vs generation (use Asset Attributes)
+- AE3 laptop.
 
-### Init Field Code Not Executing
+Use email for narrative clues, orders, identity hints, and social engineering gameplay.
 
-**Symptoms:**
-- Users not created
-- Files not appearing
+### AE3: Add Media
 
-**Solutions:**
-- Check for typos in function names
-- Ensure square brackets and parentheses are balanced
-- Add `sleep 0.5;` before commands to allow init to complete:
-  ```sqf
-  [this] spawn {
-      sleep 0.5;
-      [_thisScript, "player", "password"] call AE3_armaos_fnc_computer_addUser;
-  };
-  ```
-- Use `private _laptop = this;` if using `this` inside spawn
+Adds a media marker file to the laptop.
 
----
+Fields:
 
-## Advanced Techniques
+- Source path.
+- Media type: image, video, or audio.
+- Laptop path.
+- Path type: mission file or mod path.
+- Try Web View for experimental image handling.
 
-### Delayed Initialization
+Sync target:
 
-For complex setups, delay initialization to ensure dependencies are ready:
+- AE3 laptop.
 
-```sqf
-[this] spawn {
-    private _laptop = _this select 0;
+Use mission-file paths for media shipped with the mission. Use mod paths only when the file is provided by a loaded mod.
 
-    // Wait for filesystem to be ready
-    waitUntil { !isNil { _laptop getVariable "AE3_filesystem" } };
+### AE3: Add Passworded File
 
-    // Now safe to add files and users
-    [_laptop, "admin", "password"] call AE3_armaos_fnc_computer_addUser;
-    [_laptop, "/tmp/test.txt", "data", false, "root", [[false,true,false],[false,true,false]]] call AE3_filesystem_fnc_device_addFile;
-};
-```
+Creates a locked file that requires a password.
 
-### Dynamic Object References
+Fields:
 
-Reference other objects in init fields:
+- Laptop path.
+- Password.
+- Content.
+- Owner.
 
-```sqf
-// Generator init - store reference
-this setVariable ["myGeneratorName", "MainGenerator", true];
+Sync target:
 
-// Laptop init - reference generator
-private _generator = missionNamespace getVariable ["MainGenerator", objNull];
-if (!isNull _generator) then {
-    // Do something with generator reference
-};
-```
+- AE3 laptop.
 
-### Custom Mission Scripts
+Players can open these through GUI prompts or terminal unlock behavior, depending on the laptop interface.
 
-Instead of cluttering init fields, create mission scripts:
+## Special Modules
 
-**File:** `mission.sqm` folder → `initLaptops.sqf`
+### AE3: Save Laptop
 
-```sqf
-// initLaptops.sqf
-params ["_laptop", "_role"];
+Stores a server-side snapshot of a synced laptop into a named save slot.
 
-switch (_role) do {
-    case "player": {
-        [_laptop, "player", "password"] call AE3_armaos_fnc_computer_addUser;
-        [_laptop, true, true] call AE3_armaos_fnc_computer_addSecurityCommands;
-    };
-    case "enemy": {
-        [_laptop, "admin", "SecurePass"] call AE3_armaos_fnc_computer_addUser;
-        // Add enemy-specific files
-    };
-};
-```
+Field:
 
-**Eden Init Field:**
-```sqf
-[this, "player"] execVM "initLaptops.sqf";
-```
+- Save slot.
 
----
+Sync target:
 
-## Related Documentation
+- AE3 laptop.
 
-- [Zeus Guide](Zeus-Guide.md) - Live mission editing with Zeus
-- [Mission Maker Guide](Mission-Maker-Guide.md) - Scripting API and advanced mission creation
-- [Configuration](Configuration.md) - CBA settings for AE3
-- [API Reference](API-Reference.md) - Complete function reference
+Use this for scenarios where Zeus or mission flow may need to preserve laptop state.
 
----
+### AE3: Restore Laptop
 
-**Need More Help?**
+Restores a laptop from a named save slot.
 
-Visit the [Home](Home.md) page for additional resources and community support.
+Field:
+
+- Save slot.
+
+Sync target:
+
+- AE3 laptop.
+
+Use this to replace a lost or disabled laptop with a saved state.
+
+### AE3: Crash Device
+
+Crashes synced AE3 laptops. A crashed laptop shows crash behavior and must be power-cycled to recover.
+
+Sync target:
+
+- AE3 laptop.
+
+Use with triggers or Zeus for sabotage, failed hacking, or scripted incident moments.
+
+## Module Syncing
+
+To sync a module:
+
+1. Select the module.
+2. Use the standard 3DEN sync connection.
+3. Drag the sync line to the target laptop or object.
+4. Confirm the line remains visible.
+
+Most AE3 content modules accept a laptop as the synced target. Some modules can be synced to multiple laptops when you want the same content on more than one device.
+
+## Common Editor Recipes
+
+### Laptop With Login and Browser Clue
+
+1. Place a laptop.
+2. Set Interface Mode to GUI or Both.
+3. Place `AE3: Add User`.
+4. Enter credentials.
+5. Sync it to the laptop.
+6. Place `AE3: Add Webpage`.
+7. Fill URL, title, and content.
+8. Sync it to the laptop.
+9. Place `AE3: Add Browser History`.
+10. Use the same URL.
+11. Sync it to the laptop.
+12. Preview and open the Browser app.
+
+### Laptop With Terminal File Clue
+
+1. Place a laptop.
+2. Set Interface Mode to CLI or Both.
+3. Add a user.
+4. Place `AE3: Add Directory`.
+5. Create the folder path.
+6. Place `AE3: Add File`.
+7. Put the file in that folder path.
+8. Sync all modules to the laptop.
+9. Preview and read the file through the terminal.
+
+### Powered Network Laptop
+
+1. Place a laptop.
+2. Place a router.
+3. Place a generator or battery.
+4. Configure the router attributes.
+5. Connect laptop to router with `AE3: connect device to network router`.
+6. Connect laptop and router to a power source with `AE3: connect device to power source`.
+7. Preview and verify power first, then network.
+
+## Troubleshooting 3DEN Setup
+
+- Module did nothing: check that it is synced to the laptop.
+- File is missing: check that the folder path exists or add the folder first.
+- Browser history opens nowhere: check that the matching webpage exists.
+- Players cannot open GUI: check laptop Interface Mode and access restrictions.
+- Players cannot use terminal: check laptop Interface Mode and installed commands.
+- Network tools fail: check router power, router range, password, and connection line.
+- Device will not turn on: check power source, connection direction, fuel, and battery level.

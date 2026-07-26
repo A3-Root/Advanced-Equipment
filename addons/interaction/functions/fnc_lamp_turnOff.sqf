@@ -1,3 +1,4 @@
+// File: fnc_lamp_turnOff.sqf
 /*
  * Author: Root, y0014984
  * Description: Turns off a lamp using BIS_fnc_switchLamp and updates ACE3 interaction state via

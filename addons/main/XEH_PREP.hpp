@@ -8,6 +8,7 @@ PREP(sendVarToRemote);
 /* Debug Mode and Overlay */
 PREP(manageDebugMode);
 PREP(manageNetworkDebug);
+PREP(netLog);
 PREP(initDebugOverlay);
 PREP(killDebugOverlay);
 
@@ -18,6 +19,7 @@ PREP(3den_checkConnection);
 /* Misc */
 PREP(getPlayersInRange);
 PREP(waitForFilesystem);
+PREP(hasCapability);
 
 /* Terminate */
 PREP(terminateDevice);
@@ -33,20 +35,35 @@ PREP(zeus_standbyDevice);
 PREP(zeus_openObject);
 PREP(zeus_closeObject);
 
+PREP(zeus_connectToRouter);
+PREP(zeus_disconnectFromRouter);
+
 PREP(zeus_module_addUser);
-PREP(zeus_module_addSecurityCommands);
-PREP(zeus_module_addGames);
+PREP(zeus_module_addCalendarEvent);
 PREP(zeus_module_addFile);
 PREP(zeus_module_addDir);
 PREP(zeus_module_addConnection);
 
+/* Optional ZEN (Zeus Enhanced) Dynamic Dialog compat */
+PREP(zen_createDialog);
+PREP(zen_module_addUser);
+PREP(zen_module_addCalendarEvent);
+PREP(zen_module_addFile);
+PREP(zen_module_addDir);
+PREP(zen_module_addConnection);
+PREP(zeus_applyConnection);
+
 PREP(zeus_checkForComputer);
+
+PREP(zeus_deviceOpServer);
+PREP(zeus_deviceOpFeedback);
 
 PREP(zeus_isConnectionAllowed);
 
 PREP(zeus_openFilesystemBrowser);
 PREP(zeus_filesystemBrowser_init);
 PREP(zeus_filesystemBrowser_refresh);
+PREP(zeus_filesystemBrowser_pickPath);
 PREP(zeus_filesystemBrowser_onSelect);
 PREP(zeus_filesystemBrowser_onDblClick);
 PREP(zeus_filesystemBrowser_goBack);

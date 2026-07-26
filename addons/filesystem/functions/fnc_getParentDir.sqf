@@ -1,3 +1,4 @@
+// File: fnc_getParentDir.sqf
 /*
  * Author: Root, y0014984, Wasserstoff
  * Description: Resolves the parent directory of a given path and returns the parent directory object along with the target name. Handles special paths like . .. and ~. Can optionally create parent directories if they don't exist.
@@ -38,14 +39,14 @@ if (_new isEqualTo "~") exitWith
 {
 	if(_user isEqualTo "root") then
 	{
-		_current = _filesystem;
-		_pointer = [];
+		private _current = _filesystem;
+		private _pointer = [];
 		_new = "root";
 		[_pointer, _current, _new];
 	}else
 	{
-		_current = (_filesystem select 0) get 'home';
-		_pointer = ["home"];
+		private _current = (_filesystem select 0) get 'home';
+		private _pointer = ["home"];
 		_new = "";
 		if (_user isNotEqualTo '') then
 		{
@@ -57,7 +58,7 @@ if (_new isEqualTo "~") exitWith
 
 if ((_new isEqualTo "." && count _pntr == 0) || (_new isEqualTo ".." && count _pntr == 1)) exitWith
 {
-	[[], [createHashMapFromArray [[".", _filesystem]], 'root', [[true, true, true], [true, true, false]]], "."];
+	[[], [createHashMapFromArray [[".", _filesystem]], 'root', [[true, true, true], [true, false, true]]], "."];
 };
 
 if (_new isEqualTo ".." && count _pntr == 0) throw (format [localize "STR_AE3_Filesystem_Exception_NotFound", ".."]);

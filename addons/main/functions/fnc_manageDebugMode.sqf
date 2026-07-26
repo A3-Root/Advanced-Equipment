@@ -1,3 +1,4 @@
+// File: fnc_manageDebugMode.sqf
 /*
  * Author: Root, y0014984
  * Description: Triggered by CBA setting change event handler to start or stop the debug mode loop.
@@ -37,12 +38,12 @@ if (hasInterface) then
             30, // Print message every 30 seconds instead of every 5 seconds
             []
         ] call CBA_fnc_addPerFrameHandler;
-        
+
         localNamespace setVariable ["AE3_DebugModeLoopHandle", _debugModeLoopHandle];
 
         if (_debugOverlayProductiveUse) then
         {
-            [] spawn 
+            [] spawn
             {
                 // enable debug overlay
                 waitUntil { ((findDisplay 46) isNotEqualTo displayNull) };
@@ -53,14 +54,14 @@ if (hasInterface) then
     }
     else
     {
-        _debugModeLoopHandle = localNamespace getVariable "AE3_DebugModeLoopHandle";
+        private _debugModeLoopHandle = localNamespace getVariable "AE3_DebugModeLoopHandle";
         [_debugModeLoopHandle] call CBA_fnc_removePerFrameHandler;
 
         if ((time >= 5)) then { systemChat localize "STR_AE3_Main_DebugMode_disabled"; };
 
         if (_debugOverlayProductiveUse) then
         {
-            [] spawn 
+            [] spawn
             {
             //disable debug overlay
             waitUntil { ((findDisplay 46) isNotEqualTo displayNull) };

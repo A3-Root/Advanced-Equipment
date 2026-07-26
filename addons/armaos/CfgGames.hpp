@@ -9,5 +9,6 @@ class CfgGames
 		description = "$STR_AE3_ArmaOS_Config_CommandSnakeDescr";
 		man = "$STR_AE3_ArmaOS_Config_CommandSnakeMan";
 		code = "call AE3_armaos_fnc_games_snake";
+		sshCompatible = 0; // interactive/graphical - cannot run over ssh
 	};
 };

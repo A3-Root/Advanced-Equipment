@@ -1,3 +1,4 @@
+// File: fnc_createPowerConnection.sqf
 /*
  * Author: Root, y0014984
  * Description: Creates a power connection from a consumer device to a power provider (generator or battery). Waits for both devices to complete initialization before establishing the connection. Handles internal batteries automatically.

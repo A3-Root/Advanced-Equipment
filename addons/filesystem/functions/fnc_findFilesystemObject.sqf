@@ -1,3 +1,4 @@
+// File: fnc_findFilesystemObject.sqf
 /*
  * Author: Root, y0014984
  * Description: Recursively searches for filesystem objects (files or directories) by name. Returns all matching paths. Respects read permissions and counts directories with insufficient permissions.
@@ -49,12 +50,10 @@ params ["_pointer", "_filesystem", "_user", "_filesystemObjectName", ["_missingP
 */
 
 private _content = _filesystem select 0; // HASHMAP
-private _owner = _filesystem select 1; // STRING
-private _permissions = _filesystem select 2; // ARRAY
 
 private _totalResults = [];
 
-private _permissionNeeded = 1; // (0: Execute, 1: Read, 2: Write)
+private _permissionNeeded = 0; // (0: Read, 1: Write, 2: Execute)
 
 try
 {

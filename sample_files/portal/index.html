@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Operations Portal</title>
+<style>
+:root {
+  color-scheme: dark;
+  --bg: #07111f;
+  --bg2: #0d1e33;
+  --panel: rgba(11, 23, 38, 0.92);
+  --panel-2: rgba(16, 33, 53, 0.88);
+  --line: rgba(113, 164, 219, 0.18);
+  --text: #e8f3ff;
+  --muted: #96acc6;
+  --accent: #7dd3fc;
+  --accent-2: #f5a524;
+  --good: #76e3a8;
+  --warn: #ffcf70;
+  --shadow: 0 22px 60px rgba(0, 0, 0, 0.45);
+  --radius: 20px;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--text);
+  font: 16px/1.5 "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(125, 211, 252, 0.18), transparent 28%),
+    radial-gradient(circle at 80% 12%, rgba(245, 165, 36, 0.13), transparent 20%),
+    linear-gradient(160deg, var(--bg), var(--bg2));
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.frame {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 24px;
+}
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 22px;
+  border: 1px solid var(--line);
+  background: rgba(4, 14, 26, 0.72);
+  backdrop-filter: blur(10px);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.mark {
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(125, 211, 252, 0.9), rgba(125, 211, 252, 0.12) 56%),
+    linear-gradient(145deg, rgba(125, 211, 252, 0.2), rgba(245, 165, 36, 0.18));
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+.eyebrow {
+  margin: 0;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+h1 {
+  margin: 2px 0 0;
+  font-size: clamp(28px, 4vw, 42px);
+  line-height: 1.05;
+}
+.status {
+  text-align: right;
+}
+.status strong {
+  display: block;
+  font-size: 14px;
+}
+.status span {
+  color: var(--good);
+}
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 18px 0 0;
+}
+.nav a {
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.03);
+}
+.hero {
+  display: grid;
+  grid-template-columns: 1.7fr 1fr;
+  gap: 18px;
+  margin-top: 18px;
+}
+.panel {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: linear-gradient(180deg, var(--panel), rgba(5, 13, 24, 0.94));
+  box-shadow: var(--shadow);
+}
+.panel.pad { padding: 22px; }
+.banner {
+  min-height: 260px;
+  padding: 28px;
+}
+.banner h2 {
+  margin: 0 0 10px;
+  font-size: clamp(24px, 3vw, 34px);
+}
+.banner p {
+  max-width: 60ch;
+  color: var(--muted);
+}
+.pillrow { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+.pill {
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(125, 211, 252, 0.11);
+  border: 1px solid rgba(125, 211, 252, 0.18);
+  font-size: 13px;
+}
+.side {
+  display: grid;
+  gap: 18px;
+}
+.metric {
+  display: grid;
+  gap: 6px;
+}
+.metric .num {
+  font-size: 36px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+.metric .label {
+  color: var(--muted);
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 18px;
+}
+.card {
+  min-height: 220px;
+}
+.card h3 {
+  margin: 0 0 10px;
+  font-size: 18px;
+}
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.list li:last-child { border-bottom: 0; }
+.muted { color: var(--muted); }
+.footer {
+  margin: 18px 0 28px;
+  color: var(--muted);
+  font-size: 14px;
+}
+.badge {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(118, 227, 168, 0.14);
+  color: #9ef0bf;
+  font-size: 12px;
+}
+@media (max-width: 920px) {
+  .hero, .grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="frame">
+  <header class="topbar">
+    <div class="brand">
+      <div class="mark" aria-hidden="true"></div>
+      <div>
+        <p class="eyebrow">Mission Intel Portal</p>
+        <h1>Operations Portal</h1>
+      </div>
+    </div>
+    <div class="status">
+      <strong>System status</strong>
+      <span id="clock">--:--</span>
+      <div class="muted" id="bannerState">Loading notices</div>
+    </div>
+  </header>
+
+  <nav class="nav" aria-label="Quick links">
+    <a href="#alerts">Alerts</a>
+    <a href="#files">Files</a>
+    <a href="#teams">Teams</a>
+    <a href="brief.md">Field Notes</a>
+  </nav>
+
+  <section class="hero">
+    <article class="panel banner">
+      <h2 id="heroTitle">Depot window closes at 04:15.</h2>
+      <p id="heroBody">Primary route remains open. Escort the second truck only if the relay confirms the handoff.</p>
+      <div class="pillrow" id="tags">
+        <span class="pill">convoy</span>
+        <span class="pill">relay</span>
+        <span class="pill">paper trail</span>
+      </div>
+    </article>
+
+    <aside class="side">
+      <section class="panel pad metric">
+        <div class="num">03</div>
+        <div class="label">active pages linked from this portal</div>
+      </section>
+      <section class="panel pad metric">
+        <div class="num">12</div>
+        <div class="label">minutes since last update</div>
+      </section>
+    </aside>
+  </section>
+
+  <section class="grid">
+    <article class="panel pad card" id="alerts">
+      <h3>Active Notices <span class="badge">live</span></h3>
+      <ul class="list">
+        <li><span>Route Red rerouted</span><span class="muted">0214</span></li>
+        <li><span>Gate camera offline</span><span class="muted">0247</span></li>
+        <li><span>Replace depot keycard</span><span class="muted">0301</span></li>
+      </ul>
+    </article>
+    <article class="panel pad card" id="files">
+      <h3>Documents</h3>
+      <ul class="list">
+        <li><a href="brief.md">Field notes</a><span class="muted">Markdown</span></li>
+        <li><a href="#teams">Team roster</a><span class="muted">Portal</span></li>
+        <li><a href="#alerts">Status log</a><span class="muted">Archive</span></li>
+      </ul>
+    </article>
+    <article class="panel pad card" id="teams">
+      <h3>Quick Links</h3>
+      <ul class="list">
+        <li><a href="brief.md#watch-list">Watch list</a><span class="muted">Open</span></li>
+        <li><a href="brief.md#sites">Field sites</a><span class="muted">Open</span></li>
+        <li><a href="brief.md#notes">Operator notes</a><span class="muted">Open</span></li>
+      </ul>
+    </article>
+  </section>
+
+  <p class="footer">
+    This sample is self-contained for the browser app. The split source versions live in
+    <code>styles.css</code> and <code>app.js</code> in the same folder.
+  </p>
+</div>
+
+<script>
+(function () {
+  var clock = document.getElementById("clock");
+  var title = document.getElementById("heroTitle");
+  var body = document.getElementById("heroBody");
+  var bannerState = document.getElementById("bannerState");
+  var frames = [
+    ["Depot window closes at 04:15.", "Primary route remains open. Escort the second truck only if the relay confirms the handoff.", "Convoy watch"],
+    ["Paper trail updated at 02:47.", "The portal now points to the field notes and the relay log.", "Intel refresh"],
+    ["Fallback route is Blue tunnel.", "If Route Red gets blocked, the portal links the alternate site list.", "Route change"]
+  ];
+  var idx = 0;
+
+  function pad(n) { return String(n).padStart(2, "0"); }
+  function tick() {
+    var now = new Date();
+    clock.textContent = pad(now.getHours()) + ":" + pad(now.getMinutes());
+  }
+  function rotate() {
+    idx = (idx + 1) % frames.length;
+    title.textContent = frames[idx][0];
+    body.textContent = frames[idx][1];
+    bannerState.textContent = frames[idx][2];
+  }
+
+  tick();
+  setInterval(tick, 1000);
+  setInterval(rotate, 7000);
+})();
+</script>
+</body>
+</html>

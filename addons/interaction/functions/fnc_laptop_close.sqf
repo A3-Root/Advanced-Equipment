@@ -1,3 +1,4 @@
+// File: fnc_laptop_close.sqf
 /*
  * Author: Root, y0014984
  * Description: Closes a laptop by animating the lid to the closed position (animation phase 1).

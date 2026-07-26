@@ -1,0 +1,62 @@
+---
+topic: power-model
+status: verified
+last-verified: 2026-07-08
+confidence_score: 1.0
+priority: core
+rank: 6
+tokens: ~345
+code-paths:
+  - addons/power/
+  - addons/armaos/functions/fnc_computer_*.sqf
+  - addons/power/Cfg3DEN.hpp
+related-topics: [network-routing-and-ssh, interaction-equipment, eden-zeus-tooling, multiplayer-locality-and-sync, main-runtime-infrastructure]
+related-docs:
+  - wiki/Systems/Power.md
+  - wiki/Reference/Power-API.md
+---
+
+# Power Model
+
+## overview
+
+The power component models devices, providers, consumers, batteries, generators, solar panels, power connections, power state, power draw, capacity checks, and crash/standby behavior.
+
+## current behavior
+
+- Power devices store wrapper functions and state on object variables such as `AE3_power_fnc_turnOnWrapper`, `AE3_power_fnc_turnOffWrapper`, `AE3_power_fnc_standbyWrapper`, and `AE3_power_powerState`.
+- Power state values are numeric: `0` off, `1` on, `2` standby, `3` crashed.
+- `AE3_power_fnc_initDevice` installs ACE actions on clients and initializes authoritative power state on the server.
+- Power providers track connected devices and capacity; `AE3_power_fnc_updatePower` sums connected device draw and turns the provider off when draw exceeds capacity.
+- Batteries and generators use periodic calculations for capacity, fuel, and output. Solar panels use sun position/orientation helpers.
+- Eden power connections are declared in `addons/main/Cfg3DEN.hpp` and call `AE3_power_fnc_createPowerConnection`.
+- Zeus can create power connections through the Add Connection module after class validation.
+- Power sync can be disabled through `AE3_Power_EnableStateSync`; sync reduction is controlled separately by `AE3_Power_ChangeThreshold`.
+
+## decisions
+
+- Turn-on/off/standby behavior is stored as object-specific wrapper functions, so different devices can use the same power state interface while running different animations, sounds, filesystem updates, or startup sequences.
+- Providers are responsible for overload detection, keeping capacity logic near the power source rather than spreading it across consumers.
+- Eden connections are custom 3DEN connection types instead of synchronized modules, making connection lines easier for mission makers to inspect and resolve on mission start.
+- Power state sync is configurable: `AE3_Power_EnableStateSync` gates whether state sync happens, while `AE3_Power_ChangeThreshold` reduces noisy battery/generator updates for multiplayer performance.
+
+## gotchas
+
+- `initDevice` has duplicate-action protection through `AE3_power_actionsAdded`; new ACE actions should respect that pattern.
+- Starting powered-on depends on `AE3_power_startOn` being set before init completes.
+- Overload turns the provider off asynchronously through the stored wrapper.
+- Some power interactions are nested under the shared equipment parent action when available.
+
+## re-verify when
+
+- Power provider/consumer config classes, power connection creation, state sync, or device init callbacks change.
+- New equipment types consume or provide power.
+
+## references
+
+- `addons/power/functions/fnc_initDevice.sqf`
+- `addons/power/functions/fnc_updatePower.sqf`
+- `addons/power/functions/fnc_batteryCalculation.sqf`
+- `addons/power/functions/fnc_createPowerConnection.sqf`
+- `addons/main/Cfg3DEN.hpp`
+

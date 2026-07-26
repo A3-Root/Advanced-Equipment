@@ -1,3 +1,4 @@
+// File: fnc_compileConfig.sqf
 /*
  * Author: Root, Wasserstoff
  * Description: Compiles USB interface configuration from CfgVehicles config into a hashmap containing interface positions and rotations

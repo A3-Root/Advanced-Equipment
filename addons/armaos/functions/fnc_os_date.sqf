@@ -1,3 +1,4 @@
+// File: fnc_os_date.sqf
 /*
  * Author: Root, y0014984, Wasserstoff
  * Description: Displays the current in-game date and time. Similar to Unix date command.
@@ -27,7 +28,7 @@ private _commandSyntax =
 ];
 private _commandSettings = [_commandName, _commandOpts, _commandSyntax];
 
-private _ae3OptsSuccess = false; private _unused_ae3OptsThings = [];
+private _ae3OptsSuccess = false;
 [] params ([_computer, _options, _commandSettings] call AE3_armaos_fnc_shell_getOpts);
 
 if (!_ae3OptsSuccess) exitWith {};

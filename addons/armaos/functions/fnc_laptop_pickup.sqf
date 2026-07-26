@@ -1,3 +1,4 @@
+// File: fnc_laptop_pickup.sqf
 /*
  * Author: Root
  * Description: Handles laptop pickup into inventory. Closes active terminal dialogs and clears mutex.
@@ -59,6 +60,13 @@ if (!isNull _mutex) then {
 	_target setVariable ["AE3_computer_mutex", objNull, true];
 };
 
+// Return any connected flash drives to the picker's inventory first, so none is left behind in the
+// world attached to a laptop object that is about to be removed.
+if (!isNil "AE3_flashdrive_fnc_disconnectAllDrives") then {
+    private _savedDrives = [_target, _player] call AE3_flashdrive_fnc_disconnectAllDrives;
+    _target setVariable ["AE3_laptop_connectedDrives", _savedDrives, false];
+};
+
 // CRITICAL: Ensure terminal sync data is available before saving to item
 // The terminal_sync variable contains the raw buffer (STRING data) that can be safely saved
 // When the terminal dialog closes, it saves sync data, but we need to retrieve it from remote
@@ -66,11 +74,11 @@ if (!isNull _mutex) then {
 
 if (AE3_DebugMode) then {
 	private _syncData = _target getVariable ["AE3_terminal_sync", nil];
-	if (!isNil "_syncData") then {
+	if (isNil "_syncData") then {
+		diag_log format ["[AE3 DEBUG] [%1] laptop_pickup: No terminal sync data found (terminal may never have been used)", time];
+	} else {
 		private _bufferSize = count (_syncData select 0);
 		diag_log format ["[AE3 DEBUG] [%1] laptop_pickup: Terminal sync data found - buffer has %2 lines", time, _bufferSize];
-	} else {
-		diag_log format ["[AE3 DEBUG] [%1] laptop_pickup: No terminal sync data found (terminal may never have been used)", time];
 	};
 };
 

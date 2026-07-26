@@ -1,3 +1,4 @@
+// File: fnc_initInterface.sqf
 /*
  * Author: Root, Wasserstoff
  * Description: Initializes USB interfaces on a device, creating ACE3 interaction menus for connecting/disconnecting flash drives.
@@ -23,18 +24,20 @@ private _flash_drives = {
 	_params params ["_config"];
 
 	private _actions = [];
-	private _class = configFile >> "CfgWeapons" >> "Item_FlashDisk_AE3";
 
 	private _add = {
 		params ["_target", "_player", "_params"];
 		([_target, _player] + _params) remoteExec ["AE3_flashdrive_fnc_connectFlashDrive", 2];
 	};
 
+	// Every descendant of the base drive class is connectable, including the base class itself:
+	// an arsenal-obtained drive has no filesystem yet, but connectFlashDrive/mount provision one
+	// lazily, so the menu must not filter it out.
 	_config params ['_index', '_name', '_rel_pos', '_rot_yaw', '_rot_pitch', '_rot_roll'];
 	{
-		private _action = [_name, (getText (configFile >> "CfgWeapons" >> _x >> "displayName")), "", _add, {true}, {}, [_x, _config]] call ace_interact_menu_fnc_createAction; 
+		private _action = [_name, (getText (configFile >> "CfgWeapons" >> _x >> "displayName")), "", _add, {true}, {}, [_x, _config]] call ace_interact_menu_fnc_createAction;
 		_actions pushBack [_action, [], _target];
-	} forEach (items _player select {inheritsFrom (configFile >> "CfgWeapons" >> _x) == _class});
+	} forEach (items _player select {_x isKindOf ["Item_FlashDisk_AE3", configFile >> "CfgWeapons"]});
 
 	_actions;
 };
@@ -73,9 +76,8 @@ private _children = {
 private _connect = ["AE3_USBInterfaceConnectAction", (localize "STR_AE3_Flashdrive_Interaction_Connect"), "",
 			{},
 			{
-				params ["_target", "_player", "_params"]; 
-				private _class = configFile >> "CfgWeapons" >> "Item_FlashDisk_AE3";
-				(0 < count (items _player select {inheritsFrom (configFile >> "CfgWeapons" >> _x) == _class})) and (alive _target) 
+				params ["_target", "_player", "_params"];
+				(alive _target) && {(items _player) findIf {_x isKindOf ["Item_FlashDisk_AE3", configFile >> "CfgWeapons"]} > -1}
 			},
 			_children,
 			[_flash_drives]
@@ -122,3 +124,8 @@ if (isServer) then
 };
 
 _device setVariable ["AE3_USB_Interfaces", _config];
+
+if (isServer) then
+{
+	_device setVariable ["AE3_cap_hasUsb", true, true];
+};

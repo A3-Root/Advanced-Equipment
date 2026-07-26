@@ -194,7 +194,7 @@ class CfgVehicles
 				// Because it is an expression, to return a String one must have a string within a string
 				defaultValue = """13""";
 			};
-			
+
 			class ModuleDescription: ModuleDescription{}; // Module description should be shown last
 		};
 

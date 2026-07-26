@@ -1,3 +1,4 @@
+// File: fnc_connectToGeneratorAction.sqf
 /*
  * Author: Root, y0014984, Wasserstoff
  * Description: Internal action that establishes power connection from device to provider. Handles internal batteries, updates connected devices list, and manages ACE3 interactions for both consumer and provider. Called by ACE3 interaction menu.
@@ -39,14 +40,14 @@ else
 _generator setVariable ["AE3_power_connectedDevices", _connectedDevices, true];
 
 
-_tmpTar = _target;
+private _tmpTar = _target;
 // if target has internal power parent, change interaction for that parent instead of target itself
 private _powerParent = _tmpTar getVariable "AE3_power_parent";
 if (!(isNil "_powerParent")) then { _tmpTar = _powerParent };
 [_tmpTar, "powerConnected", true] remoteExecCall ["AE3_interaction_fnc_manageAce3Interactions", 2];
 
-_tmpGen = _generator;
+private _tmpGen = _generator;
 // if generator has internal power parent, change interaction for that parent instead of generator itself
-private _powerParent = _tmpGen getVariable "AE3_power_parent";
-if (!(isNil "_powerParent")) then { _tmpGen = _powerParent };
+private _powerParentGen = _tmpGen getVariable "AE3_power_parent";
+if (!(isNil "_powerParentGen")) then { _tmpGen = _powerParentGen };
 [_tmpGen, "powerConnected", true] remoteExecCall ["AE3_interaction_fnc_manageAce3Interactions", 2];

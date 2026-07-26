@@ -1,3 +1,4 @@
+// File: fnc_terminal_getInput.sqf
 /*
  * Author: Root, Wasserstoff
  * Description: Returns the current text from the terminal input buffer.

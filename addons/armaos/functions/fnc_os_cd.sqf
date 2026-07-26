@@ -1,3 +1,4 @@
+// File: fnc_os_cd.sqf
 /*
  * Author: Root, y0014984, Wasserstoff
  * Description: Changes the current working directory of the terminal. Similar to Unix cd command.
@@ -33,7 +34,7 @@ private _ae3OptsSuccess = false; private _ae3OptsThings = [];
 
 if (!_ae3OptsSuccess) exitWith {};
 
-private _ae3OptsThings = _ae3OptsThings joinString " ";
+private _targetPath = _ae3OptsThings joinString " ";
 
 private _terminal = _computer getVariable "AE3_terminal";
 private _username = _terminal get "AE3_terminalLoginUser";
@@ -42,10 +43,10 @@ try
 {
 	private _result = [_computer getVariable ["AE3_filepointer", []], 
 				_computer getVariable ["AE3_filesystem", createHashMap], 
-				_ae3OptsThings,
+				_targetPath,
 				_username] call AE3_filesystem_fnc_chdir;
 
-	[(_result select 1), _username, 0] call AE3_filesystem_fnc_hasPermission;
+	[(_result select 1), _username, 2] call AE3_filesystem_fnc_hasPermission;
 	_computer setVariable ["AE3_filepointer", _result select 0];
 
 }catch

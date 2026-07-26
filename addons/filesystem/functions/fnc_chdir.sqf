@@ -1,3 +1,4 @@
+// File: fnc_chdir.sqf
 /*
  * Author: Root, y0014984, Wasserstoff
  * Description: Changes the current working directory to the specified path. Resolves relative paths (.., ., ~) and can optionally create directories if they don't exist.
@@ -9,7 +10,7 @@
  * 3: _user <STRING> (Optional, default: "") - User performing the operation
  * 4: _create <BOOL> (Optional, default: false) - Create directory if it doesn't exist
  * 5: _owner <STRING> (Optional, default: _user) - Owner of created directory
- * 6: _permissions <ARRAY> (Optional, default: [[true,true,true],[false,false,false]]) - Permissions [[owner x,r,w],[everyone x,r,w]]
+ * 6: _permissions <ARRAY> (Optional, default: [[true,true,true],[false,false,false]]) - Permissions [[owner r,w,x],[everyone r,w,x]]
  *
  * Return Value:
  * Array of [pointer, directory object] <ARRAY>
@@ -48,7 +49,7 @@ if (_target find "/" == 0) then
 	} catch
 	{
 		// Allows for paths getting out of invalid dirs
-		if (count _path == 0) throw _exception;
+		if (_path isEqualTo []) throw _exception;
 		if ((_path select 0) != ".." && (_path select 0) != "~") throw _exception;
 		_current = createHashMap;
 	}
@@ -57,7 +58,7 @@ if (_target find "/" == 0) then
 
 if (_path isEqualTo []) exitWith {[_pointer, _current]};
 {
-	_iteration = [_pointer, _current, _filesystem, _create, _user, _owner, _permissions, _path] call
+	private _iteration = [_pointer, _current, _filesystem, _create, _user, _owner, _permissions, _path] call
 	{
 		params['_pointer', '_current', '_filesystem', '_create', '_user', '_owner', '_permissions', '_path'];
 

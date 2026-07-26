@@ -1,3 +1,5 @@
+// File: fnc_initFilesystem.sqf
+#include "..\script_component.hpp"
 /*
  * Author: Root, y0014984, Wasserstoff
  * Description: Initializes the filesystem on a device and loads filesystem objects from config. Creates root filesystem structure and processes config entries to add files and directories. Must run on server.
@@ -20,7 +22,13 @@ params["_entity", "_config"];
 
 if(!isServer) exitWith {};
 
-private _filesystem = [createHashMapFromArray [], 'root', [[true, true, true], [true, true, false]]];
+private _filesystem = [createHashMapFromArray [], 'root', [[true, true, true], [true, false, true]]];
+
+// The Recycle Bin is a drop box every account can move its own files into, so it is created up front,
+// owned by root and writable by everyone. The root directory itself is not world-writable, so a regular
+// user could not create it on their first delete, and a bin created with the usual owner-only permissions
+// would refuse the move that a delete performs.
+[[], _filesystem, "/.trash", "root", "root", [[true, true, true], [true, true, true]]] call AE3_filesystem_fnc_createDir;
 
 /* ================================================================================ */
 
@@ -62,7 +70,7 @@ if (!isNil "_config") then
 				private _normalizedException = _exception regexReplace ["'(.+)'", "'%1'"];
 				if (_normalizedException isEqualTo (localize "STR_AE3_Filesystem_Exception_AlreadyExists")) then
 				{
-					diag_log format ["AE3 exception: %1", _exception];
+					INFO_1("Filesystem object already exists, skipping: %1",_exception);
 				}
 				else
 				{
@@ -89,7 +97,7 @@ if (!isNil "_config") then
 				private _normalizedException = _exception regexReplace ["'(.+)'", "'%1'"];
 				if (_normalizedException isEqualTo (localize "STR_AE3_Filesystem_Exception_AlreadyExists")) then
 				{
-					diag_log format ["AE3 exception: %1", _exception];
+					INFO_1("Filesystem object already exists, skipping: %1",_exception);
 				}
 				else
 				{

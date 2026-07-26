@@ -1,3 +1,4 @@
+// File: fnc_games_snake.sqf
 /*
  * Author: Root, y0014984
  * Description: Implements the Snake game playable in the ArmaOS terminal.
@@ -33,7 +34,7 @@ private _commandSyntax =
 ];
 private _commandSettings = [_commandName, _commandOpts, _commandSyntax];
 
-private _ae3OptsSuccess = false; private _unused_ae3OptsThings = [];
+private _ae3OptsSuccess = false;
 private _size = false;
 [] params ([_computer, _options, _commandSettings] call AE3_armaos_fnc_shell_getOpts);
 

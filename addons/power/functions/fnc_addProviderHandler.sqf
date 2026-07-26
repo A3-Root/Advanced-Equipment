@@ -1,3 +1,4 @@
+// File: fnc_addProviderHandler.sqf
 /*
  * Author: Root, Wasserstoff
  * Description: Creates a per-frame handler loop for power providers (generators, batteries, solar panels). Monitors power state and capacity every second, automatically shutting down connected devices if power becomes insufficient. The handler continuously calls the provider's calculation function to update power state.
@@ -38,7 +39,6 @@ private _updateInterval = missionNamespace getVariable ["AE3_Power_UpdateInterva
 
 private _handle = [
 	{
-		private _handle = _this select 1;
 		(_this select 0) params ['_generator', '_generatorFnc', '_generatorTurnoff'];
 
 		([_generator] call _generatorFnc) params['_powerState', '_newPower'];

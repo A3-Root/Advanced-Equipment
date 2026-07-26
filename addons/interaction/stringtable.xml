@@ -133,7 +133,7 @@
                 <English>yaw lamp 1</English>
                 <French>Tourner lampe 1</French>
                 <Italian>Ruota lampada 1</Italian>
-                <Russian> Повернуть лампу 1</Russian>
+                <Russian>Повернуть лампу 1</Russian>
                 <German>Lampe 1 gieren</German>
                 <Chinesesimp>偏转灯1</Chinesesimp>
             </Key>
@@ -192,6 +192,15 @@
                 <Russian>Открыть</Russian>
                 <German>Öffnen</German>
                 <Chinesesimp>打开</Chinesesimp>
+            </Key>
+            <Key ID="STR_AE3_Interaction_UseDesktop">
+                <Original>Use Desktop</Original>
+                <English>Use Desktop</English>
+                <French>Utiliser le bureau</French>
+                <Italian>Usa il desktop</Italian>
+                <Russian>Use Desktop</Russian>
+                <German>Desktop verwenden</German>
+                <Chinesesimp>使用桌面</Chinesesimp>
             </Key>
         </Container>
     </Package>

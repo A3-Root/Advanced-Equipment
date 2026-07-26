@@ -1,3 +1,4 @@
+// File: fnc_shell_getOptsConvertArgType.sqf
 /*
  * Author: Root, y0014984
  * Description: Converts a command argument string to the specified type (number, string, bool, etc.).

@@ -1,3 +1,4 @@
+// File: fnc_zeus_openObject.sqf
 /*
  * Author: Root, y0014984
  * Description: Opens an object (e.g., laptop lid) through the Zeus Asset Attributes Interface. Triggered by the "Open" button.

@@ -1,3 +1,4 @@
+// File: fnc_os_rm.sqf
 /*
  * Author: Root, y0014984, Wasserstoff
  * Description: Removes/deletes a file or directory at the specified path. Similar to Unix rm command.
@@ -40,8 +41,6 @@ private _terminal = _computer getVariable "AE3_terminal";
 private _username = _terminal get "AE3_terminalLoginUser";
 
 private _obj = _ae3OptsThings select 0;
-private _result = [];
-_result = [_obj];
 
 try
 {

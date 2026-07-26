@@ -6,13 +6,13 @@ folder_optionals = true
 
 [files]
 include = [
-    "mod.cpp",        
-    "meta.cpp",       
+    "mod.cpp",
+    "meta.cpp",
     "LICENSE",
     "logo_ae3_ca.paa",
     "logo_ae3_ca_hover.paa",
     "logo_ae3_ca_font.paa",
-    "README*.md",
+    "README*.md"
 ]
 exclude = [
     ".gitignore",

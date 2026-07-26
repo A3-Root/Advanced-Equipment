@@ -1,3 +1,4 @@
+// File: fnc_playGeneratorStartSound.sqf
 /*
  * Author: Root, Wasserstoff
  * Description: Plays generator startup sound effect using soundStartEngine from config. Sets generator engine state to on after sound completes. Uses 3D positional audio with 100m max distance.
@@ -19,9 +20,11 @@ params ["_entity"];
 private _class = typeOf _entity;
 getArray (configFile >> "CfgVehicles" >> _class >> "soundStartEngine") params ["_filename", "_volume", "_speed"];
 
+// NOTE: must run spawned (scheduled): callers keep the handle and `terminate` it to cancel
+// the pending engineOn when the turn-on is aborted - do not convert the sleep to CBA_fnc_waitAndExecute
 if(!isNil "_filename") then
 {
-	playSound3D [_filename, 
+	playSound3D [_filename,
 			_entity, 
 			false, // is inside
 			getPos _entity,  // position

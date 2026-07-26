@@ -1,3 +1,4 @@
+// File: fnc_zeus_turnOffDevice.sqf
 /*
  * Author: Root, y0014984
  * Description: Turns off a device through the Zeus Asset Attributes Interface. Triggered by the "Turn Off" button in the Zeus interface.

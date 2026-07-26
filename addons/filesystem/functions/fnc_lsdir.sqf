@@ -1,3 +1,4 @@
+// File: fnc_lsdir.sqf
 /*
  * Author: Root, Wasserstoff
  * Description: Lists the contents of a directory. Returns formatted output with optional detailed information including permissions and ownership. Directories are displayed in blue, executables in green.
@@ -35,9 +36,9 @@ private _permissionString =
 	};
 
 	{
-		if(_x select 1) then {_result = _result + "r"} else {_result = _result + "-"};
-		if(_x select 2) then {_result = _result + "w"} else {_result = _result + "-"};
-		if(_x select 0) then {_result = _result + "x"} else {_result = _result + "-"};
+		if(_x select 0) then {_result = _result + "r"} else {_result = _result + "-"};
+		if(_x select 1) then {_result = _result + "w"} else {_result = _result + "-"};
+		if(_x select 2) then {_result = _result + "x"} else {_result = _result + "-"};
 	}forEach (_object select 2);
 
 	_result;
@@ -61,9 +62,9 @@ private _ownerString =
 private _dir = [_pntr, _filesystem, _target, _user] call AE3_filesystem_fnc_chdir;
 
 // Check permissions
-[(_dir select 1), _user, 1] call AE3_filesystem_fnc_hasPermission;
-_folder = (_dir select 1) select 0;
-_files = keys _folder;
+[(_dir select 1), _user, 0] call AE3_filesystem_fnc_hasPermission;
+private _folder = (_dir select 1) select 0;
+private _files = keys _folder;
 _files sort true;
 
 // Get max owner name length for align
@@ -71,7 +72,7 @@ private _maxOwnerLength = 5;
 if(_long) then
 {
 	{
-		_y = _folder  get _x;
+		private _y = _folder  get _x;
 		if(count (_y select 1) > _maxOwnerLength) then
 		{
 			_maxOwnerLength = count (_y select 1);
@@ -80,10 +81,10 @@ if(_long) then
 	}forEach _files;
 };
 
-_result = [];
+private _result = [];
 {
-	_buffer = [];
-	_y = _folder  get _x;
+	private _buffer = [];
+	private _y = _folder  get _x;
 
 	if(_long) then
 	{
@@ -103,7 +104,7 @@ _result = [];
 		// If executable
 		try
 		{
-			[_object, _user, 0] call AE3_filesystem_fnc_hasPermission;
+			[_object, _user, 2] call AE3_filesystem_fnc_hasPermission;
 			[_name, "#8ce10b"];
 		}catch
 		{

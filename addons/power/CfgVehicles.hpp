@@ -65,7 +65,7 @@ class CfgVehicles
 		// Override
 		faction = "Default";
 		editorCategory = "AE3_Assets";
-		editorSubcategory = "EdSubcat_Electronics";
+		editorSubcategory = "AE3_Sub_Power";
 		icon = "iconObject_1x1"; // Object gets invisible, except the shadow
 		picture = "pictureThing";
 		hasDriver = 0;
@@ -394,6 +394,7 @@ class CfgVehicles
 		scopeCurator = 2; // Zeus visability; 2 will show it in the menu, 0 will hide it.
 
 		editorCategory = "AE3_Assets";
+		editorSubcategory = "AE3_Sub_Battery";
 
 		curatorInfoTypeEmpty = "AE3_UserInterface_Zeus_Asset_Details";
 
@@ -471,6 +472,7 @@ class CfgVehicles
 		scopeCurator = 2; // Zeus visability; 2 will show it in the menu, 0 will hide it.
 
 		editorCategory = "AE3_Assets";
+		editorSubcategory = "AE3_Sub_Battery";
 
 		curatorInfoTypeEmpty = "AE3_UserInterface_Zeus_Asset_Details";
 
@@ -548,6 +550,7 @@ class CfgVehicles
 		scopeCurator = 2; // Zeus visability; 2 will show it in the menu, 0 will hide it.
 
 		editorCategory = "AE3_Assets";
+		editorSubcategory = "AE3_Sub_Battery";
 
 		curatorInfoTypeEmpty = "AE3_UserInterface_Zeus_Asset_Details";
 
@@ -625,6 +628,7 @@ class CfgVehicles
 		scopeCurator = 2; // Zeus visability; 2 will show it in the menu, 0 will hide it.
 
 		editorCategory = "AE3_Assets";
+		editorSubcategory = "AE3_Sub_SolarPanel";
 
 		curatorInfoTypeEmpty = "AE3_UserInterface_Zeus_Asset_Details";
 
@@ -774,6 +778,7 @@ class CfgVehicles
 		scopeCurator = 2; // Zeus visability; 2 will show it in the menu, 0 will hide it.
 
 		editorCategory = "AE3_Assets";
+		editorSubcategory = "AE3_Sub_SolarPanel";
 
 		curatorInfoTypeEmpty = "AE3_UserInterface_Zeus_Asset_Details";
 
@@ -923,6 +928,7 @@ class CfgVehicles
 		scopeCurator = 2; // Zeus visability; 2 will show it in the menu, 0 will hide it.
 
 		editorCategory = "AE3_Assets";
+		editorSubcategory = "AE3_Sub_SolarPanel";
 
 		curatorInfoTypeEmpty = "AE3_UserInterface_Zeus_Asset_Details";
 
@@ -1068,6 +1074,7 @@ class CfgVehicles
 		scopeCurator = 2; // Zeus visability; 2 will show it in the menu, 0 will hide it.
 
 		editorCategory = "AE3_Assets";
+		editorSubcategory = "AE3_Sub_SolarPanel";
 
 		curatorInfoTypeEmpty = "AE3_UserInterface_Zeus_Asset_Details";
 
@@ -1116,6 +1123,7 @@ class CfgVehicles
 		scopeCurator = 2; // Zeus visability; 2 will show it in the menu, 0 will hide it.
 
 		editorCategory = "AE3_Assets";
+		editorSubcategory = "AE3_Sub_SolarPanel";
 
 		curatorInfoTypeEmpty = "AE3_UserInterface_Zeus_Asset_Details";
 

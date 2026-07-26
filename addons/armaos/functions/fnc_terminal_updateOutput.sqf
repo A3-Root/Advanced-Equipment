@@ -1,3 +1,4 @@
+// File: fnc_terminal_updateOutput.sqf
 /*
  * Author: Root, Wasserstoff, y0014984
  * Description: Updates the terminal display control with the current visible buffer contents. Handles rendering, scrolling, and UI-on-Texture synchronization with network optimization.
@@ -21,7 +22,6 @@
 
 private _terminal = _computer getVariable "AE3_terminal";
 
-private _terminalBuffer = _terminal get "AE3_terminalBuffer";
 private _terminalBufferVisible = _terminal get "AE3_terminalBufferVisible";
 private _size = _terminal get "AE3_terminalSize";
 

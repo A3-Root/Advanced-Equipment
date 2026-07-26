@@ -1,3 +1,4 @@
+// File: fnc_computer_initWithCommands.sqf
 /*
  * Author: Root
  * Description: Initializes a computer with a specific set of commands from CfgOsFunctions, security commands, games, and custom commands. This makes it easy to create computers with different command sets.

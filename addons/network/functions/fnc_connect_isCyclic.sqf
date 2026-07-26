@@ -1,3 +1,4 @@
+// File: fnc_connect_isCyclic.sqf
 /**
  * Checks if a network is cyclic.
  *

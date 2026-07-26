@@ -1,3 +1,4 @@
+// File: fnc_initAce3Interactions.sqf
 /*
  * Author: Root, y0014984
  * Description: Initializes ACE3 interactions (dragging, carrying, cargo) for equipment objects. Creates a

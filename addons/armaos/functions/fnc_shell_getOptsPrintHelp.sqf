@@ -1,3 +1,4 @@
+// File: fnc_shell_getOptsPrintHelp.sqf
 /*
  * Author: Root, y0014984
  * Description: Prints formatted help text for a command, showing syntax, options, and descriptions.
@@ -17,7 +18,6 @@
 
 params ["_computer", "_commandSettings"];
 
-private _commandName = _commandSettings select 0;
 private _commandOpts = _commandSettings select 1;
 private _commandSyntax = _commandSettings select 2;
 
@@ -54,7 +54,6 @@ private _commandSyntax = _commandSettings select 2;
 	private _shortOpt = _x select 1;
 	private _longOpt = _x select 2;
 	private _optType = _x select 3;
-	private _optDefaultValue = _x select 4;
 	private _optRequired = _x select 5;
 	private _optHelp = _x select 6;
 	private _optSelect = [];

@@ -1,3 +1,4 @@
+// File: fnc_terminal_getHeaderText.sqf
 /*
  * Author: Root, Wasserstoff, y0014984
  * Description: Returns the terminal header text (ASCII art logo) for the current terminal design.
@@ -15,7 +16,7 @@
  */
 
 // Build header array using CBA settings
-_result = [
+private _result = [
 	AE3_TerminalBiosVersion,
 	AE3_TerminalCopyright,
 	AE3_TerminalBootMessage,

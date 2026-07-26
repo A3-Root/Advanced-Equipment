@@ -1,3 +1,4 @@
+// File: fnc_zeus_initAttributes.sqf
 /*
  * Author: Root, y0014984
  * Description: Initializes the Zeus Asset Attributes interface on load. Runs locally on the Zeus curator's machine.
@@ -29,8 +30,6 @@ if (isNull _entity) exitWith {};
 {
     params ["_display", "_entity"];
 
-    private _counter = 0;
-
     /* ======================================== */
 
     private _headlineCtrl = _display displayCtrl 1000;
@@ -40,8 +39,8 @@ if (isNull _entity) exitWith {};
     private _displayName = [_entity, true] call ace_cargo_fnc_getNameItem;
 	_headlineCtrl ctrlSetText format [localize "STR_AE3_Main_Zeus_ObjectHeader", _displayName];
 
-    waitUntil { !isNil { _entity getVariable "AE3_power_isDevice" }; };
-    private _isPowerDevice = _entity getVariable ["AE3_power_isDevice", false];
+    // Derive device status directly from config (compileDevice no longer broadcasts this per object).
+    private _isPowerDevice = isClass (configOf _entity >> "AE3_Device");
 
     // This could be the case for the desk
     if (!_isPowerDevice) exitWith {};
@@ -72,7 +71,6 @@ if (isNull _entity) exitWith {};
             _status pushBack (format [localize "STR_AE3_Power_Interaction_PowerStateHint", _powerState]);
 
             // Power Output
-            private _powerOutput = [_entity] call AE3_power_fnc_getPowerOutput;
             private _powerCap = _entity getVariable ['AE3_power_powerCapacity', 0];
             private _prefix = "k"; // kWatts
             _powerCap = _powerCap * 3600;
@@ -85,7 +83,7 @@ if (isNull _entity) exitWith {};
 
             // Power Required
             private _powerReq = _entity getVariable ["AE3_power_powerReq", 0];
-            private _prefix = "k"; // kWatts
+            _prefix = "k"; // kWatts
             _powerReq = _powerReq * 3600;
             if (_powerReq < 1.0) then
             {
@@ -98,6 +96,39 @@ if (isNull _entity) exitWith {};
             private _ip = _entity getVariable ["AE3_network_address", []];
             private _ipString = [_ip] call AE3_network_fnc_ip2str;
             _status pushBack (format ["%1: %2", localize "STR_AE3_Network_General_IpAddress", _ipString]);
+
+            // Connections overview (power + network, incoming and outgoing)
+            _status pushBack "------------";
+
+            private _powerProvider = _entity getVariable ["AE3_power_powerCableDevice", objNull];
+            if (!isNull _powerProvider) then
+            {
+                _status pushBack (format ["Power source: %1", [_powerProvider, true] call ace_cargo_fnc_getNameItem]);
+            };
+
+            private _connectedPowerDevices = _entity getVariable ["AE3_power_connectedDevices", []];
+            if (_connectedPowerDevices isNotEqualTo []) then
+            {
+                _status pushBack (format ["Powered devices: %1", count _connectedPowerDevices]);
+                {
+                    _status pushBack (format ["  - %1", [_x, true] call ace_cargo_fnc_getNameItem]);
+                } forEach _connectedPowerDevices;
+            };
+
+            private _networkParent = _entity getVariable ["AE3_network_parent", objNull];
+            if (!isNull _networkParent) then
+            {
+                _status pushBack (format ["Network gateway: %1 (%2)", [_networkParent, true] call ace_cargo_fnc_getNameItem, [_networkParent getVariable ["AE3_network_address", [127,0,0,1]]] call AE3_network_fnc_ip2str]);
+            };
+
+            private _networkChildren = _entity getVariable ["AE3_network_children", []];
+            if (_networkChildren isNotEqualTo []) then
+            {
+                _status pushBack (format ["Network clients: %1", count _networkChildren]);
+                {
+                    _status pushBack (format ["  - %1 (%2)", [_x, true] call ace_cargo_fnc_getNameItem, [_x getVariable ["AE3_network_address", [127,0,0,1]]] call AE3_network_fnc_ip2str]);
+                } forEach _networkChildren;
+            };
 
             private _statusString = _status joinString endl;
             _statusCtrl ctrlSetText _statusString;
@@ -132,7 +163,7 @@ if (isNull _entity) exitWith {};
 
         private _result = [_battery] call AE3_power_fnc_getBatteryLevel;
         _result params ["_batteryLevel", "_batteryLevelPercent", "_batteryCapacity"];
-        
+
         _batteryLevelPercent = round _batteryLevelPercent;
 
         _batteryLevelSliderCtrl sliderSetPosition _batteryLevelPercent;
@@ -155,6 +186,90 @@ if (isNull _entity) exitWith {};
 
         _fuelLevelSliderCtrl sliderSetPosition _fuelLevelPercent;
         _fuelLevelCtrl ctrlSetText format ['%1%2', _fuelLevelPercent, '%'];
+    };
+
+    /* ======================================== */
+
+    // Router wireless fields stay hidden for other asset types.
+    if (_entity getVariable ["AE3_cap_isRouter", false]) then
+    {
+        private _rangeLabelCtrl = _display displayCtrl 1003;
+        private _rangeEditCtrl = _display displayCtrl 1910;
+        private _gatewayLabelCtrl = _display displayCtrl 1004;
+        private _gatewayEditCtrl = _display displayCtrl 1911;
+        private _ssidLabelCtrl = _display displayCtrl 1005;
+        private _ssidEditCtrl = _display displayCtrl 1912;
+        private _passwordLabelCtrl = _display displayCtrl 1010;
+        private _passwordEditCtrl = _display displayCtrl 1915;
+        private _extSshLabelCtrl = _display displayCtrl 1012;
+        private _extSshCheckCtrl = _display displayCtrl 1321;
+        private _extAllowLabelCtrl = _display displayCtrl 1013;
+        private _extAllowEditCtrl = _display displayCtrl 1917;
+
+        { _x ctrlShow true } forEach [_rangeLabelCtrl, _rangeEditCtrl, _gatewayLabelCtrl, _gatewayEditCtrl, _ssidLabelCtrl, _ssidEditCtrl, _passwordLabelCtrl, _passwordEditCtrl, _extSshLabelCtrl, _extSshCheckCtrl, _extAllowLabelCtrl, _extAllowEditCtrl];
+        _rangeEditCtrl ctrlEnable true;
+        _gatewayEditCtrl ctrlEnable true;
+        _ssidEditCtrl ctrlEnable true;
+        _passwordEditCtrl ctrlEnable true;
+        _extSshCheckCtrl ctrlEnable true;
+        _extAllowEditCtrl ctrlEnable true;
+
+        _rangeEditCtrl ctrlSetText str (_entity getVariable ["AE3_network_wirelessRange", 100]);
+        _gatewayEditCtrl ctrlSetText ([_entity getVariable ["AE3_network_address", [192, 168, 0, 1]]] call AE3_network_fnc_ip2str);
+        _ssidEditCtrl ctrlSetText (_entity getVariable ["ace_cargo_customName", ""]);
+        _passwordEditCtrl ctrlSetText (_entity getVariable ["AE3_network_password", ""]);
+        _extSshCheckCtrl cbSetChecked (_entity getVariable ["AE3_network_allowExternalSsh", false]);
+        _extAllowEditCtrl ctrlSetText (_entity getVariable ["AE3_network_externalAllow", ""]);
+    };
+
+    /* ======================================== */
+
+    // Terminal attributes are shown only for assets with a terminal.
+    if (_entity getVariable ["AE3_cap_hasTerminal", false]) then
+    {
+        private _hostLabelCtrl = _display displayCtrl 1006;
+        private _hostEditCtrl = _display displayCtrl 1913;
+        private _sshLabelCtrl = _display displayCtrl 1007;
+        private _sshCheckCtrl = _display displayCtrl 1320;
+        private _ipLabelCtrl = _display displayCtrl 1011;
+        private _ipEditCtrl = _display displayCtrl 1916;
+        private _rtLabelCtrl = _display displayCtrl 1008;
+        private _rtComboCtrl = _display displayCtrl 1600;
+        private _pwLabelCtrl = _display displayCtrl 1009;
+        private _pwEditCtrl = _display displayCtrl 1914;
+        private _connectBtnCtrl = _display displayCtrl 2900;
+        private _disconnectBtnCtrl = _display displayCtrl 2910;
+
+        { _x ctrlShow true } forEach [_hostLabelCtrl, _hostEditCtrl, _sshLabelCtrl, _sshCheckCtrl, _ipLabelCtrl, _ipEditCtrl, _rtLabelCtrl, _rtComboCtrl, _pwLabelCtrl, _pwEditCtrl, _connectBtnCtrl, _disconnectBtnCtrl];
+        _hostEditCtrl ctrlEnable true;
+        _sshCheckCtrl ctrlEnable true;
+        _ipEditCtrl ctrlEnable true;
+        _rtComboCtrl ctrlEnable true;
+        _pwEditCtrl ctrlEnable true;
+
+        _hostEditCtrl ctrlSetText (_entity getVariable ["ace_cargo_customName", "armaOS"]);
+        _sshCheckCtrl cbSetChecked (_entity getVariable ["AE3_ssh_enabled", true]);
+        _ipEditCtrl ctrlSetText (_entity getVariable ["AE3_network_staticIp", ""]);
+
+        // List routers in reach (within each router's wireless range); preselect the current parent.
+        private _parent = _entity getVariable ["AE3_network_parent", objNull];
+        lbClear _rtComboCtrl;
+        private _routers = (nearestObjects [_entity, [], 300]) select { _x getVariable ["AE3_cap_isRouter", false] };
+        {
+            private _r = _x;
+            private _range = _r getVariable ["AE3_network_wirelessRange", 100];
+            if ((_entity distance _r) <= _range) then
+            {
+                private _objName = [_r, false] call ace_cargo_fnc_getNameItem;
+                private _networkName = _r getVariable ["ace_cargo_customName", ""];
+                private _ip = [_r getVariable ["AE3_network_address", [192, 168, 0, 1]]] call AE3_network_fnc_ip2str;
+                // Lead with the network (SSID) name so routers read as "Test (12.12.44.212) [Rugged Router (Black)]".
+                private _label = if (_networkName isEqualTo "") then { format ["%1 (%2)", _objName, _ip] } else { format ["%1 (%2) [%3]", _networkName, _ip, _objName] };
+                private _i = _rtComboCtrl lbAdd _label;
+                _rtComboCtrl lbSetData [_i, netId _r];
+                if (_r isEqualTo _parent) then { _rtComboCtrl lbSetCurSel _i; };
+            };
+        } forEach _routers;
     };
 
     /* ======================================== */

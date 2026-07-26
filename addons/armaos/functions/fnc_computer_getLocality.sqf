@@ -1,3 +1,4 @@
+// File: fnc_computer_getLocality.sqf
 /*
  * Author: Root, Wasserstoff
  * Description: Returns the client ID of the current computer user. If the computer is unused, returns 2 (server ownership).

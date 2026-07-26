@@ -1,3 +1,4 @@
+// File: fnc_terminal_uiOnTex_setKeyboardLayout.sqf
 /*
  * Author: Root, y0014984
  * Description: Updates the keyboard layout display on UI-on-Texture for nearby players. Initializes UI-on-Texture if not already active.
@@ -17,15 +18,25 @@
 
 params ["_computer", "_terminalKeyboardLayout"];
 
+if (!hasInterface) exitWith {};
+
 private _uiOnTexActive = _computer getVariable ["AE3_UiOnTexActive", false]; // local variable on computer object is sufficient
 
 if (!_uiOnTexActive) then {
-	_computer setVariable ["AE3_UiOnTexActive", true]; // Set immediately to prevent race condition
-	[_computer] spawn AE3_armaos_fnc_terminal_uiOnTex_init;
+	[_computer] call AE3_armaos_fnc_terminal_uiOnTex_init;
 };
 
 private _displayName = _computer getVariable ["AE3_UiOnTexDisplayName", "AE3_UiOnTexture"];
-waitUntil { !isNull findDisplay _displayName };
+
+if (isNull findDisplay _displayName) exitWith {
+	// Re-queue once the render-target display exists (created on first texture draw) - never block
+	[
+		{ params ["", "_displayName"]; !isNull findDisplay _displayName },
+		{ (_this select 0) call AE3_armaos_fnc_terminal_uiOnTex_setKeyboardLayout; },
+		[_this, _displayName],
+		10
+	] call CBA_fnc_waitUntilAndExecute;
+};
 
 private _uiOnTextureDisplay = findDisplay _displayName;
 

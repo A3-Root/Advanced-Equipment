@@ -8,7 +8,8 @@ class CfgWeapons {
 	class Item_Laptop_AE3 : CBA_MiscItem
 	{
 		author[] = {"Wasserstoff", "Root"};
-		scope = 1;
+		scope = 2;
+		scopeArsenal = 2;
 		displayName = "$STR_AE3_ArmaOS_Laptop_Item_DisplayName";
 		descriptionShort = "$STR_AE3_ArmaOS_Laptop_Item_DescrShort";
 		useActionTitle = "$STR_AE3_ArmaOS_Laptop_Deploy";
