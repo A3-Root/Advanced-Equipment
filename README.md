@@ -33,9 +33,10 @@ At minimum, dedicated servers that use the GUI/Desktop variant must allow loadin
 
 ### Steam Workshop
 
-Subscribe to the mod on Steam Workshop:
+Subscribe to the mod on Steam Workshop (only select one):
 
-- [DEV_ADVANCED_EQUIPMENT](https://steamcommunity.com/sharedfiles/filedetails/?id=3751482007)
+- [Advanced Equipment](https://steamcommunity.com/workshop/filedetails/?id=2888888564)
+- [Advanced Equipment (DEV)](https://steamcommunity.com/sharedfiles/filedetails/?id=3751482007)
 
 Load it with CBA_A3 and ACE3.
 
