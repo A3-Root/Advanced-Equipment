@@ -162,6 +162,10 @@ hemtt build
 - [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3751482007)
 - [Discord](https://discord.gg/qQXg8tB7gr)
 
+## Related Mods
+- [Root's Cyber Warfare](https://steamcommunity.com/sharedfiles/filedetails/?id=3591608460) - Device hacking mod built on AE3 framework
+- [Misery](https://steamcommunity.com/sharedfiles/filedetails/?id=2738615029) - Survival framework dedicated to creating a rich development environment for scenario designers [/list] [hr]
+
 ## Special Thanks
 
 Special thanks to [JSF Reaper](https://steamcommunity.com/id/operator-101992) whose work on the [Forge - OS](https://steamcommunity.com/sharedfiles/filedetails/?id=3646665660) laid the foundation of this massive GUI update by giving me ideas and references.
