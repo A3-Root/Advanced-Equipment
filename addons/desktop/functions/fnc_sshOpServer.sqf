@@ -71,7 +71,8 @@ try {
     private _authed = ([_target, _user, _pass, true] call AE3_desktop_fnc_authUser) getOrDefault ["ok", false];
     if (!_authed) then { throw "auth_failed" };
 
-    private _fsUser = ["root", _user] select (!(_user in ["root", "admin"]));
+    // the remote device decides who is elevated there: root, admin, or one of its own sudoers
+    private _fsUser = ["root", _user] select (_user isNotEqualTo "admin" && {!([_target, _user] call AE3_armaos_fnc_computer_isSudoer)});
     private _tfs = _target getVariable ["AE3_filesystem", []];
 
     switch (_op) do {

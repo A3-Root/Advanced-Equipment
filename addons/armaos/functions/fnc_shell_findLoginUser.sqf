@@ -32,8 +32,8 @@ if (AE3_DebugMode) then
 	if (((count _debugUsername) > 0) && !(_username in _users)) then { _username = _debugUsername; };
 };
 
-// Direct root login is disabled unless explicitly allowed (use sudo instead)
-private _rootBlocked = (_username isEqualTo "root") && {!(missionNamespace getVariable ["AE3_AllowRootLogin", false])};
+// Direct root login is disabled unless this computer allows it (use sudo instead)
+private _rootBlocked = (_username isEqualTo "root") && {!([_computer] call AE3_armaos_fnc_computer_allowsRootLogin)};
 
 if (((_username in _users) || AE3_DebugMode) && {!_rootBlocked}) then
 {

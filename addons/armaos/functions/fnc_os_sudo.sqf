@@ -3,8 +3,7 @@
 /*
  * Author: Root
  * Description: Executes a command as root. The current user must be root or listed in
- * /etc/sudoers (one username per line). Used because direct root login can be disabled
- * via the AE3_AllowRootLogin CBA setting.
+ * /etc/sudoers (one username per line). Used because a computer can forbid a direct root login.
  *
  * Arguments:
  * 0: _computer <OBJECT> - The computer object
@@ -24,7 +23,6 @@ params ["_computer", "_options", "_commandName"];
 
 private _terminal = _computer getVariable "AE3_terminal";
 private _username = _terminal get "AE3_terminalLoginUser";
-private _filesystem = _computer getVariable "AE3_filesystem";
 
 if (_options isEqualTo []) exitWith
 {
@@ -32,23 +30,7 @@ if (_options isEqualTo []) exitWith
 };
 
 // root may always sudo; other users must be listed in /etc/sudoers
-private _allowed = _username isEqualTo "root";
-
-if (!_allowed) then
-{
-	try
-	{
-		private _content = [[], _filesystem, "/etc/sudoers", "root", 0] call AE3_filesystem_fnc_getFile;
-		if (_content isEqualType "") then
-		{
-			_allowed = _username in (_content splitString endl);
-		};
-	}
-	catch
-	{
-		_allowed = false;
-	};
-};
+private _allowed = [_computer, _username] call AE3_armaos_fnc_computer_isSudoer;
 
 if (!_allowed) exitWith
 {

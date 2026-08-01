@@ -49,9 +49,22 @@ if (hasInterface) then
 [
 	"AE3_AllowRootLogin",
 	"CHECKBOX",
-	["Allow direct root login", "Allow logging in directly as root at the terminal. When disabled (default), use a regular user plus the sudo command (users listed in /etc/sudoers)."],
+	["Allow direct root login", "Default for laptops that do not set their own root login policy in the editor. Allows logging in directly as root at the terminal. When disabled (default), use a regular user plus the sudo command (users listed in /etc/sudoers)."],
 	"STR_AE3_ArmaOS_CbaSettings_ArmaOSCategoryName",
 	false,
+	1, // global
+	{ params ["_value"]; },
+	false
+] call CBA_fnc_addSetting;
+
+/* ================================================================================ */
+
+[
+	"AE3_DefaultRootPassword",
+	"EDITBOX",
+	["Default root password", "Password of the root account every laptop is created with. A laptop's own root password (editor attribute or AE3_armaos_fnc_computer_setRootPassword) overrides it."],
+	"STR_AE3_ArmaOS_CbaSettings_ArmaOSCategoryName",
+	"toor",
 	1, // global
 	{ params ["_value"]; },
 	false

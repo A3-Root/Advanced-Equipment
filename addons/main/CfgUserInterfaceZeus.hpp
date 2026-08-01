@@ -1061,6 +1061,105 @@ class AE3_UserInterface_Zeus_Module_AddUser
 
 /* ================================================================================ */
 
+class AE3_UserInterface_Zeus_Module_AddSudoer
+{
+	idd = 16988;
+	movingEnable = 1;
+	enableSimulation = 1;
+
+    onLoad = "params ['_display', ['_config', configNull]]; [_display, 0, 'onLoad'] spawn AE3_main_fnc_zeus_module_addSudoer;";
+    onUnload = "params ['_display', '_exitCode']; [_display, _exitCode, 'onUnload'] call AE3_main_fnc_zeus_module_addSudoer;";
+
+	class controlsBackground
+	{
+		// size 40x25
+		class RscText_900: RscText
+		{
+			// Background
+			idc = 900;
+			x = 0 * GUI_GRID_W + GUI_GRID_X;
+			y = 2 * GUI_GRID_H + GUI_GRID_Y;
+			w = 40 * GUI_GRID_W;
+			h = 21 * GUI_GRID_H;
+			colorBackground[] = {0.2,0.2,0.2,1}; // light grey
+		};
+	};
+
+	class controls
+	{
+        class RscText_1000: RscText
+        {
+            idc = 1000;
+            text = "$STR_AE3_Main_Zeus_Module_AddSudoer";
+            x = 0 * GUI_GRID_W + GUI_GRID_X;
+            y = 0 * GUI_GRID_H + GUI_GRID_Y;
+            w = 40 * GUI_GRID_W;
+            h = 1.5 * GUI_GRID_H;
+            colorBackground[] = {-1,-1,-1,1};
+        };
+
+        class RscText_1400: RscText
+        {
+            idc = 1400;
+            text = "$STR_AE3_Main_Zeus_Module_AddSudoer_Description";
+            x = 0.5 * GUI_GRID_W + GUI_GRID_X;
+            y = 2.5 * GUI_GRID_H + GUI_GRID_Y;
+            w = 39 * GUI_GRID_W;
+            h = 6 * GUI_GRID_H;
+            colorBackground[] = {-1,-1,-1,0.5};
+			style = ST_MULTI;
+			lineSpacing = 1;
+        };
+
+        class RscText_1001: RscText
+        {
+            idc = 1001;
+
+            text = "$STR_AE3_Main_Zeus_Username";
+            x = 0.5 * GUI_GRID_W + GUI_GRID_X;
+            y = 9 * GUI_GRID_H + GUI_GRID_Y;
+            w = 7 * GUI_GRID_W;
+            h = 1 * GUI_GRID_H;
+
+            style = ST_RIGHT;
+        };
+
+        class RscEdit_1401: RscEdit
+        {
+            idc = 1401;
+            text = "admin";
+            x = 8 * GUI_GRID_W + GUI_GRID_X;
+            y = 9 * GUI_GRID_H + GUI_GRID_Y;
+            w = 31.5 * GUI_GRID_W;
+            h = 1 * GUI_GRID_H;
+            colorBackground[] = {-1,-1,-1,0.5};
+
+            onLoad = "params ['_control']; private _display = ctrlParent _control; _display setVariable ['username', ctrlText _control];";
+            onKeyUp = "params ['_control', '_key', '_shift', '_ctrl', '_alt']; private _newText = ctrlText _control; private _display = ctrlParent _control; _display setVariable ['username', _newText]; private _okCtrl = _display getVariable ['okCtrl', objNull]; _okCtrl ctrlEnable ((_newText isNotEqualTo '') && {(_newText find ' ') == -1});";
+        };
+
+         class RscButtonMenuOK_2600: RscButtonMenuOK
+        {
+            x = 37 * GUI_GRID_W + GUI_GRID_X;
+            y = 23.5 * GUI_GRID_H + GUI_GRID_Y;
+            w = 3 * GUI_GRID_W;
+            h = 1.5 * GUI_GRID_H;
+
+            onLoad = "params ['_control']; private _display = ctrlParent _control; _display setVariable ['okCtrl', _control];";
+        };
+
+        class RscButtonMenuCancel_2700: RscButtonMenuCancel
+        {
+            x = 31 * GUI_GRID_W + GUI_GRID_X;
+            y = 23.5 * GUI_GRID_H + GUI_GRID_Y;
+            w = 5 * GUI_GRID_W;
+            h = 1.5 * GUI_GRID_H;
+        };
+	};
+};
+
+/* ================================================================================ */
+
 class AE3_UserInterface_Zeus_Module_AddCalendarEvent
 {
 	idd = 16995;

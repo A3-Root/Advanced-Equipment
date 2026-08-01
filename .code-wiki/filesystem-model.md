@@ -27,7 +27,7 @@ The filesystem component implements AE3's virtual Unix-like filesystem for lapto
 - `AE3_filesystem_fnc_initFilesystem` creates the root filesystem and optionally seeds config-defined `AE3_FilesystemObject` entries.
 - Filesystem pointers are arrays representing the current path; laptops also store `AE3_filepointer`.
 - Permissions are two triples: owner permissions and other-user permissions. Functions convert config numeric permissions into booleans during initialization.
-- Root bypass is enforced by the core permission check itself. The desktop file handler also normalizes `admin` to filesystem user `root`, while normal users operate under their account name.
+- Root bypass is enforced by the core permission check itself. The desktop file/volume/ssh handlers also normalize `admin` **and any `/etc/sudoers` member** (`AE3_armaos_fnc_computer_isSudoer`) to filesystem user `root`, while normal users operate under their account name. A sudoer keeps their own `/home/<user>`; only literal `root`/`admin` map to `/root`.
 - CLI and GUI operations share core functions such as `createFile`, `createDir`, `ensureFile`, `ensureDir`, `getFile`, `writeToFile`, `mvObj`, `delObj`, `chmod`, `chown`, `symlink`, `mount`, and `unmount`.
 - Desktop delete behavior moves objects to `/.trash` and tracks original paths in `AE3_trash_meta`; CLI delete may use direct filesystem deletion depending on the command.
 - Mission/editor modules use wrapper functions such as `device_addFile`, `device_addDir`, `module_addFile`, and `module_addDir`.

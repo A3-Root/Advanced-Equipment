@@ -591,6 +591,10 @@
                 <German>Schutz dauerhaft entfernen (Datei wird neu geschrieben)</German>
                 <Chinesesimp>永久移除保护(重写文件)</Chinesesimp>
             </Key>
+            <Key ID="STR_AE3_ArmaOS_Config_AddSudoerDisplayName">
+                <Original>AE3: Add Sudoer</Original>
+                <English>AE3: Add Sudoer</English>
+            </Key>
             <Key ID="STR_AE3_ArmaOS_Config_AddUserDisplayName">
                 <Original>AE3: Add User</Original>
                 <English>AE3: Add User</English>
@@ -1185,6 +1189,10 @@
                 <German>Das 'snake' Spiel. Iss Früchte während du immer länger wirst. Vermeide mit der Wand oder dir selbst zu kollidieren.</German>
                 <Chinesesimp>The 'snake' game. Eat fruits while getting longer and longer. Don't collide with yourself or the walls.</Chinesesimp>
             </Key>
+            <Key ID="STR_AE3_ArmaOS_Config_ModuleAddSudoerDescription">
+                <Original>This module gives an existing account superuser rights on an armaOS computer by adding it to /etc/sudoers. Sync one or more of these modules to a supported computer.</Original>
+                <English>This module gives an existing account superuser rights on an armaOS computer by adding it to /etc/sudoers. Sync one or more of these modules to a supported computer.</English>
+            </Key>
             <Key ID="STR_AE3_ArmaOS_Config_ModuleAddUserDescription">
                 <Original>This module defines users for an armaOS computer. Simply sync one or more of these modules to a supported computer.</Original>
                 <English>This module defines users for an armaOS computer. Simply sync one or more of these modules to a supported computer.</English>
@@ -1235,6 +1243,10 @@
             <Key ID="STR_AE3_ArmaOS_Config_SaveSlotTooltip">
                 <Original>Name of the slot the laptop snapshot is stored under. Use the same name on the Restore Laptop module.</Original>
                 <English>Name of the slot the laptop snapshot is stored under. Use the same name on the Restore Laptop module.</English>
+            </Key>
+            <Key ID="STR_AE3_ArmaOS_Config_SudoerUsernameTooltip">
+                <Original>Name of an existing account that gets superuser rights, for example 'admin' or 'stavros'</Original>
+                <English>Name of an existing account that gets superuser rights, for example 'admin' or 'stavros'</English>
             </Key>
             <Key ID="STR_AE3_ArmaOS_Config_UseDisplayName">
                 <Original>Use</Original>
@@ -1299,6 +1311,34 @@
                 <German>Standard (CBA-Einstellung)</German>
                 <Chinesesimp>默认(CBA设置)</Chinesesimp>
             </Key>
+            <Key ID="STR_AE3_ArmaOS_EdenAttributes_RootLoginAllow">
+                <Original>Allowed</Original>
+                <English>Allowed</English>
+            </Key>
+            <Key ID="STR_AE3_ArmaOS_EdenAttributes_RootLoginDefault">
+                <Original>Default (CBA setting)</Original>
+                <English>Default (CBA setting)</English>
+            </Key>
+            <Key ID="STR_AE3_ArmaOS_EdenAttributes_RootLoginDeny">
+                <Original>Denied</Original>
+                <English>Denied</English>
+            </Key>
+            <Key ID="STR_AE3_ArmaOS_EdenAttributes_RootLoginDisplayName">
+                <Original>Direct root login</Original>
+                <English>Direct root login</English>
+            </Key>
+            <Key ID="STR_AE3_ArmaOS_EdenAttributes_RootLoginTooltip">
+                <Original>Whether root may log in directly on this laptop. Default follows the AE3_AllowRootLogin CBA setting; users listed as sudoers can always use the sudo command instead.</Original>
+                <English>Whether root may log in directly on this laptop. Default follows the AE3_AllowRootLogin CBA setting; users listed as sudoers can always use the sudo command instead.</English>
+            </Key>
+            <Key ID="STR_AE3_ArmaOS_EdenAttributes_RootPasswordDisplayName">
+                <Original>Root password (blank = default)</Original>
+                <English>Root password (blank = default)</English>
+            </Key>
+            <Key ID="STR_AE3_ArmaOS_EdenAttributes_RootPasswordTooltip">
+                <Original>Password of this laptop's root account. Leave blank to use the default root password from the CBA settings.</Original>
+                <English>Password of this laptop's root account. Leave blank to use the default root password from the CBA settings.</English>
+            </Key>
             <Key ID="STR_AE3_ArmaOS_EdenAttributes_StaticIpDisplayName">
                 <Original>Static IP (blank = DHCP)</Original>
                 <English>Static IP (blank = DHCP)</English>
@@ -1306,6 +1346,14 @@
             <Key ID="STR_AE3_ArmaOS_EdenAttributes_StaticIpTooltip">
                 <Original>Assign a fixed IP address. Leave blank to use DHCP from the connected router. Format: 192.168.1.5</Original>
                 <English>Assign a fixed IP address. Leave blank to use DHCP from the connected router. Format: 192.168.1.5</English>
+            </Key>
+            <Key ID="STR_AE3_ArmaOS_EdenAttributes_SudoersDisplayName">
+                <Original>Sudoers (comma separated)</Original>
+                <English>Sudoers (comma separated)</English>
+            </Key>
+            <Key ID="STR_AE3_ArmaOS_EdenAttributes_SudoersTooltip">
+                <Original>Accounts that may run the sudo command and get superuser rights in the desktop apps. The accounts must exist on the laptop. Format: analyst, cracked</Original>
+                <English>Accounts that may run the sudo command and get superuser rights in the desktop apps. The accounts must exist on the laptop. Format: analyst, cracked</English>
             </Key>
             <Key ID="STR_AE3_ArmaOS_Msg_Sent">
                 <Original>Message sent to %1</Original>

@@ -34,6 +34,20 @@ if (!_wasRestored) then {
 		[_fs, "/root", "root"] call AE3_filesystem_fnc_seedDesktop;
 		_entity setVariable ["AE3_filesystem", _fs];
 	};
+
+	// Give the device a root account so a permitted root login has a password to check against.
+	// The per-device AE3_rootPassword (Eden attribute / API) wins over the mission-wide default.
+	if (isServer) then {
+		private _userlist = _entity getVariable ["AE3_Userlist", createHashMap];
+		if !("root" in _userlist) then {
+			private _rootPassword = _entity getVariable ["AE3_rootPassword", ""];
+			if (_rootPassword isEqualTo "") then {
+				_rootPassword = missionNamespace getVariable ["AE3_DefaultRootPassword", "toor"];
+			};
+			_userlist set ["root", _rootPassword];
+			_entity setVariable ["AE3_Userlist", _userlist, true];
+		};
+	};
 };
 
 // (Re-)initialize OS command links (CODE references must be regenerated after item restore)
