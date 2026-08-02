@@ -1,5 +1,16 @@
 # Changelog
 
+## Update 3 (v2.0.0.1)
+
+### Added
+- Ability to independently allow (and configure) `root` superuser credentials per laptop
+
+### Removed
+- N/A
+
+### Changed
+- Fixed `sudoers` file not respecting the filesystem permissions.
+
 ## Major Update 2 (v2.0.0.0)
 
 ### Added
