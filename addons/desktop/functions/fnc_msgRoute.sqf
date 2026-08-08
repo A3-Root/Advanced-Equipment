@@ -29,7 +29,7 @@ if (!isServer) exitWith {};
 private _res = createHashMapFromArray [["error", ""]];
 private _reply = {
 	params ["_owner", "_rid", "_payload"];
-	["ae3_desktop_routeReply", [_rid, "chat_send", _payload], _owner] call CBA_fnc_ownerEvent;
+	[_owner, _rid, "chat_send", _payload] call AE3_desktop_fnc_routeReply;
 };
 private _sender = objectFromNetId _senderNetId;
 private _registry = missionNamespace getVariable ["AE3_msg_handles", createHashMap];

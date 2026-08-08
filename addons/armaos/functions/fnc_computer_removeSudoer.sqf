@@ -31,9 +31,14 @@ private _filesystem = _computer getVariable ["AE3_filesystem", []];
 if (_filesystem isEqualTo []) exitWith { false };
 
 private _sudoers = [_computer] call AE3_armaos_fnc_computer_getSudoers;
-if !(_username in _sudoers) exitWith { true };
 
-_sudoers = _sudoers - [_username];
+// Matched the same way superuser rights are checked: case-insensitively and without surrounding
+// whitespace, so an account cannot keep its rights through a difference in spelling.
+private _key = toLowerANSI _username;
+private _remaining = _sudoers select { toLowerANSI (trim _x) isNotEqualTo _key };
+if (_remaining isEqualTo _sudoers) exitWith { true };
+
+_sudoers = _remaining;
 
 private _success = true;
 
@@ -43,6 +48,9 @@ try
 	if (_sudoers isNotEqualTo []) then { _content = (_sudoers joinString endl) + endl; };
 
 	[[], _filesystem, "/etc/sudoers", "root", _content] call AE3_filesystem_fnc_writeToFile;
+
+	// Keep the broadcast roster in step with the file; permission checks read it on clients.
+	_computer setVariable ["AE3_sudoers", _sudoers, true];
 }
 catch
 {

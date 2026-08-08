@@ -21,7 +21,13 @@
 
 params [["_computer", objNull, [objNull]], ["_user", "", [""]]];
 
+_user = toLowerANSI (trim _user);
+
 if (_user isEqualTo "root") exitWith { true };
 if (isNull _computer || {_user isEqualTo ""}) exitWith { false };
 
-_user in ([_computer] call AE3_armaos_fnc_computer_getSudoers)
+// Account names are compared case-insensitively and without surrounding whitespace, so a name typed
+// at a login prompt matches the same name written into /etc/sudoers by a module or mission script.
+private _sudoers = ([_computer] call AE3_armaos_fnc_computer_getSudoers) apply { toLowerANSI (trim _x) };
+
+_user in _sudoers

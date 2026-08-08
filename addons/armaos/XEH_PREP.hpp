@@ -81,6 +81,7 @@ PREP(computer_isSudoer);
 PREP(computer_addSudoer);
 PREP(computer_removeSudoer);
 
+PREP(computer_setHostname);
 PREP(computer_getLocality);
 PREP(computer_isFree);
 PREP(computer_release);
@@ -126,6 +127,7 @@ PREP(os_unlock);
 PREP(os_ssh);
 PREP(os_msg);
 PREP(os_sudo);
+PREP(os_su);
 
 /* Encryption Functions */
 PREP(encryption_caesar);

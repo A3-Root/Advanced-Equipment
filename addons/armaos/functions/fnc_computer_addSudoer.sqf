@@ -49,8 +49,13 @@ try
 	if !(_username in _sudoers) then
 	{
 		_sudoers pushBack _username;
-		[[], _filesystem, "/etc/sudoers", "root", (_sudoers joinString endl) + endl] call AE3_filesystem_fnc_writeToFile;
 	};
+
+	[[], _filesystem, "/etc/sudoers", "root", (_sudoers joinString endl) + endl] call AE3_filesystem_fnc_writeToFile;
+
+	// Broadcast roster kept alongside the file: permission checks run on clients, whose filesystem
+	// copy can be stale or still syncing, and a missed sudoer there reads as a permission failure.
+	_computer setVariable ["AE3_sudoers", _sudoers, true];
 }
 catch
 {

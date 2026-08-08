@@ -83,6 +83,8 @@ Whether `root` may log in **directly** is decided per laptop: the *Direct root l
 
 Accounts listed in `/etc/sudoers` may run `sudo <command>` in the terminal and act with root permissions in the desktop apps (Files, Notepad, My Computer, remote SSH sessions), while keeping their own home directory.
 
+The terminal keeps Unix semantics: being a sudoer does **not** silently grant root to plain commands. `cat /home/someone-else/notes` still reports missing permissions; use `sudo <command>` for one command, or `su` for a shell that stays root until `exit`. The desktop apps do elevate a sudoer automatically, because a graphical file manager has no command to prefix.
+
 ### `AE3_armaos_fnc_computer_setRootLogin`
 
 ```sqf
@@ -132,7 +134,7 @@ private _sudoers = [_computer] call AE3_armaos_fnc_computer_getSudoers;   // ARR
 private _elevated = [_computer, _username] call AE3_armaos_fnc_computer_isSudoer;  // BOOL, true for root
 ```
 
-Read-only, can run anywhere the laptop's filesystem is present.
+Read-only, can run anywhere. `getSudoers` returns the union of the broadcast roster and the accounts written in `/etc/sudoers`, so it stays correct on a client whose copy of the filesystem has not caught up yet. `isSudoer` matches names case-insensitively and ignores surrounding whitespace.
 
 ### `AE3_armaos_fnc_computer_allowsRootLogin`
 

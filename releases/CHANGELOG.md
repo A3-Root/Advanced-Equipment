@@ -1,5 +1,25 @@
 # Changelog
 
+## Update 4 (v2.0.0.2)
+
+### Added
+- `su` terminal command: switches the session to another account, or to `root` when none is given. Available to `root` and to accounts listed in `/etc/sudoers`. Unlike `sudo`, which elevates a single command, the switch lasts until `exit`, which returns to the previous account.
+- Export from the Email and Messenger apps: an **Export** button in the mail reader (also on a message's right-click menu) and on a Messenger conversation toolbar writes the message or the whole conversation to a plain-text file through the normal Save As dialog. The file is owned by the logged-in user, so it can then be read with `cat`, copied to a flash drive, or sent to another laptop over SSH.
+- Copy to the operating-system clipboard from the Email and Messenger apps: the From, To, Subject or Body of an email, the whole message, a single chat message, a whole conversation, or a peer handle. Text is copied on the player's own machine, so it can be pasted into notes or documents outside the game. If the embedded browser blocks a direct clipboard write, a dialog opens with the text preselected so Ctrl+C still works.
+- Curator feedback for the static IP field in the Zeus asset attributes dialog: the address is validated on the server, and the accepted or rejected verdict is now reported back instead of always showing success.
+
+### Removed
+- The `ae3_desktop_sshReply` event, folded into `ae3_desktop_routeReply`.
+
+### Changed
+- Fixed IP addresses being handed out twice on dedicated servers, which left remote connections unreachable and blocked later address changes. Connecting a device or router, disconnecting, refreshing DHCP and leasing on power-on all ran on the client that used the ACE interaction menu, where the device registry needed to detect a duplicate does not exist. Address allocation is now performed on the server in every case. Addresses already held by a router gateway are rejected as well.
+- Fixed replies from server-side desktop actions never reaching the browser on dedicated servers, which left the requesting app waiting indefinitely. This affected changing a laptop's IP from Settings, sending mail and chat messages, creating and deleting mail addresses and Messenger handles, and every SSH operation.
+- Fixed hostname, SSH access and static IP changes made from Zeus, and the SSH toggle in desktop Settings, silently failing on dedicated servers that filter remote execution of raw commands.
+- Fixed accounts added to `/etc/sudoers` still reporting missing permissions in the desktop apps. Superuser membership is now broadcast alongside the file, so it stays correct on clients whose copy of the laptop's filesystem has not caught up. Account names are matched without regard to capitalisation or surrounding whitespace.
+- The Zeus asset attributes dialog no longer waits indefinitely for a laptop's initialisation flag, and its router list now includes routers whose wireless range reaches further than the nearby-object scan.
+- A terminal session elevated with `su` returns to the account it was logged in as when the terminal is closed, so reopening it never resumes an elevated shell.
+- Removed a clipboard copy from the columnar encryption command that could never work for players on a dedicated server; the command returns the cipher as before.
+
 ## Update 3 (v2.0.0.1)
 
 ### Added

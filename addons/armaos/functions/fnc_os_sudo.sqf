@@ -51,7 +51,9 @@ if (_command in _availableCommands) then
 
 [_computer, "System", format ["sudo: user '%1' executed '%2'", _username, _options joinString " "], "/var/log/auth.log"] call AE3_armaos_fnc_shell_writeToLogfile;
 
-// Run the command with root privileges, then restore the original user - even if it throws
+// Run the command with root privileges, then restore the original user - even if it throws. The
+// terminal state is shared by reference, so a restore that is skipped would leave the whole session
+// running as root rather than just this one command.
 _terminal set ["AE3_terminalLoginUser", "root"];
 
 try
@@ -63,4 +65,9 @@ catch
 	[_computer, _exception] call AE3_armaos_fnc_shell_stdout;
 };
 
-_terminal set ["AE3_terminalLoginUser", _username];
+// The command may have logged the session out (exit) or switched accounts (su); in that case the
+// session no longer belongs to the user who invoked sudo and must not be forced back onto them.
+if ((_terminal getOrDefault ["AE3_terminalLoginUser", ""]) isEqualTo "root") then
+{
+	_terminal set ["AE3_terminalLoginUser", _username];
+};

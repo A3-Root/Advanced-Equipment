@@ -92,13 +92,19 @@ if (_exitCode == 1) then
         private _hostname = ctrlText (_display displayCtrl 1913);
         private _sshEnabled = cbChecked (_display displayCtrl 1320);
         private _staticIp = ctrlText (_display displayCtrl 1916);
+        // Named functions rather than a remote-executed raw setVariable: raw commands need their own
+        // exclusions to pass the remote execution filters used on dedicated servers, so routing them
+        // through addon functions is what makes these writes land there.
         if (_hostname isNotEqualTo "") then
         {
-            [_entity, ["ace_cargo_customName", _hostname, true]] remoteExecCall ["setVariable", 2];
+            [_entity, _hostname] remoteExecCall ["AE3_armaos_fnc_computer_setHostname", 2];
         };
-        [_entity, ["AE3_ssh_enabled", _sshEnabled, true]] remoteExecCall ["setVariable", 2];
-        [_entity, _staticIp] remoteExecCall ["AE3_network_fnc_setStaticIp", 2];
-        _message = _message + format ["Hostname: %1. SSH: %2. IP: %3.", _hostname, ["disabled", "enabled"] select _sshEnabled, [_staticIp, "DHCP"] select (_staticIp isEqualTo "")];
+        [_entity, _sshEnabled] remoteExecCall ["AE3_network_fnc_setSshEnabled", 2];
+        // Address validation happens on the server, which reports the real verdict back to this curator.
+        [_entity, _staticIp, clientOwner] remoteExecCall ["AE3_network_fnc_setStaticIpZeus", 2];
+        // The address line only records what was requested; the server sends the accepted/rejected
+        // verdict as its own hint once it has validated the address.
+        _message = _message + format ["Hostname: %1. SSH: %2. IP requested: %3.", _hostname, ["disabled", "enabled"] select _sshEnabled, [_staticIp, "DHCP"] select (_staticIp isEqualTo "")];
     };
 
     /* ======================================== */

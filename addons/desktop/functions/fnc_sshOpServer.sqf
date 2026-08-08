@@ -5,7 +5,7 @@
  * Description: Server-side SSH backend for the web SSH app. Handles connect (auth against the
  * REMOTE device's user list + its SSH-enabled flag) and remote filesystem ops (list/read) plus
  * cross-device copy (pull remote->local, push local->remote). Every op replies to the requesting
- * client via "ae3_desktop_sshReply", echoing the rid so the JS A3.request promise resolves. The
+ * client through AE3_desktop_fnc_routeReply, echoing the rid so the JS A3.request promise resolves. The
  * body is guarded so any failure still sends exactly one reply, turning errors into a visible
  * verdict instead of a client-side timeout. Server-only.
  *
@@ -35,7 +35,7 @@ private _debug = (missionNamespace getVariable [QGVAR(debug), false]) || {missio
 
 private _reply = {
     params ["_cmd", "_payload"];
-    ["ae3_desktop_sshReply", [_rid, _cmd, _payload], _clientOwner] call CBA_fnc_ownerEvent;
+    [_clientOwner, _rid, _cmd, _payload] call AE3_desktop_fnc_routeReply;
 };
 
 if (_debug) then {

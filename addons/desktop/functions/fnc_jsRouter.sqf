@@ -497,7 +497,9 @@ switch (_command) do {
         private _sres = createHashMapFromArray [["error", ""]];
         if (isNull _computer) then { _sres set ["error", "no_device"]; }
         else {
-            [_computer, ["AE3_ssh_enabled", _data getOrDefault ["enabled", false], true]] remoteExecCall ["setVariable", 2];
+            // Named function rather than a remote-executed raw setVariable: raw commands need their
+            // own exclusions to pass the remote execution filters used on dedicated servers.
+            [_computer, _data getOrDefault ["enabled", false]] remoteExecCall ["AE3_network_fnc_setSshEnabled", 2];
             _sres set ["ok", true];
         };
         [_sres] call _reply;
@@ -522,7 +524,7 @@ switch (_command) do {
     };
 
     // SSH client ops: connect + remote filesystem browse/copy. Resolve the target IP, then run
-    // server-side (auth against the remote user list); the server replies async via ae3_desktop_sshReply.
+    // server-side (auth against the remote user list); the server replies async through routeReply.
     case "ssh_connect";
     case "ssh_ls";
     case "ssh_read";

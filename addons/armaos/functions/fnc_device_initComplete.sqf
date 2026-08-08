@@ -67,6 +67,14 @@ try {
 
 // All initialization complete - now set the ready flag and capability flags
 if (isServer) then {
+	// Publish the superuser roster from whatever /etc/sudoers the device was seeded with (addon config,
+	// Eden attribute, restored state). Permission checks run on clients, whose filesystem copy can lag
+	// behind, so the roster has to be broadcast rather than read out of the file on each machine.
+	private _sudoers = [_entity] call AE3_armaos_fnc_computer_getSudoers;
+	if (_sudoers isNotEqualTo []) then {
+		_entity setVariable ["AE3_sudoers", _sudoers, true];
+	};
+
 	_entity setVariable ["AE3_cap_hasTerminal", true, true];
 	_entity setVariable ["AE3_cap_hasFilesystem", true, true];
 	_entity setVariable ["AE3_filesystemReady", true, true];

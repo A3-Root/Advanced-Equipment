@@ -20,6 +20,9 @@ params ["_computer", "_username"];
 
 private _terminal = _computer getVariable "AE3_terminal";
 
+// A fresh login never inherits the account chain of a previous session's su.
+_terminal deleteAt "AE3_terminalSuStack";
+
 private _users = _computer getVariable ["AE3_Userlist", createHashMap];
 
 private _result = [];
