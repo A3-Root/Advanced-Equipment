@@ -83,7 +83,9 @@ Whether `root` may log in **directly** is decided per laptop: the *Direct root l
 
 Accounts listed in `/etc/sudoers` may run `sudo <command>` in the terminal and act with root permissions in the desktop apps (Files, Notepad, My Computer, remote SSH sessions), while keeping their own home directory.
 
-The terminal keeps Unix semantics: being a sudoer does **not** silently grant root to plain commands. `cat /home/someone-else/notes` still reports missing permissions; use `sudo <command>` for one command, or `su` for a shell that stays root until `exit`. The desktop apps do elevate a sudoer automatically, because a graphical file manager has no command to prefix.
+By default the terminal elevates sudoers the same way the desktop does: `cat /home/someone-else/notes` works without a prefix, because one account should not have two different sets of rights depending on which interface it is used from. `whoami` still reports the real account, and `sudo` / `su` keep working as they always did.
+
+Missions that prefer strict Unix semantics turn the `AE3_CliElevateSudoers` CBA setting off. Plain commands then run as the logged-in user again, `cat /home/someone-else/notes` reports missing permissions, and a sudoer must use `sudo <command>` for one command or `su` for a shell that stays root until `exit`. The desktop apps elevate a sudoer either way, because a graphical file manager has no command to prefix.
 
 ### `AE3_armaos_fnc_computer_setRootLogin`
 

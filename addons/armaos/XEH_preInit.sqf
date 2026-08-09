@@ -60,6 +60,19 @@ if (hasInterface) then
 /* ================================================================================ */
 
 [
+	"AE3_CliElevateSudoers",
+	"CHECKBOX",
+	["Sudoers act as root at the terminal", "Let accounts listed in /etc/sudoers read and write any file from the terminal, the way they already can from the desktop file manager. When disabled, the terminal keeps strict Unix semantics and a sudoer must use sudo or su before reaching another user's files."],
+	"STR_AE3_ArmaOS_CbaSettings_ArmaOSCategoryName",
+	true,
+	1, // global
+	{ params ["_value"]; },
+	false
+] call CBA_fnc_addSetting;
+
+/* ================================================================================ */
+
+[
 	"AE3_DefaultRootPassword",
 	"EDITBOX",
 	["Default root password", "Password of the root account every laptop is created with. A laptop's own root password (editor attribute or AE3_armaos_fnc_computer_setRootPassword) overrides it."],

@@ -502,6 +502,21 @@
     return lines.join("\n");
   }
 
+  // An external cryptography app can register a hand-off hook so that intercepted mail and chat can be
+  // decrypted where it was read, without a copy-and-paste detour. The menu entry appears only while such
+  // a hook exists, which keeps this file free of any dependency on the app that provides it: no hook,
+  // no entry, and everything else works exactly as before. Returned as an array so a caller can splice
+  // it into a context menu with concat and get nothing at all when the app is absent.
+  // getText may hand back the text directly or a promise of it, so a menu built over a list row - which
+  // holds headers only - can fetch the message body first and still use the same entry.
+  function cryptoMenuItems(getText) {
+    var hook = window.RootCW_openCryptoWith;
+    if (typeof hook !== "function") return [];
+    return [{ sep: true }, { label: "Send to Cryptography", action: function () {
+      Promise.resolve(getText()).then(function (text) { hook(String(text == null ? "" : text)); });
+    } }];
+  }
+
   // Save-As into the laptop's own filesystem through the same fs_save route the text editor uses, so
   // the file is owned by the logged-in user and can then be read, copied over SSH or shared as usual.
   function exportText(text, filename, title) {
@@ -1697,7 +1712,7 @@
           { label: "Copy To", disabled: !m.to, action: function () { window.AE3_copyText(m.to || "", "To address"); } },
           { label: "Copy Subject", action: function () { window.AE3_copyText(m.subject || "", "Subject"); } },
           { label: "Copy Body", action: function () { window.AE3_copyText(m.body || "", "Message body"); } }
-        ]);
+        ].concat(cryptoMenuItems(function () { return m.body || ""; })));
       }
 
       function setActiveTab(tab) {
@@ -1732,7 +1747,10 @@
               { label: "Copy...", action: function () { withMail(m.file, function (full) { copyMenu(full, e.clientX, e.clientY); }); } },
               { sep: true },
               { label: "Delete", action: function () { del(m.file); } }
-            ]);
+            // The list row carries headers only, so the message is fetched before its body is handed over.
+            ].concat(cryptoMenuItems(function () {
+              return new Promise(function (resolve) { withMail(m.file, function (full) { resolve(full.body || ""); }); });
+            })));
           });
           mails.appendChild(li);
         });
@@ -1965,7 +1983,7 @@
             window.AE3_ctxMenu(e.clientX, e.clientY, [
               { label: "Copy message", action: function () { window.AE3_copyText(m.text || "", "Message"); } },
               { label: "Copy conversation", action: function () { window.AE3_copyText(formatThread(t, selfOf(t)), "Conversation"); } }
-            ]);
+            ].concat(cryptoMenuItems(function () { return m.text || ""; })));
           });
           msgs.appendChild(row);
         });
@@ -1977,7 +1995,7 @@
           window.AE3_ctxMenu(r.left, r.bottom, [
             { label: "Copy conversation", action: function () { window.AE3_copyText(formatThread(t, selfOf(t)), "Conversation"); } },
             { label: "Copy handle", action: function () { window.AE3_copyText(t.peer || "", "Handle"); } }
-          ]);
+          ].concat(cryptoMenuItems(function () { return formatThread(t, selfOf(t)); })));
         });
         msgs.scrollTop = msgs.scrollHeight;
         var ctext = convoEl.querySelector(".ctext");

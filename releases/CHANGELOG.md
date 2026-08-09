@@ -1,5 +1,19 @@
 # Changelog
 
+## Update 5 (v2.0.0.3)
+
+### Added
+- A **Sudoers act as root at the terminal** setting, on by default. Accounts listed in `/etc/sudoers` can now read and write any file from the terminal, the way they already could from the desktop file manager, so an account no longer has two different sets of rights depending on which interface it is used from. `whoami` still reports the real account, and `sudo` and `su` work exactly as before. Missions that prefer strict Unix semantics - where a sudoer must elevate before reaching another user's files - turn the setting off.
+- An optional volume argument on `AE3_desktop_fnc_playDeviceSound`. Callers that omit it get the previous loudness.
+- A **Send to Cryptography** entry in the Email and Messenger right-click menus, on a message in the list, an open email, a single chat message, and a whole conversation. Only available when Root's Cyberwarfare mod is loaded.
+
+### Removed
+- N/A
+
+### Changed
+- Fixed the power generators being absent from the 3DEN asset browser while showing normally in Zeus. They are the only AE3 assets built on a vehicle base rather than a prop one, which filed them under a side instead of under Props, and overriding their faction left them with no branch to appear under at all. They now sit in Props alongside the rest of the Advanced Equipment assets, under a Power subcategory, and each generator states its editor category directly rather than inheriting it from a hidden base class.
+- Flash drive connect and disconnect sounds can be silenced and their volume adjusted by a mission.
+
 ## Update 4 (v2.0.0.2)
 
 ### Added

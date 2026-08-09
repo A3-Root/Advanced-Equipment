@@ -27,6 +27,7 @@ PREP(shell_isSshCompatible);
 PREP(shell_parseLockedFile);
 PREP(shell_playErrorSound);
 PREP(shell_findLoginUser);
+PREP(shell_getFsUser);
 PREP(shell_validatePassword);
 PREP(shell_getHomeDir);
 PREP(shell_executeFile);

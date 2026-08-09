@@ -44,7 +44,7 @@ The ArmaOS component owns the terminal/TUI interface, command shell, laptop stat
 - The durable terminal handoff is `AE3_terminal_sync`, not the full session-local `AE3_terminal` hashmap. This supports closing/reopening the interface without treating each client session object as persisted state.
 - Direct root login is per laptop with a CBA fallback: missions want one global switch, but individual laptops (an admin box vs. a captured field laptop) need to differ, so the object variable overrides the setting rather than replacing it.
 - Sudoers membership stays in the filesystem file so it remains discoverable and editable in-fiction; the broadcast `AE3_sudoers` roster is a replication mirror alongside it, not a replacement, and reads take the union of both.
-- The terminal keeps real Unix elevation semantics (`sudo`/`su`) rather than auto-elevating sudoers the way the desktop file manager does. The GUI models a file manager, the TUI models a shell, and quietly granting a sudoer root on every `cat` would make `/etc/sudoers` meaningless as an in-fiction access control.
+- The terminal auto-elevates sudoers the way the desktop file manager does, resolved in one place by `AE3_armaos_fnc_shell_getFsUser`, so an account's rights do not depend on which interface it is used from. `sudo`/`su` still exist and still work; the identity-reporting commands still show the real account. Missions that want the shell to model strict Unix elevation - where `/etc/sudoers` is an in-fiction hurdle rather than a grant - switch the `AE3_CliElevateSudoers` CBA setting off, and every command falls back to the login user.
 
 ## gotchas
 

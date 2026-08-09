@@ -63,6 +63,13 @@ class CfgVehicles
 		/* -------------------- */
 
 		// Override
+		// The generators are the only AE3 assets built on a vehicle base rather than a prop one, and
+		// B_Radar_System_01_F is a BLUFOR static. That side is what files an asset under a side in the
+		// 3DEN asset browser, so the generators landed under BLUFOR while every other AE3 asset sat in
+		// Props - and once faction was overridden to Default, which is not a BLUFOR faction, they had
+		// no branch left to appear under at all. Declaring no side puts them in Props beside the rest.
+		// Zeus was never affected: the curator browser groups purely by editorCategory.
+		side = 4;
 		faction = "Default";
 		editorCategory = "AE3_Assets";
 		editorSubcategory = "AE3_Sub_Power";
@@ -84,6 +91,9 @@ class CfgVehicles
 
 	class Land_PortableGenerator_01_F_AE3: GeneratorMaster_01_F_AE3
 	{
+		editorCategory = "AE3_Assets";
+		editorSubcategory = "AE3_Sub_Power";
+
 		scope = 2; // Dummy Class
 		scopeCurator = 2; // Zeus visability; 2 will show it in the menu, 0 will hide it.
 
@@ -154,6 +164,9 @@ class CfgVehicles
 
 	class Land_PortableGenerator_01_black_F_AE3: Land_PortableGenerator_01_F_AE3
 	{
+		editorCategory = "AE3_Assets";
+		editorSubcategory = "AE3_Sub_Power";
+
 		editorPreview = "\A3\EditorPreviews_F_Enoch\Data\CfgVehicles\Land_PortableGenerator_01_black_F.jpg"; // modified for texture variants
 		hiddenSelectionsTextures[] = {"a3\Props_F_Enoch\Military\Camps\data\PortableGenerator_01_black_CO.paa"}; // modified for texture variants
 		displayName = "$STR_A3_C_CfgVehicles_Land_PortableGenerator_01_black_F0"; // modified for texture variants
@@ -163,6 +176,9 @@ class CfgVehicles
 
 	class Land_PortableGenerator_01_sand_F_AE3: Land_PortableGenerator_01_F_AE3
 	{
+		editorCategory = "AE3_Assets";
+		editorSubcategory = "AE3_Sub_Power";
+
 		editorPreview = "\A3\EditorPreviews_F_Enoch\Data\CfgVehicles\Land_PortableGenerator_01_sand_F.jpg"; // modified for texture variants
 		hiddenSelectionsTextures[] = {"a3\Props_F_Enoch\Military\Camps\data\PortableGenerator_01_sand_CO.paa"}; // modified for texture variants
 		displayName = "$STR_A3_C_CfgVehicles_Land_PortableGenerator_01_sand_F0"; // modified for texture variants
@@ -172,6 +188,9 @@ class CfgVehicles
 
 	class Land_MobileRadar_01_generator_F_AE3: GeneratorMaster_01_F_AE3
 	{
+		editorCategory = "AE3_Assets";
+		editorSubcategory = "AE3_Sub_Power";
+
 		scope = 2; // Dummy Class
 		scopeCurator = 2; // Zeus visability; 2 will show it in the menu, 0 will hide it.
 
@@ -221,6 +240,9 @@ class CfgVehicles
 
 	class Land_DieselGroundPowerUnit_01_F_AE3: GeneratorMaster_01_F_AE3
 	{
+		editorCategory = "AE3_Assets";
+		editorSubcategory = "AE3_Sub_Power";
+
 		scope = 2; // Dummy Class
 		scopeCurator = 2; // Zeus visability; 2 will show it in the menu, 0 will hide it.
 
@@ -270,6 +292,9 @@ class CfgVehicles
 
 	class Land_PowerGenerator_F_AE3: GeneratorMaster_01_F_AE3
 	{
+		editorCategory = "AE3_Assets";
+		editorSubcategory = "AE3_Sub_Power";
+
 		scope = 2; // Dummy Class
 		scopeCurator = 2; // Zeus visability; 2 will show it in the menu, 0 will hide it.
 
@@ -319,6 +344,9 @@ class CfgVehicles
 
 	class Land_Portable_generator_F_AE3: GeneratorMaster_01_F_AE3
 	{
+		editorCategory = "AE3_Assets";
+		editorSubcategory = "AE3_Sub_Power";
+
 		scope = 2; // Dummy Class
 		scopeCurator = 2; // Zeus visability; 2 will show it in the menu, 0 will hide it.
 		
