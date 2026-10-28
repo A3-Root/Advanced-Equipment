@@ -5,9 +5,11 @@
 ### Added
 - Messenger plays a beep on the receiving laptop.
 - CBA setting *Map: own network only* (default on).
+- Terminal accepts characters typed on the system keyboard or IME (Chinese, Greek, Cyrillic, ...) in addition to the selected terminal layout.
 
 ### Changed
 - Map app (radar and full map) shows only devices on the laptop's network, with their names.
+- Exported file names, Messenger handles, mail addresses and debug login names keep non-Latin letters and digits.
 - Non-Latin text survives Columnar encryption, file search and the desktop bridge; Caesar passes characters outside A-Z through.
 
 ## Hotfix (v2.1.0.2)

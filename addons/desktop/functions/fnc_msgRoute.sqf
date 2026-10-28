@@ -69,7 +69,7 @@ _text = _text regexReplace ["[\r\n]+", " "];
 
 private _safe = {
 	params ["_value"];
-	_value regexReplace ["[^A-Za-z0-9@._-]", "_"]
+	_value regexReplace ["[\s+/\\:*?""<>|]", "_"]
 };
 // Conversation files are named "<ownHandle>+<peerHandle>"; '+' cannot appear in a safe handle, so
 // the pair always splits back cleanly (see AE3_desktop_fnc_chatPullServer).
