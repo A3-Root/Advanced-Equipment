@@ -92,3 +92,4 @@ the player's real OS clipboard. Both are front-end only (`addons/desktop/ui/web/
 - `addons/desktop/functions/fnc_provisionIdentity.sqf`
 - `addons/desktop/XEH_preInit.sqf`
 - `addons/desktop/XEH_postInit.sqf`
+- `fnc_msgRoute` plays `armaos/sounds/Blip.ogg` at the target laptop through `AE3_desktop_fnc_playDeviceSound` on every non-self message.

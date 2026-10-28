@@ -1,5 +1,15 @@
 # Changelog
 
+## Hotfix (v2.1.0.3)
+
+### Added
+- Messenger plays a beep on the receiving laptop.
+- CBA setting *Map: own network only* (default on).
+
+### Changed
+- Map app (radar and full map) shows only devices on the laptop's network, with their names.
+- Non-Latin text survives Columnar encryption, file search and the desktop bridge; Caesar passes characters outside A-Z through.
+
 ## Hotfix (v2.1.0.2)
 
 ### Changed

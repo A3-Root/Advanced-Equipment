@@ -97,5 +97,9 @@ if (!isNull _mutexHolder && {_mutexHolder isKindOf "CAManBase"}) then {
 	["ae3_desktop_msgNotify", [_fromHandle], _mutexHolder] call CBA_fnc_targetEvent;
 };
 
+if (!_isSelf) then {
+	[_target, "\z\ae3\addons\armaos\sounds\Blip.ogg"] remoteExecCall ["AE3_desktop_fnc_playDeviceSound", 0];
+};
+
 _res set ["ok", true];
 [_owner, _rid, _res] call _reply;
